@@ -1,0 +1,8 @@
+node_modules
+copias
+.git
+.agents
+.kombai
+npm-debug.log
+*.png
+*.log

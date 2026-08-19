@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  cloner:
+    build: .
+    container_name: site-cloner
+    volumes:
+      - ./copias:/app/copias
+    environment:
+      - NODE_ENV=production
+    # Para rodar interativo ou com argumentos específicos:
+    # docker compose run --rm cloner https://exemplo.com

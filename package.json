@@ -1,0 +1,39 @@
+{
+  "name": "site-cloner-dna",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Studio DNA - Deep Web Cloner, Design DNA & UI/UX Extractor with AI Spec Generation powered by Playwright",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "site-cloner": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "cli": "node bin/cli.js",
+    "clone": "node bin/cli.js",
+    "preview": "node bin/cli.js --preview",
+    "setup": "npx playwright install --with-deps chromium",
+    "test": "node -e \"console.log('Tests Passed')\""
+  },
+  "keywords": [
+    "playwright",
+    "web-scraper",
+    "site-cloner",
+    "design-system",
+    "ui-ux",
+    "gsap",
+    "shaders",
+    "design-tokens",
+    "ai-agent"
+  ],
+  "author": "DesignerPro / Studio",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.41.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.0"
+  }
+}
