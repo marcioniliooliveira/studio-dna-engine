@@ -1,0 +1,47 @@
+{
+  "pairings": [
+    {
+      "name": "Swiss Editorial Minimalist (Storey Style)",
+      "heading": {
+        "family": "\"New Grotesk\", system-ui, sans-serif",
+        "weight": 500,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 0.95,
+        "fluidClamp": "clamp(2.5rem, 6vw, 6.5rem)"
+      },
+      "body": {
+        "family": "\"New Grotesk\", system-ui, sans-serif",
+        "weight": 400,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.5,
+        "fluidClamp": "clamp(0.95rem, 1.15vw, 1.25rem)"
+      },
+      "accentMono": {
+        "family": "\"New Grotesk Mono\", ui-monospace, monospace",
+        "weight": 400,
+        "letterSpacing": "0.05em",
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "name": "Kinetic Neo-Brutalist (Basement Style)",
+      "heading": {
+        "family": "\"Basement Grotesque\", sans-serif",
+        "weight": 800,
+        "letterSpacing": "-0.05em",
+        "lineHeight": 0.88,
+        "fluidClamp": "clamp(3rem, 8vw, 9rem)"
+      },
+      "body": {
+        "family": "\"Inter\", sans-serif",
+        "weight": 400,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.6
+      },
+      "accentMono": {
+        "family": "\"JetBrains Mono\", monospace",
+        "weight": 500
+      }
+    }
+  ]
+}

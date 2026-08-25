@@ -1,0 +1,13 @@
+{
+  "name": "negocia-bem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site de Alta Performance para negocia bem",
+  "scripts": {
+    "dev": "serve site -l 3000",
+    "start": "serve site -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}

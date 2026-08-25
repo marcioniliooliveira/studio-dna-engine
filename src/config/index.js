@@ -26,14 +26,18 @@ function loadConfig(customOverrides = {}) {
     }
   }
 
+  const cleanOverrides = Object.fromEntries(
+    Object.entries(customOverrides).filter(([_, v]) => v !== undefined)
+  );
+
   return {
     ...DEFAULT_CONFIG,
     ...fileConfig,
-    ...customOverrides,
+    ...cleanOverrides,
     viewport: {
       ...DEFAULT_CONFIG.viewport,
       ...(fileConfig.viewport || {}),
-      ...(customOverrides.viewport || {})
+      ...(cleanOverrides.viewport || {})
     }
   };
 }

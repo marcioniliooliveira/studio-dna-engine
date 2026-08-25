@@ -157,7 +157,7 @@ async function main() {
     await runPipeline({
       url: rawUrl,
       mode,
-      outputDir: outDir,
+      outputDir: outDir || undefined,
       headless,
       timeout: timeout || undefined,
       proxy: proxy || undefined

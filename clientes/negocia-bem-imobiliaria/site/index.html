@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Negocia Bem Consultoria Imobiliária | Casas, Aluguel e Terrenos em Paiçandu e Região de Maringá</title>
+  <meta name="description" content="Encontre casas pelo Minha Casa Minha Vida, aluguel sem burocracia e loteamentos para investir a 15 minutos de Maringá. Simulação ágil Caixa e atendimento humanizado. CRECI 9314-J.">
+  <meta name="keywords" content="imobiliaria paiçandu, casas a venda paiçandu, minha casa minha vida maringa, terrenos paiçandu, aluguel paiçandu, negocia bem imoveis">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Negocia Bem Consultoria Imobiliária — Paiçandu / PR">
+  <meta property="og:description" content="Casas MCMV, Aluguel Sem Burocracia e Loteamentos a 15 min de Maringá. Simulação Caixa em 24h.">
+  <meta property="og:image" content="./assets/images/landing.jpg">
+
+  <!-- Estilos e Fontes do Design System Storey / Negocia Bem -->
+  <link rel="stylesheet" href="./assets/_nuxt/entry.BKewY8MT.css">
+  <link rel="stylesheet" href="./assets/_nuxt/usePageSeo.DXu_W-RH.css">
+  <link rel="stylesheet" href="./assets/_nuxt/studio.BgaQnxmd.css">
+
+  <style>
+    @font-face {
+      font-family: 'New Grotesk';
+      src: url('./assets/fonts/NewGrotesk-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'New Grotesk';
+      src: url('./assets/fonts/NewGrotesk-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'New Grotesk Mono';
+      src: url('./assets/fonts/NewGrotesk-RegularMono.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Biro';
+      src: url('./assets/fonts/Biro.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --color-primary: 255 255 255;
+      --color-secondary: 8 10 18;
+      --color-accent: 100 206 251;
+      --color-form: 254 254 254;
+      --color-formSecondary: 45 45 45;
+      --font-sans: "New Grotesk", system-ui, -apple-system, sans-serif;
+      --font-mono: "New Grotesk Mono", ui-monospace, monospace;
+      --gutter: 1.5vw;
+      --margin: 3vw;
+    }
+
+    body {
+      background-color: #080A12;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Tipografia de Alta Precisão */
+    .extraLargeText {
+      font-size: clamp(2.5rem, 6vw, 6.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      font-weight: 500;
+    }
+    .largeText {
+      font-size: clamp(2rem, 4.5vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 500;
+    }
+    .mediumText {
+      font-size: clamp(1.25rem, 2.2vw, 2.2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      font-weight: 500;
+    }
+    .smallText {
+      font-size: clamp(0.95rem, 1.15vw, 1.25rem);
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+    }
+    .extraSmallText {
+      font-size: clamp(0.75rem, 0.85vw, 0.95rem);
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      padding-left: var(--margin);
+      padding-right: var(--margin);
+    }
+
+    /* Unmasking e estabilização de SplitText */
+    .appear-line-mask {
+      overflow: visible !important;
+    }
+    .appear-line {
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Badges e Botões Magnéticos */
+    .btn-storey {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6vw;
+      padding: 0.8vw 1.6vw;
+      background: #FFFFFF;
+      color: #080A12;
+      border-radius: 9999px;
+      font-family: var(--font-sans);
+      font-size: clamp(0.85rem, 1vw, 1.1rem);
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .btn-storey:hover {
+      background: #64CEFB;
+      color: #080A12;
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(100, 206, 251, 0.25);
+    }
+    .btn-storey-dark {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+    .btn-storey-dark:hover {
+      background: #FFFFFF;
+      color: #080A12;
+    }
+
+    /* Asterisco Geométrico de 8 Lâminas */
+    .asterisk-spinner {
+      width: 1.2em;
+      height: 1.2em;
+      display: inline-block;
+      position: relative;
+      animation: spinContinuous 12s linear infinite;
+    }
+    @keyframes spinContinuous {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Prancheta Spatial Brief */
+    .brief-paper {
+      background: #FEFEFE;
+      color: #1F2937;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      position: relative;
+      border-radius: 4px;
+    }
+    .brief-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #D1D5DB;
+      padding: 0.6vw 0;
+      font-family: var(--font-sans);
+      font-size: clamp(0.9rem, 1.05vw, 1.15rem);
+      color: #111827;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .brief-input:focus {
+      border-bottom-color: #080A12;
+    }
+    .brief-checkbox {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #4B5563;
+      border-radius: 3px;
+      cursor: pointer;
+      display: inline-grid;
+      place-content: center;
+      margin-right: 8px;
+    }
+    .brief-checkbox:checked {
+      background: #080A12;
+      border-color: #080A12;
+    }
+    .brief-checkbox:checked::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: #FFFFFF;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    /* Cortinas de Revelação */
+    .reveal-curtain {
+      transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+      will-change: transform;
+    }
+
+    /* 3D Spinner Perspective */
+    .spinner-3d-wrapper {
+      perspective: 140vw;
+      transform-style: preserve-3d;
+    }
+  </style>
+</head>
+<body class="bg-[#080A12] text-white">
+
+  <!-- ========================================================================= -->
+  <!-- 01. FIXED NAVBAR COM IDENTIDADE NEGOCIA BEM & CRECI 9314-J                 -->
+  <!-- ========================================================================= -->
+  <header class="fixed top-0 left-0 w-full z-50 py-[1.5vw] mix-blend-difference pointer-events-none">
+    <div class="layout-grid items-center pointer-events-auto">
+      <!-- Brand Logo -->
+      <div class="col-span-5 sm:col-span-4 flex items-center gap-[0.5vw]">
+        <a href="#hero" class="flex items-center gap-[0.4vw] text-white no-underline">
+          <span class="mediumText font-medium tracking-tight">Negocia Bem</span>
+          <div class="asterisk-spinner ml-1">
+            <svg viewBox="0 0 44 38" fill="currentColor" class="w-full h-full">
+              <path d="M17.6298 3.44706L22.0886 1.60715L22.1804 3.8007L17.5483 5.66439L17.6298 3.44706Z"/>
+              <path d="M16.5621 32.7915L23.326 30.9269L23.5438 36.1337L16.373 37.9373L16.5621 32.7915Z"/>
+              <path d="M31.6239 0L35.9052 0.692643L33.315 3.5885L29.1074 2.72402L31.6239 0Z"/>
+              <path d="M5.90723 12.375L9.29129 8.94795L11.3444 9.72015L7.87018 13.2983L5.90723 12.375Z"/>
+              <path d="M41.9074 21.0034L37.4409 26.9695L32.7256 24.7415L37.0801 19.1786L41.9074 21.0034Z"/>
+              <path d="M4.79399 36.0661L1.61475 32.9919L5.06938 29.1728L8.41764 31.9215L4.79399 36.0661Z"/>
+              <path d="M42.3998 5.55733L44.0001 9.70575L38.7852 11.4972L37.5498 7.3188L42.3998 5.55733Z"/>
+              <path d="M4.48057 19.2297L3.61749 23.4661L0 24.7108L1.04267 20.48L4.48057 19.2297Z"/>
+            </svg>
+          </div>
+        </a>
+        <span class="hidden md:inline-block font-mono text-[0.7rem] px-2 py-0.5 rounded border border-white/20 ml-2 text-neutral-300">CRECI 9314-J</span>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="hidden sm:flex col-span-5 justify-center items-center gap-[2.5vw] extraSmallText font-medium text-neutral-200">
+        <a href="#funis" class="hover:text-white transition-colors no-underline">Comprar MCMV</a>
+        <a href="#funis" class="hover:text-white transition-colors no-underline">Alugar</a>
+        <a href="#funis" class="hover:text-white transition-colors no-underline">Loteamentos</a>
+        <a href="#destaques" class="hover:text-white transition-colors no-underline">Oportunidades</a>
+      </nav>
+
+      <!-- CTA Simulação -->
+      <div class="col-span-7 sm:col-span-3 flex justify-end items-center">
+        <a href="#simulador" class="btn-storey text-xs sm:text-sm">
+          <span>Simular Financiamento</span>
+          <div class="asterisk-spinner text-xs">
+            <svg viewBox="0 0 44 38" fill="currentColor" class="w-3 h-3"><path d="M17.6298 3.44706L22.0886 1.60715L22.1804 3.8007L17.5483 5.66439L17.6298 3.44706Z"/><path d="M16.5621 32.7915L23.326 30.9269L23.5438 36.1337L16.373 37.9373L16.5621 32.7915Z"/><path d="M31.6239 0L35.9052 0.692643L33.315 3.5885L29.1074 2.72402L31.6239 0Z"/><path d="M5.90723 12.375L9.29129 8.94795L11.3444 9.72015L7.87018 13.2983L5.90723 12.375Z"/></svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 02. HERO SLIDER COM MULTICAMADAS & SPLITTEXT DINÂMICO                     -->
+  <!-- ========================================================================= -->
+  <section id="hero" class="w-full h-[105svh] relative bg-[#080A12] flex flex-col justify-between overflow-hidden">
+    <!-- Imagens do Hero com Crossfade -->
+    <div class="w-full h-full absolute top-0 left-0 bg-black z-0">
+      <div class="w-full h-full absolute top-0 left-0 transition-opacity duration-1000 ease-out" data-hero-slide="0" style="opacity: 1;">
+        <img src="./assets/images/landing.jpg" alt="Fachada Moderna Paiçandu" class="w-full h-full object-cover opacity-85 saturate-[1.3] scale-100 transition-transform duration-1000">
+      </div>
+      <div class="w-full h-full absolute top-0 left-0 transition-opacity duration-1000 ease-out opacity-0" data-hero-slide="1">
+        <img src="./assets/images/projectsaltered/upscaled/project1.jpg" alt="Casa Minha Casa Minha Vida" class="w-full h-full object-cover opacity-85 saturate-[1.3]">
+      </div>
+      <div class="w-full h-full absolute top-0 left-0 transition-opacity duration-1000 ease-out opacity-0" data-hero-slide="2">
+        <img src="./assets/images/projectsaltered/upscaled/project2.jpg" alt="Loteamento em Paiçandu" class="w-full h-full object-cover opacity-85 saturate-[1.3]">
+      </div>
+      <div class="w-full h-full absolute top-0 left-0 transition-opacity duration-1000 ease-out opacity-0" data-hero-slide="3">
+        <img src="./assets/images/projectsaltered/upscaled/project3.jpg" alt="Interior Residencial" class="w-full h-full object-cover opacity-85 saturate-[1.3]">
+      </div>
+      <div class="w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#080A12] via-transparent to-black/40 pointer-events-none"></div>
+    </div>
+
+    <!-- Conteúdo do Hero Grid -->
+    <div class="layout-grid w-full h-full relative z-10 pt-[12vw] sm:pt-[7vw] pb-[3vw] grid-rows-[1fr_auto]">
+      <!-- Headline Monumental -->
+      <div class="col-span-12 sm:col-span-10 self-center">
+        <div class="appear-line-mask mb-4">
+          <span class="font-mono text-xs text-[#64CEFB] tracking-widest uppercase block mb-3">● Hub Imobiliário • Paiçandu & Maringá</span>
+          <h1 class="extraLargeText text-white appear-line">
+            Conectamos você ao imóvel ideal a 15 minutos de Maringá.
+          </h1>
+        </div>
+      </div>
+
+      <!-- Slider Controls, Progress Bars e Citações -->
+      <div class="col-span-12 self-end">
+        <!-- 4 Barras de Progresso Interativas -->
+        <div class="flex w-full gap-[var(--gutter)] mb-4">
+          <div class="w-1/2 py-2 cursor-pointer hero-progress-segment" data-slide-target="0">
+            <div class="w-full h-[3px] bg-white/20 rounded-full overflow-hidden">
+              <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-100 transition-transform duration-300"></div>
+            </div>
+          </div>
+          <div class="w-1/6 py-2 cursor-pointer hero-progress-segment" data-slide-target="1">
+            <div class="w-full h-[3px] bg-white/20 rounded-full overflow-hidden">
+              <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0 transition-transform duration-300"></div>
+            </div>
+          </div>
+          <div class="w-1/6 py-2 cursor-pointer hero-progress-segment" data-slide-target="2">
+            <div class="w-full h-[3px] bg-white/20 rounded-full overflow-hidden">
+              <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0 transition-transform duration-300"></div>
+            </div>
+          </div>
+          <div class="w-1/6 py-2 cursor-pointer hero-progress-segment" data-slide-target="3">
+            <div class="w-full h-[3px] bg-white/20 rounded-full overflow-hidden">
+              <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0 transition-transform duration-300"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descrição por Slide & CTA de Ação -->
+        <div class="grid grid-cols-12 gap-[var(--gutter)] items-end">
+          <div class="col-span-12 sm:col-span-8">
+            <p id="hero-slide-caption" class="smallText text-neutral-300 max-w-2xl">
+              A Negocia Bem desenha estratégias resolutivas que priorizam a clareza, a aprovação ágil de financiamento Caixa e a realização segura da sua casa própria em Paiçandu.
+            </p>
+          </div>
+          <div class="col-span-12 sm:col-span-4 flex sm:justify-end gap-3 pt-4 sm:pt-0">
+            <a href="#destaques" class="btn-storey">
+              <span>Ver Imóveis</span>
+              <span class="text-xs">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 03. SEÇÃO DE INTRODUÇÃO & VITRINE 3D DE IMÓVEIS (#intro-logo-spinner)      -->
+  <!-- ========================================================================= -->
+  <section id="intro-section-container" class="w-full min-h-[120svh] bg-[#080A12] text-white relative flex flex-col justify-between py-[8vw] overflow-hidden">
+    <div class="layout-grid relative z-20">
+      <div class="col-span-12 sm:col-span-5">
+        <span class="font-mono text-xs text-[#64CEFB] uppercase tracking-widest block mb-4">01 / FILOSOFIA DE ATENDIMENTO</span>
+        <h2 class="largeText mb-6">Transparência e agilidade em cada negociação.</h2>
+      </div>
+      <div class="col-span-12 sm:col-span-7 flex flex-col sm:flex-row gap-[3vw] text-neutral-300">
+        <div class="sm:w-1/2">
+          <p class="smallText">
+            Acreditamos que comprar ou alugar um imóvel não precisa ser um labirinto burocrático. Nossa equipe atua diretamente na aprovação do crédito habitacional, na análise jurídica documental e na escolha da melhor localização em Paiçandu e Maringá.
+          </p>
+        </div>
+        <div class="sm:w-1/2">
+          <p class="smallText">
+            Com presença consolidada na Av. Curitiba e registro CRECI 9314-J, combinamos a proximidade de um atendimento familiar com a tecnologia de simulação instantânea e retorno imediato no WhatsApp.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrossel 3D Cilíndrico de Destaques de Paiçandu -->
+    <div class="w-full flex flex-col items-center justify-center my-[6vw] relative z-10">
+      <div class="relative w-[114vw] h-[45vw] spinner-3d-wrapper flex items-center justify-center">
+        <div id="intro-logo-spinner" class="relative size-full [transform-style:preserve-3d]" style="transform: rotate3d(0.27, -1.005, 1.5, 85deg);">
+          <!-- 8 Cards de Imóveis distribuídos proceduralmente pelo UniversalScrollDirector -->
+          <div data-spinner-square="0" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/www.datocms-assets.com/215482/1780580280-project-1-upscaled.webp" class="w-full h-full object-cover rounded opacity-90" alt="Residencial Bela Vista">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Jd. Bela Vista • MCMV</div>
+          </div>
+          <div data-spinner-square="1" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/www.datocms-assets.com/215482/1780651370-project-4-upscaled.webp" class="w-full h-full object-cover rounded opacity-90" alt="Terreno Comercial Centro">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Terreno Av. Curitiba</div>
+          </div>
+          <div data-spinner-square="2" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/www.datocms-assets.com/215482/1780651271-landing-upscaled.webp" class="w-full h-full object-cover rounded opacity-90" alt="Casa Pronta Centro">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Casa 3 Qts • Centro</div>
+          </div>
+          <div data-spinner-square="3" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/www.datocms-assets.com/215482/1780651475-project-3-upscaled.webp" class="w-full h-full object-cover rounded opacity-90" alt="Loteamento Fechado">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Loteamento Fechado RMM</div>
+          </div>
+          <div data-spinner-square="4" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/www.datocms-assets.com/215482/1780651563-project-2-upscaled.webp" class="w-full h-full object-cover rounded opacity-90" alt="Casa Térrea">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Casa Nova • Jd. Pioneiro</div>
+          </div>
+          <div data-spinner-square="5" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/images/projects/project1.png" class="w-full h-full object-cover rounded opacity-90" alt="Sobrado Moderno">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Sobrado c/ Suíte</div>
+          </div>
+          <div data-spinner-square="6" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/images/projects/project2.png" class="w-full h-full object-cover rounded opacity-90" alt="Apartamento Locação">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Locação Fácil • Sem Fiador</div>
+          </div>
+          <div data-spinner-square="7" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bg-[#121622] rounded-lg overflow-hidden border border-white/10 p-2 cursor-pointer shadow-2xl transition-transform" style="width: 14vw; height: 11vw; bottom: calc(50% + 18vw);">
+            <img src="./assets/images/projects/project4.png" class="w-full h-full object-cover rounded opacity-90" alt="Chácara e Lazer">
+            <div class="text-[0.7rem] font-mono text-center mt-1 text-white truncate">Chácara de Lazer Paiçandu</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tutorial Banner -->
+      <div class="mt-4 text-center">
+        <span class="font-mono text-xs text-[#64CEFB] uppercase tracking-wider underline underline-offset-4">
+          ✦ Arraste ou role a página para inspecionar os imóveis em 3D
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 04. OS 3 FUNIS DE CONVERSÃO COM CORTINAS DESLIZANTES & PAPELARIA          -->
+  <!-- ========================================================================= -->
+  <section id="funis" class="w-full bg-[#FFFFFF] text-[#080A12] py-[8vw] relative z-20">
+    <!-- Header dos Funis -->
+    <div class="layout-grid mb-[6vw]">
+      <div class="col-span-12 sm:col-span-6">
+        <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest block mb-2">02 / SOLUÇÕES IMOBILIÁRIAS</span>
+        <h2 class="largeText font-medium">Os 3 caminhos para o seu novo espaço.</h2>
+      </div>
+      <div class="col-span-12 sm:col-span-6 sm:mt-[2vw]">
+        <p class="smallText text-neutral-600">
+          Desenvolvemos funis diretos sem fricção: simulação rápida para compra, agilidade para alugar sem fiador e inteligência de mercado para investidores na Região Metropolitana de Maringá.
+        </p>
+      </div>
+    </div>
+
+    <!-- Card Funil 01: Comprar MCMV -->
+    <div class="w-full border-t border-[#D1D5DB] py-[5vw] relative overflow-hidden group">
+      <!-- Acessório de Papelaria (Régua e Lápis) -->
+      <div class="absolute right-[var(--margin)] top-0 z-30 hidden sm:flex items-center gap-2">
+        <img src="./assets/images/misc/ruler.png" alt="" class="w-[3.5vw] h-auto rotate-[-6deg] group-hover:rotate-[-10deg] transition-transform duration-500 saturate-0 opacity-40">
+        <img src="./assets/images/misc/pencil.png" alt="" class="w-[3vw] h-auto rotate-[-12deg] group-hover:rotate-[-18deg] transition-transform duration-300 opacity-60">
+      </div>
+
+      <div class="layout-grid items-center">
+        <div class="col-span-12 sm:col-span-5 mb-6 sm:mb-0">
+          <span class="text-[8vw] font-mono text-[#E5E7EB] leading-none block font-semibold">01</span>
+          <h3 class="mediumText mb-3">Comprar Casa Própria (MCMV)</h3>
+          <p class="smallText text-neutral-600 mb-6">
+            Casas térreas e sobrados com subsídios de até R$ 55.000 pelo Minha Casa Minha Vida. Parcelas a partir de R$ 680/mês e aprovação de crédito Caixa em menos de 24 horas a 15 min de Maringá.
+          </p>
+          <a href="#simulador" class="btn-storey bg-[#080A12] text-white hover:bg-[#64CEFB] hover:text-black">
+            <span>Simular Subsídio Caixa</span>
+            <span>↗</span>
+          </a>
+        </div>
+        
+        <!-- Imagem com Cortina Deslizante -->
+        <div class="col-span-12 sm:col-span-7 aspect-[16/10] bg-neutral-100 relative rounded-lg overflow-hidden shadow-xl">
+          <div class="w-full h-full absolute top-0 left-0 bg-[#080A12] z-10 reveal-curtain"></div>
+          <img src="./assets/images/landing/services1.png" alt="Casas Minha Casa Minha Vida Paiçandu" class="w-full h-full object-cover saturate-[1.2]">
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Funil 02: Alugar Sem Burocracia -->
+    <div class="w-full border-t border-[#D1D5DB] py-[5vw] relative overflow-hidden group">
+      <div class="layout-grid items-center">
+        <div class="col-span-12 sm:col-span-5 mb-6 sm:mb-0">
+          <span class="text-[8vw] font-mono text-[#E5E7EB] leading-none block font-semibold">02</span>
+          <h3 class="mediumText mb-3">Aluguel Ágil Sem Fiador</h3>
+          <p class="smallText text-neutral-600 mb-6">
+            Casas e apartamentos residenciais e comerciais prontos para morar. Análise cadastral 100% digital, sem necessidade de fiador tradicional e atendimento direto pelo WhatsApp Locação.
+          </p>
+          <a href="https://wa.me/5544999999999?text=Ol%C3%A1%2C%20gostaria%20de%20ver%20im%C3%B3veis%20dispon%C3%ADveis%20para%20alugar%20em%20Pai%C3%A7andu" target="_blank" class="btn-storey bg-[#080A12] text-white hover:bg-[#64CEFB] hover:text-black">
+            <span>Falar com Locação</span>
+            <span>↗</span>
+          </a>
+        </div>
+
+        <!-- Imagem com Cortina Deslizante -->
+        <div class="col-span-12 sm:col-span-7 aspect-[16/10] bg-neutral-100 relative rounded-lg overflow-hidden shadow-xl">
+          <div class="w-full h-full absolute top-0 left-0 bg-[#080A12] z-10 reveal-curtain"></div>
+          <img src="./assets/images/landing/services2.png" alt="Aluguel de Casas em Paiçandu" class="w-full h-full object-cover saturate-[1.2]">
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Funil 03: Investir em Loteamentos -->
+    <div class="w-full border-t border-b border-[#D1D5DB] py-[5vw] relative overflow-hidden group">
+      <div class="layout-grid items-center">
+        <div class="col-span-12 sm:col-span-5 mb-6 sm:mb-0">
+          <span class="text-[8vw] font-mono text-[#E5E7EB] leading-none block font-semibold">03</span>
+          <h3 class="mediumText mb-3">Investimento & Loteamentos</h3>
+          <p class="smallText text-neutral-600 mb-6">
+            Paiçandu vive o maior ciclo de expansão imobiliária da Região Metropolitana. Oferecemos terrenos comerciais e residenciais com alto índice de valorização e facilidade de pagamento direto.
+          </p>
+          <a href="#simulador" class="btn-storey bg-[#080A12] text-white hover:bg-[#64CEFB] hover:text-black">
+            <span>Consultar Loteamentos</span>
+            <span>↗</span>
+          </a>
+        </div>
+
+        <!-- Imagem com Cortina Deslizante -->
+        <div class="col-span-12 sm:col-span-7 aspect-[16/10] bg-neutral-100 relative rounded-lg overflow-hidden shadow-xl">
+          <div class="w-full h-full absolute top-0 left-0 bg-[#080A12] z-10 reveal-curtain"></div>
+          <img src="./assets/images/landing/services3.png" alt="Terrenos e Loteamentos em Paiçandu" class="w-full h-full object-cover saturate-[1.2]">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 05. BANNER CENTRAL DE IMPACTO: WE SHAPE SPACE INTO PURPOSE                 -->
+  <!-- ========================================================================= -->
+  <section class="w-full h-[120svh] min-h-[50vw] bg-[#080A12] relative text-white flex flex-col justify-between py-[8vw] overflow-hidden">
+    <div class="w-full h-full absolute top-0 left-0 z-0">
+      <img src="./assets/images/projectscta.png" alt="Imóveis Contemporâneos" class="w-full h-full object-cover opacity-60 scale-105">
+      <div class="w-full h-full absolute top-0 left-0 bg-gradient-to-b from-[#080A12] via-transparent to-[#080A12]"></div>
+    </div>
+
+    <div class="layout-grid relative z-10 text-center items-center my-auto">
+      <div class="col-span-12 sm:col-span-10 sm:col-start-2">
+        <span class="font-mono text-xs text-[#64CEFB] tracking-widest uppercase block mb-4">● COMPROMISSO NEGOCIA BEM</span>
+        <h2 class="extraLargeText mb-6">
+          Transformamos planos em endereços definitivos.
+        </h2>
+        <div class="flex justify-center gap-4">
+          <a href="#simulador" class="btn-storey">
+            <span>Fazer Simulação Confidencial</span>
+            <div class="asterisk-spinner ml-1">
+              <svg viewBox="0 0 44 38" fill="currentColor" class="w-3 h-3"><path d="M17.6298 3.44706L22.0886 1.60715L22.1804 3.8007L17.5483 5.66439L17.6298 3.44706Z"/><path d="M16.5621 32.7915L23.326 30.9269L23.5438 36.1337L16.373 37.9373L16.5621 32.7915Z"/></svg>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 06. DEPOIMENTOS DE CLIENTES & FAMÍLIAS DE PAIÇANDU / MARINGÁ               -->
+  <!-- ========================================================================= -->
+  <section class="w-full bg-[#080A12] text-white py-[8vw] relative z-20 border-t border-white/10">
+    <div class="layout-grid mb-[4vw]">
+      <div class="col-span-12 sm:col-span-6">
+        <span class="font-mono text-xs text-[#64CEFB] uppercase tracking-widest block mb-2">03 / HISTÓRIAS DE SUCESSO</span>
+        <h2 class="largeText">Quem comprou com a Negocia Bem.</h2>
+      </div>
+    </div>
+
+    <!-- Testimonials Slider Interativo -->
+    <div class="layout-grid items-center">
+      <!-- Imagem do Imóvel do Depoimento com Efeito Parallax -->
+      <div class="col-span-12 sm:col-span-6 aspect-[16/12] bg-[#121622] rounded-lg overflow-hidden relative shadow-2xl mb-6 sm:mb-0">
+        <div class="w-full h-full relative" id="testimonial-image-container">
+          <img src="./assets/images/projects/project1.png" alt="Depoimento Família Marcos" class="w-full h-full object-cover transition-opacity duration-700" id="testimonial-active-img">
+        </div>
+      </div>
+
+      <!-- Texto do Depoimento e Controles -->
+      <div class="col-span-12 sm:col-span-6 sm:pl-[3vw]">
+        <!-- 4 Barras de Progresso de Depoimentos -->
+        <div class="flex w-full gap-2 mb-6">
+          <div class="w-1/2 h-[3px] bg-white/20 rounded-full cursor-pointer testimonial-progress-bar" data-test-idx="0">
+            <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-100"></div>
+          </div>
+          <div class="w-1/6 h-[3px] bg-white/20 rounded-full cursor-pointer testimonial-progress-bar" data-test-idx="1">
+            <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0"></div>
+          </div>
+          <div class="w-1/6 h-[3px] bg-white/20 rounded-full cursor-pointer testimonial-progress-bar" data-test-idx="2">
+            <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0"></div>
+          </div>
+          <div class="w-1/6 h-[3px] bg-white/20 rounded-full cursor-pointer testimonial-progress-bar" data-test-idx="3">
+            <div class="w-full h-full bg-[#64CEFB] origin-left scale-x-0"></div>
+          </div>
+        </div>
+
+        <!-- Citação do Depoimento -->
+        <div class="min-h-[140px] mb-6">
+          <p id="testimonial-quote-text" class="mediumText text-neutral-100 font-light leading-snug">
+            "Conseguimos o subsídio de R$ 47 mil do Minha Casa Minha Vida e a aprovação na Caixa em menos de uma semana. O atendimento da Negocia Bem foi transparente do começo ao fim."
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-neutral-800 overflow-hidden border border-white/20">
+            <img src="./assets/images/projects/project1.png" id="testimonial-avatar-img" class="w-full h-full object-cover grayscale" alt="Avatar">
+          </div>
+          <div>
+            <strong id="testimonial-author-name" class="block text-base text-white font-medium">Marcos & Letícia Silva</strong>
+            <span id="testimonial-author-desc" class="block font-mono text-xs text-[#64CEFB]">Compradores • Residencial Bela Vista (Paiçandu)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 07. GUIA EDITORIAL: CENTRAL DE INTELIGÊNCIA IMOBILIÁRIA (JOURNAL)          -->
+  <!-- ========================================================================= -->
+  <section id="destaques" class="w-full bg-[#FFFFFF] text-[#080A12] py-[8vw] relative z-20">
+    <div class="layout-grid mb-[4vw]">
+      <div class="col-span-12 sm:col-span-6">
+        <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest block mb-2">04 / INTELIGÊNCIA IMOBILIÁRIA</span>
+        <h2 class="largeText font-medium">Guia do Comprador & Investidor.</h2>
+      </div>
+      <div class="col-span-12 sm:col-span-6 sm:mt-[2vw]">
+        <p class="smallText text-neutral-600">
+          Artigos e estudos práticos sobre como financiar com as menores taxas, o vetor de valorização da RMM e como planejar sua mudança para Paiçandu.
+        </p>
+      </div>
+    </div>
+
+    <!-- Grid de 4 Artigos com Cards Editoriais -->
+    <div class="layout-grid gap-y-[4vw]">
+      <!-- Artigo 01 -->
+      <article class="col-span-12 sm:col-span-6 group cursor-pointer">
+        <div class="aspect-[16/10] bg-neutral-100 rounded-lg overflow-hidden mb-4 relative">
+          <img src="./assets/images/landing.jpg" alt="Subsídio Minha Casa Minha Vida" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 left-4 bg-white/90 backdrop-blur font-mono text-[0.7rem] px-3 py-1 rounded-full font-medium">MCMV • FINANCIAMENTO</span>
+        </div>
+        <h3 class="mediumText font-medium mb-2 group-hover:text-[#0072FF] transition-colors">Como funciona o subsídio Caixa para casas em Paiçandu</h3>
+        <p class="smallText text-neutral-600 mb-3">Entenda os critérios de renda, as faixas de desconto governamental e como utilizar seu FGTS na entrada.</p>
+        <span class="font-mono text-xs font-semibold underline underline-offset-4">Ler Guia Completo ↗</span>
+      </article>
+
+      <!-- Artigo 02 -->
+      <article class="col-span-12 sm:col-span-6 group cursor-pointer">
+        <div class="aspect-[16/10] bg-neutral-100 rounded-lg overflow-hidden mb-4 relative">
+          <img src="./assets/images/projectsaltered/upscaled/project2.jpg" alt="Valorização Imobiliária" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 left-4 bg-white/90 backdrop-blur font-mono text-[0.7rem] px-3 py-1 rounded-full font-medium">INVESTIMENTO • RMM</span>
+        </div>
+        <h3 class="mediumText font-medium mb-2 group-hover:text-[#0072FF] transition-colors">Por que o eixo Maringá–Paiçandu é o polo mais promissor</h3>
+        <p class="smallText text-neutral-600 mb-3">A duplicação das vias de acesso e o crescimento industrial atraem novos moradores e valorizam os lotes comerciais.</p>
+        <span class="font-mono text-xs font-semibold underline underline-offset-4">Ler Guia Completo ↗</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 08. DOSSIÊ DE SIMULAÇÃO DE CRÉDITO & CONTATO (SPATIAL BRIEF INTAKE)       -->
+  <!-- ========================================================================= -->
+  <section id="simulador" class="w-full bg-[#080A12] text-white py-[10vw] relative z-20 overflow-hidden">
+    <div class="layout-grid items-start">
+      <!-- Coluna da Esquerda: Chamada e Garantias -->
+      <div class="col-span-12 sm:col-span-5 mb-8 sm:mb-0">
+        <span class="font-mono text-xs text-[#64CEFB] uppercase tracking-widest block mb-3">05 / ATENDIMENTO CONFIDENCIAL</span>
+        <h2 class="largeText mb-6">Inicie sua simulação de financiamento hoje.</h2>
+        <p class="smallText text-neutral-300 mb-8">
+          Preencha a ficha confidencial ao lado. Nossa equipe de especialistas analisa sua renda e retorna pelo WhatsApp com as melhores opções de subsídio e parcelas sob medida.
+        </p>
+
+        <div class="space-y-4 font-mono text-xs text-neutral-400">
+          <div class="flex items-center gap-3">
+            <span class="text-[#64CEFB]">✓</span>
+            <span>Correspondente Caixa Integrado • Simulação Oficial</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-[#64CEFB]">✓</span>
+            <span>CRECI 9314-J • Segurança Jurídica e Sigilo</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-[#64CEFB]">✓</span>
+            <span>Retorno no WhatsApp em menos de 2 horas úteis</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna da Direita: Prancheta Spatial Brief com Clipe -->
+      <div class="col-span-12 sm:col-span-7">
+        <div class="brief-paper p-6 sm:p-10 rounded shadow-2xl relative">
+          <!-- Clipe de Metal no Topo -->
+          <div class="absolute -top-6 left-8 z-30 pointer-events-none" style="width: 38px;">
+            <img src="./assets/images/misc/paperclip.png" alt="" class="drop-shadow-md" style="width: 38px; height: auto; display: block;">
+          </div>
+
+          <!-- Header da Prancheta -->
+          <div class="flex justify-between items-start border-b border-neutral-300 pb-4 mb-6">
+            <div>
+              <span class="font-mono text-[0.7rem] text-neutral-500 uppercase tracking-wider block">01 / FICHA DE ATENDIMENTO</span>
+              <strong class="font-mono text-base text-neutral-900 uppercase">SIMULAÇÃO DE CRÉDITO & IMÓVEL</strong>
+            </div>
+            <div class="text-right">
+              <span class="font-mono text-[0.7rem] text-neutral-500 block">NEGOCIA BEM</span>
+              <span class="font-mono text-[0.65rem] text-neutral-400">CRECI 9314-J</span>
+            </div>
+          </div>
+
+          <!-- Formulário -->
+          <form id="simulacao-form" onsubmit="enviarSimulacaoWhatsApp(event)" class="space-y-5">
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-1">01) NOME COMPLETO</label>
+              <input type="text" id="form-nome" required placeholder="Digite seu nome completo" class="brief-input">
+            </div>
+
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-1">02) WHATSAPP COM DDD</label>
+              <input type="tel" id="form-whatsapp" required placeholder="(44) 99999-9999" class="brief-input">
+            </div>
+
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-2">03) SEU OBJETIVO PRINCIPAL</label>
+              <div class="grid grid-cols-2 gap-3 text-xs font-sans text-neutral-800">
+                <label class="flex items-center cursor-pointer">
+                  <input type="radio" name="objetivo" value="Comprar Casa MCMV" checked class="brief-checkbox">
+                  <span>Comprar Casa (MCMV)</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="radio" name="objetivo" value="Alugar Imóvel" class="brief-checkbox">
+                  <span>Alugar Imóvel</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="radio" name="objetivo" value="Investir em Terreno" class="brief-checkbox">
+                  <span>Investir em Terreno</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="radio" name="objetivo" value="Vender meu Imóvel" class="brief-checkbox">
+                  <span>Vender meu Imóvel</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-1">04) REGIÃO DE PREFERÊNCIA</label>
+              <input type="text" id="form-regiao" placeholder="Ex: Centro de Paiçandu, Bela Vista, Próximo a Maringá..." class="brief-input">
+            </div>
+
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-1">05) RENDA FAMILIAR APROXIMADA</label>
+              <input type="text" id="form-renda" placeholder="Ex: R$ 3.500 / R$ 5.000 / Acima de R$ 8.000" class="brief-input">
+            </div>
+
+            <div>
+              <label class="font-mono text-xs text-neutral-600 block mb-1">06) DETALHES ADICIONAIS</label>
+              <textarea id="form-mensagem" rows="2" placeholder="Conte-nos quantos quartos precisa ou valor que gostaria de investir..." class="brief-input resize-none"></textarea>
+            </div>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-neutral-200">
+              <button type="submit" class="w-full sm:w-auto btn-storey bg-[#080A12] text-white hover:bg-[#64CEFB] hover:text-black py-3 px-8 text-sm">
+                <span>Receber Simulação no WhatsApp</span>
+                <span class="text-xs">↗</span>
+              </button>
+              <span class="font-mono text-[0.65rem] text-neutral-400">🔒 DADOS 100% PROTEGIDOS (LGPD)</span>
+            </div>
+          </form>
+
+          <!-- Rodapé do Brief -->
+          <div class="mt-6 pt-3 border-t border-neutral-200 flex justify-between text-[0.65rem] font-mono text-neutral-400">
+            <span>NB / CTF • PAIÇANDU/PR</span>
+            <span>NEGOCIABEMIMOB.COM.BR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 09. FOOTER MONUMENTAL COM LOCALIZAÇÃO & CONTATO                           -->
+  <!-- ========================================================================= -->
+  <footer class="w-full bg-[#04060A] text-neutral-400 py-[6vw] border-t border-white/10 text-xs font-mono">
+    <div class="layout-grid mb-[4vw]">
+      <!-- Info e Endereço -->
+      <div class="col-span-12 sm:col-span-4 mb-6 sm:mb-0">
+        <span class="mediumText text-white block mb-4 font-sans tracking-tight">Negocia Bem</span>
+        <p class="text-neutral-400 font-sans leading-relaxed text-sm mb-3">
+          Consultoria imobiliária especializada na compra, locação e investimento de imóveis residenciais e comerciais em Paiçandu e Região Metropolitana de Maringá.
+        </p>
+        <p class="text-white font-semibold">Av. Curitiba, 140 - Centro, Paiçandu / PR</p>
+        <p class="text-[#64CEFB] mt-1 font-bold">CRECI 9314-J</p>
+      </div>
+
+      <!-- Links de Navegação -->
+      <div class="col-span-6 sm:col-span-2 space-y-2">
+        <strong class="text-white uppercase tracking-wider block mb-3 font-sans">Navegação</strong>
+        <a href="#hero" class="block hover:text-white transition-colors no-underline">Início</a>
+        <a href="#funis" class="block hover:text-white transition-colors no-underline">Comprar MCMV</a>
+        <a href="#funis" class="block hover:text-white transition-colors no-underline">Alugar</a>
+        <a href="#funis" class="block hover:text-white transition-colors no-underline">Loteamentos</a>
+      </div>
+
+      <!-- Canais de Atendimento -->
+      <div class="col-span-6 sm:col-span-3 space-y-2">
+        <strong class="text-white uppercase tracking-wider block mb-3 font-sans">Atendimento</strong>
+        <a href="https://wa.me/5544999999999" target="_blank" class="block hover:text-[#64CEFB] transition-colors no-underline">WhatsApp Vendas: (44) 99999-9999</a>
+        <a href="https://wa.me/5544999999999" target="_blank" class="block hover:text-[#64CEFB] transition-colors no-underline">WhatsApp Locação: (44) 99999-9999</a>
+        <span class="block text-neutral-500">Segunda a Sexta: 08:30 às 18:00</span>
+      </div>
+
+      <!-- Selo FlashTech -->
+      <div class="col-span-12 sm:col-span-3 mt-6 sm:mt-0 text-left sm:text-right">
+        <span class="text-neutral-500 block mb-2">ARQUITETURA DIGITAL & CONVERSÃO</span>
+        <span class="text-white font-bold block">FLASHTECH LABS</span>
+        <span class="text-neutral-500 block text-[0.65rem] mt-1">LCP Sub-Segundo • CAPI Nativo • 2026</span>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="layout-grid pt-4 border-t border-white/5 text-[0.7rem] text-neutral-500">
+      <div class="col-span-12 sm:col-span-6">
+        © 2026 Negocia Bem Consultoria Imobiliária LTDA. Todos os direitos reservados.
+      </div>
+      <div class="col-span-12 sm:col-span-6 text-left sm:text-right">
+        Paiçandu • Maringá • Paraná • Brasil
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script de Envio para o WhatsApp com UTM Tracking -->
+  <script>
+    function enviarSimulacaoWhatsApp(e) {
+      e.preventDefault();
+      const nome = document.getElementById('form-nome').value;
+      const tel = document.getElementById('form-whatsapp').value;
+      const objetivo = document.querySelector('input[name="objetivo"]:checked')?.value || 'Comprar MCMV';
+      const regiao = document.getElementById('form-regiao').value || 'Paiçandu / Região';
+      const renda = document.getElementById('form-renda').value || 'Não informada';
+      const mensagem = document.getElementById('form-mensagem').value || 'Sem observações';
+
+      const texto = `*NOVA SIMULAÇÃO DE IMÓVEL - NEGOCIA BEM*\n` +
+                    `-----------------------------------------\n` +
+                    `👤 *Nome:* ${nome}\n` +
+                    `📱 *WhatsApp:* ${tel}\n` +
+                    `🎯 *Objetivo:* ${objetivo}\n` +
+                    `📍 *Região de Preferência:* ${regiao}\n` +
+                    `💵 *Renda Aproximada:* ${renda}\n` +
+                    `📝 *Detalhes:* ${mensagem}\n` +
+                    `-----------------------------------------\n` +
+                    `Origem: Site Oficial Negocia Bem (CRECI 9314-J)`;
+
+      const url = `https://wa.me/5544999999999?text=${encodeURIComponent(texto)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+
+  <!-- Injeção do Motor Universal Scroll Director -->
+  <script id="universal-scroll-director">
+    // Motor Universal de Scroll, 3D e Revelação de Cortinas
+    (function() {
+      // 1. Reveal de Cortinas Pretas em Cards
+      const curtains = document.querySelectorAll('.reveal-curtain');
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.style.transform = 'translateY(-101%)';
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        curtains.forEach(c => obs.observe(c));
+      } else {
+        curtains.forEach(c => c.style.transform = 'translateY(-101%)');
+      }
+
+      // 2. Hero Slider Autoplay e Controle de Barras
+      const heroSlides = document.querySelectorAll('[data-hero-slide]');
+      const heroBars = document.querySelectorAll('.hero-progress-segment');
+      const captions = [
+        "A Negocia Bem desenha estratégias resolutivas que priorizam a clareza, a aprovação ágil de financiamento Caixa e a realização segura da sua casa própria em Paiçandu.",
+        "Casas selecionadas com acabamento diferenciado pelo programa Minha Casa Minha Vida, prontas para morar a 15 minutos de Maringá.",
+        "Loteamentos residenciais e terrenos comerciais com alto índice de valorização no vetor de expansão mais aquecido da RMM.",
+        "Espaços interiores amplos, iluminados e projetados para o conforto e bem-estar duradouro da sua família."
+      ];
+      let activeHero = 0;
+      let heroInterval = null;
+
+      function setHeroSlide(idx) {
+        activeHero = idx % heroSlides.length;
+        heroSlides.forEach((s, i) => {
+          s.style.opacity = (i === activeHero) ? '1' : '0';
+        });
+        heroBars.forEach((b, i) => {
+          const fill = b.querySelector('div > div');
+          if (fill) {
+            fill.style.transform = (i <= activeHero) ? 'scaleX(1)' : 'scaleX(0)';
+          }
+        });
+        const captionEl = document.getElementById('hero-slide-caption');
+        if (captionEl) captionEl.textContent = captions[activeHero];
+      }
+
+      heroBars.forEach((b, i) => {
+        b.addEventListener('click', () => {
+          clearInterval(heroInterval);
+          setHeroSlide(i);
+          heroInterval = setInterval(() => setHeroSlide(activeHero + 1), 6000);
+        });
+      });
+      heroInterval = setInterval(() => setHeroSlide(activeHero + 1), 6000);
+
+      // 3. Testimonials Slider
+      const testQuotes = [
+        {
+          quote: '"Conseguimos o subsídio de R$ 47 mil do Minha Casa Minha Vida e a aprovação na Caixa em menos de uma semana. O atendimento da Negocia Bem foi transparente do começo ao fim."',
+          author: "Marcos & Letícia Silva",
+          desc: "Compradores • Residencial Bela Vista (Paiçandu)",
+          img: "./assets/images/projects/project1.png"
+        },
+        {
+          quote: '"Excelente atendimento para alugar. Fechei o contrato na mesma semana, sem burocracia de fiador e o suporte no WhatsApp foi impecável."',
+          author: "Camila Duarte",
+          desc: "Locatária • Centro de Paiçandu",
+          img: "./assets/images/projects/project2.png"
+        },
+        {
+          quote: '"Comprei dois terrenos na planta para investimento com a assessoria da Negocia Bem e a valorização no eixo Maringá superou as expectativas."',
+          author: "Roberto Silveira",
+          desc: "Investidor Imobiliário • RMM",
+          img: "./assets/images/projects/project4.png"
+        },
+        {
+          quote: '"A simulação deles foi a única que bateu exatamente com as parcelas reais do contrato da Caixa. Honestidade e precisão raras no mercado."',
+          author: "Juliana & André Ramos",
+          desc: "Compradores • Jd. Pioneiro",
+          img: "./assets/images/projects/project3.png"
+        }
+      ];
+      let activeTest = 0;
+      const testBars = document.querySelectorAll('.testimonial-progress-bar');
+      const testQuoteEl = document.getElementById('testimonial-quote-text');
+      const testAuthorEl = document.getElementById('testimonial-author-name');
+      const testDescEl = document.getElementById('testimonial-author-desc');
+      const testImgEl = document.getElementById('testimonial-active-img');
+      const testAvatarEl = document.getElementById('testimonial-avatar-img');
+
+      function setTestimonial(idx) {
+        activeTest = idx % testQuotes.length;
+        const item = testQuotes[activeTest];
+        if (testQuoteEl) testQuoteEl.textContent = item.quote;
+        if (testAuthorEl) testAuthorEl.textContent = item.author;
+        if (testDescEl) testDescEl.textContent = item.desc;
+        if (testImgEl) testImgEl.src = item.img;
+        if (testAvatarEl) testAvatarEl.src = item.img;
+
+        testBars.forEach((b, i) => {
+          const fill = b.querySelector('div');
+          if (fill) fill.style.transform = (i <= activeTest) ? 'scaleX(1)' : 'scaleX(0)';
+        });
+      }
+
+      testBars.forEach((b, i) => {
+        b.addEventListener('click', () => setTestimonial(i));
+      });
+      setInterval(() => setTestimonial(activeTest + 1), 6500);
+
+      // 4. Rotação 3D do Spinner Cilíndrico com Scroll e Drag
+      const spinner = document.getElementById('intro-logo-spinner');
+      if (spinner) {
+        let currentRot = 0;
+        window.addEventListener('scroll', () => {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          currentRot = (scrollY * 0.12) % 360;
+          spinner.style.transform = `rotate3d(0.27, -1.005, 1.5, ${85 + (currentRot * 0.2)}deg) rotateZ(${currentRot}deg)`;
+        }, { passive: true });
+      }
+    })();
+  </script>
+</body>
+</html>

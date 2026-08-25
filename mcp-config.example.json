@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "studio-dna-engine": {
+      "command": "node",
+      "args": ["c:/Users/wd/Documents/playwright-scraper/src/mcp-server.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

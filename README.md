@@ -1,130 +1,92 @@
-# ⚡ Studio DNA - AI Web Design & Reverse Engineering Engine
+# 🌐 Studio DNA PRO — Awwwards Engine & Client Production Hub
 
-> **Motor de Engenharia Reversa de Web Design, Extração de Design Tokens, Shaders GLSL e Compilação de Prompts para IAs (Cursor, Claude, v0).**
+> **Motor de Engenharia Reversa, Extração de Design DNA, Pipeline ICM (Inverse Cloning Methodology) e Fábrica de Sites de Clientes One-Shot.**
 
-Este repositório é uma ferramenta interna de alta performance para desenvolvedores e *Vibe Coders* extraírem a "fórmula visual" de sites de padrão mundial (*Awwwards, Godly, Linear, Apple*) e transformá-la em código limpo, componentes Tailwind e instruções estruturadas para Inteligências Artificiais.
-
----
-
-## 🚀 Como Começar em 2 Minutos
-
-### 1. Instalação Automática (1 Clique)
-
-* **Windows:** Dê um duplo-clique no arquivo `setup.bat` (ele instala o Node, dependências e baixa o Chromium do Playwright automaticamente).
-* **Linux / macOS:** Execute no terminal:
-  ```bash
-  chmod +x setup.sh && ./setup.sh
-  ```
-* **Instalação Manual:**
-  ```bash
-  npm install
-  npx playwright install --with-deps chromium
-  ```
+Este repositório é uma infraestrutura completa para equipes criativas e desenvolvedores que desejam dissecar sites premiados (*Awwwards, Godly, FWA*) e transformá-los em **esqueletos matemáticos reutilizáveis**, gerando sites para clientes finais com **física de movimento autoral, 0 erros JS, LCP sub-segundo e zero AI Slop**.
 
 ---
 
-### 2. Formas de Usar a Ferramenta
+## ⚡ Guia Rápido de Instalação (Para Colegas de Equipe)
 
-#### 🌐 Modo A: Dashboard Visual Interativo (Recomendado)
-A melhor experiência visual com visualizador de Shaders, paleta de cores e botão de 1 clique para copiar prompts para o Cursor/Claude:
+### 1. Clonar o Repositório e Instalar Dependências
 ```bash
-npm run preview
+git clone https://github.com/SEU_USUARIO/studio-dna-engine.git
+cd studio-dna-engine
+npm install
+npm run setup
 ```
-Abra o navegador em: **`http://localhost:4000`**
 
----
-
-#### 💻 Modo B: Linha de Comando (Terminal / CLI)
-Para extrair um site direto pelo terminal:
+### 2. Iniciar o Dashboard Visual Local
 ```bash
-# Modo Interativo com perguntas:
 npm start
+```
+Acesse no seu navegador: **`http://127.0.0.1:4000/`**
 
-# Extração direta de uma URL:
-node bin/cli.js https://exemplo.com
+---
 
-# Extração com navegador visível na tela (Debug / Headed):
-node bin/cli.js https://exemplo.com --headed
+## 🏗️ O Pipeline ICM (Como a Metodologia Funciona)
 
-# Extrair apenas animações e micro-interações:
-node bin/cli.js https://exemplo.com --mode ui
+O fluxo de trabalho é estritamente desacoplado em 5 fases para garantir que IAs nunca degradem o design original:
+
+```
+copias/<referencia>/
+├── 01-raw/                 # Clone bruto capturado pelo Playwright (HTML, CSS, Shaders)
+├── 02-skeleton/            # Tokens numéricos (Hex, Gaps, Radii) e Esqueleto com Slots
+├── 03-semantic-bridge/     # Redação da nova marca com Length Rule (±15%) estrita
+├── 04-assembly/            # Montagem determinística via Injetor Mecânico (0 tokens no código)
+└── 05-production/          # Export limpo para Next.js 15, Vite ou Edge CDN
 ```
 
 ---
 
-#### 🐳 Modo C: Execução via Docker (Zero Instalação Local)
+## 🚀 Comandos Principais do Terminal
+
+### 1. Criar um Novo Site de Cliente a Partir de um Esqueleto (One-Shot)
 ```bash
-docker compose run --rm cloner https://exemplo.com
+npm run client -- --brand "Nome do Cliente" --ref "storeyarchitecture-co-uk"
+```
+* Cria a pasta isolada em `clientes/<nome-do-cliente>/`.
+* Copia os assets e esqueleto da referência escolhida.
+* Gera um `package.json` de produção limpo, pronto para deploy.
+
+### 2. Disparar o Quality Gate & Bounding Box Linter (Playwright)
+```bash
+npm run audit clientes/negocia-bem-imobiliaria
+```
+* Audita o site em browser headless.
+* Valida se a contagem de erros JS é **0**.
+* Valida se 100% das imagens têm `naturalWidth > 0`.
+* Valida coordenadas de bounding box e integridade visual.
+
+### 3. Fazer Scraping Profundo de uma Nova Referência
+```bash
+npm run scrape https://site-awwwards-exemplo.com
 ```
 
 ---
 
-## ✅ O Que Essa Ferramenta FAZ (Capacidades)
+## 🧬 Design Vault (`design-vault/`)
 
-1. **🔬 Detecção Inteligente de Frameworks:**
-   - Identifica se o site é React, Next.js, Vue, Nuxt, Webflow, Framer, WordPress, Astro ou Gatsby e ajusta o modo de extração automaticamente.
-
-2. **🎨 Extração de Design DNA & Tokens:**
-   - Mapeia variáveis CSS (`:root`), cores Hex/RGB/HSL, escala tipográfica computada, pesos de fonte e hierarquia de seções.
-   - Gera automaticamente o arquivo `tailwind.config.js` correspondente.
-
-3. **🔮 Intercepção de Shaders GLSL & WebGL 3D (Three.js):**
-   - Captura o código-fonte de todos os **Vertex Shaders** e **Fragment Shaders (.glsl)** que passam pela GPU.
-
-4. **⚡ Desconstrução de Animações GSAP & ScrollTrigger:**
-   - Extrai as curvas de aceleração (`ease`), durações (`duration`), atrasos (`stagger`) e gera snippets JavaScript limpos e reutilizáveis.
-
-5. **🎯 Mapeamento de Micro-Interações & Física:**
-   - Detecta e cria receitas para botões magnéticos (*Magnetic Buttons*), efeitos de holofote (*Spotlight Cards*), rotação 3D (*Tilt Cards*) e *Lenis Smooth Scroll*.
-
-6. **🤖 Compilação do `MASTER_SPEC.md` para IAs:**
-   - Gera um manual completo e estruturado pronto para você colar no **Cursor**, **Claude** ou **v0**, permitindo que a IA recrie o site idêntico com máxima fidelidade estética.
+Banco de inteligência permanente com fórmulas matemáticas e física de movimento:
+* `01-motion-physics/`: Matriz de curvas cúbicas cinematográficas (`cubic-bezier(0.16, 1, 0.3, 1)`).
+* `02-3d-experiments/`: Motores procedurais 3D (como o anel cilíndrico do Storey).
+* `04-typography/`: Pares tipográficos suíços e neo-brutalistas com tracking negativo e fórmulas de `clamp()`.
 
 ---
 
-## ❌ O Que Essa Ferramenta NÃO FAZ (Limitações Reais)
+## 🤝 Como Contribuir no GitHub
 
-Para evitar expectativas incorretas sobre a engenharia reversa de navegadores:
-
-1. **🚫 Não extrai Lógica de Backend, Banco de Dados ou APIs Privadas:**
-   - A ferramenta roda no navegador (frontend). Ela não tem acesso ao código Node.js/Python do servidor, regras de banco de dados (Postgres/Supabase) ou chaves secretas do Stripe.
-   - *O que fazer:* A IA usa o `MASTER_SPEC.md` para **escrever um backend novo** correspondente.
-
-2. **🚫 Não descompila nomes de variáveis originais de React minificado:**
-   - O código compilado de produção de SPAs chega ofuscado (`function a(b,c){...}`). A ferramenta não tenta adivinhar os nomes de variáveis locais originais do desenvolvedor.
-   - *O que fazer:* Ela extrai o comportamento visual e gera snippets **novos, limpos e legíveis**.
-
-3. **🚫 Não quebra senhas ou telas de login sem autenticação:**
-   - Se o design estiver atrás de um login restrito (ex: Dashboard interna do Notion), você precisa rodar no modo `--headed` para fazer o login manualmente ou passar os cookies de sessão no `cloner.config.json`.
-
-4. **🚫 Não descompila binários WebAssembly (WASM):**
-   - Se a física do site estiver compilada em binário C++/Rust (.wasm), ela captura apenas os shaders e texturas enviadas para o Canvas, não o código-fonte C++.
-
----
-
-## 📁 Estrutura das Cópias Geradas (`./copias/`)
-
-Ao rodar a extração em um site (ex: `https://site-referencia.com`), a pasta de saída fica organizada assim:
-
-```text
-copias/site-referencia/
-├── SITE_TYPE.json                  # Diagnóstico de tecnologia e framework
-├── MASTER_SPEC.md                  # Prompt Mestre estruturado para IAs
-├── site/                           # Clone HTML, CSS, fontes e mídias originais
-│   ├── index.html
-│   └── assets/
-├── design-system/                  # Design Tokens & Styleguide Visual
-│   ├── design_dna.json
-│   └── design-system.html
-└── ui-ux/                          # Animações e Shaders extraídos
-    ├── ui_ux_features.json
-    ├── shaders/                    # Código GLSL dos Vertex e Fragment Shaders
-    └── snippets/                   # Código limpo de GSAP, ScrollTrigger e Micro-interações
-```
-
----
-
-## 📄 Licença & Uso
-
-**Uso Interno & Proprietário (Privado).**  
-Proibida a redistribuição pública do código-fonte sem autorização.
+1. Crie uma branch para o novo site de referência ou cliente:
+   ```bash
+   git checkout -b feature/novo-esqueleto-ou-cliente
+   ```
+2. Após capturar ou refinar, rode o Quality Gate:
+   ```bash
+   npm run audit <nome-da-pasta>
+   ```
+3. Faça o commit e envie o Pull Request:
+   ```bash
+   git add .
+   git commit -m "feat: adiciona esqueleto e design tokens para [Marca]"
+   git push origin feature/novo-esqueleto-ou-cliente
+   ```

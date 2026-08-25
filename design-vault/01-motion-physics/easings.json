@@ -1,0 +1,30 @@
+{
+  "name": "Awwwards Easing Matrix",
+  "version": "1.0.0",
+  "easings": {
+    "snappy": {
+      "css": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "gsap": "power4.out",
+      "recommendedDuration": 0.8,
+      "useCases": ["hover", "modal_open", "card_reveal", "badge_float"]
+    },
+    "smooth": {
+      "css": "cubic-bezier(0.25, 1, 0.5, 1)",
+      "gsap": "power3.out",
+      "recommendedDuration": 1.2,
+      "useCases": ["hero_entry", "curtain_reveal", "slide_transition"]
+    },
+    "elastic": {
+      "css": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "gsap": "elastic.out(1, 0.5)",
+      "recommendedDuration": 0.6,
+      "useCases": ["button_click", "magnetic_rebound", "icon_bounce"]
+    },
+    "dramatic": {
+      "css": "cubic-bezier(0.7, 0, 0.3, 1)",
+      "gsap": "power4.inOut",
+      "recommendedDuration": 1.5,
+      "useCases": ["page_transition", "wipe_overlay"]
+    }
+  }
+}

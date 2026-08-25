@@ -3,11 +3,31 @@ const fs = require('fs');
 const path = require('path');
 const { loadConfig } = require('../config');
 const { autoScroll } = require('../utils/auto-scroll');
-const { WEBGL_INTERCEPTOR_SCRIPT } = require('../pro/shaders-interceptor');
-const { mapEventListenersWithCDP } = require('../pro/cdp-listener-mapper');
+const { waitForHydrationSettled } = require('../utils/hydration-barrier');
+
+// Módulos PRO carregados de forma segura
+let AdvancedAssetInterceptor = null;
+let WEBGL_INTERCEPTOR_SCRIPT = '/* Community Edition: Shaders Interceptor is a Pro feature */';
+
+try {
+  const proAdv = require('../pro/advanced-asset-interceptor');
+  AdvancedAssetInterceptor = proAdv.AdvancedAssetInterceptor;
+  WEBGL_INTERCEPTOR_SCRIPT = proAdv.ADVANCED_PRELOAD_SNIFFER_SCRIPT || WEBGL_INTERCEPTOR_SCRIPT;
+} catch (e) {
+  try {
+    const proShaders = require('../pro/shaders-interceptor');
+    WEBGL_INTERCEPTOR_SCRIPT = proShaders.WEBGL_INTERCEPTOR_SCRIPT || WEBGL_INTERCEPTOR_SCRIPT;
+  } catch (err) {}
+}
+
+let mapEventListenersWithCDP = async () => null;
+try {
+  const proCdp = require('../pro/cdp-listener-mapper');
+  mapEventListenersWithCDP = proCdp.mapEventListenersWithCDP || mapEventListenersWithCDP;
+} catch (e) {}
 
 /**
- * Extrai particularidades avançadas de UI/UX, animações GSAP, Shaders WebGL e interações
+ * Extrai particularidades de UI/UX, animações GSAP, Shaders, Canvas Sequences e micro-interações
  */
 async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
   const config = loadConfig(customConfig);
@@ -21,7 +41,14 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
 
   const launchOptions = {
     headless: config.headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-web-security',
+      '--use-gl=angle',
+      '--enable-webgl',
+      '--ignore-gpu-blocklist'
+    ]
   };
   if (config.proxy) launchOptions.proxy = config.proxy;
 
@@ -31,14 +58,29 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
     userAgent: config.userAgent
   });
 
-  // Injeta script interceptador de WebGL/Shaders antes da carga da página
-  await context.addInitScript(WEBGL_INTERCEPTOR_SCRIPT);
-
   const page = await context.newPage();
 
+  let assetInterceptor = null;
+  if (AdvancedAssetInterceptor) {
+    assetInterceptor = new AdvancedAssetInterceptor({
+      outputDir,
+      captureShaders: true,
+      captureBinaries: true
+    });
+    await assetInterceptor.attachPreloadSniffers(page);
+    assetInterceptor.attachNetworkListener(page);
+  } else {
+    await context.addInitScript(WEBGL_INTERCEPTOR_SCRIPT);
+  }
+
   try {
-    await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: config.timeout }).catch(() => {});
-    await page.waitForTimeout(1500);
+    await page.goto(targetUrl, { waitUntil: 'commit', timeout: config.timeout }).catch(() => {});
+
+    // Barreira Determinística de Hidratação
+    await waitForHydrationSettled(page, {
+      domSilenceThresholdMs: 400,
+      timeoutMs: config.timeout || 30000
+    });
 
     // Simula movimentos de mouse
     for (let x = 100; x <= 800; x += 200) {
@@ -48,7 +90,16 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
 
     // Auto-scroll progressivo
     await autoScroll(page);
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(600);
+
+    // Amostragem de sequência de frames em Canvas (se houver canvas presente)
+    if (assetInterceptor) {
+      const hasCanvas = await page.$('canvas');
+      if (hasCanvas) {
+        await assetInterceptor.captureCanvasScrollSequence(page, 'canvas', 30);
+      }
+      await assetInterceptor.finalize(page);
+    }
 
     const uiFeatures = await page.evaluate(() => {
       const results = {
@@ -112,7 +163,10 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
       if (window.THREE || document.querySelector('[data-three]')) {
         results.webglCanvas.hasThreeJs = true;
       }
-      if (window.__EXTRACTED_SHADERS__ && window.__EXTRACTED_SHADERS__.length > 0) {
+      if (window.__ICM_REGISTRY__ && window.__ICM_REGISTRY__.shaders && window.__ICM_REGISTRY__.shaders.length > 0) {
+        results.webglCanvas.shadersCount = window.__ICM_REGISTRY__.shaders.length;
+        results.webglCanvas.shaders = window.__ICM_REGISTRY__.shaders.slice(0, 10);
+      } else if (window.__EXTRACTED_SHADERS__ && window.__EXTRACTED_SHADERS__.length > 0) {
         results.webglCanvas.shadersCount = window.__EXTRACTED_SHADERS__.length;
         results.webglCanvas.shaders = window.__EXTRACTED_SHADERS__.slice(0, 10);
       }
@@ -158,11 +212,14 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
     // Salva JSON com particularidades
     fs.writeFileSync(path.join(outputDir, 'ui_ux_features.json'), JSON.stringify(uiFeatures, null, 2));
 
-    // Salva shaders extraídos individualmente
+    // Salva shaders extraídos individualmente (fallback legado)
     if (uiFeatures.webglCanvas.shaders && uiFeatures.webglCanvas.shaders.length > 0) {
       uiFeatures.webglCanvas.shaders.forEach((sh, idx) => {
         const ext = sh.type === 'vertex' ? 'vert' : 'frag';
-        fs.writeFileSync(path.join(shadersDir, `shader_${idx + 1}.${ext}`), sh.source);
+        const shaderPath = path.join(shadersDir, `shader_${idx + 1}.${ext}`);
+        if (!fs.existsSync(shaderPath)) {
+          fs.writeFileSync(shaderPath, sh.source);
+        }
       });
     }
 
@@ -177,7 +234,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export function initScrollAnimations() {
-  // Fade in up com aceleração premium
   gsap.utils.toArray('[data-animate="fade-up"]').forEach((el) => {
     gsap.from(el, {
       y: 50,
@@ -220,7 +276,7 @@ export function initMagneticEffect(selector = '.magnetic-btn') {
 `;
     fs.writeFileSync(path.join(snippetsDir, 'micro-interactions.js'), microInteractionsSnippet);
 
-    console.log(`✅ [UI/UX Extractor PRO] Particularidades, Shaders e Snippets salvos em: ${outputDir}`);
+    console.log(`✅ [UI/UX Extractor PRO] Particularidades, Shaders, Modelos e Snippets salvos em: ${outputDir}`);
     return uiFeatures;
 
   } finally {

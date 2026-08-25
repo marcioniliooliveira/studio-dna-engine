@@ -9,6 +9,8 @@ const { extractDesignDna } = require('./src/core/dna-extractor');
 const { extractUiUx } = require('./src/core/ui-ux-extractor');
 const { generateStyleguide } = require('./src/generators/styleguide');
 const { generateMasterSpec } = require('./src/generators/spec-generator');
+const { generateAssetManifest } = require('./src/generators/asset-manifest-generator');
+const { generatePromptCatalog } = require('./src/generators/prompt-builder');
 const { startPreviewServer } = require('./src/server/preview-server');
 
 /**
@@ -81,6 +83,20 @@ async function runPipeline(options = {}) {
       fs.cpSync(assetsFontsDir, rootFontsDir, { recursive: true });
       console.log('✅ Fontes copiadas para /fonts/ (compatível com @font-face de path absoluto)');
     }
+
+    // 1.1 Saneamento e Normalização Global de Assets (Universal Asset Normalizer)
+    if (fs.existsSync(siteFolder)) {
+      try {
+        const { UniversalAssetNormalizer } = require('./src/pro/universal-asset-normalizer');
+        const normalizer = new UniversalAssetNormalizer({
+          siteDir: siteFolder,
+          extractionDir: path.join(masterFolder, '01-extraction')
+        });
+        normalizer.normalizeAll();
+      } catch (err) {
+        console.warn('⚠️ Alerta na normalização global de assets:', err.message);
+      }
+    }
   }
 
   // 2. Extração de Design DNA & Compilação de Styleguide
@@ -124,6 +140,24 @@ async function runPipeline(options = {}) {
       uiUxData,
       outputPath: path.join(masterFolder, 'MASTER_SPEC.md')
     });
+
+    // 4.1. Geração do Manifesto de Substituição Limpa de Assets & Catálogo de Prompts
+    try {
+      if (fs.existsSync(siteFolder)) {
+        const manifest = generateAssetManifest({
+          siteDir: siteFolder,
+          siteUrl: url,
+          outputPath: path.join(masterFolder, 'assets-manifest.json')
+        });
+
+        generatePromptCatalog({
+          manifestOrPath: manifest,
+          outputPath: path.join(masterFolder, 'AI_PROMPTS.md')
+        });
+      }
+    } catch (err) {
+      console.warn('⚠️ Alerta na geração dos Assets e Prompts:', err.message);
+    }
   }
 
   console.log(`\n🎉 ========================================================`);
@@ -134,6 +168,8 @@ async function runPipeline(options = {}) {
   console.log(`   - Design Sys:  copias/${siteName}/design-system/`);
   console.log(`   - UI/UX:       copias/${siteName}/ui-ux/`);
   console.log(`   - Master Spec: copias/${siteName}/MASTER_SPEC.md`);
+  console.log(`   - Assets Map:  copias/${siteName}/assets-manifest.json`);
+  console.log(`   - AI Prompts:  copias/${siteName}/AI_PROMPTS.md`);
   console.log(`========================================================\n`);
 
   return {
@@ -144,6 +180,12 @@ async function runPipeline(options = {}) {
   };
 }
 
+const { AdvancedAssetInterceptor } = require('./src/pro/advanced-asset-interceptor');
+const { UniversalAssetNormalizer } = require('./src/pro/universal-asset-normalizer');
+const { UniversalScrollDirector } = require('./src/pro/universal-scroll-director');
+const { waitForHydrationSettled } = require('./src/utils/hydration-barrier');
+const { generateTranslationPrompt, validateAiTranslationResponse } = require('./src/generators/prompt-template-generator');
+
 module.exports = {
   detectSiteType,
   cloneSite,
@@ -152,6 +194,13 @@ module.exports = {
   extractDesignDna,
   generateStyleguide,
   generateMasterSpec,
+  generateAssetManifest,
   startPreviewServer,
-  loadConfig
+  loadConfig,
+  AdvancedAssetInterceptor,
+  UniversalAssetNormalizer,
+  UniversalScrollDirector,
+  waitForHydrationSettled,
+  generateTranslationPrompt,
+  validateAiTranslationResponse
 };
