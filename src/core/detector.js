@@ -75,10 +75,10 @@ async function detectSiteType(url, customConfig = {}) {
 
     if (detection.isCSROnly) {
       siteType = 'SPA_CSR';
-      cloneMode = 'DNA_ONLY';
+      cloneMode = 'STRUCTURED_CLONE';
       framework = detection.isReact ? 'React (CSR Puro)' : detection.isVue ? 'Vue (CSR Puro)' : 'SPA (CSR Puro)';
-      cloneCapacity = 20;
-      warning = 'AVISO: SPA renderizado 100% no cliente. O HTML capturado estará vazio. Modo DNA Extractor ativado.';
+      cloneCapacity = 70;
+      warning = 'AVISO: SPA renderizado 100% no cliente. Capturando DOM hidratado via Playwright Headless.';
     } else if (detection.isNext) {
       siteType = 'SPA_SSR';
       cloneMode = 'STRUCTURED_CLONE';

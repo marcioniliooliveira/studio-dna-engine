@@ -66,15 +66,11 @@ async function runPipeline(options = {}) {
 
   // 1. Clonagem Bruta de HTML & Assets (se 'all' ou 'clone')
   if (mode === 'all' || mode === 'clone') {
-    if (siteInfo.cloneMode === 'DNA_ONLY') {
-      console.log('📌 [ETAPA 1/4] Modo DNA Extractor: pulando clone de HTML (SPA CSR puro)...');
-    } else {
-      console.log(`📌 [ETAPA 1/4] Clonando site (${siteInfo.framework}) com assets e mídias...`);
-      try {
-        await cloneSite(url, config);
-      } catch (err) {
-        console.warn('⚠️ Alerta na clonagem bruta (prosseguindo para extração de design):', err.message);
-      }
+    console.log(`📌 [ETAPA 1/4] Clonando site (${siteInfo.framework}) com assets e mídias...`);
+    try {
+      await cloneSite(url, config);
+    } catch (err) {
+      console.warn('⚠️ Alerta na clonagem bruta (prosseguindo para extração de design):', err.message);
     }
 
     const assetsFontsDir = path.join(masterFolder, 'site', 'assets', 'fonts');

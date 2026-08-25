@@ -189,7 +189,7 @@ class UniversalAssetNormalizer {
         visibility: hidden !important;
       }
       /* Desbloqueia hero, navbar e containers principais */
-      .opacity-0, [class*="opacity-0"] {
+      body > div, #__nuxt, #__next, main, section, header, nav, .layout-grid {
         opacity: 1 !important;
         visibility: visible !important;
       }
@@ -201,6 +201,19 @@ class UniversalAssetNormalizer {
         transform: translateY(0px) !important;
         opacity: 1 !important;
         visibility: visible !important;
+      }
+      /* Navbar, CTAs e controles */
+      .fixed, header, button, [id*="cta"], .project-slider-progress-line {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      /* Previne sobreposição fantasma de múltiplos slides em carrosséis absolutos */
+      .will-change-transform .relative > div:not(:first-child) {
+        display: none !important;
+      }
+      .will-change-transform .relative > div:first-child {
+        display: block !important;
+        opacity: 1 !important;
       }
       /* Garante que imagens e SVGs tenham renderização nítida */
       img {

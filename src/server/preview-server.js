@@ -42,6 +42,19 @@ function startPreviewServer(options = {}) {
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
 
   const server = http.createServer(async (req, res) => {
+    // Tratamento de Preflight CORS (OPTIONS)
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': '*',
+        'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Access-Control-Max-Age': '86400'
+      });
+      res.end();
+      return;
+    }
+
     const parsedUrl = url.parse(req.url, true);
     let pathname = decodeURIComponent(parsedUrl.pathname);
 
@@ -609,30 +622,82 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
     }
 
     if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      const referer = req.headers.referer || '';
+      let refererSiteSlug = '';
+      if (referer) {
+        try {
+          const refUrl = new URL(referer);
+          const refParts = refUrl.pathname.split('/').filter(Boolean);
+          if (refParts[0] === 'clientes' && refParts[1]) {
+            refererSiteSlug = path.join('clientes', refParts[1]);
+          } else if (refParts[0]) {
+            refererSiteSlug = refParts[0];
+          }
+        } catch (e) {}
+      }
+
+      const cleanPath = pathname.replace(/^\/+/, '');
+      const candidates = [];
+
+      if (refererSiteSlug) {
+        candidates.push(
+          path.join(rootDir, refererSiteSlug, 'site', cleanPath),
+          path.join(rootDir, refererSiteSlug, 'site', 'assets', cleanPath),
+          path.join(copiasDir, refererSiteSlug, 'site', cleanPath),
+          path.join(copiasDir, refererSiteSlug, 'site', 'assets', cleanPath)
+        );
+      }
+
       const parts = pathname.split('/').filter(Boolean);
       if (parts.length > 0) {
         const siteSlug = parts[0];
         const siteSubPath = parts.slice(1).join('/');
         
-        const candidate1 = path.join(copiasDir, siteSlug, 'site', siteSubPath);
-        const candidate2 = path.join(copiasDir, siteSlug, 'site', 'assets', siteSubPath);
-        const candidate3 = path.join(clientesDir, siteSlug, 'site', siteSubPath);
-        const candidate4 = path.join(clientesDir, siteSlug, 'site', 'assets', siteSubPath);
-        
-        if (fs.existsSync(candidate1) && fs.statSync(candidate1).isFile()) filePath = candidate1;
-        else if (fs.existsSync(candidate2) && fs.statSync(candidate2).isFile()) filePath = candidate2;
-        else if (fs.existsSync(candidate3) && fs.statSync(candidate3).isFile()) filePath = candidate3;
-        else if (fs.existsSync(candidate4) && fs.statSync(candidate4).isFile()) filePath = candidate4;
+        candidates.push(
+          path.join(copiasDir, siteSlug, 'site', siteSubPath),
+          path.join(copiasDir, siteSlug, 'site', 'assets', siteSubPath),
+          path.join(clientesDir, siteSlug, 'site', siteSubPath),
+          path.join(clientesDir, siteSlug, 'site', 'assets', siteSubPath)
+        );
+      }
+
+      const allSites = [
+        ...(fs.existsSync(copiasDir) ? fs.readdirSync(copiasDir).map(d => path.join(copiasDir, d)) : []),
+        ...(fs.existsSync(clientesDir) ? fs.readdirSync(clientesDir).map(d => path.join(clientesDir, d)) : [])
+      ];
+
+      for (const siteDir of allSites) {
+        candidates.push(
+          path.join(siteDir, 'site', cleanPath),
+          path.join(siteDir, 'site', 'assets', cleanPath),
+          path.join(siteDir, 'site', 'assets', cleanPath.replace(/^assets\//, ''))
+        );
+      }
+
+      for (const cand of candidates) {
+        if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+          filePath = cand;
+          break;
+        }
       }
     }
 
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
       const ext = path.extname(filePath).toLowerCase();
       const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-      res.writeHead(200, { 'Content-Type': contentType });
+      res.writeHead(200, { 
+        'Content-Type': contentType,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': '*',
+        'Cross-Origin-Resource-Policy': 'cross-origin'
+      });
       fs.createReadStream(filePath).pipe(res);
     } else {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.writeHead(404, { 
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Access-Control-Allow-Origin': '*'
+      });
       res.end('404 Not Found');
     }
   });

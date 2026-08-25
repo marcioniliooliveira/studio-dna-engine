@@ -1,0 +1,133 @@
+{
+  "auditTimestamp": "2026-08-25T19:44:09.187Z",
+  "siteSlug": "clientes/flashtech-caso-02-ecommerce",
+  "auditPassed": true,
+  "jsErrors": [],
+  "layoutBoxes": [
+    {
+      "index": 0,
+      "tag": "header",
+      "id": "react-nav",
+      "classes": "fixed top-10 left-0 right-0 z-40 transition-all duration-500",
+      "top": 40,
+      "left": 0,
+      "width": 1440,
+      "height": 90
+    },
+    {
+      "index": 1,
+      "tag": "section",
+      "id": null,
+      "classes": "relative pt-36 lg:pt-44 pb-12 lg:pb-20",
+      "top": 48,
+      "left": 0,
+      "width": 1440,
+      "height": 1252
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "id": null,
+      "classes": "py-8 border-y border-stone-200 overflow-hidden bg-[#efe9dc]",
+      "top": 1300,
+      "left": 0,
+      "width": 1440,
+      "height": 106
+    },
+    {
+      "index": 3,
+      "tag": "section",
+      "id": "gear",
+      "classes": "py-20 lg:py-28 relative",
+      "top": 1406,
+      "left": 0,
+      "width": 1440,
+      "height": 1692
+    },
+    {
+      "index": 4,
+      "tag": "section",
+      "id": "specs",
+      "classes": "py-20 bg-[#efe9dc] border-y border-stone-300/80 relative",
+      "top": 3097,
+      "left": 0,
+      "width": 1440,
+      "height": 663
+    },
+    {
+      "index": 5,
+      "tag": "section",
+      "id": "fit",
+      "classes": "py-24 bg-[#f5f1e8] relative border-b border-stone-200",
+      "top": 3760,
+      "left": 0,
+      "width": 1440,
+      "height": 950
+    },
+    {
+      "index": 6,
+      "tag": "section",
+      "id": "heritage",
+      "classes": "py-24 bg-[#efe9dc] border-b border-stone-300/80 relative",
+      "top": 4710,
+      "left": 0,
+      "width": 1440,
+      "height": 1136
+    },
+    {
+      "index": 7,
+      "tag": "section",
+      "id": null,
+      "classes": "relative bg-stone-950 text-white",
+      "top": 5846,
+      "left": 0,
+      "width": 1440,
+      "height": 2700
+    },
+    {
+      "index": 8,
+      "tag": "section",
+      "id": "faq",
+      "classes": "py-24 bg-[#efe9dc] border-t border-stone-300/80 relative",
+      "top": 8546,
+      "left": 0,
+      "width": 1440,
+      "height": 999
+    },
+    {
+      "index": 9,
+      "tag": "section",
+      "id": "reviews",
+      "classes": "py-20 lg:py-28 bg-[#f5f1e8] relative",
+      "top": 9545,
+      "left": 0,
+      "width": 1440,
+      "height": 606
+    },
+    {
+      "index": 10,
+      "tag": "section",
+      "id": "experience",
+      "classes": "relative overflow-hidden bg-gradient-to-b from-[#f5f1e8] via-sky-100 to-sky-200 pt-24 pb-0",
+      "top": 10151,
+      "left": 0,
+      "width": 1440,
+      "height": 1092
+    },
+    {
+      "index": 11,
+      "tag": "footer",
+      "id": null,
+      "classes": "bg-stone-950 text-white",
+      "top": 11242,
+      "left": 0,
+      "width": 1440,
+      "height": 387
+    }
+  ],
+  "imagesSummary": {
+    "total": 16,
+    "valid": 16,
+    "broken": []
+  }
+}
