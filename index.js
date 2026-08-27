@@ -86,9 +86,10 @@ async function runPipeline(options = {}) {
         const { UniversalAssetNormalizer } = require('./src/pro/universal-asset-normalizer');
         const normalizer = new UniversalAssetNormalizer({
           siteDir: siteFolder,
+          siteUrl: url,
           extractionDir: path.join(masterFolder, '01-extraction')
         });
-        normalizer.normalizeAll();
+        await normalizer.normalizeAll();
       } catch (err) {
         console.warn('⚠️ Alerta na normalização global de assets:', err.message);
       }

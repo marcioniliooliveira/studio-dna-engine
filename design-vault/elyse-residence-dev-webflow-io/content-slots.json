@@ -1,0 +1,90 @@
+{
+  "brand": {
+    "name": "Elyse",
+    "tagline": "holistic luxury in perfect harmony",
+    "logoAlt": "ELYSE logo"
+  },
+  "nav": {
+    "link1": "Lumière Duplex",
+    "link2": "Crown Penthouse",
+    "link3": "Aurelia Suites",
+    "cta": "BOOK A VISIT"
+  },
+  "hero": {
+    "title": "Elyse",
+    "titleMin": "holistic luxury in perfect harmony",
+    "subtitle": "Welcome to Elyse Residence, where timeless design, wellness-focused living and cultural enrichment converge in order to create an unparalleled sanctuary of elegance and serenity.",
+    "scrollText": "SCROLL"
+  },
+  "about": {
+    "caption": "(About)",
+    "heading": "timeless design wellness-focused living",
+    "p1": "Every element of Elyse Residence reflects a commitment to excellence. From the timeless elegance of its interiors to its thoughtfully curated amenities, the property embodies a holistic approach to luxury living.",
+    "p2": "Whether you’re seeking a serene retreat,cultural hub, or a space that fosters personal growth, Elyse Residence offers it all."
+  },
+  "stats": {
+    "stat1Val": "60",
+    "stat1Unit": "%",
+    "stat1Label": "green spaces for tranquility & wellness.",
+    "stat2Val": "30",
+    "stat2Label": "exclusive residences, each tailored for comfort & elegance.",
+    "stat3Val": "150",
+    "stat3Unit": "sq. ft.",
+    "stat3Label": "green spaces for tranquility & wellness.",
+    "stat4Val": "24/7",
+    "stat4Label": "concierge services, meeting every need effortlessly."
+  },
+  "livings": {
+    "caption": "(our livings)",
+    "living1Title": "Lumière Duplex Residences",
+    "living1Desc": "Two-story luxury apartments that features sunlit living spaces, private terraces, and a selection of exclusive amenities.",
+    "living2Title": "Crown Jewel Penthouse",
+    "living2Desc": "With panoramic views, curated interiors, and spaces shaped for comfort and sophistication, the penthouse becomes more than a home.",
+    "living3Title": "Aurelia Garden Suites",
+    "living3Desc": "Ground-level sanctuaries offering serene private gardens and a seamless blend of indoor comfort and outdoor tranquility."
+  },
+  "beliefs": {
+    "caption": "(Our beliefs)",
+    "heading": "A Vision of Inspired Living",
+    "introP1": "To inspire and nurture an enriched lifestyle that harmonizes beauty, wellness, and cultural connection, creating a sanctuary that feels like home.",
+    "card1Title": "Holistic well-being",
+    "card1Desc": "Spaces designed to nurture the mind, body, and soul.",
+    "card2Title": "Discretion & exclusivity",
+    "card2Desc": "Privacy and personal growth at the forefront.",
+    "card3Title": "Cultural enrichment",
+    "card3Desc": "Spaces designed to nurture the mind, body, and soul.",
+    "card4Title": "Community & connection",
+    "card4Desc": "Privacy and personal growth at the forefront.",
+    "card5Title": "Sustainable elegance",
+    "card5Desc": "Luxury that respects our environment.",
+    "outroP1": "At Elyse Residence, we believe that a home is more than a physical space — it’s a reflection of your aspirations, well-being, and values.",
+    "outroP2": "Our mission is to immerse you in a lifestyle that balances refined aesthetics, architectural excellence, and a profound sense of community."
+  },
+  "amenities": {
+    "slide1Title": "Wellness-centered amenities",
+    "slide1Desc": "From private fitness studios to guided meditation sessions, our amenities are designed to enhance your well-being and foster a sense of harmony.",
+    "slide2Title": "Art INSPIRED SPACES",
+    "slide2Desc": "From artful communal lounges to thoughtfully curated design details, every environment celebrates a rich sense of place.",
+    "slide3Title": "NATURE-INFUSED RETREATS",
+    "slide3Desc": "Garden pathways, quiet courtyards, and softly landscaped outdoor rooms provide moments of calm and the restorative beauty of nature."
+  },
+  "faq": {
+    "caption": "(FAQ)",
+    "heading": "Your Questions, Answered",
+    "q1": "What types of homes are available?",
+    "a1": "Elyse offers a selection of refined living spaces, including garden suites, duplex residences, and a signature penthouse. Each home is thoughtfully designed to balance elegance, comfort, and a deep connection to the surrounding landscape.",
+    "q2": "What makes Elyse Residence unique?",
+    "a2": "Elyse combines timeless architectural design, a wellness-focused lifestyle, and a serene coastal-mountain setting. Every space is thoughtfully crafted to inspire calm, elevate daily living, and create a sense of refined harmony.",
+    "q3": "What wellness amenities are available to residents?",
+    "a3": "Residents enjoy access to a private fitness studio, a spa and wellness center, a meditation lounge, rooftop gardens, walking paths, and landscaped courtyards — all created to support balance, vitality, and thoughtful living.",
+    "q4": "How private and secure is the community?",
+    "a4": "Elyse Residence is designed as an intimate, low-density environment with a strong focus on privacy. The community offers controlled access, discreet internal pathways, and homes positioned to ensure tranquility and personal space."
+  },
+  "cta": {
+    "heading": "Discover the Essence of Calm Living",
+    "subtitle": "Experience the harmony of timeless design and wellness-centered living. Schedule a private viewing or request a brochure to begin your journey toward refined serenity.",
+    "formHeading": "Envision Your Life at Elyse",
+    "formSubtitle": "Our manager will contact you as soon as possible.",
+    "formDisclaimer": "By sending your request, you're agreeing to our privacy policy. We promise to keep your personal information safe and secure"
+  }
+}

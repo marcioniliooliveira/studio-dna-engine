@@ -476,26 +476,9 @@ async function cloneSite(rawUrl, customOptions = {}) {
       return `  <script${typeAttr}>${s.content}<\/script>`;
     }).join('\n');
 
-    const globalMocksHtml = `  <script>
-    window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
-    window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
-    window.dataLayer = window.dataLayer || [];
-    window.umami = window.umami || { track: () => {} };
-  <\/script>`;
-
-    const preloaderFailsafeHtml = `  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      setTimeout(function() {
-        document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded');
-        const invisibleElements = document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"], [style*="visibility: hidden"], [style*="visibility:hidden"], [style*="pointer-events: none"], [style*="pointer-events:none"]');
-        invisibleElements.forEach(el => {
-          if (el.style.opacity === "0") el.style.opacity = "";
-          if (el.style.visibility === "hidden") el.style.visibility = "";
-          if (el.style.pointerEvents === "none") el.style.pointerEvents = "";
-        });
-      }, 3000);
-    });
-  <\/script>`;
+    const { UniversalAssetNormalizer } = require('../pro/universal-asset-normalizer');
+    const universalUnlockCss = UniversalAssetNormalizer.getUniversalUnlockCss();
+    const universalPolyfills = UniversalAssetNormalizer.getUniversalResiliencePolyfills();
 
     // Salva cada seção
     result.sectionData.forEach((sec, i) => {
@@ -508,14 +491,14 @@ async function cloneSite(rawUrl, customOptions = {}) {
   <title>Section - ${sec.id}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
-${globalMocksHtml}
+${universalUnlockCss}
+${universalPolyfills}
 </head>
 <body class="${result.bodyClasses}">
 ${sec.html}
 ${originalTemplatesHtml}
 ${scriptTagsHtml}
 ${inlineScriptsHtml}
-${preloaderFailsafeHtml}
 </body>
 </html>`;
       fs.writeFileSync(path.join(sectionsDir, filename), sectionHtmlDoc);
@@ -533,21 +516,32 @@ ${preloaderFailsafeHtml}
   <title>Clone - ${siteName}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
-${globalMocksHtml}
+${universalUnlockCss}
+${universalPolyfills}
 </head>
 <body class="${result.bodyClasses}">
 ${result.bodyHtml}
 ${originalTemplatesHtml}
 ${scriptTagsHtml}
 ${inlineScriptsHtml}
-${preloaderFailsafeHtml}
 </body>
 </html>`;
 
     const outputPath = path.join(siteFolder, 'index.html');
     fs.writeFileSync(outputPath, cloneHtml);
 
-    console.log(`✅ [Site Cloner] Clone salvo em: ${outputPath}`);
+    // Auto-executa a normalização profunda e o saneamento de assets/HTML
+    try {
+      const normalizer = new UniversalAssetNormalizer({
+        siteDir: siteFolder,
+        siteUrl: targetUrl
+      });
+      await normalizer.normalizeAll();
+    } catch (normErr) {
+      console.warn('⚠️ [Site Cloner] Alerta na pós-normalização automática:', normErr.message);
+    }
+
+    console.log(`✅ [Site Cloner] Clone salvo e desbloqueado em: ${outputPath}`);
     return {
       siteFolder,
       sectionsCount: result.sectionData.length,

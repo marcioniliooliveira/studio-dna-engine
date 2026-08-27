@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -19,6 +20,7 @@ const MIME_TYPES = {
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
+  '.avif': 'image/avif',
   '.ico': 'image/x-icon',
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
@@ -26,23 +28,321 @@ const MIME_TYPES = {
   '.otf': 'font/otf',
   '.mp4': 'video/mp4',
   '.webm': 'video/webm',
+  '.ogg': 'video/ogg',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
   '.wasm': 'application/wasm',
   '.md': 'text/markdown; charset=utf-8'
 };
 
+/**
+ * Faz download assíncrono de asset remoto e salva em disco (Self-Healing)
+ */
+function fetchAndSaveRemoteAsset(remoteUrl, localDestPath) {
+  return new Promise((resolve) => {
+    try {
+      const u = new URL(remoteUrl);
+      const client = u.protocol === 'https:' ? https : http;
+      fs.mkdirSync(path.dirname(localDestPath), { recursive: true });
+      const file = fs.createWriteStream(localDestPath);
+      const req = client.get(remoteUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+          'Accept': '*/*'
+        }
+      }, (res) => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          res.pipe(file);
+          file.on('finish', () => {
+            file.close(() => {
+              console.log(`✨ [Self-Healing Proxy] Asset baixado e curado: ${path.basename(localDestPath)} <- ${remoteUrl}`);
+              resolve(true);
+            });
+          });
+        } else if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          file.close();
+          fs.unlink(localDestPath, () => {});
+          const redirectUrl = new URL(res.headers.location, remoteUrl).href;
+          fetchAndSaveRemoteAsset(redirectUrl, localDestPath).then(resolve);
+        } else {
+          file.close();
+          fs.unlink(localDestPath, () => {});
+          resolve(false);
+        }
+      });
+      req.on('error', () => {
+        file.close();
+        fs.unlink(localDestPath, () => {});
+        resolve(false);
+      });
+      req.setTimeout(10000, () => {
+        req.destroy();
+        file.close();
+        fs.unlink(localDestPath, () => {});
+        resolve(false);
+      });
+    } catch (e) {
+      resolve(false);
+    }
+  });
+}
+
+/**
+ * Transmite arquivos estáticos com suporte completo a Range Requests (HTTP 206) e CORS
+ */
+function streamFileWithRange(req, res, filePath, contentType) {
+  const stat = fs.statSync(filePath);
+  const fileSize = stat.size;
+  const range = req.headers.range;
+
+  const baseHeaders = {
+    'Content-Type': contentType,
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': '*',
+    'Cross-Origin-Resource-Policy': 'cross-origin',
+    'Accept-Ranges': 'bytes'
+  };
+
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-');
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+    if (start >= fileSize || end >= fileSize || start > end) {
+      res.writeHead(416, {
+        'Content-Range': `bytes */${fileSize}`,
+        'Access-Control-Allow-Origin': '*'
+      });
+      return res.end();
+    }
+
+    const chunksize = (end - start) + 1;
+    const stream = fs.createReadStream(filePath, { start, end });
+    res.writeHead(206, {
+      ...baseHeaders,
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Content-Length': chunksize
+    });
+    stream.pipe(res);
+  } else {
+    res.writeHead(200, {
+      ...baseHeaders,
+      'Content-Length': fileSize
+    });
+    fs.createReadStream(filePath).pipe(res);
+  }
+}
+
+function buildDashboardHtml(copias, clientes) {
+  const copiasCards = copias.map(function(c) {
+    return '<div class="card">' +
+      '<div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+          '<span class="badge">Esqueleto Base</span>' +
+          '<span style="font-size:0.78rem;color:var(--text-muted)">Stage 01/02</span>' +
+        '</div>' +
+        '<h3>' + c + '</h3>' +
+        '<p>DNA estrutural, classes de layout e assets descaracterizados prontos para uso em novos clientes.</p>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:16px">' +
+        '<a href="/' + c + '/site/index.html" target="_blank" class="btn btn-primary" style="flex:1">&#128065;&#65039; Ver Clone</a>' +
+        '<button onclick="runAudit(\'' + c + '\')" class="btn btn-secondary">&#128737;&#65039; Quality Gate</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  const clientesCards = clientes.map(function(cl) {
+    return '<div class="card">' +
+      '<div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+          '<span class="badge badge-success">&#9679; Producao Isolada</span>' +
+          '<span style="font-size:0.78rem;color:var(--text-muted)">ICM Ready</span>' +
+        '</div>' +
+        '<h3>' + cl + '</h3>' +
+        '<p>Projeto de cliente desacoplado, sem peso de scraper, pronto para deploy no Vercel ou CDN.</p>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:16px">' +
+        '<a href="/clientes/' + cl + '/site/index.html" target="_blank" class="btn btn-primary" style="flex:1">&#128065;&#65039; Abrir Site</a>' +
+        '<button onclick="runAudit(\'' + cl + '\')" class="btn btn-secondary">&#128737;&#65039; Auditar</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  const clientesOptions = copias.map(function(c) {
+    return '<option value="' + c + '">' + c + '</option>';
+  }).join('');
+
+  return '<!DOCTYPE html>\n' +
+'<html lang="pt-BR" class="dark">\n' +
+'<head>\n' +
+'  <meta charset="UTF-8">\n' +
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+'  <title>Studio DNA &mdash; Awwwards Engine &amp; Client Production Hub</title>\n' +
+'  <link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+'  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+'  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">\n' +
+'  <style>\n' +
+'    :root {\n' +
+'      --bg: #030508;\n' +
+'      --bg-card: rgba(255,255,255,0.02);\n' +
+'      --bg-card-hover: rgba(255,255,255,0.04);\n' +
+'      --border: rgba(255,255,255,0.07);\n' +
+'      --border-focus: rgba(56,189,248,0.4);\n' +
+'      --text: #fafaf9;\n' +
+'      --text-muted: #71717a;\n' +
+'      --accent: #38bdf8;\n' +
+'      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);\n' +
+'      --success: #10b981;\n' +
+'    }\n' +
+'    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n' +
+'    html, body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; min-height: 100vh; }\n' +
+'    header { border-bottom: 1px solid var(--border); padding: 0 32px; position: sticky; top: 0; background: rgba(3,5,8,0.9); backdrop-filter: blur(12px); z-index: 100; }\n' +
+'    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1400px; margin: 0 auto; }\n' +
+'    .logo { font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }\n' +
+'    .nav-tabs { display: flex; gap: 4px; }\n' +
+'    .nav-btn { background: none; border: none; color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 500; transition: all 0.15s; }\n' +
+'    .nav-btn:hover, .nav-btn.active { background: rgba(255,255,255,0.06); color: var(--text); }\n' +
+'    .container { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }\n' +
+'    .view-section { display: none; }\n' +
+'    .view-section.active { display: block; }\n' +
+'    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-top: 20px; }\n' +
+'    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; }\n' +
+'    .card:hover { border-color: rgba(56,189,248,0.4); background: var(--bg-card-hover); transform: translateY(-2px); }\n' +
+'    .card h3 { font-size: 1.2rem; margin-bottom: 6px; }\n' +
+'    .card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }\n' +
+'    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(56,189,248,0.1); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }\n' +
+'    .badge-success { background: rgba(16,185,129,0.1); color: var(--success); border-color: rgba(16,185,129,0.2); }\n' +
+'    .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; transition: all 0.2s; font-family: inherit; }\n' +
+'    .btn-primary { background: var(--accent-gradient); color: #000; font-weight: 700; }\n' +
+'    .btn-secondary { background: #182235; color: #fff; border: 1px solid var(--border); }\n' +
+'    .btn-secondary:hover { background: #223049; }\n' +
+'    .form-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 32px; }\n' +
+'    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px; }\n' +
+'    .input-field { display: flex; flex-direction: column; gap: 6px; }\n' +
+'    .input-field label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }\n' +
+'    .input-field input, .input-field select { background: #07090e; border: 1px solid var(--border); color: #fff; padding: 12px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }\n' +
+'    .input-field input:focus, .input-field select:focus { outline: none; border-color: var(--border-focus); }\n' +
+'    pre { background: #05070a; padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: "JetBrains Mono", monospace; font-size: 0.85rem; overflow-x: auto; color: #38bdf8; }\n' +
+'  </style>\n' +
+'</head>\n' +
+'<body>\n' +
+'  <header>\n' +
+'    <div class="header-inner">\n' +
+'      <div class="logo"><span>&#127760;</span> Studio DNA PRO <span style="font-size:0.75rem;color:var(--text-muted);font-weight:500">v2.0 &bull; Awwwards Engine</span></div>\n' +
+'      <div class="nav-tabs">\n' +
+'        <button class="nav-btn active" onclick="showTab(\'tab-clients\')">&#127970; Projetos de Clientes</button>\n' +
+'        <button class="nav-btn" onclick="showTab(\'tab-vault\')">&#129516; Design Vault</button>\n' +
+'        <button class="nav-btn" onclick="showTab(\'tab-clones\')">&#128230; Esqueletos &amp; Copias</button>\n' +
+'        <button class="nav-btn" onclick="showTab(\'tab-extractor\')">&#9889; Deep Scraper</button>\n' +
+'      </div>\n' +
+'    </div>\n' +
+'  </header>\n' +
+'\n' +
+'  <main class="container">\n' +
+'    <section id="tab-clients" class="view-section active">\n' +
+'      <div class="form-panel">\n' +
+'        <h2 style="margin-bottom:8px;font-size:1.4rem">&#127981; Fabrica de Clientes One-Shot (ICM Engine)</h2>\n' +
+'        <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:24px">Gere um novo site desacoplado para um cliente aplicando um esqueleto de referencia do Vault em menos de 1 segundo.</p>\n' +
+'        <div class="form-grid">\n' +
+'          <div class="input-field"><label>Nome da Marca / Cliente</label><input type="text" id="clientBrandName" placeholder="Ex: Negocia Bem Imobiliaria"></div>\n' +
+'          <div class="input-field"><label>Esqueleto de Referencia</label><select id="clientRefSelect">' + clientesOptions + '</select></div>\n' +
+'          <div class="input-field"><label>Nicho de Atuacao</label><input type="text" id="clientNiche" placeholder="Ex: Imobiliaria &amp; Financiamento Caixa"></div>\n' +
+'          <div class="input-field"><label>WhatsApp de Conversao</label><input type="text" id="clientWhatsapp" placeholder="Ex: 5544999999999"></div>\n' +
+'        </div>\n' +
+'        <button class="btn btn-primary" onclick="generateClientProject()">&#10024; Gerar Projeto do Cliente One-Shot</button>\n' +
+'      </div>\n' +
+'      <h3 style="font-size:1.2rem;margin-bottom:12px">&#128193; Projetos de Clientes Ativos (' + clientes.length + ')</h3>\n' +
+'      <div class="grid-cards">' + clientesCards + '</div>\n' +
+'    </section>\n' +
+'\n' +
+'    <section id="tab-vault" class="view-section">\n' +
+'      <div style="margin-bottom:24px"><h2 style="font-size:1.4rem;margin-bottom:6px">&#129516; Awwwards Design DNA Vault</h2><p style="color:var(--text-muted)">Banco de inteligencia permanente com fisica de movimento, 3D e tipografia cinematografica.</p></div>\n' +
+'      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">\n' +
+'        <div class="form-panel"><h3 style="margin-bottom:12px">&#127905; Fisica 3D &amp; Curvas de Easing</h3>' +
+'<pre><code>--ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);\n--ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);\n--ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);\n\nperspective: 132vw;\ntransform: rotateY(i*45deg) translateZ(44vw);</code></pre></div>\n' +
+'        <div class="form-panel"><h3 style="margin-bottom:12px">&#128208; Pares Tipograficos de Elite</h3>' +
+'<pre><code>Heading: "New Grotesk", clamp(2.5rem, 6vw, 6.5rem)\nTracking: -0.035em | Line-Height: 0.95\nBody: "New Grotesk", 400 | Line-Height: 1.5\nAccent: "New Grotesk Mono", uppercase</code></pre></div>\n' +
+'      </div>\n' +
+'    </section>\n' +
+'\n' +
+'    <section id="tab-clones" class="view-section">\n' +
+'      <h2 style="font-size:1.4rem;margin-bottom:6px">&#128230; Esqueletos &amp; Referencias Clonadas (' + copias.length + ')</h2>\n' +
+'      <p style="color:var(--text-muted);margin-bottom:20px">Sites de referencia raspados com assets normalizados e esqueleto estrutural extraido.</p>\n' +
+'      <div class="grid-cards">' + copiasCards + '</div>\n' +
+'    </section>\n' +
+'\n' +
+'    <section id="tab-extractor" class="view-section">\n' +
+'      <div class="form-panel">\n' +
+'        <h2 style="font-size:1.4rem;margin-bottom:8px">&#9889; Novo Scraping Profundo de Referencia</h2>\n' +
+'        <p style="color:var(--text-muted);margin-bottom:20px">Insira a URL de um site do Awwwards/Godly para dissecar o DOM, WebGL, shaders e GSAP.</p>\n' +
+'        <div style="display:flex;gap:12px">\n' +
+'          <input type="url" id="extractUrl" placeholder="https://exemplo-site-awwwards.com" style="flex:1;background:#07090e;border:1px solid var(--border);color:#fff;padding:14px;border-radius:8px;font-family:inherit">\n' +
+'          <button class="btn btn-primary" onclick="startDeepExtract()">&#128640; Iniciar Extracao</button>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'    </section>\n' +
+'  </main>\n' +
+'\n' +
+'  <script>\n' +
+'    function showTab(tabId) {\n' +
+'      document.querySelectorAll(".view-section").forEach(function(s) { s.classList.remove("active"); });\n' +
+'      document.querySelectorAll(".nav-btn").forEach(function(b) { b.classList.remove("active"); });\n' +
+'      document.getElementById(tabId).classList.add("active");\n' +
+'      event.target.classList.add("active");\n' +
+'    }\n' +
+'    async function generateClientProject() {\n' +
+'      var brandName = document.getElementById("clientBrandName").value.trim();\n' +
+'      var refSlug = document.getElementById("clientRefSelect").value;\n' +
+'      var niche = document.getElementById("clientNiche").value.trim();\n' +
+'      var whatsapp = document.getElementById("clientWhatsapp").value.trim();\n' +
+'      if (!brandName) return alert("Por favor, digite o nome da marca do cliente.");\n' +
+'      try {\n' +
+'        var res = await fetch("/api/client/create", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ brandName: brandName, refSlug: refSlug, niche: niche, whatsapp: whatsapp }) });\n' +
+'        var data = await res.json();\n' +
+'        if (data.success) { alert("Projeto do cliente criado com sucesso!"); window.location.reload(); }\n' +
+'        else { alert("Erro: " + data.error); }\n' +
+'      } catch (err) { alert("Falha na comunicacao: " + err.message); }\n' +
+'    }\n' +
+'    async function runAudit(slug) {\n' +
+'      alert("Iniciando auditoria Playwright para: " + slug + "... Aguarde alguns segundos.");\n' +
+'      try {\n' +
+'        var res = await fetch("/api/audit/" + slug, { method: "POST" });\n' +
+'        var data = await res.json();\n' +
+'        if (data.success && data.audit) {\n' +
+'          var a = data.audit;\n' +
+'          alert("RESULTADO DO QUALITY GATE:\\nStatus: " + (a.auditPassed ? "APROVADO" : "REPROVADO") + "\\nJS Errors: " + a.jsErrors.length + "\\nImagens Quebradas: " + a.imagesSummary.broken.length + "\\nImagens Validas: " + a.imagesSummary.valid);\n' +
+'        }\n' +
+'      } catch (e) { alert("Erro ao rodar auditoria: " + e.message); }\n' +
+'    }\n' +
+'    async function startDeepExtract() {\n' +
+'      var url = document.getElementById("extractUrl").value.trim();\n' +
+'      if (!url) return alert("Digite a URL");\n' +
+'      try {\n' +
+'        await fetch("/api/extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: url }) });\n' +
+'        alert("Extracao iniciada em segundo plano! A pagina atualizara em instantes.");\n' +
+'        setTimeout(function() { window.location.reload(); }, 10000);\n' +
+'      } catch (e) { alert("Erro: " + e.message); }\n' +
+'    }\n' +
+'  </script>\n' +
+'</body>\n' +
+'</html>';
+}
+
 function startPreviewServer(options = {}) {
-  const config = loadConfig(options);
+  const opts = typeof options === 'number' ? { port: options } : (options || {});
+  const config = loadConfig(opts);
   const rootDir = process.cwd();
   const copiasDir = path.resolve(config.outputDir || path.join(rootDir, 'copias'));
   const clientesDir = path.resolve(path.join(rootDir, 'clientes'));
   const vaultDir = path.resolve(path.join(rootDir, 'design-vault'));
-  const port = options.port || config.previewPort || 4000;
+  const port = opts.port || config.previewPort || 4000;
 
   if (!fs.existsSync(copiasDir)) fs.mkdirSync(copiasDir, { recursive: true });
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
 
   const server = http.createServer(async (req, res) => {
-    // Tratamento de Preflight CORS (OPTIONS)
+    // CORS preflight
     if (req.method === 'OPTIONS') {
       res.writeHead(204, {
         'Access-Control-Allow-Origin': '*',
@@ -58,7 +358,7 @@ function startPreviewServer(options = {}) {
     const parsedUrl = url.parse(req.url, true);
     let pathname = decodeURIComponent(parsedUrl.pathname);
 
-    // API: Iniciar Extração
+    // ── API: Iniciar Extração ──────────────────────────────────────────────
     if (pathname === '/api/extract' && req.method === 'POST') {
       let body = '';
       req.on('data', chunk => { body += chunk; });
@@ -67,12 +367,12 @@ function startPreviewServer(options = {}) {
           const data = JSON.parse(body || '{}');
           if (!data.url) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'URL é obrigatória' }));
+            res.end(JSON.stringify({ error: 'URL e obrigatoria' }));
             return;
           }
           const { runPipeline } = require('../../index');
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, message: 'Extração iniciada em segundo plano' }));
+          res.end(JSON.stringify({ success: true, message: 'Extracao iniciada em segundo plano' }));
           runPipeline({ url: data.url, mode: data.mode || 'all', headless: true }).catch(console.error);
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -82,7 +382,7 @@ function startPreviewServer(options = {}) {
       return;
     }
 
-    // API: Criar Projeto de Cliente (One-Shot Factory)
+    // ── API: Criar Projeto de Cliente ─────────────────────────────────────
     if (pathname === '/api/client/create' && req.method === 'POST') {
       let body = '';
       req.on('data', chunk => { body += chunk; });
@@ -91,17 +391,13 @@ function startPreviewServer(options = {}) {
           const data = JSON.parse(body || '{}');
           if (!data.brandName) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Nome da marca é obrigatório' }));
+            res.end(JSON.stringify({ error: 'Nome da marca e obrigatorio' }));
             return;
           }
           const result = createClientProject({
             brandName: data.brandName,
             refSlug: data.refSlug || 'storeyarchitecture-co-uk',
-            brandSpec: {
-              niche: data.niche,
-              toneOfVoice: data.toneOfVoice,
-              whatsapp: data.whatsapp
-            }
+            brandSpec: { niche: data.niche, toneOfVoice: data.toneOfVoice, whatsapp: data.whatsapp }
           });
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, result }));
@@ -113,7 +409,7 @@ function startPreviewServer(options = {}) {
       return;
     }
 
-    // API: Executar Quality Gate Playwright
+    // ── API: Quality Gate ─────────────────────────────────────────────────
     if (pathname.startsWith('/api/audit/') && req.method === 'POST') {
       const targetSlug = pathname.replace('/api/audit/', '');
       try {
@@ -127,515 +423,108 @@ function startPreviewServer(options = {}) {
       return;
     }
 
-    // API: Design Vault Data
+    // ── API: Design Vault Data ────────────────────────────────────────────
     if (pathname === '/api/vault') {
       let easings = null;
       let typography = null;
       try {
-        if (fs.existsSync(path.join(vaultDir, '01-motion-physics/easings.json'))) {
-          easings = JSON.parse(fs.readFileSync(path.join(vaultDir, '01-motion-physics/easings.json'), 'utf8'));
-        }
-        if (fs.existsSync(path.join(vaultDir, '04-typography/curated-pairings.json'))) {
-          typography = JSON.parse(fs.readFileSync(path.join(vaultDir, '04-typography/curated-pairings.json'), 'utf8'));
-        }
+        const easingsPath = path.join(vaultDir, '01-motion-physics/easings.json');
+        const typographyPath = path.join(vaultDir, '04-typography/curated-pairings.json');
+        if (fs.existsSync(easingsPath)) easings = JSON.parse(fs.readFileSync(easingsPath, 'utf8'));
+        if (fs.existsSync(typographyPath)) typography = JSON.parse(fs.readFileSync(typographyPath, 'utf8'));
       } catch (e) {}
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ easings, typography }));
       return;
     }
 
-    // API: Obter Dados de um Site
+    // ── API: Dados de um Site ─────────────────────────────────────────────
     if (pathname.startsWith('/api/site/')) {
       const siteSlug = pathname.replace('/api/site/', '');
       let sitePath = path.join(copiasDir, siteSlug);
       if (!fs.existsSync(sitePath)) sitePath = path.join(clientesDir, siteSlug);
-
       if (!fs.existsSync(sitePath)) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Site não encontrado' }));
+        res.end(JSON.stringify({ error: 'Site nao encontrado' }));
         return;
       }
-
-      let siteType = null;
-      let dna = null;
-      let uiUx = null;
-      let masterSpec = null;
-      let linterReport = null;
-
+      let siteType = null, dna = null, uiUx = null, masterSpec = null, linterReport = null;
       try {
-        if (fs.existsSync(path.join(sitePath, 'SITE_TYPE.json'))) {
-          siteType = JSON.parse(fs.readFileSync(path.join(sitePath, 'SITE_TYPE.json'), 'utf8'));
-        }
-        if (fs.existsSync(path.join(sitePath, 'design-system', 'design_dna.json'))) {
-          dna = JSON.parse(fs.readFileSync(path.join(sitePath, 'design-system', 'design_dna.json'), 'utf8'));
-        }
-        if (fs.existsSync(path.join(sitePath, 'ui-ux', 'ui_ux_features.json'))) {
-          uiUx = JSON.parse(fs.readFileSync(path.join(sitePath, 'ui-ux', 'ui_ux_features.json'), 'utf8'));
-        }
-        if (fs.existsSync(path.join(sitePath, 'MASTER_SPEC.md'))) {
-          masterSpec = fs.readFileSync(path.join(sitePath, 'MASTER_SPEC.md'), 'utf8');
-        }
-        if (fs.existsSync(path.join(sitePath, 'linter-report.json'))) {
-          linterReport = JSON.parse(fs.readFileSync(path.join(sitePath, 'linter-report.json'), 'utf8'));
-        }
+        if (fs.existsSync(path.join(sitePath, 'SITE_TYPE.json'))) siteType = JSON.parse(fs.readFileSync(path.join(sitePath, 'SITE_TYPE.json'), 'utf8'));
+        if (fs.existsSync(path.join(sitePath, 'design-system', 'design_dna.json'))) dna = JSON.parse(fs.readFileSync(path.join(sitePath, 'design-system', 'design_dna.json'), 'utf8'));
+        if (fs.existsSync(path.join(sitePath, 'ui-ux', 'ui_ux_features.json'))) uiUx = JSON.parse(fs.readFileSync(path.join(sitePath, 'ui-ux', 'ui_ux_features.json'), 'utf8'));
+        if (fs.existsSync(path.join(sitePath, 'MASTER_SPEC.md'))) masterSpec = fs.readFileSync(path.join(sitePath, 'MASTER_SPEC.md'), 'utf8');
+        if (fs.existsSync(path.join(sitePath, 'linter-report.json'))) linterReport = JSON.parse(fs.readFileSync(path.join(sitePath, 'linter-report.json'), 'utf8'));
       } catch (e) {}
-
       const tailwindConfig = dna ? generateTailwindConfig(dna) : '';
-
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        siteSlug,
-        siteType,
-        dna,
-        uiUx,
-        masterSpec,
-        linterReport,
-        tailwindConfig
-      }));
+      res.end(JSON.stringify({ siteSlug, siteType, dna, uiUx, masterSpec, linterReport, tailwindConfig }));
       return;
     }
 
-    // Dashboard Principal (SPA Interativo Studio DNA PRO)
+    // ── Dashboard Principal ───────────────────────────────────────────────
     if (pathname === '/' || pathname === '/index.html') {
-      const copias = fs.existsSync(copiasDir) ? fs.readdirSync(copiasDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name) : [];
-      const clientes = fs.existsSync(clientesDir) ? fs.readdirSync(clientesDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name) : [];
-
-      const html = `<!DOCTYPE html>
-<html lang="pt-BR" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studio DNA — Awwwards Engine & Client Production Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #07090e;
-      --card-bg: #0e131f;
-      --card-hover: #141c2e;
-      --border: #1c2638;
-      --border-focus: #38bdf8;
-      --text: #f8fafc;
-      --text-muted: #8e9eb5;
-      --accent: #38bdf8;
-      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      --success: #10b981;
-      --purple: #a855f7;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background: rgba(14, 19, 31, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      padding: 16px 32px;
-    }
-    .header-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.3rem;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      background: #090d15;
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .nav-btn.active, .nav-btn:hover {
-      background: var(--card-bg);
-      color: #fff;
-      border: 1px solid var(--border);
-    }
-    .nav-btn.active {
-      color: var(--accent);
-      border-color: rgba(56, 189, 248, 0.3);
-    }
-    .container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 32px;
-      flex: 1;
-      width: 100%;
-    }
-    .view-section { display: none; }
-    .view-section.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
-      background: var(--card-hover);
-      transform: translateY(-2px);
-    }
-    .card h3 { font-size: 1.2rem; margin-bottom: 6px; }
-    .card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--accent);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-    }
-    .badge-success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-      border-color: rgba(16, 185, 129, 0.2);
-    }
-    .btn {
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: none;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--accent-gradient);
-      color: #000;
-      font-weight: 700;
-    }
-    .btn-secondary {
-      background: #182235;
-      color: #fff;
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { background: #223049; }
-    .form-panel {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 32px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    .input-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .input-field label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-    .input-field input, .input-field select {
-      background: #07090e;
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.95rem;
-    }
-    .input-field input:focus, .input-field select:focus {
-      outline: none;
-      border-color: var(--border-focus);
-    }
-    pre {
-      background: #05070a;
-      padding: 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      overflow-x: auto;
-      color: #38bdf8;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="header-inner">
-      <div class="logo">
-        <span>🌐</span> Studio DNA PRO <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">v2.0 • Awwwards Engine</span>
-      </div>
-      <div class="nav-tabs">
-        <button class="nav-btn active" onclick="showTab('tab-clients')">🏢 Projetos de Clientes</button>
-        <button class="nav-btn" onclick="showTab('tab-vault')">🧬 Design Vault</button>
-        <button class="nav-btn" onclick="showTab('tab-clones')">📦 Esqueletos & Cópias</button>
-        <button class="nav-btn" onclick="showTab('tab-extractor')">⚡ Deep Scraper</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <!-- VIEW 1: PROJETOS DE CLIENTES (ONE-SHOT FACTORY) -->
-    <section id="tab-clients" class="view-section active">
-      <div class="form-panel">
-        <h2 style="margin-bottom: 8px; font-size: 1.4rem;">🏭 Fábrica de Clientes One-Shot (ICM Engine)</h2>
-        <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 24px;">Gere um novo site desacoplado para um cliente aplicando um esqueleto de referência do Vault em menos de 1 segundo.</p>
-        
-        <div class="form-grid">
-          <div class="input-field">
-            <label>Nome da Marca / Cliente</label>
-            <input type="text" id="clientBrandName" placeholder="Ex: Negocia Bem Imobiliária">
-          </div>
-          <div class="input-field">
-            <label>Esqueleto de Referência</label>
-            <select id="clientRefSelect">
-              ${copias.map(c => `<option value="${c}">${c}</option>`).join('')}
-            </select>
-          </div>
-          <div class="input-field">
-            <label>Nicho de Atuação</label>
-            <input type="text" id="clientNiche" placeholder="Ex: Imobiliária & Financiamento Caixa">
-          </div>
-          <div class="input-field">
-            <label>WhatsApp de Conversão</label>
-            <input type="text" id="clientWhatsapp" placeholder="Ex: 5544999999999">
-          </div>
-        </div>
-
-        <button class="btn btn-primary" onclick="generateClientProject()">✨ Gerar Projeto do Cliente One-Shot</button>
-      </div>
-
-      <h3 style="font-size: 1.2rem; margin-bottom: 12px;">📁 Projetos de Clientes Ativos (${clientes.length})</h3>
-      <div class="grid-cards">
-        ${clientes.map(cl => `
-          <div class="card">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span class="badge badge-success">● Produção Isolada</span>
-                <span style="font-size: 0.78rem; color: var(--text-muted);">ICM Ready</span>
-              </div>
-              <h3>${cl}</h3>
-              <p>Projeto de cliente desacoplado, sem peso de scraper, pronto para deploy no Vercel ou CDN.</p>
-            </div>
-            <div style="display: flex; gap: 8px; margin-top: 16px;">
-              <a href="/clientes/${cl}/site/index.html" target="_blank" class="btn btn-primary" style="flex: 1;">👁️ Abrir Site</a>
-              <button onclick="runAudit('${cl}')" class="btn btn-secondary">🛡️ Auditar</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </section>
-
-    <!-- VIEW 2: DESIGN VAULT -->
-    <section id="tab-vault" class="view-section">
-      <div style="margin-bottom: 24px;">
-        <h2 style="font-size: 1.4rem; margin-bottom: 6px;">🧬 Awwwards Design DNA Vault</h2>
-        <p style="color: var(--text-muted);">Banco de inteligência permanente com física de movimento, 3D e tipografia cinematográfica.</p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-        <div class="form-panel">
-          <h3 style="margin-bottom: 12px;">🎡 Física 3D & Curvas de Easing</h3>
-          <pre><code>// Curvas Cúbicas de Desaceleração:
---ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
---ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
---ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-
-// Anel 3D Cilíndrico Paramétrico:
-perspective: 132vw;
-transform: rotateY(i * 45deg) translateZ(44vw);</code></pre>
-        </div>
-        <div class="form-panel">
-          <h3 style="margin-bottom: 12px;">📐 Pares Tipográficos de Elite</h3>
-          <pre><code>// Swiss Minimalist (Storey Style):
-Heading: "New Grotesk", clamp(2.5rem, 6vw, 6.5rem)
-Tracking: -0.035em | Line-Height: 0.95
-Body: "New Grotesk", 400 | Line-Height: 1.5
-Accent: "New Grotesk Mono", uppercase</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 3: ESQUELETOS & CÓPIAS -->
-    <section id="tab-clones" class="view-section">
-      <h2 style="font-size: 1.4rem; margin-bottom: 6px;">📦 Esqueletos & Referências Clonadas (${copias.length})</h2>
-      <p style="color: var(--text-muted); margin-bottom: 20px;">Sites de referência raspados com assets normalizados e esqueleto estrutural extraído.</p>
-      
-      <div class="grid-cards">
-        ${copias.map(c => `
-          <div class="card">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span class="badge">Esqueleto Base</span>
-                <span style="font-size: 0.78rem; color: var(--text-muted);">Stage 01/02</span>
-              </div>
-              <h3>${c}</h3>
-              <p>DNA estrutural, classes de layout e assets descaracterizados prontos para uso em novos clientes.</p>
-            </div>
-            <div style="display: flex; gap: 8px; margin-top: 16px;">
-              <a href="/${c}/site/index.html" target="_blank" class="btn btn-primary" style="flex: 1;">👁️ Ver Clone</a>
-              <button onclick="runAudit('${c}')" class="btn btn-secondary">🛡️ Quality Gate</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </section>
-
-    <!-- VIEW 4: DEEP SCRAPER -->
-    <section id="tab-extractor" class="view-section">
-      <div class="form-panel">
-        <h2 style="font-size: 1.4rem; margin-bottom: 8px;">⚡ Novo Scraping Profundo de Referência</h2>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Insira a URL de um site do Awwwards/Godly para dissecar o DOM, WebGL, shaders e GSAP.</p>
-        
-        <div style="display: flex; gap: 12px;">
-          <input type="url" id="extractUrl" placeholder="https://exemplo-site-awwwards.com" style="flex: 1; background: #07090e; border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 8px;">
-          <button class="btn btn-primary" onclick="startDeepExtract()">🚀 Iniciar Extração</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
-    }
-
-    async function generateClientProject() {
-      const brandName = document.getElementById('clientBrandName').value.trim();
-      const refSlug = document.getElementById('clientRefSelect').value;
-      const niche = document.getElementById('clientNiche').value.trim();
-      const whatsapp = document.getElementById('clientWhatsapp').value.trim();
-
-      if (!brandName) return alert('Por favor, digite o nome da marca do cliente.');
-
-      try {
-        const res = await fetch('/api/client/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ brandName, refSlug, niche, whatsapp })
-        });
-        const data = await res.json();
-        if (data.success) {
-          alert('🎉 Projeto do cliente criado com sucesso! Abrindo o site...');
-          window.location.reload();
-        } else {
-          alert('Erro: ' + data.error);
-        }
-      } catch (err) {
-        alert('Falha na comunicação: ' + err.message);
-      }
-    }
-
-    async function runAudit(slug) {
-      alert('🛡️ Iniciando auditoria Playwright para: ' + slug + '... Aguarde alguns segundos.');
-      try {
-        const res = await fetch('/api/audit/' + slug, { method: 'POST' });
-        const data = await res.json();
-        if (data.success && data.audit) {
-          const a = data.audit;
-          alert(\`📊 RESULTADO DO QUALITY GATE:\\n- Status: \${a.auditPassed ? '✅ APROVADO (100% LIMPO)' : '❌ REPROVADO'}\\n- JS Errors: \${a.jsErrors.length}\\n- Imagens Quebradas: \${a.imagesSummary.broken.length}\\n- Imagens Válidas: \${a.imagesSummary.valid}\`);
-        }
-      } catch (e) {
-        alert('Erro ao rodar auditoria: ' + e.message);
-      }
-    }
-
-    async function startDeepExtract() {
-      const url = document.getElementById('extractUrl').value.trim();
-      if (!url) return alert('Digite a URL');
-      try {
-        const res = await fetch('/api/extract', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
-        });
-        alert('⚡ Extração iniciada em segundo plano! A página atualizará em instantes.');
-        setTimeout(() => window.location.reload(), 10000);
-      } catch (e) {
-        alert('Erro: ' + e.message);
-      }
-    }
-  </script>
-</body>
-</html>`;
-
+      const copias = fs.existsSync(copiasDir)
+        ? fs.readdirSync(copiasDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name)
+        : [];
+      const clientes = fs.existsSync(clientesDir)
+        ? fs.readdirSync(clientesDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name)
+        : [];
+      const html = buildDashboardHtml(copias, clientes);
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(html);
       return;
     }
 
-    // Servir Arquivos Estáticos com Fallbacks Inteligentes (suporta copias/ e clientes/)
+    // ── API: Salvar Brand Spec do Dev HUD (Tweakpane) ─────────────────────
+    if (pathname === '/api/save-brand-spec' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const data = JSON.parse(body);
+          const slug = data.slug || 'default';
+          const targetDir = path.join(clientesDir, slug);
+          if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+          const specPath = path.join(targetDir, 'brand-spec.json');
+          let spec = {};
+          if (fs.existsSync(specPath)) {
+            try { spec = JSON.parse(fs.readFileSync(specPath, 'utf8')); } catch(e) {}
+          }
+          spec.colors = Object.assign(spec.colors || {}, data.colors || {});
+          fs.writeFileSync(specPath, JSON.stringify(spec, null, 2), 'utf8');
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, specPath }));
+        } catch(err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+      return;
+    }
+
+    // ── Servir Arquivos Estáticos & Self-Healing Proxy ───────────────────
     let filePath = path.join(copiasDir, pathname);
 
-    if (pathname.startsWith('/clientes/')) {
+    if (pathname.startsWith('/clientes/') || pathname.startsWith('/projetos/')) {
       filePath = path.join(rootDir, pathname);
     }
 
-    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
-      const referer = req.headers.referer || '';
-      let refererSiteSlug = '';
-      if (referer) {
-        try {
-          const refUrl = new URL(referer);
-          const refParts = refUrl.pathname.split('/').filter(Boolean);
-          if (refParts[0] === 'clientes' && refParts[1]) {
-            refererSiteSlug = path.join('clientes', refParts[1]);
-          } else if (refParts[0]) {
-            refererSiteSlug = refParts[0];
-          }
-        } catch (e) {}
-      }
+    const referer = req.headers.referer || '';
+    let refererSiteSlug = '';
+    if (referer) {
+      try {
+        const refUrl = new URL(referer);
+        const refParts = refUrl.pathname.split('/').filter(Boolean);
+        if ((refParts[0] === 'clientes' || refParts[0] === 'projetos') && refParts[1]) {
+          refererSiteSlug = path.join(refParts[0], refParts[1]);
+        } else if (refParts[0]) {
+          refererSiteSlug = refParts[0];
+        }
+      } catch (e) {}
+    }
 
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       const cleanPath = pathname.replace(/^\/+/, '');
       const candidates = [];
 
@@ -643,8 +532,10 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
         candidates.push(
           path.join(rootDir, refererSiteSlug, 'site', cleanPath),
           path.join(rootDir, refererSiteSlug, 'site', 'assets', cleanPath),
+          path.join(rootDir, refererSiteSlug, 'site', 'assets', path.basename(cleanPath)),
           path.join(copiasDir, refererSiteSlug, 'site', cleanPath),
-          path.join(copiasDir, refererSiteSlug, 'site', 'assets', cleanPath)
+          path.join(copiasDir, refererSiteSlug, 'site', 'assets', cleanPath),
+          path.join(copiasDir, refererSiteSlug, 'site', 'assets', path.basename(cleanPath))
         );
       }
 
@@ -652,12 +543,13 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
       if (parts.length > 0) {
         const siteSlug = parts[0];
         const siteSubPath = parts.slice(1).join('/');
-        
         candidates.push(
           path.join(copiasDir, siteSlug, 'site', siteSubPath),
           path.join(copiasDir, siteSlug, 'site', 'assets', siteSubPath),
+          path.join(copiasDir, siteSlug, 'site', 'assets', path.basename(siteSubPath)),
           path.join(clientesDir, siteSlug, 'site', siteSubPath),
-          path.join(clientesDir, siteSlug, 'site', 'assets', siteSubPath)
+          path.join(clientesDir, siteSlug, 'site', 'assets', siteSubPath),
+          path.join(clientesDir, siteSlug, 'site', 'assets', path.basename(siteSubPath))
         );
       }
 
@@ -670,7 +562,8 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
         candidates.push(
           path.join(siteDir, 'site', cleanPath),
           path.join(siteDir, 'site', 'assets', cleanPath),
-          path.join(siteDir, 'site', 'assets', cleanPath.replace(/^assets\//, ''))
+          path.join(siteDir, 'site', 'assets', cleanPath.replace(/^assets\//, '')),
+          path.join(siteDir, 'site', 'assets', path.basename(cleanPath))
         );
       }
 
@@ -682,19 +575,130 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
       }
     }
 
+    // ── Self-Healing 404 Interceptor: Se não existir no disco, busca na origem ──
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      let targetSiteDir = null;
+      if (refererSiteSlug) {
+        targetSiteDir = path.join(rootDir, refererSiteSlug);
+      } else {
+        const parts = pathname.split('/').filter(Boolean);
+        if (parts.length > 0) {
+          if (parts[0] === 'clientes' && parts[1]) {
+            targetSiteDir = path.join(clientesDir, parts[1]);
+          } else if (fs.existsSync(path.join(copiasDir, parts[0]))) {
+            targetSiteDir = path.join(copiasDir, parts[0]);
+          }
+        }
+      }
+
+      if (targetSiteDir && fs.existsSync(targetSiteDir)) {
+        let originUrl = '';
+        try {
+          const specPath = path.join(targetSiteDir, 'MASTER_SPEC.md');
+          if (fs.existsSync(specPath)) {
+            const specText = fs.readFileSync(specPath, 'utf8');
+            const match = specText.match(/URL de Origem:\s*(https?:\/\/[^\s\n\r]+)/i);
+            if (match) originUrl = match[1].trim();
+          }
+          if (!originUrl) {
+            const stPath = path.join(targetSiteDir, 'SITE_TYPE.json');
+            if (fs.existsSync(stPath)) {
+              const st = JSON.parse(fs.readFileSync(stPath, 'utf8'));
+              originUrl = st.url || '';
+            }
+          }
+        } catch (e) {}
+
+        const cleanReqPath = pathname.replace(/^\/+/, '');
+        const baseFile = path.basename(cleanReqPath);
+        const assetCandidates = [];
+
+        // 1. Trata caminhos com CDN do Webflow direto
+        if (cleanReqPath.includes('cdn.prod.website-files.com')) {
+          const cdnSub = cleanReqPath.slice(cleanReqPath.indexOf('cdn.prod.website-files.com') + 'cdn.prod.website-files.com'.length);
+          assetCandidates.push(`https://cdn.prod.website-files.com${cdnSub}`);
+        } else if (/^[0-9a-f]{24}\//.test(cleanReqPath)) {
+          assetCandidates.push(`https://cdn.prod.website-files.com/${cleanReqPath}`);
+        }
+
+        // 2. Extrai Webflow site ID de MASTER_SPEC.md ou index.html se existir
+        let webflowSiteId = '';
+        try {
+          const specPath = path.join(targetSiteDir, 'MASTER_SPEC.md');
+          if (fs.existsSync(specPath)) {
+            const specText = fs.readFileSync(specPath, 'utf8');
+            const m = specText.match(/cdn\.prod\.website-files\.com\/([0-9a-f]{24})/i);
+            if (m) webflowSiteId = m[1];
+          }
+          if (!webflowSiteId) {
+            const indexPath = path.join(targetSiteDir, 'site', 'index.html');
+            if (fs.existsSync(indexPath)) {
+              const htmlSample = fs.readFileSync(indexPath, 'utf8').slice(0, 20000);
+              const m = htmlSample.match(/cdn\.prod\.website-files\.com\/([0-9a-f]{24})/i);
+              if (m) webflowSiteId = m[1];
+            }
+          }
+        } catch (e) {}
+
+        if (webflowSiteId && baseFile) {
+          assetCandidates.push(`https://cdn.prod.website-files.com/${webflowSiteId}/${encodeURIComponent(baseFile)}`);
+        }
+
+        // 3. URLs relativas à origem
+        if (originUrl) {
+          try {
+            const originObj = new URL(originUrl);
+            const subAssetPath = cleanReqPath.replace(/^[^/]+\/(site\/)?(assets\/)?/, '');
+            assetCandidates.push(
+              new URL(subAssetPath, originObj.origin).href,
+              new URL(cleanReqPath, originObj.origin).href
+            );
+          } catch (e) {}
+        }
+
+        for (const remoteUrl of assetCandidates) {
+          const fileName = path.basename(new URL(remoteUrl).pathname) || 'asset';
+          const localSavePath = path.join(targetSiteDir, 'site', 'assets', decodeURIComponent(fileName));
+          const downloaded = await fetchAndSaveRemoteAsset(remoteUrl, localSavePath);
+          if (downloaded && fs.existsSync(localSavePath)) {
+            filePath = localSavePath;
+            break;
+          }
+        }
+      }
+    }
+
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
       const ext = path.extname(filePath).toLowerCase();
       const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-      res.writeHead(200, { 
-        'Content-Type': contentType,
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': '*',
-        'Cross-Origin-Resource-Policy': 'cross-origin'
-      });
-      fs.createReadStream(filePath).pipe(res);
+      
+      if (ext === '.html') {
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': '*',
+          'Cross-Origin-Resource-Policy': 'cross-origin'
+        });
+        let content = fs.readFileSync(filePath, 'utf8');
+        try {
+          delete require.cache[require.resolve('../pro/universal-asset-normalizer')];
+          const { UniversalAssetNormalizer } = require('../pro/universal-asset-normalizer');
+          content = UniversalAssetNormalizer.applyUniversalFixes(content);
+        } catch(e) {}
+        try {
+          delete require.cache[require.resolve('../dev/dev-hud')];
+          const { injectDevHud } = require('../dev/dev-hud');
+          content = injectDevHud(content);
+        } catch(e) {}
+        res.end(content);
+        return;
+      }
+
+      // Serve com suporte a Streaming HTTP 206 (Range) para mídias e assets estáticos
+      streamFileWithRange(req, res, filePath, contentType);
     } else {
-      res.writeHead(404, { 
+      res.writeHead(404, {
         'Content-Type': 'text/plain; charset=utf-8',
         'Access-Control-Allow-Origin': '*'
       });
@@ -703,8 +707,8 @@ Accent: "New Grotesk Mono", uppercase</code></pre>
   });
 
   server.listen(port, '0.0.0.0', () => {
-    console.log(`\n👁️  [STUDIO DNA PRO v2.0] Servidor rodando em: \x1b[36mhttp://127.0.0.1:${port}\x1b[0m e \x1b[36mhttp://localhost:${port}\x1b[0m`);
-    console.log(`📁  Servindo: ${copiasDir} e ${clientesDir}\n`);
+    console.log('\n👁️  [STUDIO DNA PRO v2.0] Servidor rodando em: \x1b[36mhttp://127.0.0.1:' + port + '\x1b[0m e \x1b[36mhttp://localhost:' + port + '\x1b[0m');
+    console.log('📁  Servindo: ' + copiasDir + ' e ' + clientesDir + '\n');
   });
 
   return server;

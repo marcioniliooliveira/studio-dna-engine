@@ -12,7 +12,9 @@
     "preview": "node bin/cli.js --preview --port 4000",
     "scrape": "node bin/cli.js",
     "client": "node src/generators/client-factory.js",
+    "tokens": "node src/extractors/token-compiler.js",
     "audit": "node scripts/box-diff-linter.js",
+    "normalize": "node scripts/normalize-all-copies.js",
     "inject": "node src/generators/slot-injector.js",
     "setup": "npx playwright install --with-deps chromium"
   },
@@ -33,7 +35,9 @@
   "type": "commonjs",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "cheerio": "^1.2.0",
     "playwright": "^1.41.0",
+    "postcss": "^8.5.26",
     "zod": "^4.4.3"
   },
   "devDependencies": {

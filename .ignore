@@ -1,0 +1,44 @@
+﻿# ==============================================================================
+# AI & SEARCH INDEXING IGNORES (.ignore / .cursorignore / .geminiignore)
+# This file prevents AI agents (Cursor, Windsurf, Antigravity, Gemini, Claude) 
+# from scanning runtime-scraped websites and choking context on 65,000+ files.
+# ==============================================================================
+
+# Runtime Scraped Data (64k+ external third-party files, ~3 GB)
+copias/
+copias/**
+clientes/
+clientes/**
+storage/
+storage/**
+
+# Build, Dependencies & Cache
+node_modules/
+node_modules/**
+dist/
+dist-community/
+.cache/
+.turbo/
+.next/
+
+# QA Reports & Screenshots
+qa-reports/
+qa-reports/**
+playwright-report/
+test-results/
+.playwright/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp4
+*.webm
+
+# Temporary & Scratch
+scratch/
+scratch/**
+temp-*/
+.temp/
+*.log
+*.bak
+*.tmp

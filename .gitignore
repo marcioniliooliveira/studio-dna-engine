@@ -1,38 +1,101 @@
-# Dependencies
+# ─────────────────────────────────────────────────────────────────────────────
+# Studio DNA Engine — .gitignore
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Dependências ──────────────────────────────────────────────────────────────
 node_modules/
 package-lock.json
+.pnp
+.pnp.js
 
-# Build & Temporary Exports
-copias/
-dist-community/
+# ── Build / Framework Caches ──────────────────────────────────────────────────
 dist/
-temp-*/
-.tempmediaStorage/
+dist-community/
+build/
+out/
+.output/
+.next/
+.nuxt/
+.turbo/
+.cache/
+.parcel-cache/
+.astro/
+.svelte-kit/
 
-# Test & Debug Artifacts
+# ── Copias (Awwwards scrapes brutos e pesados) ─────────────────────────────────
+copias/
+!copias/README.md
+
+# ── Clientes de Produção & Projetos Customizados ──────────────────────────────
+# Manter arquivos estruturais e DNA, ignorar dumps de assets pesados
+clientes/**/site/assets/
+projetos/**/site/assets/
+!clientes/README.md
+!projetos/README.md
+
+# ── Design Vault (apenas artefatos compilados, não os scrapes brutos) ─────────
+design-vault/*/tokens.json
+design-vault/*/tailwind.config.js
+design-vault/*/brand-spec.template.json
+design-vault/**/site/assets/
+
+# ── QA Reports & Screenshots de Auditoria ────────────────────────────────────
+qa-reports/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+coverage/
+.nyc_output/
+
+# ── Screenshots de desenvolvimento (root-level e subpastas) ──────────────────
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+caso*.png
+*_audit*.png
+*_diff*.png
+*_render*.png
+*_preview*.png
+screenshot*.png
+
+# ── Temporários & Logs ────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-screenshot*.png
-design_inspection*.png
-initial_hero_load*.png
-storey_audit*.png
-negociabem_*.png
+pnpm-debug.log*
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+temp-*/
+.temp/
+scratch/
+.tempmediaStorage/
 
-# Operating System & IDE
+# ── Arquivos HTML soltos na raiz de copias (clone dumps antigos) ──────────────
+copias/*.html
+
+# ── Environment & Secrets ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Sistema Operacional & IDEs ────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 ehthumbs.db
+desktop.ini
 .vscode/
 .idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
-
-# Local Environment Variables
-.env
-.env.local
-.env.*.local

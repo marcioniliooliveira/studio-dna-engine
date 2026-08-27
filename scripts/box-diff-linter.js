@@ -74,12 +74,16 @@ async function runBoxDiffLinter(siteSlug = 'negocia-bem-imobiliaria', port = 400
     const pageErrors = [];
     page.on('pageerror', err => pageErrors.push(err.message));
 
-    await page.goto(`http://127.0.0.1:${activePort}/index.html`, { waitUntil: 'networkidle' });
+    try {
+      await page.goto(`http://127.0.0.1:${activePort}/index.html`, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    } catch (e) {
+      await page.goto(`http://127.0.0.1:${activePort}/index.html`, { timeout: 15000 });
+    }
     await page.waitForFunction(() => {
       const imgs = Array.from(document.querySelectorAll('img'));
-      return imgs.length > 0 && imgs.every(i => i.complete);
+      return imgs.length === 0 || imgs.every(i => i.complete);
     }, { timeout: 8000 }).catch(() => {});
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1500);
 
     // Mapear seções e Bounding Boxes
     const report = await page.evaluate(() => {
