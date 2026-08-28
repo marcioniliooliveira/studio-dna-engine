@@ -1,184 +1,111 @@
-# 🚀 HANDOFF DE ENGENHARIA & TRANSIÇÃO DE CONTEXTO (V5.2 CONSOLIDADA)
+# Handoff de Auditoria — `refactor/verified-production-pipeline`
 
-> **Data:** 28 de Agosto de 2026  
-> **Repositório:** `playwright-scraper` (`studio-dna-engine`)  
-> **Status:** Pipeline de Engenharia Determinística Ativo (Custo Zero de IA no Scraper), Design Vault Multidimensional (Elyse, ByMonolog, Motion Physics, 3D, Tipografia), Servidor MCP Integrado, Preview Server com HTTP 206 Streaming & Proxy Self-Healing 100% Operacional, Suíte de Auditoria Box-Diff Linter e Fábrica ICM com DNA Lock.
+> Data da auditoria: 2026-08-28
+> Base revisada: `origin/main...5dbcfcb` (cinco commits)
+> Estado sustentado por evidência atual: `experimental`
+> Promoção para `verified` ou `production`: bloqueada pelos itens abaixo.
 
----
+## Escopo e preservação do checkout
 
-## 🧭 1. Resumo Executivo & Pilares do Sistema
+- O diff da branch contém 93 arquivos, com 31.679 inserções e 1.612 remoções.
+- Havia 132 exclusões locais pré-existentes, concentradas em três clientes. Elas não foram revisadas como parte dos commits da branch, não foram encenadas e não devem entrar neste commit.
+- A auditoria foi somente leitura no repositório. As reproduções que escrevem arquivos foram executadas em um checkout temporário criado a partir de `HEAD`.
 
-O **Studio DNA Engine (V5.2)** é um ecossistema completo para captura, dissecação de Design DNA, compilação de tokens e transmutação determinística de sites Awwwards para produção de alta fidelidade:
+## Evidências executadas
 
-1. **Engenharia Determinística & Custo Zero de IA:**
-   - **Eliminação de Tentativa e Erro:** Substituição de agentes visuais navegando no Chrome por scripts determinísticos Node.js/Playwright com interceptação de rede e CDP.
-   - **`src/server/preview-server.js`:** Servidor local com suporte nativo a streaming **HTTP 206 Partial Content** (Range requests para vídeos de fundo e áudio) e **Proxy Self-Healing** (recuperação automática de assets 404 direto da CDN de origem para `./assets/` com entrega 200/206).
-   - **`src/pro/universal-asset-normalizer.js`:** Sanitização completa, des-externalização de CDNs (Webflow, Vercel, Google Fonts), remoção de travas de preloader e neutralização não-destrutiva de classes JS para manter compatibilidade com Lenis, GSAP ScrollTrigger e SplitText.
+| Comando/cenário | Resultado observado |
+|---|---|
+| `npm ci && npm test` em checkout limpo de `HEAD` | 42/43 testes passaram; `test/vault-integrity.test.js` falhou. |
+| `node scripts/audit-syntax.js` | 58/58 arquivos no escopo do script sem erro de sintaxe. O script não cobre todo o runtime e não falha o processo se encontrar erros. |
+| `npm audit --omit=dev` | Nenhuma vulnerabilidade conhecida reportada na execução. |
+| `node scripts/build-and-certify-pilot.js` em checkout limpo | Quality Gate falhou: 21 respostas 404 e 24 imagens quebradas. O processo terminou com código 0. |
+| Fixture do `UnifiedQualityGate` com `console.error` e CSS 404 | Retornou `status: "verified"`, embora o gate de rede estivesse reprovado. |
+| Preview de fixture HTML de 84 bytes | O servidor respondeu 38.738 bytes por injetar normalizador e Dev HUD; preview não avalia o mesmo artefato que o QA estático. |
 
-2. **Design Vault Multidimensional:**
-   - Modelos de referência dissecados e parametrizados em `design-vault/`:
-     - **`elyse-residence-dev-webflow-io/`:** Esqueleto completo (`skeleton.html`, `content-slots.json`, `tokens.json`, `tailwind.config.js`, `brand-spec.template.json`, `REFERENCE_CARD.md`).
-     - **`bymonolog-com/`:** Design DNA e tokens compilados com template de marca.
-     - **`01-motion-physics/`:** Matrizes e curvas matemáticas de easing (`easings.json`).
-     - **`02-3d-experiments/`:** Componentes WebGL/Three.js (`cylindrical-spinner.js`).
-     - **`04-typography/`:** Pares tipográficos curados para Awwwards (`curated-pairings.json`).
+## Bloqueadores de promoção
 
-3. **Servidor MCP Integrado (`src/mcp-server.js`):**
-   - Expõe 4 tools (`scrape_and_extract_dna`, `create_client_project`, `inject_content_slots`, `run_quality_gate_audit`) e 2 resources (`vault://easings`, `vault://typography`) permitindo que agentes de IA orquestrem a fábrica e auditem projetos sem alucinações.
+### 1. Checkout limpo não passa a suíte declarada
 
-4. **Metodologia Dual-Stack (HTML + Next.js 15):**
-   - Criação de versões duplas: clone estático 1:1 desacoplado + conversão modular em Next.js 15 (App Router, Tailwind CSS, TypeScript, Lucide Icons, GSAP/Lenis).
+`design-vault/INDEX.json` declara `tokens.json`, `tailwind.config.js` e `brand-spec.template.json` para os templates, mas os arquivos não existem em `HEAD`. Os mesmos tipos de artefato são ignorados em `.gitignore`.
 
-5. **Blindagem de Contexto (ICM & DNA Lock):**
-   - Pastas pesadas e isoladas (`copias/`, `clientes/`, `qa-reports/`, `storage/`, `scratch/`, `node_modules/`, `*.png`) permanecem blindadas via `.ignore`, `.cursorignore`, `.agentignore` e `.geminiignore`.
-   - Cada cliente em `clientes/` possui seu próprio `brand-spec.json` ou `DNA.md` com tokens e regras de isolamento P0/P1.
+- Evidência de código: `design-vault/INDEX.json`, `.gitignore`, `test/vault-integrity.test.js`.
+- Impacto: contradiz o claim de 43/43 e invalida a reprodutibilidade do CI.
+- Próxima ação: versionar os inputs obrigatórios ou removê-los do índice e do contrato; incluir teste de checkout limpo na CI.
 
----
+### 2. A CI não instala o browser exigido por Playwright
 
-## 📂 2. Mapa Canônico de Arquitetura
+`.github/workflows/ci.yml` executa `npm ci` e `npm test`, mas não instala Chromium. Com `PLAYWRIGHT_BROWSERS_PATH` apontando para um diretório inexistente, os dois testes de `UnifiedQualityGate` falham antes das asserções.
 
-```
-playwright-scraper/
-├── .ignore / .cursorignore / .geminiignore   # ⚡ Blindagem total de busca/indexação da IA
-├── HANDOFF.md                                # 📖 Este documento de transição contínua
-├── README.md / CONTRIBUTING.md               # 📚 Documentação do projeto
-├── package.json                              # 📦 Dependências e scripts de execução
-├── index.js                                  # 🚀 Entrypoint programático do pipeline
-├── bin/cli.js                                # 🖥️ CLI unificada (studio-dna)
-│
-├── design-vault/                             # 🏛️ Acervo de Referências & Esqueletos
-│   ├── 01-motion-physics/                    # 📐 Fórmulas e curvas de interpolação
-│   │   └── easings.json
-│   ├── 02-3d-experiments/                    # 🧊 Componentes 3D e Shaders
-│   │   └── cylindrical-spinner.js
-│   ├── 04-typography/                        # 🔤 Combinações de fontes curadas
-│   │   └── curated-pairings.json
-│   ├── bymonolog-com/                        # 🧬 DNA Tokens & Brand Spec
-│   │   ├── tokens.json
-│   │   ├── tailwind.config.js
-│   │   └── brand-spec.template.json
-│   └── elyse-residence-dev-webflow-io/       # 💎 Esqueleto Master Parametrizado
-│       ├── skeleton.html
-│       ├── content-slots.json
-│       ├── tokens.json
-│       ├── tailwind.config.js
-│       ├── brand-spec.template.json
-│       └── REFERENCE_CARD.md
-│
-├── src/                                      # ⚙️ Núcleo de Engenharia
-│   ├── config/index.js                       # Configuração de caminhos e viewports
-│   ├── mcp-server.js                         # Servidor MCP (Tools & Resources)
-│   │
-│   ├── core/                                 # Motores principais de scraping
-│   │   ├── cloner.js                         # Cloner Playwright + interceptação CDP
-│   │   ├── detector.js                       # Detecção de framework/stack
-│   │   ├── dna-extractor.js                  # Extrator de cores, fontes e espaçamentos
-│   │   └── ui-ux-extractor.js                # Extração de componentes e hierarquia UX
-│   │
-│   ├── extractors/
-│   │   └── token-compiler.js                 # Compilador de Design Tokens (W3C/Tailwind)
-│   │
-│   ├── generators/                           # Injeção e geração de código
-│   │   ├── asset-manifest-generator.js       # Mapeamento de assets locais
-│   │   ├── ast-injector.js                   # Transmutador AST Cheerio (Anti-Slop)
-│   │   ├── client-factory.js                 # Fábrica de novos clientes (One-shot)
-│   │   ├── prompt-builder.js                 # Montador de prompts estruturados
-│   │   ├── prompt-template-generator.js      # Templates de briefing
-│   │   ├── seo-injector.js                   # Injeção de metatags e OpenGraph
-│   │   ├── slot-injector.js                  # Injeção determinística de copy em slots
-│   │   ├── spec-generator.js                 # Gerador de especificações técnicas
-│   │   ├── styleguide.js                     # Gerador de página de Style Guide
-│   │   └── tailwind-generator.js             # Exportador de Tailwind Config
-│   │
-│   ├── pro/                                  # Módulos avançados de runtime
-│   │   ├── advanced-asset-interceptor.js     # Interceptação de shaders, webgl e áudios
-│   │   ├── cdp-listener-mapper.js            # Mapeamento de eventos de rede CDP
-│   │   ├── gsap-reverser.js                  # Reversão e captura de timelines GSAP
-│   │   ├── shaders-interceptor.js            # Extração de GLSL e canvas
-│   │   ├── universal-asset-normalizer.js     # Sanitização, uncloaking e download de assets
-│   │   └── universal-scroll-director.js      # Ponte Lenis + ScrollTrigger + GSAP
-│   │
-│   ├── dev/
-│   │   └── dev-hud.js                        # HUD visual para debugging local
-│   ├── qa/
-│   │   └── visual-regression.js              # Testes de regressão visual Pixelmatch
-│   └── server/
-│       └── preview-server.js                 # Servidor local (HTTP 206 + Self-Healing Proxy)
-│
-├── scripts/                                  # 🛠️ Scripts utilitários e de manutenção
-│   ├── box-diff-linter.js                    # Quality Gate Playwright (0 erros JS/assets)
-│   ├── capture-hydrated.js                   # Captura de DOM pós-hidratação
-│   ├── dna-extractor.js                      # Extrator autônomo de DNA
-│   ├── export-community.js                   # Exportação de templates limpos
-│   └── normalize-all-copies.js               # Normalizador em lote de todas as cópias
-│
-├── configs/clients/                          # 💡 Configurações declarativas JSON de clientes
-│   └── template-elyse-luxe.json
-│
-├── clientes/                                 # 🏢 Ambientes 100% isolados de clientes (ICM)
-│   ├── caso-01-healthtech/                   # PulseMed (base #120824, CTA #E8FF54)
-│   ├── flashtech-caso-02-ecommerce/          # NorthTrail (trail.orange, sand.100)
-│   ├── flashtech-caso-03-d2c/                # APEX Wireless (base #02040A, CTA #00F0FF)
-│   └── negocia-bem-imobiliaria/              # Negocia Bem (ref storeyarchitecture)
-│
-└── copias/                                   # 📦 Esqueletos brutos 1:1 e conversões Next.js
+- Impacto: o workflow não reproduz a suíte num runner limpo.
+- Próxima ação: instalar explicitamente o browser no workflow ou usar imagem imutável que já o contenha e registrar essa condição.
+
+### 3. O piloto não é reproduzível e o certificador não falha o processo
+
+O build do piloto depende de mídias locais que não estão versionadas. Em checkout limpo, o `UnifiedQualityGate` encontrou 21 falhas de rede e 24 imagens quebradas. Mesmo assim, `scripts/build-and-certify-pilot.js` apenas imprime o resultado e retorna exit code 0.
+
+- Impacto: um job pode aparentar sucesso com artefato reprovado.
+- Próxima ação: versionar ou fornecer por artifact store todos os assets do bundle; hashear o bundle inteiro; lançar erro e definir exit code não zero se qualquer gate falhar.
+
+### 4. O Quality Gate emite falso `verified`
+
+`src/qa/unified-quality-gate.js` registra `networkFailures`, mas não as inclui na expressão de `passed`. Ele também escuta `pageerror`, não `console`, e não captura `requestfailed`.
+
+- Impacto: 404, erros de console e falhas de transporte podem coexistir com `status: "verified"`.
+- Próxima ação: tornar todos os gates obrigatórios na decisão final; adicionar regressões negativas isoladas para rede, console, navegação e imagens.
+
+### 5. Preview, QA e produção não usam o mesmo artefato imutável
+
+O preview altera o HTML no momento da resposta ao aplicar `UniversalAssetNormalizer` e `injectDevHud`; o QA serve o arquivo estático bruto. O manifesto hasheia apenas HTML, não assets, screenshot ou configuração de execução. Em Windows, o HTML materializado também diverge do blob por EOL, sem `.gitattributes` que fixe a política.
+
+- Impacto: o relatório de QA não prova o conteúdo servido no preview nem um bundle promocionável.
+- Próxima ação: construir bundle content-addressed com hash de todos os arquivos; verificar o hash antes do QA; desligar mutações de preview no caminho de certificação.
+
+### 6. ICM e Anti-Slop não garantem o isolamento alegado
+
+`ContextRouter` permite acesso quando `activeClientSlug` ou `selectedRefSlug` não são fornecidos e o contrato do estágio 04 rejeita até o caminho do próprio cliente por esperar literalmente `clientes/active-client/`. O certificador não chama `ContextRouter` nem `STAGE_CONTRACTS`.
+
+O Anti-Slop Gate não usa `brandSpec` e o piloto aprovado mantém resíduos da referência, incluindo e-mail, endereço, telefone e crédito externo. A página também contém SEO genérico e dados fictícios por incompatibilidade entre `compositionSpec` e `SeoInjector`.
+
+- Impacto: isolamento de contexto, DNA Lock, SEO e ausência de resíduos não estão demonstrados pelo fluxo real.
+- Próxima ação: exigir slugs/ref válidos e contenção de paths, integrar contratos no orquestrador, derivar inventário de resíduos da referência e validar o HTML/metadata final.
+
+## Riscos de segurança e integridade a corrigir antes de exposição
+
+1. `UniversalAssetNormalizer` aceita URLs presentes no HTML sem passar pela validação central e resolve alguns destinos sem contenção dentro de `assets/`.
+2. O fallback de assets do preview escolhe cliente pelo header `Referer`; a reprodução retornou asset do cliente B para uma requisição do cliente A.
+3. O preview executa scripts clonados no mesmo origin das APIs e do dashboard, sem CSP/sandbox.
+4. O preview permite `host: "0.0.0.0"`, apesar do claim de bind estritamente local.
+5. O Self-Healing Proxy grava assets em GETs sem autorização explícita e o `UniversalScrollDirector` transforma falhas de `fetch` em respostas 200 fabricadas.
+
+## Controles positivos observados
+
+- `package-lock.json` está versionado.
+- `npm audit --omit=dev` não reportou vulnerabilidades conhecidas nesta execução.
+- Os testes focados de path traversal, CORS, corpo de requisição e autenticação de mutações passaram.
+- O preview usa `127.0.0.1` por padrão e as APIs mutáveis requerem token quando habilitadas.
+
+Esses controles não compensam os bloqueadores de certificação, isolamento e artefato acima.
+
+## Ordem recomendada de recuperação
+
+1. Suspender os claims `verified` do piloto e atualizar `PROJECT_STATUS.md` para refletir a evidência atual.
+2. Fazer `npm test` passar em checkout limpo e restaurar instalação verificável do Chromium na CI.
+3. Corrigir o certificador para falhar o processo e incluir todos os gates no resultado.
+4. Versionar ou publicar bundle completo de assets e gerar manifesto de bundle imutável.
+5. Integrar ICM/DNA/Anti-Slop ao orquestrador real, com schemas únicos e testes de integração do piloto.
+6. Separar origens de conteúdo clonado e APIs, remover mocks globais e restringir os fluxos de download.
+
+## Verificações mínimas antes de nova promoção
+
+```powershell
+npm ci
+npx playwright install --with-deps chromium
+npm test
+node scripts/build-and-certify-pilot.js
 ```
 
----
+O último comando deve encerrar com código diferente de zero para qualquer reprovação e produzir um relatório cujo manifesto corresponda ao bundle efetivamente auditado.
 
-## ⚡ 3. Comandos Canônicos do CLI & Scripts
+## Revisão externa
 
-| Comando | Descrição |
-| :--- | :--- |
-| `npm run start` / `npm run preview` | Inicia o servidor local de preview na porta 4000 com Proxy Self-Healing e streaming HTTP 206 ativo |
-| `npm run scrape <url>` | Executa o cloner Playwright com interceptação de rede, extração de DNA e normalização de assets |
-| `npm run normalize` | Executa o normalizador universal em todas as pastas de `copias/` em lote |
-| `npm run tokens` | Compila os tokens de design do site clonado para o formato padrão do Vault |
-| `npm run client` | Executa a fábrica de clientes (`client-factory.js`) baseada em configuração JSON |
-| `npm run inject` | Injeta deterministicamente variáveis de copy nos slots do esqueleto HTML |
-| `npm run audit` | Executa o Quality Gate Playwright (`box-diff-linter.js`) para validar 0 erros JS e 100% de imagens |
-| `npm run setup` | Instala as dependências e o Chromium do Playwright |
-
----
-
-## 🤖 4. Servidor MCP (`src/mcp-server.js`)
-
-O projeto expõe um servidor MCP compatível com IDEs e agentes de IA para automação total:
-
-### Ferramentas (Tools):
-1. `scrape_and_extract_dna(url, mode)`: Clona o site e gera esqueleto + tokens.
-2. `create_client_project(brandName, refSlug, niche, toneOfVoice, whatsapp)`: Cria a pasta isolada do cliente e inicializa o preview.
-3. `inject_content_slots(skeletonPath, contentSlotsPath, outputPath)`: Injeta copy no esqueleto com custo 0 de IA.
-4. `run_quality_gate_audit(siteSlug)`: Executa auditoria automatizada Playwright headless.
-
-### Recursos (Resources):
-- `vault://easings`: Entrega a matriz de curvas de easing Awwwards.
-- `vault://typography`: Entrega o catálogo de pares tipográficos de alta performance.
-
----
-
-## 🎯 5. Fluxo de Criação de Novos Clientes (ICM & DNA Lock)
-
-### Opção A: Via Configuração Declarativa JSON
-1. Copie o template:
-   ```bash
-   cp configs/clients/template-elyse-luxe.json configs/clients/meu-novo-cliente.json
-   ```
-2. Preencha as cores, dados da marca e copy das seções.
-3. Gere o site final instantaneamente:
-   ```bash
-   node src/generators/client-factory.js --config configs/clients/meu-novo-cliente.json --skeleton design-vault/elyse-residence-dev-webflow-io/skeleton.html
-   ```
-
-### Opção B: Via Injeção Direta de Slots
-```bash
-node src/generators/slot-injector.js \
-  --skeleton design-vault/elyse-residence-dev-webflow-io/skeleton.html \
-  --slots design-vault/elyse-residence-dev-webflow-io/content-slots.json \
-  --output clientes/novo-cliente/site/index.html
-```
-
-### Opção C: Validação de Qualidade (Quality Gate)
-```bash
-node scripts/box-diff-linter.js clientes/novo-cliente
-```
+CodeRabbit não foi incluído como evidência: o CLI instalado no WSL retornou `not_authenticated`. Uma revisão externa exige autenticação explícita antes de rodar o comando de review.
