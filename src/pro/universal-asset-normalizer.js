@@ -163,6 +163,20 @@ class UniversalAssetNormalizer {
       img, svg, canvas, video {
         content-visibility: visible;
       }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
+      }
     </style>`;
   }
 

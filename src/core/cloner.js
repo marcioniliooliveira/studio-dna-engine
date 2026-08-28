@@ -279,7 +279,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const scriptSrcs = Array.from(document.querySelectorAll('script[src]'))
         .filter(s => {
           const src = s.src || '';
-          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit');
+          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit') && !src.includes('_next/static/chunks/main') && !src.includes('_next/static/chunks/webpack') && !src.includes('_next/static/chunks/app/');
         })
         .map(s => ({
           src: s.src,
@@ -291,7 +291,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const inlineScripts = Array.from(document.querySelectorAll('script:not([src])'))
         .filter(s => {
           const t = s.textContent || '';
-          return t.length > 50 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__');
+          return t.length > 50 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__') && !t.includes('self.__next_f');
         })
         .map(s => ({
           content: s.textContent,
@@ -373,6 +373,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
         scriptSrcs,
         inlineScripts,
         sectionData,
+        htmlClasses: document.documentElement.className || '',
         bodyClasses: document.body.className,
         htmlLang: document.documentElement.lang || 'en',
         bodyHtml: bodyClone.innerHTML
@@ -484,7 +485,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
     result.sectionData.forEach((sec, i) => {
       const filename = `${String(i).padStart(2, '0')}_${sec.id}.html`;
       const sectionHtmlDoc = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -509,7 +510,7 @@ ${inlineScriptsHtml}
     }
 
     const cloneHtml = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
