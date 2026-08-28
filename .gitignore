@@ -26,13 +26,25 @@ copias/
 !copias/README.md
 
 # ── Clientes de Produção & Projetos Customizados ──────────────────────────────
-# Manter arquivos estruturais e DNA, ignorar dumps de assets pesados
+# Manter arquivos estruturais e DNA, ignorar dumps de assets pesados e screenshots
 clientes/**/site/assets/
+clientes/**/qa-reports/*.png
+clientes/**/qa-reports/*.jpg
 projetos/**/site/assets/
 !clientes/README.md
 !projetos/README.md
 
-# ── Design Vault (apenas artefatos compilados, não os scrapes brutos) ─────────
+# ── Imagens e Mídias Binárias (Design Vault, Clientes, Scrapes e QA) ─────────
+*.avif
+*.webp
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.mp4
+*.webm
+*.mov
+
 design-vault/*/tokens.json
 design-vault/*/tailwind.config.js
 design-vault/*/brand-spec.template.json
@@ -46,18 +58,6 @@ blob-report/
 .playwright/
 coverage/
 .nyc_output/
-
-# ── Screenshots de desenvolvimento (root-level e subpastas) ──────────────────
-/*.png
-/*.jpg
-/*.jpeg
-/*.webp
-caso*.png
-*_audit*.png
-*_diff*.png
-*_render*.png
-*_preview*.png
-screenshot*.png
 
 # ── Temporários & Logs ────────────────────────────────────────────────────────
 *.log

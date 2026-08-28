@@ -1,0 +1,17 @@
+{
+  "brandName": "AURA Private Residences",
+  "niche": "Incorporação Imobiliária de Luxo",
+  "theme": {
+    "bgBase": "#080807",
+    "bgSurface": "#121210",
+    "bgCard": "#181816",
+    "accent": "#C5A880",
+    "textMain": "#F5F5F0",
+    "textMuted": "#A0A09A"
+  },
+  "meta": {
+    "title": "AURA Private Residences | Arquitetura Autoral em São Paulo",
+    "description": "Residências suspensas exclusivas com vista definitiva e design biofílico.",
+    "lang": "pt-BR"
+  }
+}

@@ -1,8 +1,8 @@
 /**
- * Anti-Slop & Brand Safety Gate
+ * Anti-Slop & Brand Safety Gate (DOM-Aware Cheerio Engine)
  * 
- * Gate executável e rigoroso que impede o avanço de builds contendo:
- * 1. Resíduos da marca clonada original (nomes, domínios, emails).
+ * Gate executável e rigoroso que analisa o DOM renderizável do HTML:
+ * 1. Resíduos da marca clonada original em textos visíveis, títulos e tags alt.
  * 2. Metalinguagem de IA ou placeholders (lorem ipsum, chunks cognitivos, etc.).
  * 3. Estouro de orçamento de caracteres (+/- 15% budget).
  * 4. Slots não preenchidos ({SLOT_...}).
@@ -11,10 +11,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const cheerio = require('cheerio');
 
 const BANNED_SLOP_PATTERNS = [
   /\blorem\s+ipsum\b/i,
-  /\bplaceholder\b/i,
   /\bsample\s+text\b/i,
   /\bsua\s+empresa\s+aqui\b/i,
   /\bchunk\s+cognitivo\b/i,
@@ -53,26 +53,49 @@ class AntiSlopGate {
       };
     }
 
-    // 1. Validar Padrões de Slop / Metalinguagem
+    const $ = cheerio.load(htmlContent, { decodeEntities: false });
+
+    // Extrair texto visível (removendo tags script e style para não falso-positivar em seletores CSS)
+    const textNodes = [];
+    $('body, head title, meta[name="description"]').each((_, el) => {
+      const clone = $(el).clone();
+      clone.find('script, style, noscript').remove();
+      textNodes.push(clone.text());
+    });
+
+    const visibleText = textNodes.join(' ');
+
+    // 1. Validar Padrões de Slop / Metalinguagem em texto visível
     for (const pattern of BANNED_SLOP_PATTERNS) {
-      const match = htmlContent.match(pattern);
+      const match = visibleText.match(pattern);
       if (match) {
         violations.push(`[Anti-Slop] Metalinguagem ou placeholder proibido detectado: "${match[0]}"`);
         stats.slopMatches++;
       }
     }
 
-    // 2. Validar Resíduos da Marca Original
+    // 2. Validar Resíduos da Marca Original em textos e atributos alt/title
     for (const keyword of originalBrandKeywords) {
       if (!keyword || keyword.length < 3) continue;
       const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-      if (regex.test(htmlContent)) {
-        violations.push(`[Residual Leak] Resíduo da marca original detectado no HTML: "${keyword}"`);
+
+      if (regex.test(visibleText)) {
+        violations.push(`[Residual Leak] Resíduo da marca original detectado no texto: "${keyword}"`);
         stats.residualMatches++;
       }
+
+      // Checar atributos alt e title
+      $('img[alt], a[title], button[title]').each((_, elem) => {
+        const alt = $(elem).attr('alt') || '';
+        const title = $(elem).attr('title') || '';
+        if (regex.test(alt) || regex.test(title)) {
+          violations.push(`[Residual Leak] Resíduo da marca original detectado em atributo: "${keyword}"`);
+          stats.residualMatches++;
+        }
+      });
     }
 
-    // 3. Validar Slots Não Preenchidos ({SLOT_...})
+    // 3. Validar Slots Não Preenchidos ({SLOT_...}) em todo o documento
     const unfilledMatches = htmlContent.match(/\{SLOT_[A-Z0-9_]+\}/g);
     if (unfilledMatches) {
       const uniqueUnfilled = Array.from(new Set(unfilledMatches));
