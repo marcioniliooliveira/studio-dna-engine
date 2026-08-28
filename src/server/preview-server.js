@@ -2,11 +2,18 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 const { loadConfig } = require('../config');
 const { generateTailwindConfig } = require('../generators/tailwind-generator');
 const { createClientProject } = require('../generators/client-factory');
 const { runBoxDiffLinter } = require('../../scripts/box-diff-linter');
+const {
+  resolveStaticPath,
+  assertSafeExternalUrl,
+  assertSafeSlug,
+  parseByteRange,
+  readJsonBody,
+  isMutationAuthorized
+} = require('./security');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -38,46 +45,93 @@ const MIME_TYPES = {
 /**
  * Faz download assíncrono de asset remoto e salva em disco (Self-Healing)
  */
-function fetchAndSaveRemoteAsset(remoteUrl, localDestPath) {
+async function fetchAndSaveRemoteAsset(remoteUrl, localDestPath, options = {}) {
+  const validateUrl = options.validateUrl || assertSafeExternalUrl;
+  const maxBytes = options.maxBytes || 25 * 1024 * 1024;
+  const maxRedirects = options.maxRedirects ?? 3;
+  const redirectCount = options.redirectCount || 0;
+  let validatedUrl;
+  try {
+    validatedUrl = await validateUrl(remoteUrl);
+  } catch (error) {
+    return false;
+  }
+
   return new Promise((resolve) => {
     try {
-      const u = new URL(remoteUrl);
+      const u = validatedUrl instanceof URL ? validatedUrl : new URL(remoteUrl);
       const client = u.protocol === 'https:' ? https : http;
-      fs.mkdirSync(path.dirname(localDestPath), { recursive: true });
-      const file = fs.createWriteStream(localDestPath);
-      const req = client.get(remoteUrl, {
+      let file = null;
+      let settled = false;
+      const req = client.get(u, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
           'Accept': '*/*'
         }
       }, (res) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
+          const declaredSize = Number(res.headers['content-length'] || 0);
+          if (declaredSize > maxBytes) {
+            settled = true;
+            res.resume();
+            fs.unlink(localDestPath, () => resolve(false));
+            return;
+          }
+          fs.mkdirSync(path.dirname(localDestPath), { recursive: true });
+          file = fs.createWriteStream(localDestPath);
+          let received = 0;
+          res.on('data', (chunk) => {
+            received += chunk.length;
+            if (received <= maxBytes || settled) return;
+            settled = true;
+            res.unpipe(file);
+            res.destroy();
+            file.once('close', () => fs.unlink(localDestPath, () => resolve(false)));
+            file.destroy();
+          });
           res.pipe(file);
           file.on('finish', () => {
+            if (settled) return;
+            settled = true;
             file.close(() => {
               console.log(`✨ [Self-Healing Proxy] Asset baixado e curado: ${path.basename(localDestPath)} <- ${remoteUrl}`);
               resolve(true);
             });
           });
         } else if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          file.close();
-          fs.unlink(localDestPath, () => {});
+          if (redirectCount >= maxRedirects) {
+            settled = true;
+            res.resume();
+            fs.unlink(localDestPath, () => resolve(false));
+            return;
+          }
+          settled = true;
+          res.resume();
           const redirectUrl = new URL(res.headers.location, remoteUrl).href;
-          fetchAndSaveRemoteAsset(redirectUrl, localDestPath).then(resolve);
+          fs.unlink(localDestPath, () => {
+            fetchAndSaveRemoteAsset(redirectUrl, localDestPath, {
+              ...options,
+              redirectCount: redirectCount + 1
+            }).then(resolve);
+          });
         } else {
-          file.close();
+          settled = true;
           fs.unlink(localDestPath, () => {});
           resolve(false);
         }
       });
       req.on('error', () => {
-        file.close();
+        if (settled) return;
+        settled = true;
+        if (file) file.destroy();
         fs.unlink(localDestPath, () => {});
         resolve(false);
       });
       req.setTimeout(10000, () => {
+        if (settled) return;
+        settled = true;
         req.destroy();
-        file.close();
+        if (file) file.destroy();
         fs.unlink(localDestPath, () => {});
         resolve(false);
       });
@@ -97,25 +151,20 @@ function streamFileWithRange(req, res, filePath, contentType) {
 
   const baseHeaders = {
     'Content-Type': contentType,
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': '*',
-    'Cross-Origin-Resource-Policy': 'cross-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
     'Accept-Ranges': 'bytes'
   };
 
   if (range) {
-    const parts = range.replace(/bytes=/, '').split('-');
-    const start = parseInt(parts[0], 10);
-    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-
-    if (start >= fileSize || end >= fileSize || start > end) {
+    const parsedRange = parseByteRange(range, fileSize);
+    if (!parsedRange) {
       res.writeHead(416, {
-        'Content-Range': `bytes */${fileSize}`,
-        'Access-Control-Allow-Origin': '*'
+        'Content-Range': `bytes */${fileSize}`
       });
       return res.end();
     }
+
+    const { start, end } = parsedRange;
 
     const chunksize = (end - start) + 1;
     const stream = fs.createReadStream(filePath, { start, end });
@@ -156,11 +205,11 @@ function buildDashboardHtml(copias, clientes) {
     return '<div class="card">' +
       '<div>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
-          '<span class="badge badge-success">&#9679; Producao Isolada</span>' +
-          '<span style="font-size:0.78rem;color:var(--text-muted)">ICM Ready</span>' +
+          '<span class="badge">&#9679; Experimental</span>' +
+          '<span style="font-size:0.78rem;color:var(--text-muted)">Gates pendentes</span>' +
         '</div>' +
         '<h3>' + cl + '</h3>' +
-        '<p>Projeto de cliente desacoplado, sem peso de scraper, pronto para deploy no Vercel ou CDN.</p>' +
+        '<p>Artefato de cliente em validação. Consulte o relatório de qualidade antes de promover para produção.</p>' +
       '</div>' +
       '<div style="display:flex;gap:8px;margin-top:16px">' +
         '<a href="/clientes/' + cl + '/site/index.html" target="_blank" class="btn btn-primary" style="flex:1">&#128065;&#65039; Abrir Site</a>' +
@@ -242,8 +291,8 @@ function buildDashboardHtml(copias, clientes) {
 '  <main class="container">\n' +
 '    <section id="tab-clients" class="view-section active">\n' +
 '      <div class="form-panel">\n' +
-'        <h2 style="margin-bottom:8px;font-size:1.4rem">&#127981; Fabrica de Clientes One-Shot (ICM Engine)</h2>\n' +
-'        <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:24px">Gere um novo site desacoplado para um cliente aplicando um esqueleto de referencia do Vault em menos de 1 segundo.</p>\n' +
+'        <h2 style="margin-bottom:8px;font-size:1.4rem">&#127981; Pipeline de Transmutacao de Clientes</h2>\n' +
+'        <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:24px">Gere um artefato experimental a partir de uma referencia; validacao e promocao sao etapas separadas.</p>\n' +
 '        <div class="form-grid">\n' +
 '          <div class="input-field"><label>Nome da Marca / Cliente</label><input type="text" id="clientBrandName" placeholder="Ex: Negocia Bem Imobiliaria"></div>\n' +
 '          <div class="input-field"><label>Esqueleto de Referencia</label><select id="clientRefSelect">' + clientesOptions + '</select></div>\n' +
@@ -332,11 +381,15 @@ function buildDashboardHtml(copias, clientes) {
 function startPreviewServer(options = {}) {
   const opts = typeof options === 'number' ? { port: options } : (options || {});
   const config = loadConfig(opts);
-  const rootDir = process.cwd();
-  const copiasDir = path.resolve(config.outputDir || path.join(rootDir, 'copias'));
-  const clientesDir = path.resolve(path.join(rootDir, 'clientes'));
+  const rootDir = path.resolve(opts.rootDir || process.cwd());
+  const copiasDir = path.resolve(opts.outputDir || (opts.rootDir ? path.join(rootDir, 'copias') : config.outputDir) || path.join(rootDir, 'copias'));
+  const clientesDir = path.resolve(opts.clientesDir || path.join(rootDir, 'clientes'));
   const vaultDir = path.resolve(path.join(rootDir, 'design-vault'));
-  const port = opts.port || config.previewPort || 4000;
+  const port = opts.port ?? config.previewPort ?? 4000;
+  const mutationOptions = {
+    enabled: opts.enableMutations === true,
+    token: opts.mutationToken
+  };
 
   if (!fs.existsSync(copiasDir)) fs.mkdirSync(copiasDir, { recursive: true });
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
@@ -345,79 +398,83 @@ function startPreviewServer(options = {}) {
     // CORS preflight
     if (req.method === 'OPTIONS') {
       res.writeHead(204, {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': '*',
-        'Cross-Origin-Resource-Policy': 'cross-origin',
-        'Access-Control-Max-Age': '86400'
+        'Allow': 'GET, POST, OPTIONS',
+        'Cross-Origin-Resource-Policy': 'same-origin'
       });
       res.end();
       return;
     }
 
-    const parsedUrl = url.parse(req.url, true);
-    let pathname = decodeURIComponent(parsedUrl.pathname);
+    let pathname;
+    try {
+      const rawPathname = String(req.url || '/').split('?')[0];
+      pathname = decodeURIComponent(rawPathname);
+    } catch (error) {
+      res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('400 Bad Request');
+      return;
+    }
+
+    if (pathname.startsWith('/api/') && req.method !== 'GET' && !isMutationAuthorized(req, mutationOptions)) {
+      res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ error: 'Mutation APIs are disabled or unauthorized' }));
+      return;
+    }
 
     // ── API: Iniciar Extração ──────────────────────────────────────────────
     if (pathname === '/api/extract' && req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => { body += chunk; });
-      req.on('end', async () => {
-        try {
-          const data = JSON.parse(body || '{}');
-          if (!data.url) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'URL e obrigatoria' }));
-            return;
-          }
-          const { runPipeline } = require('../../index');
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, message: 'Extracao iniciada em segundo plano' }));
-          runPipeline({ url: data.url, mode: data.mode || 'all', headless: true }).catch(console.error);
-        } catch (e) {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data.url) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: e.message }));
+          res.end(JSON.stringify({ error: 'URL e obrigatoria' }));
+          return;
         }
-      });
+        const safeUrl = await assertSafeExternalUrl(data.url);
+        const { runPipeline } = require('../../index');
+        res.writeHead(202, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Extracao iniciada em segundo plano' }));
+        runPipeline({ url: safeUrl.href, mode: data.mode || 'all', headless: true }).catch(console.error);
+      } catch (error) {
+        res.writeHead(error.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error.message }));
+      }
       return;
     }
 
     // ── API: Criar Projeto de Cliente ─────────────────────────────────────
     if (pathname === '/api/client/create' && req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => { body += chunk; });
-      req.on('end', async () => {
-        try {
-          const data = JSON.parse(body || '{}');
-          if (!data.brandName) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Nome da marca e obrigatorio' }));
-            return;
-          }
-          const result = createClientProject({
-            brandName: data.brandName,
-            refSlug: data.refSlug || 'storeyarchitecture-co-uk',
-            brandSpec: { niche: data.niche, toneOfVoice: data.toneOfVoice, whatsapp: data.whatsapp }
-          });
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, result }));
-        } catch (e) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: e.message }));
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data.brandName) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Nome da marca e obrigatorio' }));
+          return;
         }
-      });
+        const refSlug = assertSafeSlug(data.refSlug || 'storeyarchitecture-co-uk');
+        const result = createClientProject({
+          brandName: data.brandName,
+          refSlug,
+          brandSpec: { niche: data.niche, toneOfVoice: data.toneOfVoice, whatsapp: data.whatsapp }
+        });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, result }));
+      } catch (error) {
+        res.writeHead(error.statusCode || 500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error.message }));
+      }
       return;
     }
 
     // ── API: Quality Gate ─────────────────────────────────────────────────
     if (pathname.startsWith('/api/audit/') && req.method === 'POST') {
-      const targetSlug = pathname.replace('/api/audit/', '');
       try {
+        const targetSlug = assertSafeSlug(pathname.replace('/api/audit/', ''));
         const audit = await runBoxDiffLinter(targetSlug, port + 10);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, audit }));
       } catch (e) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(e.statusCode || 500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
       }
       return;
@@ -440,7 +497,14 @@ function startPreviewServer(options = {}) {
 
     // ── API: Dados de um Site ─────────────────────────────────────────────
     if (pathname.startsWith('/api/site/')) {
-      const siteSlug = pathname.replace('/api/site/', '');
+      let siteSlug;
+      try {
+        siteSlug = assertSafeSlug(pathname.replace('/api/site/', ''));
+      } catch (error) {
+        res.writeHead(error.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error.message }));
+        return;
+      }
       let sitePath = path.join(copiasDir, siteSlug);
       if (!fs.existsSync(sitePath)) sitePath = path.join(clientesDir, siteSlug);
       if (!fs.existsSync(sitePath)) {
@@ -478,36 +542,35 @@ function startPreviewServer(options = {}) {
 
     // ── API: Salvar Brand Spec do Dev HUD (Tweakpane) ─────────────────────
     if (pathname === '/api/save-brand-spec' && req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => { body += chunk; });
-      req.on('end', () => {
-        try {
-          const data = JSON.parse(body);
-          const slug = data.slug || 'default';
-          const targetDir = path.join(clientesDir, slug);
-          if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
-          const specPath = path.join(targetDir, 'brand-spec.json');
-          let spec = {};
-          if (fs.existsSync(specPath)) {
-            try { spec = JSON.parse(fs.readFileSync(specPath, 'utf8')); } catch(e) {}
-          }
-          spec.colors = Object.assign(spec.colors || {}, data.colors || {});
-          fs.writeFileSync(specPath, JSON.stringify(spec, null, 2), 'utf8');
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, specPath }));
-        } catch(err) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, error: err.message }));
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        const slug = assertSafeSlug(data.slug);
+        const targetDir = path.join(clientesDir, slug);
+        if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+        const specPath = path.join(targetDir, 'brand-spec.json');
+        let spec = {};
+        if (fs.existsSync(specPath)) {
+          try { spec = JSON.parse(fs.readFileSync(specPath, 'utf8')); } catch(e) {}
         }
-      });
+        spec.colors = Object.assign(spec.colors || {}, data.colors || {});
+        fs.writeFileSync(specPath, JSON.stringify(spec, null, 2), 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, specPath }));
+      } catch (error) {
+        res.writeHead(error.statusCode || 500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: error.message }));
+      }
       return;
     }
 
     // ── Servir Arquivos Estáticos & Self-Healing Proxy ───────────────────
-    let filePath = path.join(copiasDir, pathname);
-
-    if (pathname.startsWith('/clientes/') || pathname.startsWith('/projetos/')) {
-      filePath = path.join(rootDir, pathname);
+    let filePath;
+    try {
+      filePath = resolveStaticPath({ rootDir, copiasDir, clientesDir, pathname });
+    } catch (error) {
+      res.writeHead(error.statusCode || 400, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('400 Bad Request');
+      return;
     }
 
     const referer = req.headers.referer || '';
@@ -536,34 +599,6 @@ function startPreviewServer(options = {}) {
           path.join(copiasDir, refererSiteSlug, 'site', cleanPath),
           path.join(copiasDir, refererSiteSlug, 'site', 'assets', cleanPath),
           path.join(copiasDir, refererSiteSlug, 'site', 'assets', path.basename(cleanPath))
-        );
-      }
-
-      const parts = pathname.split('/').filter(Boolean);
-      if (parts.length > 0) {
-        const siteSlug = parts[0];
-        const siteSubPath = parts.slice(1).join('/');
-        candidates.push(
-          path.join(copiasDir, siteSlug, 'site', siteSubPath),
-          path.join(copiasDir, siteSlug, 'site', 'assets', siteSubPath),
-          path.join(copiasDir, siteSlug, 'site', 'assets', path.basename(siteSubPath)),
-          path.join(clientesDir, siteSlug, 'site', siteSubPath),
-          path.join(clientesDir, siteSlug, 'site', 'assets', siteSubPath),
-          path.join(clientesDir, siteSlug, 'site', 'assets', path.basename(siteSubPath))
-        );
-      }
-
-      const allSites = [
-        ...(fs.existsSync(copiasDir) ? fs.readdirSync(copiasDir).map(d => path.join(copiasDir, d)) : []),
-        ...(fs.existsSync(clientesDir) ? fs.readdirSync(clientesDir).map(d => path.join(clientesDir, d)) : [])
-      ];
-
-      for (const siteDir of allSites) {
-        candidates.push(
-          path.join(siteDir, 'site', cleanPath),
-          path.join(siteDir, 'site', 'assets', cleanPath),
-          path.join(siteDir, 'site', 'assets', cleanPath.replace(/^assets\//, '')),
-          path.join(siteDir, 'site', 'assets', path.basename(cleanPath))
         );
       }
 
@@ -675,10 +710,7 @@ function startPreviewServer(options = {}) {
       if (ext === '.html') {
         res.writeHead(200, {
           'Content-Type': contentType,
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': '*',
-          'Cross-Origin-Resource-Policy': 'cross-origin'
+          'Cross-Origin-Resource-Policy': 'same-origin'
         });
         let content = fs.readFileSync(filePath, 'utf8');
         try {
@@ -699,15 +731,17 @@ function startPreviewServer(options = {}) {
       streamFileWithRange(req, res, filePath, contentType);
     } else {
       res.writeHead(404, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Access-Control-Allow-Origin': '*'
+        'Content-Type': 'text/plain; charset=utf-8'
       });
       res.end('404 Not Found');
     }
   });
 
-  server.listen(port, '0.0.0.0', () => {
-    console.log('\n👁️  [STUDIO DNA PRO v2.0] Servidor rodando em: \x1b[36mhttp://127.0.0.1:' + port + '\x1b[0m e \x1b[36mhttp://localhost:' + port + '\x1b[0m');
+  const host = opts.host || '127.0.0.1';
+  server.listen(port, host, () => {
+    if (opts.silent) return;
+    const activePort = server.address().port;
+    console.log('\n👁️  [STUDIO DNA PRO v2.0] Servidor rodando em: \x1b[36mhttp://127.0.0.1:' + activePort + '\x1b[0m e \x1b[36mhttp://localhost:' + activePort + '\x1b[0m');
     console.log('📁  Servindo: ' + copiasDir + ' e ' + clientesDir + '\n');
   });
 
@@ -715,5 +749,6 @@ function startPreviewServer(options = {}) {
 }
 
 module.exports = {
-  startPreviewServer
+  startPreviewServer,
+  fetchAndSaveRemoteAsset
 };

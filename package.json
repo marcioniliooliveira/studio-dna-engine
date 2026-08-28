@@ -8,6 +8,7 @@
     "studio-dna": "./bin/cli.js"
   },
   "scripts": {
+    "test": "node --test test/*.test.js",
     "start": "node bin/cli.js --preview --port 4000",
     "preview": "node bin/cli.js --preview --port 4000",
     "scrape": "node bin/cli.js",
@@ -17,6 +18,9 @@
     "normalize": "node scripts/normalize-all-copies.js",
     "inject": "node src/generators/slot-injector.js",
     "setup": "npx playwright install --with-deps chromium"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "keywords": [
     "playwright",

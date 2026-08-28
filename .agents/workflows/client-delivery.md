@@ -1,6 +1,6 @@
 # /client-delivery — Fluxo Canônico de Produção de Sites de Clientes
 
-Este workflow rege a criação desacoplada de sites para clientes finais utilizando a metodologia ICM (Inverse Cloning Methodology).
+Este workflow rege a criação desacoplada de sites para clientes finais. A ICM (Interpretable Context Methodology) controla quais instruções e referências cada estágio pode ler; a transformação do site é executada pelo pipeline determinístico de transmutação.
 
 ---
 
@@ -35,4 +35,4 @@ Este workflow rege a criação desacoplada de sites para clientes finais utiliza
 ---
 
 ## 📦 Entregável
-A pasta `clientes/<nome-do-cliente>/` está 100% pronta para deploy no Vercel, Netlify ou Edge CDN sem nenhuma dependência do scraper.
+A pasta `clientes/<nome-do-cliente>/` só pode ser considerada pronta para deploy depois que os gates obrigatórios registrarem evidência de aprovação no artefato de produção.

@@ -1,8 +1,8 @@
 # 🌐 Studio DNA PRO — Awwwards Engine & Client Production Hub
 
-> **Motor de Engenharia Reversa, Extração de Design DNA, Pipeline ICM (Inverse Cloning Methodology) e Fábrica de Sites de Clientes One-Shot.**
+> **Motor experimental de engenharia reversa, extração de Design DNA e transmutação determinística orientado por ICM (Interpretable Context Methodology).**
 
-Este repositório é uma infraestrutura completa para equipes criativas e desenvolvedores que desejam dissecar sites premiados (*Awwwards, Godly, FWA*) e transformá-los em **esqueletos matemáticos reutilizáveis**, gerando sites para clientes finais com **física de movimento autoral, 0 erros JS, LCP sub-segundo e zero AI Slop**.
+Este repositório pesquisa como dissecar referências web complexas e transformá-las em **estruturas reutilizáveis e verificáveis**. Metas como ausência de erros, performance e prevenção de AI slop são quality gates a serem comprovados; não são garantias do estado atual. Consulte [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) antes de usar o projeto em produção.
 
 ---
 
@@ -24,7 +24,9 @@ Acesse no seu navegador: **`http://127.0.0.1:4000/`**
 
 ---
 
-## 🏗️ O Pipeline ICM (Como a Metodologia Funciona)
+## 🏗️ Pipeline de Transmutação (Como a Metodologia Funciona)
+
+ICM organiza o contexto e os contratos usados pelos agentes. O pipeline abaixo descreve a transformação de referências e é uma responsabilidade separada.
 
 O fluxo de trabalho é estritamente desacoplado em 5 fases para garantir que IAs nunca degradem o design original:
 
