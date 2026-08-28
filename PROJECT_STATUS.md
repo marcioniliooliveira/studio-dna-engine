@@ -11,12 +11,14 @@ This file separates observed project state from product vision. Update a claim o
 |---|---|---|
 | JavaScript source is syntactically valid | `node --check` across project JavaScript files on 2026-08-28 | Observed pass |
 | Dependency audit has no known production vulnerability | `npm audit --omit=dev` on 2026-08-28 | Observed pass at that date |
-| Automated test suite passes | `npm test` runs 35 tests across security, pipeline, ICM and vault | Observed pass (35/35) |
+| Automated test suite passes | `npm test` runs 41 tests across security, pipeline, ICM, vault, transmuter e anti-slop | Observed pass (41/41) |
 | CI is reproducible | CI configured with `npm ci` and `npm test`; lockfile versioned | Observed pass |
 | Preview is client-isolated | Path traversal and cross-client leakage blocked and tested in `test/server-security.test.js` | Observed pass |
 | Preview is local-only | Server binds strictly to `127.0.0.1` and tested in `test/preview-server.integration.test.js` | Observed pass |
 | ICM context routing enforced | Cross-client and unselected reference access blocked in `test/icm-context-router.test.js` | Observed pass |
 | Design Vault integrity verified | Schema, patterns and templates validated in `test/vault-integrity.test.js` | Observed pass |
+| Deterministic transmutation verified | Idempotência e hashes SHA-256 validados em `test/transmuter-and-anti-slop.test.js` | Observed pass |
+| Anti-Slop Gate enforced | Resíduos de marca original, meta-linguagem, slots órfãos e budget $\pm 15\%$ validados em `test/transmuter-and-anti-slop.test.js` | Observed pass |
 | Client pages have zero runtime errors | Five previewed clients emitted `Unexpected token 'export'` at baseline | Pending repair |
 | Quality gate validates visual regression | Current implementation captures screenshots without a pixel-diff assertion | Pending step 8 |
 | DNA Lock is per-client | Per-client contracts formalized in `icm/_core/contracts.js` | In progress |
