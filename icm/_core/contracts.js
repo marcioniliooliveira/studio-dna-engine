@@ -115,15 +115,36 @@ const STAGE_CONTRACTS = {
     outputFiles: ['linter-report.json'],
     validateOutput(report) {
       if (!report || typeof report !== 'object') return { valid: false, error: 'Relatório de auditoria inválido' };
-      const jsErrors = report.jsErrors || 0;
-      const brokenImages = report.brokenImages || 0;
-      
+      const gates = report.gates;
+      if (!gates || !gates.antiSlop || !gates.console || !gates.network || !gates.structural) {
+        return {
+          valid: false,
+          passed: false,
+          error: 'Relatório de quality gate incompleto'
+        };
+      }
+
+      const jsErrors = gates.console.errorsCount;
+      const brokenImages = gates.structural.brokenImagesCount;
+      const networkFailures = gates.network.failedRequestsCount;
+      const gateResults = {
+        antiSlop: gates.antiSlop.passed === true,
+        console: gates.console.passed === true,
+        network: gates.network.passed === true,
+        structural: gates.structural.passed === true
+      };
+      const failedGates = Object.entries(gateResults)
+        .filter(([, passed]) => !passed)
+        .map(([name]) => name);
+      const passed = failedGates.length === 0;
+
       return {
-        valid: jsErrors === 0 && brokenImages === 0,
-        passed: jsErrors === 0 && brokenImages === 0,
+        valid: passed,
+        passed,
         jsErrors,
         brokenImages,
-        error: (jsErrors > 0 || brokenImages > 0) ? `Quality gate falhou: ${jsErrors} erros JS, ${brokenImages} imagens 404` : null
+        networkFailures,
+        error: passed ? null : `Quality gate falhou: ${failedGates.join(', ')}`
       };
     }
   }

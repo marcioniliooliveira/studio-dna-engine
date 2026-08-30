@@ -71,3 +71,56 @@ test('ICM Stage Contract validates content slots against anti-slop rules', () =>
   });
   assert.equal(cleanRes.valid, true);
 });
+
+test('ICM Stage 05 rejects a network failure in the nested quality report', () => {
+  const contract = STAGE_CONTRACTS[STAGES.STAGE_05_QUALITY_GATE];
+  const result = contract.validateOutput({
+    status: 'failed',
+    gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 },
+      network: { passed: false, failedRequestsCount: 1 },
+      structural: { passed: true, brokenImagesCount: 0 }
+    }
+  });
+
+  assert.equal(result.valid, false);
+  assert.equal(result.passed, false);
+  assert.equal(result.networkFailures, 1);
+  assert.match(result.error, /network/i);
+});
+
+test('ICM Stage 05 accepts a candidate with all nested runtime gates passed', () => {
+  const contract = STAGE_CONTRACTS[STAGES.STAGE_05_QUALITY_GATE];
+  const result = contract.validateOutput({
+    status: 'candidate',
+    gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 },
+      network: { passed: true, failedRequestsCount: 0 },
+      structural: { passed: true, brokenImagesCount: 0 }
+    }
+  });
+
+  assert.equal(result.valid, true);
+  assert.equal(result.passed, true);
+  assert.equal(result.jsErrors, 0);
+  assert.equal(result.brokenImages, 0);
+  assert.equal(result.networkFailures, 0);
+  assert.equal(result.error, null);
+});
+
+test('ICM Stage 05 rejects an incomplete nested quality report', () => {
+  const contract = STAGE_CONTRACTS[STAGES.STAGE_05_QUALITY_GATE];
+  const result = contract.validateOutput({
+    status: 'candidate',
+    gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 }
+    }
+  });
+
+  assert.equal(result.valid, false);
+  assert.equal(result.passed, false);
+  assert.match(result.error, /incompleto/i);
+});
