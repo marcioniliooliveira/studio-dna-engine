@@ -14,6 +14,8 @@ This roadmap is ordered by dependency and proof. A milestone is promoted only wh
 
 **Outcome:** Existing pipeline status is accurate and every required quality condition affects promotion.
 
+**Status:** Observed complete for the core runtime candidate scope on 2026-08-30; visual regression, accessibility and performance remain unverified.
+
 **Work:**
 
 - Make network failures fail the unified gate and add a regression test.
@@ -22,20 +24,23 @@ This roadmap is ordered by dependency and proof. A milestone is promoted only wh
 - Align `PROJECT_STATUS.md`, tests, and reports with actual runtime evidence.
 - Establish a template promotion checklist: experimental → candidate → verified.
 
-**Exit evidence:** A clean checkout reproduces a verified pilot and fails when any required gate fails.
+**Exit evidence:** A clean checkout reproduces a candidate pilot with all four core runtime gates passing, fails when a required core gate fails, and reports unsupported scopes as unverified.
 
 ## M2 — Versioned artifact registry and workflow state
 
-**Outcome:** A client run can be paused, resumed, audited, and reproduced without reading an agent conversation.
+**Outcome:** A client run can be planned once, paused, resumed, audited, costed, and reproduced without reading an agent conversation.
 
 **Work:**
 
 - Define schemas for run context, decisions, concept sessions, visual targets, tasks, results, and approvals.
 - Add an append-only run ledger with hashes and provenance.
+- Add a compact blueprint wire schema and a one-call `SolBlueprintAdapter`.
+- Validate DAG acyclicity, budgets, client scope, tools and gates before execution.
+- Record model usage, cache status, retries, latency and known or estimated cost from the first run.
 - Implement the XState workflow state machine and persistence adapter.
 - Expose controlled CLI or MCP commands for starting, inspecting, approving, and resuming a run.
 
-**Exit evidence:** A test can resume a paused run from persisted state and reject illegal transitions or cross-client artifacts.
+**Exit evidence:** Tests prove one architect call per plan, reject invalid DAGs and budgets, resume persisted state, and block illegal transitions or cross-client artifacts.
 
 ## M3 — Reference intelligence and curated template promotion
 
@@ -71,10 +76,13 @@ This roadmap is ordered by dependency and proof. A milestone is promoted only wh
 
 - Implement `task-package.json` and `task-result.json` schemas.
 - Add the initial Gemini IDE adapter; use manual package exchange if no reliable API/CLI/MCP integration exists.
-- Define executor scopes, budgets, retry caps, and structured outputs.
+- Add AST-based context projection and progressive disclosure; never mutate source while compacting context.
+- Resolve only the tool definitions declared by the active DAG node.
+- Define executor scopes, budgets, error fingerprints, retry caps, and structured outputs.
+- Route non-interactive eligible work to Batch/Flex and keep interactive work on Standard.
 - Add independent verifier tasks and targeted repair loops.
 
-**Exit evidence:** A visual or bug-fix task is executed through the adapter, independently verified, and recorded with cost and outcome.
+**Exit evidence:** A visual or bug-fix task is executed through the adapter, independently verified, stopped on repeated failure, and recorded with tokens, cost and outcome.
 
 ## M6 — Visual QA and production-loop completion
 

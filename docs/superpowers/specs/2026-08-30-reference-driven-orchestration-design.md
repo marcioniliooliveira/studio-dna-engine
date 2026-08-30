@@ -108,6 +108,28 @@ The initial Gemini IDE adapter can exchange a `task-package.json` and `task-resu
 
 Each task package includes a client ID, allowed inputs, allowed paths, expected artifacts, acceptance gates, token/cost budget, and maximum attempts. Executors cannot choose a client, reference, or promotion state.
 
+## Token-aware blueprint policy
+
+GPT-5.6 Sol is a stateless blueprint compiler, not the runtime orchestrator. For each plan version it receives a frozen context manifest and returns one compact JSON DAG without prose, tools, or follow-up turns. The Node.js control plane validates and schedules that DAG.
+
+The normal run permits exactly one Sol call. A fatal planning contradiction transitions to `human_intervention`; after explicit approval, the control plane may create one new plan version using only the failure delta, affected artifact hashes, remaining budget, and unchanged constraints. This is a new immutable plan version, not a recursive conversation.
+
+Compact keys exist only in model wire payloads. After schema validation, the control plane expands them into descriptive internal objects. This keeps model payloads small without sacrificing code readability.
+
+Before any node runs, the validator rejects cycles, missing dependencies, undeclared tools, cross-client inputs, unknown gates, non-positive budgets, and totals above the run budget.
+
+## Context and tool policy
+
+Executor context uses progressive disclosure. The first package contains artifact hashes, AST symbol/import summaries, exact allowed paths, and requested outputs. The executor may request exact source slices through declared read tools. Source files are never rewritten merely to reduce prompt tokens.
+
+Tool definitions are selected per node from a registry. A node cannot call a tool absent from its blueprint allow-list. Deterministic parsing, hashing, diffing, build execution, pixel comparison, and gate evaluation remain outside models whenever possible.
+
+## Cost evidence
+
+Every model call emits an append-only cost event with run ID, node ID, model, service mode, input tokens, cached tokens, output/thinking tokens, latency, attempt, and known or estimated USD cost. Unknown IDE usage is recorded as unknown, never zero.
+
+The initial optimization target is at least 50% lower model cost than a premium-iterative baseline while preserving gate pass rate and human-correction rate. Higher savings are not claimed until measured by repeated comparable runs.
+
 ## Quality architecture
 
 The current quality gate remains the starting point, but must become fail-closed for every reported gate. The target gate evaluates:
