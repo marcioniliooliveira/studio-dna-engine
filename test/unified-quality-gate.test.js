@@ -39,6 +39,41 @@ test('UnifiedQualityGate: audits a clean site and returns verified status', asyn
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
+test('UnifiedQualityGate: fails when a requested asset returns 404', async () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uqg-test-network-'));
+  const siteDir = path.join(tmpDir, 'site');
+  fs.mkdirSync(siteDir, { recursive: true });
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>Missing Asset</title>
+  <script src="/missing.js"></script>
+</head>
+<body>
+  <header><h1>Empreendimento Exclusivo</h1></header>
+  <main><section><p>Descritivo arquitetÃ´nico elegante e inovador.</p></section></main>
+  <footer><p>Todos os direitos reservados.</p></footer>
+</body>
+</html>`;
+
+  fs.writeFileSync(path.join(siteDir, 'index.html'), html, 'utf8');
+
+  const report = await UnifiedQualityGate.auditSite({
+    siteDir,
+    clientSlug: 'test-network-client',
+    headless: true
+  });
+
+  assert.equal(report.gates.network.passed, false);
+  assert.equal(report.gates.network.failures.length, 1);
+  assert.equal(report.gates.network.failures[0].status, 404);
+  assert.equal(report.passed, false);
+  assert.equal(report.status, 'failed');
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+});
+
 test('UnifiedQualityGate: detects broken slop and fails the gate', async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uqg-test-fail-'));
   const siteDir = path.join(tmpDir, 'site');
