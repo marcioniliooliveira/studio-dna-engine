@@ -12,7 +12,8 @@ This file separates observed project state from product vision. Update a claim o
 | JavaScript source is syntactically valid | `node --check` across 55 project JavaScript files on 2026-08-28 | Observed pass (0 syntax errors) |
 | Dependency audit has no known production vulnerability | `npm audit --omit=dev` on 2026-08-28 | Observed pass at that date |
 | Automated test suite passes | `npm test` executed on 2026-08-30 across security, pipeline, ICM, vault, transmuter, anti-slop, pilot runner and unified quality gate | Observed pass (51/51) |
-| CI uses reproducible install commands | Lockfile versioned and CI configured with `npm ci` and `npm test` | Documented; current-commit CI reproduction unverified |
+| CI uses reproducible install commands | Lockfile versioned and CI configured with `npm ci` and `npm test` | Documented; remote CI execution unverified |
+| Clean-worktree reproduction passes | Detached worktree at `e03f833`: `npm ci` (0 vulnerabilities), `npm test` (51/51) and pilot candidate audit on 2026-08-30 | Observed pass for `e03f833` |
 | Preview is client-isolated | Path traversal and cross-client leakage blocked and tested in `test/server-security.test.js` | Observed pass |
 | Preview is local-only | Server binds strictly to `127.0.0.1` and is tested in `test/preview-server.integration.test.js` | Observed pass |
 | ICM context routing is enforced | Cross-client and unselected-reference access blocked in `test/icm-context-router.test.js` | Observed pass |
