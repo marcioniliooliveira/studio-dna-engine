@@ -35,6 +35,12 @@ test('UnifiedQualityGate: audits a clean site and returns verified status', asyn
   assert.equal(report.gates.console.passed, true);
   assert.equal(report.gates.structural.passed, true);
   assert.equal(report.gates.antiSlop.passed, true);
+  assert.match(report.artifacts.runtimeBaselinePath, /qa-reports\/runtime-baseline\.png$/);
+  assert.equal(
+    fs.existsSync(path.resolve(process.cwd(), report.artifacts.runtimeBaselinePath)),
+    true
+  );
+  assert.equal(Object.hasOwn(report.artifacts, 'screenshotPath'), false);
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });

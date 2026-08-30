@@ -191,13 +191,13 @@ class UnifiedQualityGate {
         };
       });
 
-      // 4. Capturar Golden Screenshot de Verificação
+      // 4. Capturar baseline visual da execução
       const reportsDir = path.join(parentDir, 'qa-reports');
       if (!fs.existsSync(reportsDir)) {
         fs.mkdirSync(reportsDir, { recursive: true });
       }
-      const screenshotPath = path.join(reportsDir, 'verified-golden-preview.png');
-      await page.screenshot({ path: screenshotPath, fullPage: false });
+      const runtimeBaselinePath = path.join(reportsDir, 'runtime-baseline.png');
+      await page.screenshot({ path: runtimeBaselinePath, fullPage: false });
 
       // 5. Avaliação Final dos Gates
       const passed = antiSlopReport.passed &&
@@ -236,7 +236,7 @@ class UnifiedQualityGate {
         },
         artifacts: {
           htmlPath: path.relative(process.cwd(), htmlPath).replace(/\\/g, '/'),
-          screenshotPath: path.relative(process.cwd(), screenshotPath).replace(/\\/g, '/')
+          runtimeBaselinePath: path.relative(process.cwd(), runtimeBaselinePath).replace(/\\/g, '/')
         }
       };
 
