@@ -46,6 +46,12 @@ projetos/**/site/assets/
 *.webm
 *.mov
 
+# Artefatos mínimos e reproduzíveis do template piloto Elyse
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.avif
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.jpg
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.mp4
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.webm
+
 design-vault/**/site/assets/
 
 # ── QA Reports & Screenshots de Auditoria ────────────────────────────────────

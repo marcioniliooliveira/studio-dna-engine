@@ -3,9 +3,52 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('node:child_process');
+const cheerio = require('cheerio');
 
 const rootDir = path.resolve(__dirname, '..');
 const vaultIndexPath = path.join(rootDir, 'design-vault/INDEX.json');
+
+function normalizeAssetReference(reference) {
+  const withoutDescriptor = reference.trim().replace(/\s+\d+(?:\.\d+)?[wx]$/, '');
+  const withoutQuery = withoutDescriptor.split(/[?#]/, 1)[0];
+  return decodeURIComponent(withoutQuery).replace(/^\.?\//, '');
+}
+
+function collectLocalAssetReferences(html) {
+  const $ = cheerio.load(html);
+  const references = new Set();
+  const addReference = reference => {
+    if (/^\.?\/assets\//.test(reference.trim())) {
+      references.add(normalizeAssetReference(reference));
+    }
+  };
+
+  $('*').each((_, element) => {
+    for (const [name, value] of Object.entries(element.attribs || {})) {
+      if (name === 'srcset') {
+        value.split(',').forEach(addReference);
+      } else {
+        addReference(value);
+      }
+
+      for (const match of value.matchAll(/url\(\s*(?:["']([^"']+)["']|([^\s)]+))\s*\)/g)) {
+        addReference(match[1] || match[2]);
+      }
+    }
+  });
+
+  $('style, script').each((_, element) => {
+    const content = $(element).html() || '';
+    for (const match of content.matchAll(/(["'])(\.?\/assets\/.*?)\1/g)) {
+      addReference(match[2]);
+    }
+    for (const match of content.matchAll(/url\(\s*(?:["']([^"']+)["']|([^\s)]+))\s*\)/g)) {
+      addReference(match[1] || match[2]);
+    }
+  });
+
+  return [...references].sort();
+}
 
 test('Design Vault INDEX.json exists and contains required tiers', () => {
   assert.ok(fs.existsSync(vaultIndexPath), 'design-vault/INDEX.json deve existir');
@@ -55,5 +98,27 @@ test('Design Vault declared artifacts are not ignored by Git', () => {
         `Artefato ${key} (${artifactPath}) declarado pelo Vault não pode ser ignorado pelo Git`
       );
     }
+  }
+});
+
+test('Elyse template closes and versions every local asset reference', () => {
+  const templateDir = path.join(rootDir, 'design-vault/elyse-residence-dev-webflow-io');
+  const skeleton = fs.readFileSync(path.join(templateDir, 'skeleton.html'), 'utf8');
+  const references = collectLocalAssetReferences(skeleton);
+
+  assert.ok(references.length >= 50, 'O teste deve cobrir atributos, srcset, CSS e scripts do template');
+
+  for (const reference of references) {
+    const absolutePath = path.join(templateDir, reference);
+    assert.ok(fs.existsSync(absolutePath), `Asset local do skeleton deve existir: ${reference}`);
+
+    const repositoryPath = path.posix.join(
+      'design-vault/elyse-residence-dev-webflow-io',
+      reference.replace(/\\/g, '/')
+    );
+    const result = spawnSync('git', ['check-ignore', '--quiet', '--', repositoryPath], {
+      cwd: rootDir
+    });
+    assert.notEqual(result.status, 0, `Asset local do skeleton não pode ser ignorado: ${repositoryPath}`);
   }
 });
