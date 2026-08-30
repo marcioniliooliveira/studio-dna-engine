@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('node:child_process');
 
 const rootDir = path.resolve(__dirname, '..');
 const vaultIndexPath = path.join(rootDir, 'design-vault/INDEX.json');
@@ -34,6 +35,25 @@ test('Design Vault templates contain their declared artifacts', () => {
     for (const [key, relativeFile] of Object.entries(tpl.artifacts)) {
       const artifactPath = path.join(tplDir, relativeFile);
       assert.ok(fs.existsSync(artifactPath), `Artefato ${key} (${relativeFile}) deve existir em ${tpl.path}`);
+    }
+  }
+});
+
+test('Design Vault declared artifacts are not ignored by Git', () => {
+  const indexData = JSON.parse(fs.readFileSync(vaultIndexPath, 'utf8'));
+
+  for (const tpl of indexData.templates) {
+    for (const [key, relativeFile] of Object.entries(tpl.artifacts)) {
+      const artifactPath = path.posix.join(tpl.path.replace(/\\/g, '/'), relativeFile);
+      const result = spawnSync('git', ['check-ignore', '--quiet', '--', artifactPath], {
+        cwd: rootDir
+      });
+
+      assert.notEqual(
+        result.status,
+        0,
+        `Artefato ${key} (${artifactPath}) declarado pelo Vault não pode ser ignorado pelo Git`
+      );
     }
   }
 });

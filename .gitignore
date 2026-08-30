@@ -46,9 +46,6 @@ projetos/**/site/assets/
 *.webm
 *.mov
 
-design-vault/*/tokens.json
-design-vault/*/tailwind.config.js
-design-vault/*/brand-spec.template.json
 design-vault/**/site/assets/
 
 # ── QA Reports & Screenshots de Auditoria ────────────────────────────────────
