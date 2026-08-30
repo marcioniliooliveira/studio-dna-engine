@@ -14,6 +14,25 @@ const path = require('path');
 const { runDeterministicTransmutation, createCompositionSpec } = require('../src/pipeline/transmuter');
 const { UnifiedQualityGate } = require('../src/qa/unified-quality-gate');
 
+function assertCoreQualityGatesPassed(qualityReport) {
+  if (qualityReport.passed !== true) {
+    throw new Error(`Pilot quality gates failed (status: ${qualityReport.status})`);
+  }
+}
+
+async function runPilotMain({
+  runPilot = buildAndCertifyPilot,
+  runtime = process,
+  reportError = console.error
+} = {}) {
+  try {
+    await runPilot();
+  } catch (error) {
+    runtime.exitCode = 1;
+    reportError(error);
+  }
+}
+
 async function buildAndCertifyPilot() {
   const projectRoot = path.resolve(__dirname, '..');
   const clientSlug = 'piloto-elyse-luxe';
@@ -165,6 +184,7 @@ async function buildAndCertifyPilot() {
   });
 
   console.log(`📊 [Pilot Candidate Audit] Status: ${qualityReport.status.toUpperCase()} (Core gates passed: ${qualityReport.passed})`);
+  assertCoreQualityGatesPassed(qualityReport);
   return {
     clientSlug,
     clientDir,
@@ -174,7 +194,11 @@ async function buildAndCertifyPilot() {
 }
 
 if (require.main === module) {
-  buildAndCertifyPilot().catch(console.error);
+  runPilotMain();
 }
 
-module.exports = { buildAndCertifyPilot };
+module.exports = {
+  assertCoreQualityGatesPassed,
+  buildAndCertifyPilot,
+  runPilotMain
+};
