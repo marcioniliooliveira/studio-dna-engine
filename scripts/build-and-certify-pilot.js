@@ -1,12 +1,12 @@
 /**
- * Piloto Elyse Luxe — ICM End-to-End Build & Certification Runner
+ * Piloto Elyse Luxe — ICM End-to-End Build & Candidate Audit Runner
  * 
  * Executa o ciclo completo dos 5 estágios ICM:
  * 1. Reference Selection (elyse-residence-dev-webflow-io)
  * 2. Brand Spec & DNA Lock (AURA Luxury Residences)
  * 3. Slot Composition (Copy 100% limpa e com budget +/- 15%)
  * 4. Deterministic Build Transmutation (Idempotente com build-manifest.json)
- * 5. Unified Quality Gate (0 JS errors, 0 broken images, 0 slop, golden screenshot)
+ * 5. Unified Quality Gate (core runtime gates and runtime baseline capture)
  */
 
 const fs = require('fs');
@@ -21,7 +21,7 @@ async function buildAndCertifyPilot() {
   const siteDir = path.join(clientDir, 'site');
   const vaultRefDir = path.join(projectRoot, 'design-vault/elyse-residence-dev-webflow-io');
 
-  console.log(`🚀 [Pilot Runner] Iniciando certificação do piloto: ${clientSlug}`);
+  console.log(`🚀 [Pilot Runner] Iniciando build e auditoria candidate do piloto: ${clientSlug}`);
 
   // Estágio 01: Reference Selection
   const refSelection = {
@@ -164,7 +164,7 @@ async function buildAndCertifyPilot() {
     headless: true
   });
 
-  console.log(`📊 [Pilot QA Status] Status: ${qualityReport.status.toUpperCase()} (Passed: ${qualityReport.passed})`);
+  console.log(`📊 [Pilot Candidate Audit] Status: ${qualityReport.status.toUpperCase()} (Core gates passed: ${qualityReport.passed})`);
   return {
     clientSlug,
     clientDir,

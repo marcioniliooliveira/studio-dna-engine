@@ -6,7 +6,7 @@ const os = require('os');
 
 const { UnifiedQualityGate } = require('../src/qa/unified-quality-gate');
 
-test('UnifiedQualityGate: audits a clean site and returns verified status', async () => {
+test('UnifiedQualityGate: audits a clean site and returns candidate status', async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uqg-test-clean-'));
   const siteDir = path.join(tmpDir, 'site');
   fs.mkdirSync(siteDir, { recursive: true });
@@ -31,7 +31,10 @@ test('UnifiedQualityGate: audits a clean site and returns verified status', asyn
   });
 
   assert.equal(report.passed, true);
-  assert.equal(report.status, 'verified');
+  assert.equal(report.status, 'candidate');
+  assert.equal(report.assessments.accessibility.status, 'unverified');
+  assert.equal(report.assessments.performance.status, 'unverified');
+  assert.equal(report.assessments.visualRegression.status, 'unverified');
   assert.equal(report.gates.console.passed, true);
   assert.equal(report.gates.structural.passed, true);
   assert.equal(report.gates.antiSlop.passed, true);

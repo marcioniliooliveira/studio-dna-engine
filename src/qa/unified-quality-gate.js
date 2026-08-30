@@ -205,11 +205,27 @@ class UnifiedQualityGate {
                      networkFailures.length === 0 &&
                      domAudit.brokenImages.length === 0;
 
+      const assessments = {
+        visualRegression: {
+          status: 'unverified',
+          reason: 'Nenhuma comparação com runtime baseline foi executada.'
+        },
+        accessibility: {
+          status: 'unverified',
+          reason: 'Nenhuma auditoria de acessibilidade executável foi configurada.'
+        },
+        performance: {
+          status: 'unverified',
+          reason: 'Nenhum budget de performance reproduzível foi configurado.'
+        }
+      };
+
       const report = {
         timestamp: new Date().toISOString(),
         clientSlug: clientSlug || path.basename(parentDir),
         passed,
-        status: passed ? 'verified' : 'failed',
+        status: passed ? 'candidate' : 'failed',
+        assessments,
         gates: {
           antiSlop: {
             passed: antiSlopReport.passed,
