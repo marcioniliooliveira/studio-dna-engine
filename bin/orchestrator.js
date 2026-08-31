@@ -110,6 +110,12 @@ function createOrchestrator({
   approver
 } = {}) {
   if (typeof rootDir !== 'string' || rootDir.length === 0) throw new TypeError('rootDir is required');
+  let approverId;
+  try {
+    approverId = assertSafeSlug(approver);
+  } catch (error) {
+    throw cliError('CLI_CONFIGURATION_INVALID', 'A safe approver slug must be injected by the composition root');
+  }
   const runStore = createRunStore({ rootDir });
 
   function requireStartDependencies() {
@@ -122,8 +128,31 @@ function createOrchestrator({
   }
 
   function requireExecutionDependencies() {
-    if (!executors || !verifier || !blueprintPolicy) {
+    if (!executors || !verifier || !blueprintPolicy || typeof candidateArtifact !== 'function' || typeof qaEvidence !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Execution adapters must be injected by the composition root');
+    }
+  }
+
+  async function finalizeCandidate(runRef, blueprint, actor) {
+    try {
+      let artifact = actor.getSnapshot().context.candidateArtifact;
+      if (artifact === null) artifact = await candidateArtifact({ runRef, blueprint });
+      actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifact });
+      if (actor.getSnapshot().value !== 'verifying') throw new TypeError('Candidate artifact was rejected by the workflow');
+      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact });
+      runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
+      actor.send({ type: 'FULL_QA_PASSED', evidence });
+      if (actor.getSnapshot().value === 'candidate') {
+        persistWorkflow(runStore, runRef, actor);
+        return 'candidate';
+      }
+      throw new TypeError('Full-QA evidence is not bound to the candidate artifact');
+    } catch (error) {
+      const evidence = { reportId: `${runRef.runId}-qa-evidence`, status: 'failed' };
+      runStore.appendEvent(runRef, { type: 'QA_BLOCKED', data: { evidence } });
+      actor.send({ type: 'QA_BLOCKED', evidence });
+      persistWorkflow(runStore, runRef, actor);
+      return actor.getSnapshot().value;
     }
   }
 
@@ -131,7 +160,9 @@ function createOrchestrator({
     requireExecutionDependencies();
     const run = runStore.loadRun(runRef);
     const node = nextReadyNode(run, blueprint);
-    if (!node) return actor.getSnapshot().value;
+    if (!node) return actor.getSnapshot().value === 'executing'
+      ? finalizeCandidate(runRef, blueprint, actor)
+      : actor.getSnapshot().value;
     const nodeExecutors = Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
       identity: executor.identity,
       async execute(taskPackage) {
@@ -154,17 +185,7 @@ function createOrchestrator({
     const after = runStore.loadRun(runRef);
     const pending = nextReadyNode(after, blueprint);
     if (!pending && !after.events.some((event) => event.type === 'TASK_FAILED')) {
-      if (typeof candidateArtifact !== 'function' || typeof qaEvidence !== 'function') {
-        throw cliError('CLI_QA_UNAVAILABLE', 'Candidate artifact and full-QA evidence adapters are required for promotion');
-      }
-      const artifact = await candidateArtifact({ runRef, blueprint });
-      actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifact });
-      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact });
-      runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
-      actor.send({ type: 'FULL_QA_PASSED', evidence });
-      if (actor.getSnapshot().value !== 'candidate') {
-        throw cliError('CLI_QA_INVALID', 'Full-QA evidence is not bound to the candidate artifact');
-      }
+      return finalizeCandidate(runRef, blueprint, actor);
     } else if (pending) {
       runStore.appendEvent(runRef, { type: 'RUN_PAUSED', data: { nodeId: node.id } });
     }
@@ -215,7 +236,10 @@ function createOrchestrator({
     const run = runStore.loadRun(runRef);
     const blueprint = blueprintFor(run);
     const actor = workflowActorFor(run);
-    if (actor.getSnapshot().value !== 'executing') {
+    if (actor.getSnapshot().value === 'repairing') {
+      actor.send({ type: 'REPAIR_COMPLETED' });
+      persistWorkflow(runStore, runRef, actor);
+    } else if (actor.getSnapshot().value !== 'executing') {
       throw cliError('CLI_RESUME_INVALID_STATE', 'Only executing runs may be resumed');
     }
     const state = await executeOne(runRef, blueprint, actor);
@@ -236,10 +260,9 @@ function createOrchestrator({
     const transition = transitions[event];
     if (!transition) throw cliError('CLI_EVENT_UNKNOWN', 'Unknown approval event');
     if (state !== transition[0]) throw cliError('CLI_EVENT_INVALID_STATE', 'Approval event is not valid for the current run state');
-    const actorId = assertSafeSlug(approver);
     actor.send({ type: transition[1] });
     if (actor.getSnapshot().value === state) throw cliError('CLI_EVENT_INVALID_STATE', 'Approval event was rejected by the workflow');
-    runStore.appendEvent(runRef, { type: 'APPROVAL_RECORDED', data: { actor: actorId, event: transition[1] } });
+    runStore.appendEvent(runRef, { type: 'APPROVAL_RECORDED', data: { actor: approverId, event: transition[1] } });
     persistWorkflow(runStore, runRef, actor);
     return { runId: runRef.runId, state: actor.getSnapshot().value };
   }
@@ -255,9 +278,18 @@ function createOrchestrator({
 
 async function main(argv = process.argv.slice(2), io = process, dependencies = {}) {
   try {
+    const parsed = parseArguments(argv);
+    assertCommandArguments(parsed.command, parsed.values);
     const rootDir = process.env.ORCHESTRATOR_ROOT || require('node:path').resolve('.orchestration', 'runs');
     const adapterModule = process.env.ORCHESTRATOR_ADAPTER_MODULE;
-    const configured = adapterModule ? require(require('node:path').resolve(adapterModule)) : {};
+    let configured = {};
+    if (adapterModule) {
+      try {
+        configured = require(require('node:path').resolve(adapterModule));
+      } catch (error) {
+        throw cliError('CLI_CONFIGURATION_INVALID', 'Configured orchestration adapter module could not be loaded');
+      }
+    }
     const result = await createOrchestrator({ rootDir, ...configured, ...dependencies }).execute(argv);
     io.stdout.write(`${JSON.stringify(result)}\n`);
     return 0;

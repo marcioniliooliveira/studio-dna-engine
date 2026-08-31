@@ -110,7 +110,8 @@ test('plans once, pauses, resumes only pending work, and remains a candidate', a
       runBudgetUsd: 1
     },
     candidateArtifact: fixtureCandidateArtifact,
-    qaEvidence: fixtureQaEvidence
+    qaEvidence: fixtureQaEvidence,
+    approver: 'fixture-approver'
   };
 
   const firstProcess = createOrchestrator(options);
@@ -187,9 +188,61 @@ test('composes an injected fixture command without a model key', async () => {
       readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
       blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
       candidateArtifact: fixtureCandidateArtifact,
-      qaEvidence: fixtureQaEvidence
+      qaEvidence: fixtureQaEvidence,
+      approver: 'fixture-approver'
     }
   );
   assert.equal(code, 0);
   assert.deepEqual(JSON.parse(output[0]), { runId: 'run-001', state: 'paused', validatedBeforeExecution: true });
+});
+
+test('persists malformed QA as a bounded repair state and recovers without re-running completed nodes', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-qa-repair-'));
+  const executorCalls = [];
+  let repairAttempt = false;
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { executorCalls.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: fixtureCandidateArtifact,
+    qaEvidence: () => repairAttempt ? fixtureQaEvidence() : { status: 'candidate' },
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+  await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const blocked = await process.execute(['resume', '--run', 'run-001']);
+  assert.equal(blocked.state, 'repairing');
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.state, 'repairing');
+  assert.equal(persisted.events.some((event) => event.type === 'QA_BLOCKED'), true);
+
+  repairAttempt = true;
+  const recovered = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+  assert.equal(recovered.state, 'candidate');
+  assert.deepEqual(executorCalls, ['n1', 'n2']);
+});
+
+test('rejects missing approver and invalid external adapter configuration before command execution', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-config-'));
+  assert.throws(
+    () => createOrchestrator({ rootDir }),
+    (error) => error.code === 'CLI_CONFIGURATION_INVALID'
+  );
+  const output = [];
+  const originalModule = process.env.ORCHESTRATOR_ADAPTER_MODULE;
+  process.env.ORCHESTRATOR_ADAPTER_MODULE = path.join(rootDir, 'missing-adapters.cjs');
+  try {
+    const code = await main(['inspect', '--run', 'run-001'], {
+      stdout: { write: () => {} }, stderr: { write: (line) => output.push(line) }
+    });
+    assert.equal(code, 1);
+    assert.match(output[0], /^CLI_CONFIGURATION_INVALID:/);
+  } finally {
+    if (originalModule === undefined) delete process.env.ORCHESTRATOR_ADAPTER_MODULE;
+    else process.env.ORCHESTRATOR_ADAPTER_MODULE = originalModule;
+  }
 });
