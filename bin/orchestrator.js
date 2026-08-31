@@ -5,6 +5,8 @@ const { validateBlueprint } = require('../src/orchestration/blueprint-validator'
 const { createBudgetGovernor } = require('../src/orchestration/budget-governor');
 const { createDagScheduler } = require('../src/orchestration/dag-scheduler');
 const { createWorkflowMachine, createWorkflowActor } = require('../src/orchestration/workflow-machine');
+const { createArtifactRegistry } = require('../src/orchestration/artifact-registry');
+const { isDeepStrictEqual } = require('node:util');
 
 function cliError(code, message) {
   const error = new Error(message);
@@ -97,6 +99,27 @@ function nextReadyNode(run, blueprint) {
     .sort((left, right) => left.id.localeCompare(right.id))[0] || null;
 }
 
+function dagExecutionStatus(run, blueprint) {
+  const passed = new Set(run.events.filter((event) => event.type === 'TASK_PASSED').map((event) => event.data.nodeId));
+  const failed = run.events.some((event) => event.type === 'TASK_FAILED');
+  return {
+    failed,
+    complete: !failed && blueprint.nodes.every((node) => passed.has(node.id))
+  };
+}
+
+function isBoundRegistryRef(ref, runRef, clientId, type) {
+  return ref && ref.id === ref.sha256 && ref.runId === runRef.runId &&
+    ref.clientId === clientId && ref.type === type;
+}
+
+function qaReportPayload(evidence) {
+  if (!evidence || typeof evidence !== 'object' || Array.isArray(evidence)) return null;
+  const payload = { ...evidence };
+  delete payload.reportArtifact;
+  return payload;
+}
+
 function createOrchestrator({
   rootDir,
   planner,
@@ -118,6 +141,7 @@ function createOrchestrator({
     throw cliError('CLI_CONFIGURATION_INVALID', 'A safe approver slug must be injected by the composition root');
   }
   const runStore = createRunStore({ rootDir });
+  const artifactRegistry = createArtifactRegistry({ rootDir });
 
   function requireStartDependencies() {
     if (!planner || typeof planner.plan !== 'function') {
@@ -137,10 +161,23 @@ function createOrchestrator({
   async function finalizeCandidate(runRef, blueprint, actor) {
     try {
       let artifact = actor.getSnapshot().context.candidateArtifact;
-      if (artifact === null) artifact = await candidateArtifact({ runRef, blueprint });
+      if (artifact === null) artifact = await candidateArtifact({ runRef, blueprint, artifactRegistry });
+      if (!isBoundRegistryRef(artifact, runRef, blueprint.clientId, 'site')) {
+        throw new TypeError('Candidate artifact is not bound to this run and client');
+      }
+      artifactRegistry.verify(artifact);
       actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifact });
       if (actor.getSnapshot().value !== 'verifying') throw new TypeError('Candidate artifact was rejected by the workflow');
-      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact });
+      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact, artifactRegistry });
+      if (!isBoundRegistryRef(evidence?.reportArtifact, runRef, blueprint.clientId, 'qa-report')) {
+        throw new TypeError('QA report artifact is not bound to this run and client');
+      }
+      const storedReport = artifactRegistry.verify(evidence.reportArtifact);
+      if (!isDeepStrictEqual(storedReport.value, qaReportPayload(evidence)) ||
+        !Array.isArray(storedReport.sources) ||
+        !storedReport.sources.some((source) => isDeepStrictEqual(source, artifact))) {
+        throw new TypeError('QA evidence does not match its candidate-bound registry report');
+      }
       runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
       actor.send({ type: 'FULL_QA_PASSED', evidence });
       if (actor.getSnapshot().value === 'candidate') {
@@ -149,6 +186,12 @@ function createOrchestrator({
       }
       throw new TypeError('Full-QA evidence is not bound to the candidate artifact');
     } catch (error) {
+      if (actor.getSnapshot().value === 'executing') {
+        runStore.appendEvent(runRef, { type: 'CANDIDATE_REJECTED', data: { code: error.code || 'CANDIDATE_INVALID' } });
+        actor.send({ type: 'WORKFLOW_FAILED' });
+        persistWorkflow(runStore, runRef, actor);
+        return actor.getSnapshot().value;
+      }
       const evidence = { reportId: `${runRef.runId}-qa-evidence`, status: 'failed' };
       runStore.appendEvent(runRef, { type: 'QA_BLOCKED', data: { evidence } });
       actor.send({ type: 'QA_BLOCKED', evidence });
@@ -169,9 +212,15 @@ function createOrchestrator({
     requireExecutionDependencies();
     const run = runStore.loadRun(runRef);
     const node = nextReadyNode(run, blueprint);
-    if (!node) return actor.getSnapshot().value === 'executing'
-      ? finalizeCandidate(runRef, blueprint, actor)
-      : actor.getSnapshot().value;
+    if (!node) {
+      const status = dagExecutionStatus(run, blueprint);
+      if (status.complete && actor.getSnapshot().value === 'executing') {
+        return finalizeCandidate(runRef, blueprint, actor);
+      }
+      if (actor.getSnapshot().value === 'executing') actor.send({ type: 'WORKFLOW_FAILED' });
+      persistWorkflow(runStore, runRef, actor);
+      return actor.getSnapshot().value;
+    }
     const nodeExecutors = Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
       identity: executor.identity,
       async execute(taskPackage) {
@@ -192,14 +241,17 @@ function createOrchestrator({
     });
     await scheduler.execute({ runRef, blueprint: { ...blueprint, nodes: [node] } });
     const after = runStore.loadRun(runRef);
+    const status = dagExecutionStatus(after, blueprint);
     const pending = nextReadyNode(after, blueprint);
-    if (!pending && !after.events.some((event) => event.type === 'TASK_FAILED')) {
+    if (status.complete) {
       return finalizeCandidate(runRef, blueprint, actor);
+    } else if (status.failed) {
+      actor.send({ type: 'WORKFLOW_FAILED' });
     } else if (pending) {
       runStore.appendEvent(runRef, { type: 'RUN_PAUSED', data: { nodeId: node.id } });
     }
     persistWorkflow(runStore, runRef, actor);
-    return pending ? 'paused' : actor.getSnapshot().value;
+    return pending && !status.failed ? 'paused' : actor.getSnapshot().value;
   }
 
   async function start(values) {
@@ -256,7 +308,8 @@ function createOrchestrator({
           runRef,
           blueprint,
           previousArtifact,
-          blockingEvidence: actor.getSnapshot().context.blockingEvidence
+          blockingEvidence: actor.getSnapshot().context.blockingEvidence,
+          artifactRegistry
         });
       } catch (error) {
         return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-failed`), costs: runStore.loadRun(runRef).costs };

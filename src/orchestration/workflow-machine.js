@@ -8,6 +8,7 @@ const WORKFLOW_STATES = new Set([
   'repairing', 'candidate', 'awaiting_final_approval', 'human_intervention', 'failed', 'verified'
 ]);
 const PROMOTED_STATES = new Set(['candidate', 'awaiting_final_approval', 'verified']);
+const REQUIRED_QA_SCOPES = ['security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'];
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -34,16 +35,20 @@ function isFullQaEvidence(value, context) {
     !isBoundArtifactRef(value.reportArtifact, context) || value.reportArtifact.type !== 'qa-report' ||
     value.status !== 'candidate' || !isPlainObject(value.gates)) return false;
 
-  const { antiSlop, console: consoleGate, network, structural } = value.gates;
-  return isPlainObject(antiSlop) && antiSlop.passed === true &&
-    isPlainObject(consoleGate) && consoleGate.passed === true && consoleGate.errorsCount === 0 &&
-    isPlainObject(network) && network.passed === true && network.failedRequestsCount === 0 &&
-    isPlainObject(structural) && structural.passed === true && structural.brokenImagesCount === 0;
+  return REQUIRED_QA_SCOPES.every((scope) =>
+    isPlainObject(value.gates[scope]) && value.gates[scope].passed === true
+  );
 }
 
 function isBlockingEvidence(value) {
   return isPlainObject(value) && typeof value.reportId === 'string' && value.reportId.length > 0 &&
     value.status === 'failed';
+}
+
+function hasBoundQaProof(context) {
+  return isBoundArtifactRef(context.candidateArtifact, context) &&
+    isFullQaEvidence(context.qaEvidence, context) &&
+    context.qaEvidence.artifactSha256 === context.candidateArtifact.sha256;
 }
 
 function validateInitialContext(initialContext) {
@@ -203,7 +208,10 @@ function createWorkflowMachine(initialContext) {
       },
       awaiting_final_approval: {
         on: {
-          FINAL_APPROVED: 'verified'
+          FINAL_APPROVED: {
+            guard: ({ context: currentContext }) => hasBoundQaProof(currentContext),
+            target: 'verified'
+          }
         }
       },
       human_intervention: {

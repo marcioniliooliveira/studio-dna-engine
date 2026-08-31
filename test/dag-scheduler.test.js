@@ -188,6 +188,75 @@ test('rejects an executor result that is bound to another node', async () => {
   assert.equal(runStore.costs[0].data.est, true);
 });
 
+test('rejects executor changes outside the active client and node paths', async () => {
+  let verifierCalls = 0;
+  const runStore = createMemoryRunStore();
+  const scheduler = createDagScheduler({
+    executors: {
+      build: {
+        identity: 'builder',
+        execute: async (taskPackage) => ({
+          ...successfulResult(taskPackage),
+          chg: ['clientes/client-beta/site/index.html']
+        })
+      }
+    },
+    verifier: {
+      identity: 'quality-gate', independent: true,
+      verify: async () => { verifierCalls += 1; return { passed: true }; }
+    },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  const result = await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: blueprint([node('n1')]) });
+
+  assert.deepEqual(result.failedNodeIds, ['n1']);
+  assert.equal(verifierCalls, 0);
+  assert.equal(runStore.events.at(-1).data.code, 'TASK_RESULT_SCOPE_VIOLATION');
+});
+
+test('filters node context and passes only verified direct-dependency artifacts', async () => {
+  const packages = [];
+  const runStore = createMemoryRunStore();
+  runStore.events.push({
+    type: 'TASK_PASSED',
+    data: { nodeId: 'unrelated', evidence: null, artifacts: [{ id: 'other-output', sha: 'f'.repeat(64) }] }
+  });
+  const first = node('n1');
+  const second = node('n2', ['n1']);
+  const plan = blueprint([first, second]);
+  plan.context.push({ id: 'ctx-secret', sha256: 'b'.repeat(64), path: 'clientes/client-alpha/secret.md' });
+  const scheduler = createDagScheduler({
+    executors: {
+      build: {
+        identity: 'builder',
+        execute: async (taskPackage) => {
+          packages.push(taskPackage);
+          return {
+            ...successfulResult(taskPackage),
+            art: taskPackage.node.id === 'n1'
+              ? [{ id: 'n1-output', sha: 'c'.repeat(64) }]
+              : []
+          };
+        }
+      }
+    },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: plan });
+
+  assert.deepEqual(packages[0].context.map((entry) => entry.id), ['ctx-1']);
+  assert.deepEqual(packages[0].dependencyArtifacts, []);
+  assert.deepEqual(packages[1].context.map((entry) => entry.id), ['ctx-1']);
+  assert.deepEqual(packages[1].dependencyArtifacts, [{
+    runId: 'run-001', clientId: 'client-alpha', nodeId: 'n1', id: 'n1-output', sha: 'c'.repeat(64)
+  }]);
+});
+
 test('records the reserved cost when an authorized executor throws', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({

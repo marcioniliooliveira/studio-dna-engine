@@ -27,10 +27,12 @@ function fullQaEvidence() {
     artifactSha256: 'a'.repeat(64),
     reportArtifact: artifactRef('e'.repeat(64), initialContext.clientId, initialContext.runId, 'qa-report'),
     gates: {
-      antiSlop: { passed: true },
-      console: { passed: true, errorsCount: 0 },
-      network: { passed: true, failedRequestsCount: 0 },
-      structural: { passed: true, brokenImagesCount: 0 }
+      security: { passed: true },
+      semantic: { passed: true },
+      dna: { passed: true },
+      visual: { passed: true },
+      accessibility: { passed: true },
+      performance: { passed: true }
     }
   };
 }
@@ -88,6 +90,34 @@ test('requires a complete persisted QA report before candidate promotion', () =>
   actor.send({ type: 'FULL_QA_PASSED', evidence: { status: 'candidate', gates: { antiSlop: { passed: true } } } });
 
   assert.equal(actor.getSnapshot().value, 'verifying');
+});
+
+test('requires every documented core scope before candidate promotion', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  const legacyRuntimeOnly = fullQaEvidence();
+  legacyRuntimeOnly.gates = {
+    antiSlop: { passed: true },
+    console: { passed: true, errorsCount: 0 },
+    network: { passed: true, failedRequestsCount: 0 },
+    structural: { passed: true, brokenImagesCount: 0 }
+  };
+
+  actor.send({ type: 'FULL_QA_PASSED', evidence: legacyRuntimeOnly });
+
+  assert.equal(actor.getSnapshot().value, 'verifying');
+});
+
+test('guards final approval with the still-bound full-QA proof', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  actor.send({ type: 'FULL_QA_PASSED', evidence: fullQaEvidence() });
+  actor.send({ type: 'FINAL_APPROVAL_REQUESTED' });
+  actor.getSnapshot().context.qaEvidence.artifactSha256 = 'f'.repeat(64);
+
+  actor.send({ type: 'FINAL_APPROVED' });
+
+  assert.equal(actor.getSnapshot().value, 'awaiting_final_approval');
 });
 
 test('rejects an artifact that belongs to another client before verification', () => {

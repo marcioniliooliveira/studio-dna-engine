@@ -44,8 +44,39 @@ function assertExecutionCaps(blueprint, events) {
   }
 }
 
-function taskPackage(runRef, blueprint, node) {
-  return { runId: runRef.runId, clientId: blueprint.clientId, node, context: blueprint.context };
+function dependencyArtifacts(events, runRef, blueprint, node) {
+  const dependencyIds = new Set(node.dependencies);
+  return events
+    .filter((event) => event.type === 'TASK_PASSED' && dependencyIds.has(event.data.nodeId))
+    .flatMap((event) => (event.data.artifacts || []).map((artifact) => ({
+      runId: runRef.runId,
+      clientId: blueprint.clientId,
+      nodeId: event.data.nodeId,
+      id: artifact.id,
+      sha: artifact.sha
+    })));
+}
+
+function taskPackage(runRef, blueprint, node, events) {
+  const inputIds = new Set(node.inputs);
+  return {
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    node,
+    context: blueprint.context.filter((entry) => inputIds.has(entry.id)),
+    dependencyArtifacts: dependencyArtifacts(events, runRef, blueprint, node)
+  };
+}
+
+function changesStayWithinNodeScope(changedPaths, blueprint, node) {
+  const clientPrefix = `clientes/${blueprint.clientId}/`;
+  const allowedPaths = new Set(node.paths);
+  return changedPaths.every((changedPath) =>
+    changedPath.startsWith(clientPrefix) &&
+    !changedPath.includes('\\') &&
+    !changedPath.split('/').includes('..') &&
+    allowedPaths.has(changedPath)
+  );
 }
 
 function reservationCostEvent(runRef, node, reservedUsd) {
@@ -138,7 +169,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
       runStore.appendEvent(runRef, { type: 'TASK_AUTHORIZED', data: { nodeId: node.id, reservedUsd: authorization.reservedUsd } });
       runStore.appendCost(runRef, reservationCostEvent(runRef, node, authorization.reservedUsd));
 
-      const packageForNode = taskPackage(runRef, blueprint, node);
+      const packageForNode = taskPackage(runRef, blueprint, node, currentRun.events);
       let result;
       try {
         result = TaskResultWire.parse(await executor.execute(packageForNode));
@@ -157,6 +188,11 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
+      if (!changesStayWithinNodeScope(result.chg, blueprint, node)) {
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'TASK_RESULT_SCOPE_VIOLATION', evidence: { changedPaths: result.chg } } });
+        failed.add(node.id);
+        continue;
+      }
 
       let verification;
       try {
@@ -171,7 +207,10 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
-      runStore.appendEvent(runRef, { type: 'TASK_PASSED', data: { nodeId: node.id, evidence: verification?.evidence || null } });
+      runStore.appendEvent(runRef, {
+        type: 'TASK_PASSED',
+        data: { nodeId: node.id, evidence: verification?.evidence || null, artifacts: result.art }
+      });
       passed.add(node.id);
       executedNodeIds.push(node.id);
     }
