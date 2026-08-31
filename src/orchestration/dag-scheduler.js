@@ -48,11 +48,10 @@ function taskPackage(runRef, blueprint, node) {
   return { runId: runRef.runId, clientId: blueprint.clientId, node, context: blueprint.context };
 }
 
-function costEvent(result, node) {
+function reservationCostEvent(runRef, node, reservedUsd) {
   return {
-    v: 1, rid: result.rid, nid: result.nid, m: 'executor', svc: 'ide',
-    it: result.use.it, ct: result.use.ct, ot: result.use.ot,
-    ms: 0, try: 1, usd: null, est: false
+    v: 1, rid: runRef.runId, nid: node.id, m: 'budget-reservation', svc: 'ide',
+    it: null, ct: null, ot: null, ms: 0, try: 1, usd: reservedUsd, est: true
   };
 }
 
@@ -64,6 +63,29 @@ function matchesTaskPackage(result, task) {
   return result.rid === task.runId && result.cid === task.clientId && result.nid === task.node.id;
 }
 
+function assertRunIdentity(run, runRef, blueprint) {
+  if (
+    run.state?.runId !== runRef.runId
+    || run.state?.clientId !== blueprint.clientId
+    || blueprint.runId !== runRef.runId
+  ) {
+    throw schedulerError('RUN_BLUEPRINT_IDENTITY_MISMATCH', 'Blueprint is not bound to the durable run identity');
+  }
+}
+
+function isIndependentExecutor(executor, verifier) {
+  return typeof executor?.identity === 'string'
+    && typeof verifier.identity === 'string'
+    && executor.identity !== verifier.identity
+    && verifier.independent === true;
+}
+
+function nextBlockedNode(nodes, passed, failed) {
+  return nodes
+    .filter((node) => !passed.has(node.id) && !failed.has(node.id))
+    .sort((left, right) => left.id.localeCompare(right.id))[0];
+}
+
 function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
   if (!executors || !verifier || typeof verifier.verify !== 'function' || !runStore || !budgetGovernor) {
     throw new TypeError('executors, verifier, runStore, and budgetGovernor are required');
@@ -71,6 +93,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
 
   async function execute({ runRef, blueprint }) {
     const run = runStore.loadRun(runRef);
+    assertRunIdentity(run, runRef, blueprint);
     assertExecutionCaps(blueprint, run.events);
     const passed = completedNodeIds(run.events);
     const failed = failedNodeIds(run.events);
@@ -78,8 +101,30 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
 
     while (true) {
       const node = readyNodes(blueprint.nodes, passed, failed)[0];
-      if (!node) break;
+      if (!node) {
+        const blockedNode = nextBlockedNode(blueprint.nodes, passed, failed);
+        if (!blockedNode) break;
+        const dependencyIds = blockedNode.dependencies.filter((dependency) => !passed.has(dependency));
+        const code = dependencyIds.some((dependency) => failed.has(dependency))
+          ? 'DEPENDENCY_FAILED'
+          : 'DEPENDENCY_UNRESOLVED';
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: blockedNode.id, code, evidence: { dependencyIds } } });
+        failed.add(blockedNode.id);
+        continue;
+      }
       const currentRun = runStore.loadRun(runRef);
+      assertRunIdentity(currentRun, runRef, blueprint);
+      const executor = executors[node.kind];
+      if (!executor || typeof executor.execute !== 'function') {
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_UNAVAILABLE', evidence: null } });
+        failed.add(node.id);
+        continue;
+      }
+      if (!isIndependentExecutor(executor, verifier)) {
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_VERIFIER_NOT_INDEPENDENT', evidence: null } });
+        failed.add(node.id);
+        continue;
+      }
       const authorization = budgetGovernor.authorize(node, {
         usd: currentRun.totals.usd,
         reservedUsd: unknownReservations(currentRun.events, currentRun.costs)
@@ -91,12 +136,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
       }
 
       runStore.appendEvent(runRef, { type: 'TASK_AUTHORIZED', data: { nodeId: node.id, reservedUsd: authorization.reservedUsd } });
-      const executor = executors[node.kind];
-      if (!executor || typeof executor.execute !== 'function') {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_UNAVAILABLE', evidence: null } });
-        failed.add(node.id);
-        continue;
-      }
+      runStore.appendCost(runRef, reservationCostEvent(runRef, node, authorization.reservedUsd));
 
       const packageForNode = taskPackage(runRef, blueprint, node);
       let result;
@@ -112,7 +152,6 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
-      runStore.appendCost(runRef, costEvent(result, node));
       if (result.st !== 'ok') {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_REPORTED_FAILURE', evidence: result.err } });
         failed.add(node.id);

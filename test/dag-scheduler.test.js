@@ -33,7 +33,7 @@ function createMemoryRunStore() {
   return {
     events,
     costs,
-    loadRun: () => ({ events, costs, totals: { usd: costs.some((entry) => entry.data.usd === null) ? null : costs.reduce((sum, entry) => sum + entry.data.usd, 0) } }),
+    loadRun: () => ({ state: { runId: 'run-001', clientId: 'client-alpha' }, events, costs, totals: { usd: costs.some((entry) => entry.data.usd === null) ? null : costs.reduce((sum, entry) => sum + entry.data.usd, 0) } }),
     appendEvent: (_runRef, event) => events.push(event),
     appendCost: (_runRef, cost) => costs.push({ data: cost })
   };
@@ -50,8 +50,8 @@ test('executes ready nodes in deterministic topological order', async () => {
   const order = [];
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => { order.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => { order.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -64,8 +64,8 @@ test('executes ready nodes in deterministic topological order', async () => {
 test('records verification rejection instead of passing an executor-reported success', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => successfulResult(taskPackage) } },
-    verifier: { verify: async () => ({ passed: false, evidence: { gate: 'core-runtime' } }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => successfulResult(taskPackage) } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: false, evidence: { gate: 'core-runtime' } }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -83,8 +83,8 @@ test('rejects over-budget work before invoking its executor', async () => {
   let executions = 0;
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: false, reservedUsd: 0.2, reason: 'NODE_BUDGET_EXCEEDS_REMAINING' }) }
   });
@@ -103,8 +103,8 @@ test('resumes from persisted passed nodes without executing them again', async (
   const runStore = createMemoryRunStore();
   runStore.events.push({ type: 'TASK_PASSED', data: { nodeId: 'n1', evidence: null } });
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => { order.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => { order.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -117,8 +117,8 @@ test('resumes from persisted passed nodes without executing them again', async (
 test('persists executor exception evidence as a failed node', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async () => { throw new Error('executor offline'); } } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async () => { throw new Error('executor offline'); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -135,8 +135,8 @@ test('persists executor exception evidence as a failed node', async () => {
 test('persists verifier exception evidence as a failed node', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => successfulResult(taskPackage) } },
-    verifier: { verify: async () => { throw new Error('verifier unavailable'); } },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => successfulResult(taskPackage) } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => { throw new Error('verifier unavailable'); } },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -155,8 +155,8 @@ test('fails closed before executing a node with more than three allowed attempts
   const invalidNode = node('n1');
   invalidNode.budget.maxAttempts = 4;
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore: createMemoryRunStore(),
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -171,8 +171,8 @@ test('fails closed before executing a node with more than three allowed attempts
 test('rejects an executor result that is bound to another node', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({
-    executors: { build: { execute: async (taskPackage) => ({ ...successfulResult(taskPackage), nid: 'n2' }) } },
-    verifier: { verify: async () => ({ passed: true }) },
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => ({ ...successfulResult(taskPackage), nid: 'n2' }) } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
     runStore,
     budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
   });
@@ -184,4 +184,75 @@ test('rejects an executor result that is bound to another node', async () => {
     type: 'TASK_FAILED',
     data: { nodeId: 'n1', code: 'TASK_RESULT_IDENTITY_MISMATCH', evidence: null }
   });
+  assert.equal(runStore.costs[0].data.usd, 0.1);
+  assert.equal(runStore.costs[0].data.est, true);
+});
+
+test('records the reserved cost when an authorized executor throws', async () => {
+  const runStore = createMemoryRunStore();
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'builder', execute: async () => { throw new Error('executor offline'); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: blueprint([node('n1')]) });
+
+  assert.deepEqual(runStore.costs.map((entry) => entry.data), [{
+    v: 1, rid: 'run-001', nid: 'n1', m: 'budget-reservation', svc: 'ide',
+    it: null, ct: null, ot: null, ms: 0, try: 1, usd: 0.1, est: true
+  }]);
+});
+
+test('rejects a blueprint not bound to the durable run identity before executor entry', async () => {
+  let executions = 0;
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'builder', execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore: createMemoryRunStore(),
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+  const invalidBlueprint = blueprint([node('n1')]);
+  invalidBlueprint.clientId = 'other-client';
+
+  await assert.rejects(
+    scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: invalidBlueprint }),
+    (error) => error.code === 'RUN_BLUEPRINT_IDENTITY_MISMATCH'
+  );
+  assert.equal(executions, 0);
+});
+
+test('rejects an executor that is not independent from the verifier', async () => {
+  let executions = 0;
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'quality-gate', execute: async (taskPackage) => { executions += 1; return successfulResult(taskPackage); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore: createMemoryRunStore(),
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  const result = await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: blueprint([node('n1')]) });
+
+  assert.deepEqual(result.failedNodeIds, ['n1']);
+  assert.equal(executions, 0);
+  assert.equal(result.passedNodeIds.length, 0);
+});
+
+test('records descendants as blocked when their dependency fails', async () => {
+  const runStore = createMemoryRunStore();
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'builder', execute: async () => { throw new Error('executor offline'); } } },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  const result = await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: blueprint([node('n1'), node('n2', ['n1']), node('n3', ['n2'])]) });
+
+  assert.deepEqual(result.failedNodeIds, ['n1', 'n2', 'n3']);
+  assert.deepEqual(runStore.events.slice(-2), [
+    { type: 'TASK_FAILED', data: { nodeId: 'n2', code: 'DEPENDENCY_FAILED', evidence: { dependencyIds: ['n1'] } } },
+    { type: 'TASK_FAILED', data: { nodeId: 'n3', code: 'DEPENDENCY_FAILED', evidence: { dependencyIds: ['n2'] } } }
+  ]);
 });
