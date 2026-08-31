@@ -52,9 +52,11 @@ function collectPathBearingSelectors(schema, prefix = []) {
 }
 
 function hasObjectArray(schema) {
-  return Object.values(schema.properties).some((child) => (
-    child && child.type === 'array' && child.items && child.items.type === 'object'
-  ) || (child && child.type === 'object' && hasObjectArray(child)));
+  if (!schema || typeof schema !== 'object') return false;
+  if (schema.type === 'array') {
+    return (schema.items && schema.items.type === 'object') || hasObjectArray(schema.items);
+  }
+  return schema.type === 'object' && Object.values(schema.properties).some(hasObjectArray);
 }
 
 function assertPathFields(schema, pathFields) {
@@ -136,18 +138,12 @@ function scopedPaths(args, pathFields) {
   return values;
 }
 
-function sameArray(left, right) {
-  return Array.isArray(left) && Array.isArray(right)
-    && left.length === right.length && left.every((value, index) => value === right[index]);
-}
-
 function compactScope(taskScope) {
   if (!taskScope || !Array.isArray(taskScope.tl) || !Array.isArray(taskScope.p)) {
     throw toolError('TOOL_SCOPE_INVALID', 'Task scope must use compact tl and p fields');
   }
-  if ((Object.hasOwn(taskScope, 'toolIds') && !sameArray(taskScope.toolIds, taskScope.tl))
-    || (Object.hasOwn(taskScope, 'allowedPaths') && !sameArray(taskScope.allowedPaths, taskScope.p))) {
-    throw toolError('TOOL_SCOPE_CONFLICT', 'Long-form scope aliases conflict with the task package');
+  if (Object.hasOwn(taskScope, 'toolIds') || Object.hasOwn(taskScope, 'allowedPaths')) {
+    throw toolError('TOOL_SCOPE_ALIAS_FORBIDDEN', 'Long-form scope aliases are not accepted');
   }
   return taskScope;
 }

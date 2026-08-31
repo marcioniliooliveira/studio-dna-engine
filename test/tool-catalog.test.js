@@ -70,7 +70,27 @@ test('rejects conflicting long-form scope aliases before the handler runs', asyn
       toolIds: ['context.summary'],
       allowedPaths: ['clientes/outro-cliente/private.md']
     }),
-    (error) => error.code === 'TOOL_SCOPE_CONFLICT'
+    (error) => error.code === 'TOOL_SCOPE_ALIAS_FORBIDDEN'
+  );
+  assert.equal(calls, 0);
+});
+
+test('rejects matching long-form scope aliases before the handler runs', async () => {
+  let calls = 0;
+  const catalog = createToolCatalog([{
+    ...definition('context.summary'),
+    handler: () => { calls += 1; }
+  }]);
+  const path = 'clientes/piloto-elyse-luxe/DNA.md';
+
+  await assert.rejects(
+    () => catalog.invoke('context.summary', { path }, {
+      tl: ['context.summary'],
+      p: [path],
+      toolIds: ['context.summary'],
+      allowedPaths: [path]
+    }),
+    (error) => error.code === 'TOOL_SCOPE_ALIAS_FORBIDDEN'
   );
   assert.equal(calls, 0);
 });
@@ -192,6 +212,38 @@ test('rejects object-array path schemas without item selector support', () => {
     (error) => error.code === 'TOOL_PATH_SCHEMA_INVALID'
   );
   assert.equal(calls, 0);
+});
+
+test('rejects object arrays nested inside array items', () => {
+  assert.throws(
+    () => createToolCatalog([{
+      id: 'context.lines',
+      description: 'read nested batches',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          path: { type: 'string' },
+          batches: {
+            type: 'array',
+            items: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: { label: { type: 'string' } },
+                required: ['label'],
+                additionalProperties: false
+              }
+            }
+          }
+        },
+        required: ['path', 'batches'],
+        additionalProperties: false
+      },
+      pathFields: ['path'],
+      handler: () => undefined
+    }]),
+    (error) => error.code === 'TOOL_PATH_SCHEMA_INVALID'
+  );
 });
 
 test('rejects duplicate IDs and arguments outside a strict schema', async () => {
