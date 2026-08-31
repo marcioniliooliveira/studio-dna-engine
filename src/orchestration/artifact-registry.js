@@ -28,9 +28,12 @@ function assertJsonSafe(value, ancestors = new Set()) {
       if (Object.getOwnPropertySymbols(value).length > 0) throw jsonSafeError();
       for (let index = 0; index < value.length; index += 1) {
         if (!Object.hasOwn(value, index)) throw jsonSafeError();
-        assertJsonSafe(value[index], ancestors);
+        const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+        if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) throw jsonSafeError();
+        assertJsonSafe(descriptor.value, ancestors);
       }
-      if (Object.keys(value).some((key) => !/^(0|[1-9]\d*)$/.test(key) || Number(key) >= value.length)) {
+      const ownNames = Object.getOwnPropertyNames(value);
+      if (ownNames.length !== value.length + 1 || ownNames.some((key) => key !== 'length' && (!/^(0|[1-9]\d*)$/.test(key) || Number(key) >= value.length))) {
         throw jsonSafeError();
       }
       return;
@@ -169,6 +172,7 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
       `.${digest}.${process.pid}.${now()}.${temporaryFileCount += 1}.tmp`
     );
     try {
+      assertArtifactDirectory(destination);
       const descriptor = fs.openSync(
         temporary,
         fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_NOFOLLOW,
@@ -180,6 +184,7 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
         fs.closeSync(descriptor);
       }
       try {
+        assertArtifactDirectory(destination);
         fs.linkSync(temporary, destination);
       } catch (error) {
         if (error.code !== 'EEXIST') throw error;
@@ -187,6 +192,7 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
         return ref;
       }
     } finally {
+      assertArtifactDirectory(destination);
       if (fs.existsSync(temporary)) fs.rmSync(temporary, { force: true });
     }
 

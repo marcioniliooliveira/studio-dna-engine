@@ -105,13 +105,50 @@ test('rejects artifact directories that resolve through a client symlink', (t) =
   assert.deepEqual(fs.readdirSync(externalDir), []);
 });
 
+test('revalidates containment when a client directory changes after setup', (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-registry-'));
+  const externalDir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-registry-external-'));
+  const clientDir = path.join(rootDir, 'client-alpha');
+  const movedClientDir = path.join(rootDir, 'client-alpha-original');
+  let changed = false;
+  const registry = createArtifactRegistry({
+    rootDir,
+    now: () => {
+      if (!changed) {
+        changed = true;
+        fs.renameSync(clientDir, movedClientDir);
+        fs.symlinkSync(externalDir, clientDir, 'junction');
+      }
+      return 0;
+    }
+  });
+  t.after(() => {
+    fs.rmSync(rootDir, { recursive: true, force: true });
+    fs.rmSync(externalDir, { recursive: true, force: true });
+  });
+
+  assert.throws(
+    () => registry.putJson({
+      runId: 'run-001', clientId: 'client-alpha', type: 'blueprint', value: { ok: true }, sources: []
+    }),
+    (error) => error.code === 'ARTIFACT_PATH_ESCAPE'
+  );
+  assert.deepEqual(fs.readdirSync(externalDir), []);
+});
+
 test('rejects non-JSON-safe values before creating artifact directories', (t) => {
+  const accessorArray = [];
+  Object.defineProperty(accessorArray, '0', { enumerable: true, get: () => true });
+  const hiddenArrayProperty = [];
+  Object.defineProperty(hiddenArrayProperty, 'hidden', { value: true });
   const cases = [
     ['undefined', { value: undefined }],
     ['function', { value: () => {} }],
     ['symbol', { value: Symbol('token') }],
     ['nonfinite number', { value: Number.NaN }],
-    ['nested undefined', { value: { nested: undefined } }]
+    ['nested undefined', { value: { nested: undefined } }],
+    ['array accessor', { value: accessorArray }],
+    ['array hidden property', { value: hiddenArrayProperty }]
   ];
 
   for (const [name, input] of cases) {
