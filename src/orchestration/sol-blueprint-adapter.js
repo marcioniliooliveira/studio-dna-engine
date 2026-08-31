@@ -1,5 +1,6 @@
 const { parseBlueprintWire, blueprintWireJsonSchema } = require('./contracts');
 const { validateBlueprint } = require('./blueprint-validator');
+const { isDeepStrictEqual } = require('node:util');
 
 const DEFAULT_MODEL = 'gpt-5.6-sol';
 
@@ -23,11 +24,31 @@ function outputText(response) {
   throw new TypeError('Response does not contain output text');
 }
 
-function defaultPolicy(blueprint, runBudget) {
+function assertTrustedEnvelope(wire, expected) {
+  if (
+    wire.rid !== expected.rid
+    || wire.cid !== expected.cid
+    || !isDeepStrictEqual(wire.ctx, expected.ctx)
+    || !isDeepStrictEqual(wire.b, expected.b)
+  ) {
+    throw new TypeError('Blueprint output does not match the requested run envelope');
+  }
+}
+
+function copyTrustedPolicy(blueprintPolicy) {
+  if (
+    !blueprintPolicy
+    || !(blueprintPolicy.allowedTools instanceof Set)
+    || !(blueprintPolicy.allowedGates instanceof Set)
+    || typeof blueprintPolicy.runBudgetUsd !== 'number'
+  ) {
+    throw new TypeError('blueprintPolicy must provide trusted allowedTools, allowedGates, and runBudgetUsd');
+  }
+
   return {
-    allowedTools: new Set(blueprint.nodes.flatMap((node) => node.toolLabels)),
-    allowedGates: new Set(blueprint.nodes.flatMap((node) => node.gates)),
-    runBudgetUsd: runBudget.usd
+    allowedTools: new Set(blueprintPolicy.allowedTools),
+    allowedGates: new Set(blueprintPolicy.allowedGates),
+    runBudgetUsd: blueprintPolicy.runBudgetUsd
   };
 }
 
@@ -47,6 +68,7 @@ function createSolBlueprintAdapter({
   if (recordUsage !== undefined && typeof recordUsage !== 'function') {
     throw new TypeError('recordUsage must be a function');
   }
+  const trustedPolicy = copyTrustedPolicy(blueprintPolicy);
 
   return {
     async plan({ runId, clientId, contextManifest, runBudget }) {
@@ -70,8 +92,10 @@ function createSolBlueprintAdapter({
       if (recordUsage) await recordUsage({ runId, clientId, model, usage: response.usage });
 
       try {
-        const blueprint = parseBlueprintWire(JSON.parse(outputText(response)));
-        return validateBlueprint(blueprint, blueprintPolicy || defaultPolicy(blueprint, runBudget));
+        const wire = JSON.parse(outputText(response));
+        const blueprint = parseBlueprintWire(wire);
+        assertTrustedEnvelope(wire, dynamicInput);
+        return validateBlueprint(blueprint, trustedPolicy);
       } catch (error) {
         throw new BlueprintOutputError(error);
       }
