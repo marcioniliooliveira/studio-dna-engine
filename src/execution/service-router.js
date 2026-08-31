@@ -21,7 +21,10 @@ function createExecutionAdapters({
   }
   const GoogleGenAI = Gemini || require('@google/genai').GoogleGenAI;
   const client = new GoogleGenAI({ apiKey });
-  return Object.freeze({ default: apiFactory({ client, toolCatalog }) });
+  function forNode(node) {
+    return apiFactory({ client, toolCatalog, service: selectService(node) });
+  }
+  return Object.freeze({ default: forNode(null), forNode });
 }
 
 module.exports = { selectService, createExecutionAdapters };

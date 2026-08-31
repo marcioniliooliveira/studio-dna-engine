@@ -90,3 +90,50 @@ test('rejects a tool call beyond the task tool budget without another model call
   await assert.rejects(() => adapter.execute(taskPackage()), (error) => error.code === 'TASK_TOOL_BUDGET_EXCEEDED');
   assert.equal(modelCalls, 2);
 });
+
+test('aborts a timed-out API request and does not start a retry before it settles', async () => {
+  let calls = 0;
+  let aborted = false;
+  const client = { models: { generateContent: async (request) => {
+    calls += 1;
+    return new Promise((_, reject) => request.config.abortSignal.addEventListener('abort', () => {
+      aborted = request.config.abortSignal.aborted;
+      reject(new Error('request aborted'));
+    }, { once: true }));
+  } } };
+  const adapter = createGeminiApiAdapter({ client, toolCatalog: toolCatalog(), timeoutMs: 5 });
+
+  await assert.rejects(() => adapter.execute(taskPackage()), (error) => error.code === 'GEMINI_TIMEOUT');
+  assert.equal(aborted, true);
+  assert.equal(calls, 1);
+});
+
+test('binds the selected Flex or Batch service to requests and cost evidence', async () => {
+  const requests = [];
+  const client = { models: { generateContent: async (request) => {
+    requests.push(request);
+    return { text: JSON.stringify(taskResult()) };
+  } } };
+
+  const flex = await createGeminiApiAdapter({ client, toolCatalog: toolCatalog(), service: 'flex' }).execute(taskPackage());
+  const batch = await createGeminiApiAdapter({ client, toolCatalog: toolCatalog(), service: 'batch' }).execute(taskPackage());
+
+  assert.equal(requests[0].config.serviceTier, 'flex');
+  assert.equal(requests[1].config.serviceTier, 'deferred');
+  assert.equal(flex.costEvent.svc, 'flex');
+  assert.equal(batch.costEvent.svc, 'batch');
+  assert.equal(flex.costEvent.try, 1);
+});
+
+test('records the actual successful retry attempt in cost evidence', async () => {
+  let calls = 0;
+  const client = { models: { generateContent: async () => {
+    calls += 1;
+    if (calls === 1) throw new Error('temporary transport failure');
+    return { text: JSON.stringify(taskResult()) };
+  } } };
+  const executed = await createGeminiApiAdapter({ client, toolCatalog: toolCatalog() }).execute(taskPackage());
+
+  assert.equal(calls, 2);
+  assert.equal(executed.costEvent.try, 2);
+});

@@ -27,3 +27,17 @@ test('uses Gemini IDE without a key and never constructs another paid adapter', 
   assert.equal(adapters.default.identity, 'gemini-ide');
   assert.equal(apiFactoryCalls, 0);
 });
+
+test('binds each selected service to its API adapter', () => {
+  const services = [];
+  const adapters = createExecutionAdapters({
+    environment: { GEMINI_API_KEY: 'test-key' },
+    Gemini: class { constructor({ apiKey }) { assert.equal(apiKey, 'test-key'); } },
+    toolCatalog: {},
+    createGeminiApiAdapter: (options) => { services.push(options.service); return { identity: options.service }; }
+  });
+
+  assert.equal(adapters.forNode({ kind: 'extract', nonInteractive: true, dependencies: [], service: 'batch' }).identity, 'batch');
+  assert.equal(adapters.forNode({ kind: 'verify', nonInteractive: true, dependencies: [], service: 'flex' }).identity, 'flex');
+  assert.deepEqual(services, ['standard', 'batch', 'flex']);
+});

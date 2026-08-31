@@ -56,29 +56,43 @@ function usageFor(metadata) {
   };
 }
 
-function timeoutAfter(timeoutMs) {
-  return new Promise((_, reject) => {
-    const timer = setTimeout(() => reject(executionError('GEMINI_TIMEOUT', 'Gemini request timed out')), timeoutMs);
-    timer.unref?.();
-  });
+function requestServiceTier(service) {
+  return service === 'batch' ? 'deferred' : service;
 }
 
-function createGeminiApiAdapter({ client, toolCatalog, model = DEFAULT_MODEL, timeoutMs = 30000, maxToolCalls = 8, now = Date.now } = {}) {
+function createGeminiApiAdapter({
+  client, toolCatalog, model = DEFAULT_MODEL, service = 'standard', timeoutMs = 30000, maxToolCalls = 8, now = Date.now
+} = {}) {
   if (!client?.models || typeof client.models.generateContent !== 'function' || !toolCatalog
     || typeof toolCatalog.resolve !== 'function' || typeof toolCatalog.invoke !== 'function'
     || typeof model !== 'string' || model.length === 0 || !Number.isInteger(timeoutMs) || timeoutMs < 1
-    || !Number.isInteger(maxToolCalls) || maxToolCalls < 0 || typeof now !== 'function') {
-    throw new TypeError('client, toolCatalog, model, timeoutMs, maxToolCalls, and now are required');
+    || !['standard', 'batch', 'flex'].includes(service) || !Number.isInteger(maxToolCalls) || maxToolCalls < 0 || typeof now !== 'function') {
+    throw new TypeError('client, toolCatalog, model, service, timeoutMs, maxToolCalls, and now are required');
   }
 
   async function generate(request, attempts) {
     let lastError;
     for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      const controller = new AbortController();
+      let timer;
       try {
-        return await Promise.race([client.models.generateContent(request), timeoutAfter(timeoutMs)]);
+        const timedOut = new Promise((_, reject) => {
+          timer = setTimeout(() => {
+            controller.abort();
+            reject(executionError('GEMINI_TIMEOUT', 'Gemini request timed out'));
+          }, timeoutMs);
+          timer.unref?.();
+        });
+        const response = await Promise.race([
+          client.models.generateContent({ ...request, config: { ...request.config, abortSignal: controller.signal } }),
+          timedOut
+        ]);
+        return { response, attempts: attempt };
       } catch (error) {
         lastError = error;
-        if (error.code === 'TASK_RESULT_INVALID' || error.code === 'TASK_TOOL_BUDGET_EXCEEDED') throw error;
+        if (error.code === 'GEMINI_TIMEOUT') throw error;
+      } finally {
+        clearTimeout(timer);
       }
     }
     throw lastError;
@@ -88,14 +102,20 @@ function createGeminiApiAdapter({ client, toolCatalog, model = DEFAULT_MODEL, ti
     const tools = toolCatalog.resolve(taskPackage.tl, taskPackage);
     const prompt = { task: structuredClone(taskPackage), context: structuredClone(taskPackage.ctx || {}), tools };
     const declarations = tools.map((tool) => ({ name: tool.id, description: tool.description, parametersJsonSchema: tool.inputSchema }));
-    const config = { responseMimeType: 'application/json', responseJsonSchema: resultSchema(), tools: [{ functionDeclarations: declarations }] };
+    const config = {
+      responseMimeType: 'application/json', responseJsonSchema: resultSchema(), serviceTier: requestServiceTier(service),
+      tools: [{ functionDeclarations: declarations }]
+    };
     let contents = [{ role: 'user', parts: [{ text: JSON.stringify(prompt) }] }];
     const startedAt = now();
     let toolCallCount = 0;
+    let attemptCount = 0;
     let response;
 
     while (true) {
-      response = await generate({ model, contents, config }, taskPackage.b.try);
+      const generated = await generate({ model, contents, config }, taskPackage.b.try);
+      response = generated.response;
+      attemptCount += generated.attempts;
       const calls = functionCalls(response);
       if (calls.length === 0) break;
       if (toolCallCount + calls.length > maxToolCalls) {
@@ -113,14 +133,14 @@ function createGeminiApiAdapter({ client, toolCatalog, model = DEFAULT_MODEL, ti
     const usage = usageFor(response.usageMetadata);
     const elapsed = Math.max(0, now() - startedAt);
     const costEvent = CostEventWire.parse({
-      v: 1, rid: result.rid, nid: result.nid, m: model, svc: 'standard',
+      v: 1, rid: result.rid, nid: result.nid, m: model, svc: service,
       it: usage.inputTokens, ct: usage.cachedTokens, ot: usage.outputTokens,
-      ms: elapsed, try: 1, usd: usage.usd, est: usage.estimated
+      ms: elapsed, try: attemptCount, usd: usage.usd, est: usage.estimated
     });
     return { result, usage, costEvent };
   }
 
-  return Object.freeze({ identity: 'gemini-api', execute });
+  return Object.freeze({ identity: 'gemini-api', service, execute });
 }
 
 module.exports = { createGeminiApiAdapter, DEFAULT_MODEL };
