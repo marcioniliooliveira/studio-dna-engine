@@ -11,7 +11,7 @@ function validBlueprint() {
     nd: [{
       id: 'n1', k: 'build', dep: [], in: ['ctx-1'], out: ['site'],
       p: ['clientes/piloto-elyse-luxe/site/index.html'],
-      ni: false,
+      ni: true, x: false, svc: 'standard', ha: true,
       tl: ['pipeline.build'], b: { it: 20000, ot: 4000, usd: 0.08, try: 2 },
       g: ['core-runtime']
     }],
@@ -24,6 +24,10 @@ test('expands a compact blueprint into readable internal names', () => {
 
   assert.equal(blueprint.runId, 'run-001');
   assert.equal(blueprint.nodes[0].kind, 'build');
+  assert.equal(blueprint.nodes[0].needsInput, true);
+  assert.equal(blueprint.nodes[0].nonInteractive, false);
+  assert.equal(blueprint.nodes[0].service, 'standard');
+  assert.equal(blueprint.nodes[0].humanApprovalEdge, true);
   assert.equal(blueprint.nodes[0].budget.maxAttempts, 2);
   assert.equal(blueprint.budget.maxSolCalls, 1);
 });
@@ -35,6 +39,8 @@ test('rejects blueprint wire payloads that break the compact contract', () => {
     ['four node attempts', (blueprint) => { blueprint.nd[0].b.try = 4; }],
     ['missing node paths', (blueprint) => { blueprint.nd[0].p = []; }],
     ['missing node gates', (blueprint) => { blueprint.nd[0].g = []; }],
+    ['arbitrary service', (blueprint) => { blueprint.nd[0].svc = 'model-invented'; }],
+    ['non-boolean approval edge', (blueprint) => { blueprint.nd[0].ha = 'no'; }],
     ['unsafe client IDs', (blueprint) => { blueprint.cid = '../other-client'; }]
   ];
 

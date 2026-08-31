@@ -10,7 +10,7 @@ function validWire({ rid = 'run-001', cid = 'piloto-elyse-luxe' } = {}) {
     ctx: [{ id: 'ctx-1', sha: 'a'.repeat(64), p: `clientes/${cid}/DNA.md` }],
     nd: [{
       id: 'n1', k: 'build', dep: [], in: ['ctx-1'], out: ['site'],
-      p: [`clientes/${cid}/site/index.html`], ni: false, tl: ['pipeline.build'],
+      p: [`clientes/${cid}/site/index.html`], ni: false, x: false, svc: 'standard', ha: false, tl: ['pipeline.build'],
       b: { it: 20000, ot: 4000, usd: 0.08, try: 1 }, g: ['core-runtime']
     }],
     b: { usd: 1.5, sol: 1, rp: 0 }

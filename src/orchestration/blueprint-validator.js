@@ -140,6 +140,23 @@ function checkAllowedGates(blueprint, policy) {
   return violations;
 }
 
+function checkExecutionRouting(blueprint) {
+  const violations = [];
+  for (const node of blueprint.nodes) {
+    if (typeof node.needsInput !== 'boolean' || typeof node.nonInteractive !== 'boolean'
+      || !['standard', 'batch', 'flex'].includes(node.service) || typeof node.humanApprovalEdge !== 'boolean') {
+      violations.push(violation('EXECUTION_ROUTING_INVALID', node.id, 'Node execution routing fields are invalid'));
+      continue;
+    }
+    const deferredEligible = (node.kind === 'extract' || node.kind === 'verify')
+      && node.nonInteractive && !node.needsInput && !node.humanApprovalEdge && node.dependencies.length === 0;
+    if (node.service !== 'standard' && !deferredEligible) {
+      violations.push(violation('EXECUTION_SERVICE_INELIGIBLE', node.id, `Node ${node.id} is not eligible for ${node.service}`));
+    }
+  }
+  return violations;
+}
+
 function totalNodeBudgetUsd(blueprint) {
   return blueprint.nodes.reduce((total, node) => total + node.budget.maxUsd, 0);
 }
@@ -174,6 +191,7 @@ const checks = [
   checkClientPaths,
   checkAllowedTools,
   checkAllowedGates,
+  checkExecutionRouting,
   checkNodeBudgetTotals,
   checkRunBudget
 ];

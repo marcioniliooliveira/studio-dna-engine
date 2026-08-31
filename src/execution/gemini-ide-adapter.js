@@ -4,7 +4,7 @@ const path = require('node:path');
 const { TaskResultWire } = require('../orchestration/contracts');
 const { assertSafeSlug } = require('../server/security');
 
-const PACKAGE_KEYS = ['v', 'rid', 'cid', 'nid', 'k', 'ni', 'in', 'p', 'out', 'tl', 'g', 'b'];
+const PACKAGE_KEYS = ['v', 'rid', 'cid', 'nid', 'k', 'need', 'ni', 'svc', 'ha', 'in', 'p', 'out', 'tl', 'g', 'b'];
 
 function exchangeError(code, message) {
   const error = new Error(message);
@@ -162,7 +162,7 @@ function createGeminiIdeAdapter({ exchangeDir, now = Date.now } = {}) {
     await writeAtomically(paths.packagePath, serialized);
     await writeAtomically(paths.manifestPath, JSON.stringify({ v: 1, binding, package: 'task-package.json' }));
     exportedAt.set(`${compact.rid}/${compact.nid}`, now());
-    return { status: 'awaiting_external_result', packagePath: paths.packagePath };
+    return { status: 'awaiting_external_result', packagePath: paths.packagePath, resultPath: paths.resultPath };
   }
 
   async function collectResult(runId, nodeId) {
@@ -171,7 +171,10 @@ function createGeminiIdeAdapter({ exchangeDir, now = Date.now } = {}) {
     let serialized;
     try {
       serialized = await fs.readFile(paths.resultPath, 'utf8');
-    } catch {
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return { status: 'awaiting_external_result', packagePath: paths.packagePath, resultPath: paths.resultPath };
+      }
       throw exchangeError('TASK_RESULT_INVALID', 'Task result is unavailable');
     }
     const result = parseResult(serialized, exported.binding);
@@ -195,7 +198,7 @@ function createGeminiIdeAdapter({ exchangeDir, now = Date.now } = {}) {
     };
   }
 
-  return Object.freeze({ identity: 'gemini-ide', execute, collectResult });
+  return Object.freeze({ identity: 'gemini-ide', model: 'gemini-ide', service: 'ide', execute, collectResult });
 }
 
 module.exports = { createGeminiIdeAdapter };

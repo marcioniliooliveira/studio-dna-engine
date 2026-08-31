@@ -11,6 +11,9 @@ function node(id, dependencies = []) {
     outputs: [`${id}-output`],
     paths: ['clientes/client-alpha/site/index.html'],
     needsInput: false,
+    nonInteractive: false,
+    service: 'standard',
+    humanApprovalEdge: false,
     toolLabels: ['pipeline.build'],
     budget: { maxInputTokens: 1, maxOutputTokens: 1, maxUsd: 0.1, maxAttempts: 1 },
     gates: ['core-runtime']

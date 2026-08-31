@@ -8,6 +8,7 @@ const { createWorkflowMachine, createWorkflowActor } = require('../src/orchestra
 const { createArtifactRegistry } = require('../src/orchestration/artifact-registry');
 const { CostEventWire } = require('../src/orchestration/contracts');
 const { buildTaskPackage } = require('../src/execution/task-package-builder');
+const { createExecutionAdapters } = require('../src/execution/service-router');
 const { isDeepStrictEqual } = require('node:util');
 
 function cliError(code, message) {
@@ -146,6 +147,9 @@ function createOrchestrator({
   }
   const runStore = createRunStore({ rootDir });
   const artifactRegistry = createArtifactRegistry({ rootDir });
+  if ((executors && (executionAdapters || serviceRouter)) || (executionAdapters && serviceRouter)) {
+    throw cliError('CLI_CONFIGURATION_INVALID', 'Execution composition is ambiguous');
+  }
   const routedExecutionAdapters = executionAdapters || serviceRouter;
 
   function requireStartDependencies() {
@@ -167,7 +171,8 @@ function createOrchestrator({
     const executor = typeof routedExecutionAdapters?.forNode === 'function'
       ? routedExecutionAdapters.forNode(node)
       : routedExecutionAdapters?.default;
-    if (!executor || typeof executor.identity !== 'string' || typeof executor.execute !== 'function') {
+    if (!executor || typeof executor.identity !== 'string' || typeof executor.model !== 'string'
+      || !['standard', 'batch', 'flex', 'ide'].includes(executor.service) || typeof executor.execute !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Service router must provide an executable adapter for each node');
     }
     return executor;
@@ -230,11 +235,11 @@ function createOrchestrator({
     if (!node) {
       const status = dagExecutionStatus(run, blueprint);
       if (status.complete && actor.getSnapshot().value === 'executing') {
-        return finalizeCandidate(runRef, blueprint, actor);
+        return { state: await finalizeCandidate(runRef, blueprint, actor) };
       }
       if (actor.getSnapshot().value === 'executing') actor.send({ type: 'WORKFLOW_FAILED' });
       persistWorkflow(runStore, runRef, actor);
-      return actor.getSnapshot().value;
+      return { state: actor.getSnapshot().value };
     }
     const nodeExecutors = executors
       ? Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
@@ -251,6 +256,20 @@ function createOrchestrator({
       }]))
       : (() => {
         const executor = routedExecutorFor(node);
+        function appendAdapterCost(taskPackage, rawCost) {
+          let costEvent;
+          try {
+            costEvent = CostEventWire.parse(rawCost);
+          } catch {
+            throw cliError('EXECUTOR_COST_PROVENANCE_MISMATCH', 'Adapter cost event is malformed');
+          }
+          if (costEvent.rid !== runRef.runId || costEvent.nid !== taskPackage.node.id
+            || costEvent.m !== executor.model || costEvent.svc !== executor.service
+            || costEvent.try > taskPackage.node.budget.maxAttempts) {
+            throw cliError('EXECUTOR_COST_PROVENANCE_MISMATCH', 'Adapter cost event does not match the selected adapter and task');
+          }
+          runStore.appendCost(runRef, costEvent);
+        }
         return {
           [node.kind]: {
             identity: executor.identity,
@@ -260,12 +279,27 @@ function createOrchestrator({
                 node: taskPackage.node,
                 artifacts: taskPackage.dependencyArtifacts
               });
-              const executed = await executor.execute(packageForAdapter);
-              const costEvent = CostEventWire.parse(executed?.costEvent);
-              if (costEvent.rid !== runRef.runId || costEvent.nid !== taskPackage.node.id) {
-                throw cliError('EXECUTOR_COST_IDENTITY_MISMATCH', 'Adapter cost event is not bound to the active task');
+              const currentRun = runStore.loadRun(runRef);
+              const waiting = currentRun.events.filter((event) => (
+                (event.type === 'TASK_WAITING' || event.type === 'TASK_PASSED' || event.type === 'TASK_FAILED')
+                && event.data.nodeId === node.id
+              )).at(-1)?.type === 'TASK_WAITING';
+              let executed;
+              try {
+                if (waiting) {
+                  if (typeof executor.collectResult !== 'function') {
+                    throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Waiting adapter must support controlled result collection');
+                  }
+                  executed = await executor.collectResult(runRef.runId, node.id);
+                } else {
+                  executed = await executor.execute(packageForAdapter);
+                }
+              } catch (error) {
+                if (error?.costEvent) appendAdapterCost(taskPackage, error.costEvent);
+                throw error;
               }
-              runStore.appendCost(runRef, costEvent);
+              if (executed?.status === 'awaiting_external_result') return executed;
+              appendAdapterCost(taskPackage, executed?.costEvent);
               return executed.result;
             }
           }
@@ -277,19 +311,24 @@ function createOrchestrator({
       runStore,
       budgetGovernor: createBudgetGovernor(blueprint.budget)
     });
-    await scheduler.execute({ runRef, blueprint: { ...blueprint, nodes: [node] } });
+    const scheduled = await scheduler.execute({ runRef, blueprint: { ...blueprint, nodes: [node] } });
+    if (scheduled.waiting) {
+      runStore.appendEvent(runRef, { type: 'RUN_PAUSED', data: { nodeId: node.id, reason: 'awaiting_external_result' } });
+      persistWorkflow(runStore, runRef, actor);
+      return { state: 'paused', waiting: scheduled.waiting };
+    }
     const after = runStore.loadRun(runRef);
     const status = dagExecutionStatus(after, blueprint);
     const pending = nextReadyNode(after, blueprint);
     if (status.complete) {
-      return finalizeCandidate(runRef, blueprint, actor);
+      return { state: await finalizeCandidate(runRef, blueprint, actor) };
     } else if (status.failed) {
       actor.send({ type: 'WORKFLOW_FAILED' });
     } else if (pending) {
       runStore.appendEvent(runRef, { type: 'RUN_PAUSED', data: { nodeId: node.id } });
     }
     persistWorkflow(runStore, runRef, actor);
-    return pending && !status.failed ? 'paused' : actor.getSnapshot().value;
+    return { state: pending && !status.failed ? 'paused' : actor.getSnapshot().value };
   }
 
   async function start(values) {
@@ -318,8 +357,8 @@ function createOrchestrator({
       actor.send({ type: 'BLUEPRINT_ACCEPTED' });
       actor.send({ type: 'EXECUTION_STARTED' });
       persistWorkflow(runStore, { runId }, actor);
-      const state = await executeOne({ runId }, blueprint, actor);
-      return { runId, state, validatedBeforeExecution: true };
+      const execution = await executeOne({ runId }, blueprint, actor);
+      return { runId, ...execution, validatedBeforeExecution: true };
     } catch (error) {
       throw error;
     }
@@ -366,9 +405,9 @@ function createOrchestrator({
     } else if (actor.getSnapshot().value !== 'executing') {
       throw cliError('CLI_RESUME_INVALID_STATE', 'Only executing runs may be resumed');
     }
-    const state = await executeOne(runRef, blueprint, actor);
+    const execution = await executeOne(runRef, blueprint, actor);
     const current = runStore.loadRun(runRef);
-    return { runId: runRef.runId, state, costs: current.costs };
+    return { runId: runRef.runId, ...execution, costs: current.costs };
   }
 
   async function approve(values) {
@@ -414,7 +453,15 @@ async function main(argv = process.argv.slice(2), io = process, dependencies = {
         throw cliError('CLI_CONFIGURATION_INVALID', 'Configured orchestration adapter module could not be loaded');
       }
     }
-    const result = await createOrchestrator({ rootDir, ...configured, ...dependencies }).execute(argv);
+    const composition = { rootDir, ...configured, ...dependencies };
+    if (composition.executionAdapterConfig) {
+      if (composition.executors || composition.executionAdapters || composition.serviceRouter) {
+        throw cliError('CLI_CONFIGURATION_INVALID', 'Execution adapter config conflicts with an injected execution implementation');
+      }
+      composition.executionAdapters = createExecutionAdapters(composition.executionAdapterConfig);
+      delete composition.executionAdapterConfig;
+    }
+    const result = await createOrchestrator(composition).execute(argv);
     io.stdout.write(`${JSON.stringify(result)}\n`);
     return 0;
   } catch (error) {

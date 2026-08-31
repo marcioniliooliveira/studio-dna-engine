@@ -38,12 +38,14 @@ function fixtureBlueprint() {
     nodes: [
       {
         id: 'n1', kind: 'build', dependencies: [], inputs: ['ctx-1'], outputs: ['first'],
-        paths: ['clientes/client-alpha/site/first.html'], needsInput: false, toolLabels: ['pipeline.build'],
+        paths: ['clientes/client-alpha/site/first.html'], needsInput: false, nonInteractive: false,
+        service: 'standard', humanApprovalEdge: false, toolLabels: ['pipeline.build'],
         budget: { maxInputTokens: 10, maxOutputTokens: 10, maxUsd: 0.1, maxAttempts: 1 }, gates: ['core-runtime']
       },
       {
         id: 'n2', kind: 'build', dependencies: ['n1'], inputs: ['ctx-1'], outputs: ['second'],
-        paths: ['clientes/client-alpha/site/second.html'], needsInput: false, toolLabels: ['pipeline.build'],
+        paths: ['clientes/client-alpha/site/second.html'], needsInput: false, nonInteractive: false,
+        service: 'standard', humanApprovalEdge: false, toolLabels: ['pipeline.build'],
         budget: { maxInputTokens: 10, maxOutputTokens: 10, maxUsd: 0.1, maxAttempts: 1 }, gates: ['core-runtime']
       }
     ],
@@ -179,7 +181,8 @@ test('routes the ready node through the service router and persists its actual c
   const packages = [];
   const blueprint = fixtureBlueprint();
   blueprint.nodes[0] = {
-    ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch'
+    ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch',
+    budget: { ...blueprint.nodes[0].budget, maxAttempts: 2 }
   };
   const options = {
     rootDir,
@@ -189,6 +192,8 @@ test('routes the ready node through the service router and persists its actual c
         routed.push(node);
         return {
           identity: `gemini-${node.service}`,
+          model: 'gemini-3.7-flash',
+          service: node.service,
           async execute(taskPackage) {
             packages.push(taskPackage);
             return {
@@ -218,8 +223,9 @@ test('routes the ready node through the service router and persists its actual c
   assert.deepEqual(routed.map((node) => node.id), ['n1']);
   assert.deepEqual(packages, [{
     v: 1, rid: 'run-001', cid: 'client-alpha', nid: 'n1', k: 'extract', ni: true,
+    need: false, svc: 'batch', ha: false,
     in: [], p: ['clientes/client-alpha/site/first.html'], out: ['first'], tl: ['pipeline.build'], g: ['core-runtime'],
-    b: { it: 10, ot: 10, usd: 0.1, try: 1 }
+    b: { it: 10, ot: 10, usd: 0.1, try: 2 }
   }]);
   assert.deepEqual(actual.data, {
     v: 1, rid: 'run-001', nid: 'n1', m: 'gemini-3.7-flash', svc: 'batch',
@@ -506,4 +512,199 @@ test('rejects missing approver and invalid external adapter configuration before
     if (originalModule === undefined) delete process.env.ORCHESTRATOR_ADAPTER_MODULE;
     else process.env.ORCHESTRATOR_ADAPTER_MODULE = originalModule;
   }
+});
+
+test('rejects ambiguous legacy executors combined with routed execution adapters', () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-ambiguous-execution-'));
+
+  assert.throws(
+    () => createOrchestrator({
+      rootDir,
+      approver: 'fixture-approver',
+      executors: { build: { identity: 'legacy', execute: async () => ({}) } },
+      executionAdapters: { default: { identity: 'routed', execute: async () => ({}) } }
+    }),
+    (error) => error.code === 'CLI_CONFIGURATION_INVALID'
+  );
+});
+
+test('main constructs production execution adapters from explicit configuration', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-production-composition-'));
+  const output = [];
+  const waitingAdapter = {
+    identity: 'gemini-ide', model: 'gemini-ide', service: 'ide',
+    async execute() {
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    },
+    async collectResult() {
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    }
+  };
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  const code = await main(
+    ['start', '--client', 'client-alpha', '--context', 'fixture.json'],
+    { stdout: { write: (line) => output.push(line) }, stderr: { write: (line) => output.push(line) } },
+    {
+      rootDir,
+      planner: { async plan() { return blueprint; } },
+      executionAdapterConfig: {
+        environment: {}, exchangeDir: path.join(rootDir, 'exchange'),
+        createGeminiIdeAdapter: () => waitingAdapter
+      },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence: registeredQaEvidence,
+      approver: 'fixture-approver'
+    }
+  );
+
+  assert.equal(code, 0);
+  assert.deepEqual(JSON.parse(output[0]), {
+    runId: 'run-001', state: 'paused',
+    waiting: { status: 'awaiting_external_result', nodeId: 'n1', packagePath: 'task-package.json', resultPath: 'task-result.json' },
+    validatedBeforeExecution: true
+  });
+});
+
+test('IDE fallback pauses explicitly and resumes through controlled result collection', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-ide-waiting-'));
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  let ready = false;
+  let executeCalls = 0;
+  let collectCalls = 0;
+  const adapter = {
+    identity: 'gemini-ide', model: 'gemini-ide', service: 'ide',
+    async execute() {
+      executeCalls += 1;
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    },
+    async collectResult(runId, nodeId) {
+      collectCalls += 1;
+      if (!ready) return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+      return {
+        result: successfulAdapterResult({ rid: runId, cid: 'client-alpha', nid: nodeId }),
+        costEvent: {
+          v: 1, rid: runId, nid: nodeId, m: 'gemini-ide', svc: 'ide',
+          it: null, ct: null, ot: null, ms: 0, try: 1, usd: null, est: false
+        }
+      };
+    }
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    executionAdapters: { default: adapter },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+
+  const first = await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const stillWaiting = await process.execute(['resume', '--run', 'run-001']);
+  ready = true;
+  const candidate = await process.execute(['resume', '--run', 'run-001']);
+  const inspected = await process.execute(['inspect', '--run', 'run-001']);
+
+  assert.equal(first.state, 'paused');
+  assert.equal(first.waiting.status, 'awaiting_external_result');
+  assert.equal(stillWaiting.state, 'paused');
+  assert.equal(candidate.state, 'candidate');
+  assert.equal(executeCalls, 1);
+  assert.equal(collectCalls, 2);
+  assert.equal(inspected.events.some((event) => event.type === 'TASK_FAILED'), false);
+  assert.equal(inspected.costs.filter((entry) => entry.data.m === 'gemini-ide').length, 1);
+});
+
+test('rejects model, service, and attempt cost provenance that differs from the selected adapter', async () => {
+  const mutations = [
+    (cost) => { cost.m = 'other-model'; },
+    (cost) => { cost.svc = 'flex'; },
+    (cost) => { cost.try = 2; }
+  ];
+  for (const [index, mutate] of mutations.entries()) {
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), `orchestration-cost-provenance-${index}-`));
+    const blueprint = fixtureBlueprint();
+    blueprint.nodes = [{
+      ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch', humanApprovalEdge: false
+    }];
+    const adapter = {
+      identity: 'gemini-api', model: 'gemini-3.7-flash', service: 'batch',
+      async execute(taskPackage) {
+        const costEvent = {
+          v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'batch',
+          it: 1, ct: 0, ot: 1, ms: 1, try: 1, usd: null, est: false
+        };
+        mutate(costEvent);
+        return { result: successfulAdapterResult(taskPackage), costEvent };
+      }
+    };
+    const options = {
+      rootDir,
+      planner: { async plan() { return blueprint; } },
+      executionAdapters: { forNode: () => adapter },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence: registeredQaEvidence,
+      approver: 'fixture-approver'
+    };
+
+    const result = await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+    const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+
+    assert.equal(result.state, 'failed');
+    assert.equal(inspected.events.find((event) => event.type === 'TASK_FAILED').data.code, 'EXECUTOR_COST_PROVENANCE_MISMATCH');
+  }
+});
+
+test('persists adapter cost evidence before recording a charged execution failure', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-charged-failure-'));
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  const adapter = {
+    identity: 'gemini-api', model: 'gemini-3.7-flash', service: 'standard',
+    async execute(taskPackage) {
+      const error = new Error('transport failed after request');
+      error.code = 'GEMINI_TRANSPORT_FAILED';
+      error.costEvent = {
+        v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'standard',
+        it: null, ct: null, ot: null, ms: 9, try: 1, usd: null, est: false
+      };
+      throw error;
+    }
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    executionAdapters: { forNode: () => adapter },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  const result = await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+
+  assert.equal(result.state, 'failed');
+  assert.equal(inspected.events.find((event) => event.type === 'TASK_FAILED').data.code, 'GEMINI_TRANSPORT_FAILED');
+  assert.deepEqual(inspected.costs.find((entry) => entry.data.m === 'gemini-3.7-flash').data, {
+    v: 1, rid: 'run-001', nid: 'n1', m: 'gemini-3.7-flash', svc: 'standard',
+    it: null, ct: null, ot: null, ms: 9, try: 1, usd: null, est: false
+  });
 });

@@ -32,6 +32,7 @@ function validBlueprint() {
         outputs: ['facts'],
         paths: ['clientes/piloto-elyse-luxe/content.md'],
         needsInput: false,
+        nonInteractive: true, service: 'standard', humanApprovalEdge: false,
         toolLabels: ['pipeline.build'],
         budget: { maxInputTokens: 100, maxOutputTokens: 100, maxUsd: 0.1, maxAttempts: 1 },
         gates: ['core-runtime']
@@ -44,6 +45,7 @@ function validBlueprint() {
         outputs: ['site'],
         paths: ['clientes/piloto-elyse-luxe/site/index.html'],
         needsInput: false,
+        nonInteractive: false, service: 'standard', humanApprovalEdge: false,
         toolLabels: ['pipeline.build'],
         budget: { maxInputTokens: 100, maxOutputTokens: 100, maxUsd: 0.1, maxAttempts: 1 },
         gates: ['core-runtime']
@@ -56,6 +58,7 @@ function validBlueprint() {
         outputs: ['report'],
         paths: ['clientes/piloto-elyse-luxe/reports/quality.json'],
         needsInput: false,
+        nonInteractive: true, service: 'standard', humanApprovalEdge: false,
         toolLabels: ['pipeline.verify'],
         budget: { maxInputTokens: 100, maxOutputTokens: 100, maxUsd: 0.1, maxAttempts: 1 },
         gates: ['core-runtime']
@@ -161,6 +164,16 @@ test('reports gates not permitted by policy', () => {
   const violations = violationsFor(blueprint);
 
   assert.ok(violations.some((violation) => violation.code === 'DISALLOWED_GATE'));
+});
+
+test('rejects a model-selected deferred service for an ineligible node', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].service = 'batch';
+  blueprint.nodes[1].nonInteractive = true;
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'EXECUTION_SERVICE_INELIGIBLE'));
 });
 
 test('returns the same valid three-node DAG', () => {

@@ -66,7 +66,9 @@ function compactArtifacts(blueprint, node, artifacts) {
 function buildTaskPackage({ blueprint, node, artifacts = [] }) {
   const runId = assertSafeSlug(blueprint && blueprint.runId);
   const clientId = assertSafeSlug(blueprint && blueprint.clientId);
-  if (!node || typeof node.id !== 'string' || typeof node.kind !== 'string' || typeof node.nonInteractive !== 'boolean') {
+  if (!node || typeof node.id !== 'string' || typeof node.kind !== 'string'
+    || typeof node.needsInput !== 'boolean' || typeof node.nonInteractive !== 'boolean'
+    || !['standard', 'batch', 'flex'].includes(node.service) || typeof node.humanApprovalEdge !== 'boolean') {
     throw packageError('TASK_PACKAGE_NODE_INVALID', 'Node identity is invalid');
   }
   if (!Array.isArray(blueprint.nodes) || !blueprint.nodes.some((acceptedNode) => (
@@ -96,7 +98,10 @@ function buildTaskPackage({ blueprint, node, artifacts = [] }) {
     cid: clientId,
     nid: node.id,
     k: node.kind,
+    need: node.needsInput,
     ni: node.nonInteractive,
+    svc: node.service,
+    ha: node.humanApprovalEdge,
     in: compactArtifacts(blueprint, node, artifacts),
     p: [...node.paths].sort(),
     out: [...node.outputs].sort(),

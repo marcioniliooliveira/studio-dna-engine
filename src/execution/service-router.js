@@ -5,7 +5,8 @@ function selectService(node) {
   if (!node || node.kind === 'fix' || node.kind === 'render' || (Array.isArray(node.dependencies) && node.dependencies.length > 0)) {
     return 'standard';
   }
-  if ((node.kind !== 'extract' && node.kind !== 'verify') || node.nonInteractive !== true || node.humanApprovalEdge === true) {
+  if ((node.kind !== 'extract' && node.kind !== 'verify') || node.needsInput === true
+    || node.nonInteractive !== true || node.humanApprovalEdge === true) {
     return 'standard';
   }
   return node.service === 'batch' || node.service === 'flex' ? node.service : 'standard';

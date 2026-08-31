@@ -56,6 +56,22 @@ function usageFor(metadata) {
   };
 }
 
+function aggregateUsage(responses, hasUnknownAttempt) {
+  const usages = responses.map((response) => usageFor(response?.usageMetadata));
+  function total(field) {
+    if (hasUnknownAttempt || usages.some((usage) => usage[field] === null)) return null;
+    return usages.reduce((sum, usage) => sum + usage[field], 0);
+  }
+  return {
+    inputTokens: total('inputTokens'),
+    cachedTokens: total('cachedTokens'),
+    outputTokens: total('outputTokens'),
+    thinkingTokens: total('thinkingTokens'),
+    usd: null,
+    estimated: false
+  };
+}
+
 function requestServiceTier(service) {
   return service === 'batch' ? 'deferred' : service;
 }
@@ -70,9 +86,10 @@ function createGeminiApiAdapter({
     throw new TypeError('client, toolCatalog, model, service, timeoutMs, maxToolCalls, and now are required');
   }
 
-  async function generate(request, attempts) {
+  async function generate(request, state, maxAttempts) {
     let lastError;
-    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    while (state.attemptCount < maxAttempts) {
+      state.attemptCount += 1;
       const controller = new AbortController();
       let timer;
       try {
@@ -87,15 +104,18 @@ function createGeminiApiAdapter({
           client.models.generateContent({ ...request, config: { ...request.config, abortSignal: controller.signal } }),
           timedOut
         ]);
-        return { response, attempts: attempt };
+        state.responses.push(response);
+        return response;
       } catch (error) {
         lastError = error;
+        state.hasUnknownAttempt = true;
         if (error.code === 'GEMINI_TIMEOUT') throw error;
       } finally {
         clearTimeout(timer);
       }
     }
-    throw lastError;
+    if (lastError) throw lastError;
+    throw executionError('TASK_ATTEMPT_BUDGET_EXCEEDED', 'Task attempt budget was exhausted before another model turn');
   }
 
   async function execute(taskPackage) {
@@ -109,38 +129,46 @@ function createGeminiApiAdapter({
     let contents = [{ role: 'user', parts: [{ text: JSON.stringify(prompt) }] }];
     const startedAt = now();
     let toolCallCount = 0;
-    let attemptCount = 0;
+    const state = { attemptCount: 0, responses: [], hasUnknownAttempt: false };
     let response;
 
-    while (true) {
-      const generated = await generate({ model, contents, config }, taskPackage.b.try);
-      response = generated.response;
-      attemptCount += generated.attempts;
-      const calls = functionCalls(response);
-      if (calls.length === 0) break;
-      if (toolCallCount + calls.length > maxToolCalls) {
-        throw executionError('TASK_TOOL_BUDGET_EXCEEDED', 'Gemini requested more tool calls than the task permits');
-      }
-      toolCallCount += calls.length;
-      const responses = await Promise.all(calls.map(async (call) => ({
-        functionResponse: { id: call.id, name: call.name, response: { output: await toolCatalog.invoke(call.name, call.args || {}, taskPackage) } }
-      })));
-      contents = contents.concat({ role: 'user', parts: responses });
+    function evidence() {
+      const usage = aggregateUsage(state.responses, state.hasUnknownAttempt);
+      return {
+        usage,
+        costEvent: CostEventWire.parse({
+          v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: model, svc: service,
+          it: usage.inputTokens, ct: usage.cachedTokens, ot: usage.outputTokens,
+          ms: Math.max(0, now() - startedAt), try: state.attemptCount, usd: usage.usd, est: usage.estimated
+        })
+      };
     }
 
-    const result = parseResponse(response);
-    assertPackageBinding(result, taskPackage);
-    const usage = usageFor(response.usageMetadata);
-    const elapsed = Math.max(0, now() - startedAt);
-    const costEvent = CostEventWire.parse({
-      v: 1, rid: result.rid, nid: result.nid, m: model, svc: service,
-      it: usage.inputTokens, ct: usage.cachedTokens, ot: usage.outputTokens,
-      ms: elapsed, try: attemptCount, usd: usage.usd, est: usage.estimated
-    });
-    return { result, usage, costEvent };
+    try {
+      while (true) {
+        response = await generate({ model, contents, config }, state, taskPackage.b.try);
+        const calls = functionCalls(response);
+        if (calls.length === 0) break;
+        if (toolCallCount + calls.length > maxToolCalls) {
+          throw executionError('TASK_TOOL_BUDGET_EXCEEDED', 'Gemini requested more tool calls than the task permits');
+        }
+        toolCallCount += calls.length;
+        const responses = await Promise.all(calls.map(async (call) => ({
+          functionResponse: { id: call.id, name: call.name, response: { output: await toolCatalog.invoke(call.name, call.args || {}, taskPackage) } }
+        })));
+        contents = contents.concat({ role: 'user', parts: responses });
+      }
+
+      const result = parseResponse(response);
+      assertPackageBinding(result, taskPackage);
+      return { result, ...evidence() };
+    } catch (error) {
+      if (state.attemptCount > 0) Object.assign(error, evidence());
+      throw error;
+    }
   }
 
-  return Object.freeze({ identity: 'gemini-api', service, execute });
+  return Object.freeze({ identity: 'gemini-api', model, service, execute });
 }
 
 module.exports = { createGeminiApiAdapter, DEFAULT_MODEL };

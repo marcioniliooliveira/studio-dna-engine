@@ -227,9 +227,20 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
       const packageForNode = taskPackage(runRef, acceptedBlueprint, node, currentRun.events);
       let result;
       try {
-        result = TaskResultWire.parse(await executor.execute(packageForNode));
+        const execution = await executor.execute(packageForNode);
+        if (execution?.status === 'awaiting_external_result') {
+          const waiting = {
+            status: execution.status,
+            nodeId: node.id,
+            packagePath: execution.packagePath,
+            resultPath: execution.resultPath
+          };
+          runStore.appendEvent(runRef, { type: 'TASK_WAITING', data: waiting });
+          return { passedNodeIds: [...passed].sort(), failedNodeIds: [...failed].sort(), executedNodeIds, waiting };
+        }
+        result = TaskResultWire.parse(execution);
       } catch (error) {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_EXCEPTION', evidence: { message: error.message } } });
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: error.code || 'EXECUTOR_EXCEPTION', evidence: { message: error.message } } });
         failed.add(node.id);
         continue;
       }

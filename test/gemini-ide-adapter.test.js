@@ -19,7 +19,7 @@ function taskPackage() {
     cid: 'piloto-elyse-luxe',
     nid: 'build-site',
     k: 'build',
-    ni: false,
+    need: true, ni: false, svc: 'standard', ha: true,
     in: [{ id: 'facts', sha: 'a'.repeat(64) }],
     p: ['clientes/piloto-elyse-luxe/site/index.html'],
     out: ['site'],
@@ -60,8 +60,13 @@ test('exports a compact task package atomically into its isolated run and node d
   const serialized = await fs.readFile(packagePath, 'utf8');
   const exported = JSON.parse(serialized);
 
-  assert.deepEqual(pending, { status: 'awaiting_external_result', packagePath });
-  assert.deepEqual(Object.keys(exported), ['v', 'rid', 'cid', 'nid', 'k', 'ni', 'in', 'p', 'out', 'tl', 'g', 'b', 'ctx']);
+  assert.deepEqual(pending, {
+    status: 'awaiting_external_result', packagePath,
+    resultPath: path.join(exchangeDir, 'run-001', 'build-site', 'task-result.json')
+  });
+  assert.deepEqual(Object.keys(exported), [
+    'v', 'rid', 'cid', 'nid', 'k', 'need', 'ni', 'svc', 'ha', 'in', 'p', 'out', 'tl', 'g', 'b', 'ctx'
+  ]);
   assert.equal(serialized.includes('conversation'), false);
   assert.equal(serialized.includes('Only this structural summary is disclosed.'), true);
   assert.equal(serialized.includes('private source that was not summarized'), false);

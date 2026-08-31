@@ -7,6 +7,7 @@ test('routes immediate and interactive work to Standard', () => {
   assert.equal(selectService({ kind: 'render', nonInteractive: false, dependencies: [] }), 'standard');
   assert.equal(selectService({ kind: 'extract', nonInteractive: true, dependencies: ['facts'] }), 'standard');
   assert.equal(selectService({ kind: 'verify', nonInteractive: true, dependencies: [], humanApprovalEdge: true }), 'standard');
+  assert.equal(selectService({ kind: 'verify', needsInput: true, nonInteractive: true, dependencies: [], humanApprovalEdge: false, service: 'flex' }), 'standard');
 });
 
 test('permits Batch and Flex only for non-interactive extract or verify nodes with no approval edge', () => {

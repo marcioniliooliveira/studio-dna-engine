@@ -4,7 +4,8 @@ const { createGeminiApiAdapter } = require('../src/execution/gemini-api-adapter'
 
 function taskPackage() {
   return {
-    v: 1, rid: 'run-001', cid: 'piloto-elyse-luxe', nid: 'verify-site', k: 'verify', ni: true,
+    v: 1, rid: 'run-001', cid: 'piloto-elyse-luxe', nid: 'verify-site', k: 'verify',
+    need: false, ni: true, svc: 'standard', ha: false,
     in: [{ id: 'facts', sha: 'a'.repeat(64) }],
     p: ['clientes/piloto-elyse-luxe/site/index.html'], out: ['report'],
     tl: ['context.summary', 'qa.core'], g: ['core-runtime'],
@@ -87,7 +88,12 @@ test('rejects a tool call beyond the task tool budget without another model call
   } } };
   const adapter = createGeminiApiAdapter({ client, toolCatalog: toolCatalog(), maxToolCalls: 2 });
 
-  await assert.rejects(() => adapter.execute(taskPackage()), (error) => error.code === 'TASK_TOOL_BUDGET_EXCEEDED');
+  await assert.rejects(() => adapter.execute(taskPackage()), (error) => {
+    assert.equal(error.code, 'TASK_TOOL_BUDGET_EXCEEDED');
+    assert.equal(error.costEvent.try, 2);
+    assert.equal(error.costEvent.m, 'gemini-3.7-flash');
+    return true;
+  });
   assert.equal(modelCalls, 2);
 });
 
@@ -103,7 +109,14 @@ test('aborts a timed-out API request and does not start a retry before it settle
   } } };
   const adapter = createGeminiApiAdapter({ client, toolCatalog: toolCatalog(), timeoutMs: 5 });
 
-  await assert.rejects(() => adapter.execute(taskPackage()), (error) => error.code === 'GEMINI_TIMEOUT');
+  await assert.rejects(() => adapter.execute(taskPackage()), (error) => {
+    assert.equal(error.code, 'GEMINI_TIMEOUT');
+    assert.deepEqual(error.costEvent, {
+      v: 1, rid: 'run-001', nid: 'verify-site', m: 'gemini-3.7-flash', svc: 'standard',
+      it: null, ct: null, ot: null, ms: error.costEvent.ms, try: 1, usd: null, est: false
+    });
+    return true;
+  });
   assert.equal(aborted, true);
   assert.equal(calls, 1);
 });
@@ -136,4 +149,70 @@ test('records the actual successful retry attempt in cost evidence', async () =>
 
   assert.equal(calls, 2);
   assert.equal(executed.costEvent.try, 2);
+});
+
+test('enforces one attempt cap across transport retries and model tool turns', async () => {
+  let calls = 0;
+  const client = { models: { generateContent: async () => {
+    calls += 1;
+    if (calls === 1) throw new Error('temporary transport failure');
+    return {
+      functionCalls: [{ name: 'context.summary', args: {} }],
+      usageMetadata: { promptTokenCount: 9, candidatesTokenCount: 2 }
+    };
+  } } };
+  const adapter = createGeminiApiAdapter({ client, toolCatalog: toolCatalog() });
+
+  await assert.rejects(() => adapter.execute(taskPackage()), (error) => {
+    assert.equal(error.code, 'TASK_ATTEMPT_BUDGET_EXCEEDED');
+    assert.equal(error.costEvent.try, 2);
+    return true;
+  });
+  assert.equal(calls, 2);
+});
+
+test('aggregates usage across every model call in a tool conversation', async () => {
+  let calls = 0;
+  const client = { models: { generateContent: async () => {
+    calls += 1;
+    if (calls === 1) {
+      return {
+        functionCalls: [{ name: 'context.summary', args: {} }],
+        usageMetadata: { promptTokenCount: 10, cachedContentTokenCount: 2, candidatesTokenCount: 3, thoughtsTokenCount: 1 }
+      };
+    }
+    return {
+      text: JSON.stringify(taskResult()),
+      usageMetadata: { promptTokenCount: 5, cachedContentTokenCount: 1, candidatesTokenCount: 7, thoughtsTokenCount: 2 }
+    };
+  } } };
+  const packageWithAttempts = taskPackage();
+  packageWithAttempts.b.try = 2;
+
+  const executed = await createGeminiApiAdapter({ client, toolCatalog: toolCatalog() }).execute(packageWithAttempts);
+
+  assert.deepEqual(executed.usage, {
+    inputTokens: 15, cachedTokens: 3, outputTokens: 10, thinkingTokens: 3, usd: null, estimated: false
+  });
+  assert.equal(executed.costEvent.try, 2);
+});
+
+test('attaches cost evidence when a charged response is malformed or out of scope', async () => {
+  const cases = [
+    ['TASK_RESULT_INVALID', { text: '{not-json', usageMetadata: { promptTokenCount: 4 } }],
+    ['TASK_RESULT_SCOPE_MISMATCH', { text: JSON.stringify(taskResult({ cid: 'other-client' })), usageMetadata: { promptTokenCount: 6 } }]
+  ];
+
+  for (const [code, response] of cases) {
+    const client = { models: { generateContent: async () => response } };
+    await assert.rejects(
+      () => createGeminiApiAdapter({ client, toolCatalog: toolCatalog() }).execute(taskPackage()),
+      (error) => {
+        assert.equal(error.code, code);
+        assert.equal(error.costEvent.try, 1);
+        assert.equal(error.costEvent.it, response.usageMetadata.promptTokenCount);
+        return true;
+      }
+    );
+  }
 });

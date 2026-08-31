@@ -16,6 +16,9 @@ const NodeWire = z.object({
   out: z.array(z.string()).min(1),
   p: z.array(z.string()).min(1),
   ni: z.boolean(),
+  x: z.boolean(),
+  svc: z.enum(['standard', 'batch', 'flex']),
+  ha: z.boolean(),
   tl: z.array(z.string()).max(8),
   b: BudgetWire,
   g: z.array(z.string()).min(1)
@@ -89,6 +92,9 @@ function parseBlueprintWire(input) {
       outputs: node.out,
       paths: node.p,
       needsInput: node.ni,
+      nonInteractive: node.x,
+      service: node.svc,
+      humanApprovalEdge: node.ha,
       toolLabels: node.tl,
       budget: {
         maxInputTokens: node.b.it,
