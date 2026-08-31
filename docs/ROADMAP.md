@@ -91,11 +91,19 @@ This roadmap is ordered by dependency and proof. A milestone is promoted only wh
 **Work:**
 
 - Add deterministic screenshot capture for required viewports and regions.
+- Add a Chromium/CDP runtime probe for computed geometry, scroll extents, stacking and asset state.
+- Implement deterministic overflow, clipping, AABB collision, touch-target and broken-image checks.
+- Replay bounded synthetic interaction scenarios with explicit animation/frame settling.
 - Implement browser-output visual regression against runtime baselines.
 - Add assisted semantic review against approved visual targets, always with evidence and human escalation.
 - Route failures to focused repair tasks instead of broad prompts.
 
-**Exit evidence:** A deliberate visual regression fails the relevant gate, produces a usable diagnosis, and is repaired without changing unrelated sections.
+The initial performance target is a benchmark budget, not a correctness assumption: measure probe,
+geometry, capture and comparison phases independently across representative pages. Do not claim
+sub-500ms until repeated runs prove it. CDP output is compacted into findings; raw DOM/screenshots
+are not forwarded to Gemini unless an explicitly authorized repair task requests a bounded slice.
+
+**Exit evidence:** A deliberate visual regression fails the relevant gate, produces a usable diagnosis, and is repaired without changing unrelated sections. Runtime gates and Golden Screenshot comparison remain separate evidence classes.
 
 ## M7 — Client presentation layer
 

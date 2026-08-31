@@ -130,6 +130,16 @@ Every model call emits an append-only cost event with run ID, node ID, model, se
 
 The initial optimization target is at least 50% lower model cost than a premium-iterative baseline while preserving gate pass rate and human-correction rate. Higher savings are not claimed until measured by repeated comparable runs.
 
+## Deterministic visual QA extension (M6)
+
+Runtime QA is split from visual intent. A Chromium/CDP probe extracts computed geometry, scroll
+extents, stacking and asset state; deterministic gates evaluate overflow, clipping, AABB collisions,
+touch targets and broken images; bounded synthetic scenarios exercise interaction and animation state.
+Golden Screenshots remain the approved visual reference, while pixel/SSIM comparison reports deltas
+and never decides intent by itself. Findings are compact evidence objects. Gemini receives only the
+finding, relevant AST slice and authorized paths for a bounded repair. The sub-500ms objective is a
+measured benchmark budget, not an unverified guarantee.
+
 ## Quality architecture
 
 The current quality gate remains the starting point, but must become fail-closed for every reported gate. The target gate evaluates:
