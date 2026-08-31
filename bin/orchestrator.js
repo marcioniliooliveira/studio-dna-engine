@@ -4,6 +4,7 @@ const { createRunStore } = require('../src/orchestration/run-store');
 const { validateBlueprint } = require('../src/orchestration/blueprint-validator');
 const { createBudgetGovernor } = require('../src/orchestration/budget-governor');
 const { createDagScheduler } = require('../src/orchestration/dag-scheduler');
+const { createWorkflowMachine, createWorkflowActor } = require('../src/orchestration/workflow-machine');
 
 function cliError(code, message) {
   const error = new Error(message);
@@ -66,13 +67,26 @@ function blueprintFor(run) {
   return entry.data.blueprint;
 }
 
-function runState(run, blueprint) {
-  if (run.events.some((event) => event.type === 'FINAL_APPROVED')) return 'verified';
-  if (run.events.some((event) => event.type === 'FINAL_APPROVAL_REQUESTED')) return 'awaiting_final_approval';
-  if (run.events.some((event) => event.type === 'RUN_CANDIDATE')) return 'candidate';
-  if (run.events.some((event) => event.type === 'TASK_FAILED')) return 'failed';
-  const passed = new Set(run.events.filter((event) => event.type === 'TASK_PASSED').map((event) => event.data.nodeId));
-  return passed.size === blueprint.nodes.length ? 'candidate' : 'paused';
+function initialWorkflowContext(runId, clientId) {
+  return { runId, clientId, planVersion: 1, attempts: 0, candidateArtifact: null, blockingEvidence: null };
+}
+
+function workflowSnapshotFor(run) {
+  const entry = run.events.filter((event) => event.type === 'WORKFLOW_SNAPSHOT').at(-1);
+  if (!entry?.data?.snapshot) throw cliError('RUN_WORKFLOW_SNAPSHOT_MISSING', 'Run has no persisted workflow snapshot');
+  return entry.data.snapshot;
+}
+
+function workflowActorFor(run) {
+  const machine = createWorkflowMachine(initialWorkflowContext(run.state.runId, run.state.clientId));
+  const actor = createWorkflowActor(machine, workflowSnapshotFor(run));
+  actor.start();
+  return actor;
+}
+
+function persistWorkflow(runStore, runRef, actor) {
+  const snapshot = JSON.parse(JSON.stringify(actor.getPersistedSnapshot()));
+  runStore.appendEvent(runRef, { type: 'WORKFLOW_SNAPSHOT', data: { snapshot } });
 }
 
 function nextReadyNode(run, blueprint) {
@@ -90,12 +104,15 @@ function createOrchestrator({
   verifier,
   runIdFactory,
   readManifest,
-  blueprintPolicy
+  blueprintPolicy,
+  candidateArtifact,
+  qaEvidence,
+  approver
 } = {}) {
   if (typeof rootDir !== 'string' || rootDir.length === 0) throw new TypeError('rootDir is required');
   const runStore = createRunStore({ rootDir });
 
-  function requirePlanner() {
+  function requireStartDependencies() {
     if (!planner || typeof planner.plan !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'A planner adapter must be injected for start');
     }
@@ -104,10 +121,17 @@ function createOrchestrator({
     }
   }
 
-  async function executeOne(runRef, blueprint) {
+  function requireExecutionDependencies() {
+    if (!executors || !verifier || !blueprintPolicy) {
+      throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Execution adapters must be injected by the composition root');
+    }
+  }
+
+  async function executeOne(runRef, blueprint, actor) {
+    requireExecutionDependencies();
     const run = runStore.loadRun(runRef);
     const node = nextReadyNode(run, blueprint);
-    if (!node) return runState(run, blueprint);
+    if (!node) return actor.getSnapshot().value;
     const nodeExecutors = Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
       identity: executor.identity,
       async execute(taskPackage) {
@@ -128,21 +152,32 @@ function createOrchestrator({
     });
     await scheduler.execute({ runRef, blueprint: { ...blueprint, nodes: [node] } });
     const after = runStore.loadRun(runRef);
-    const state = runState(after, blueprint);
-    if (state === 'candidate' && !after.events.some((event) => event.type === 'RUN_CANDIDATE')) {
-      runStore.appendEvent(runRef, { type: 'RUN_CANDIDATE', data: {} });
-    } else if (state === 'paused') {
+    const pending = nextReadyNode(after, blueprint);
+    if (!pending && !after.events.some((event) => event.type === 'TASK_FAILED')) {
+      if (typeof candidateArtifact !== 'function' || typeof qaEvidence !== 'function') {
+        throw cliError('CLI_QA_UNAVAILABLE', 'Candidate artifact and full-QA evidence adapters are required for promotion');
+      }
+      const artifact = await candidateArtifact({ runRef, blueprint });
+      actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifact });
+      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact });
+      runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
+      actor.send({ type: 'FULL_QA_PASSED', evidence });
+      if (actor.getSnapshot().value !== 'candidate') {
+        throw cliError('CLI_QA_INVALID', 'Full-QA evidence is not bound to the candidate artifact');
+      }
+    } else if (pending) {
       runStore.appendEvent(runRef, { type: 'RUN_PAUSED', data: { nodeId: node.id } });
     }
-    return runState(runStore.loadRun(runRef), blueprint);
+    persistWorkflow(runStore, runRef, actor);
+    return pending ? 'paused' : actor.getSnapshot().value;
   }
 
   async function start(values) {
-    requirePlanner();
+    requireStartDependencies();
     const clientId = values['--client'];
     const runId = assertSafeSlug(runIdFactory());
     const contextManifest = normalizeManifest(await readManifest(values['--context'], clientId), clientId);
-    runStore.createRun({ runId, clientId, contextManifest });
+    runStore.createRun({ ...initialWorkflowContext(runId, clientId), contextManifest });
     try {
       const blueprint = await planner.plan({
         runId,
@@ -156,7 +191,14 @@ function createOrchestrator({
       validateBlueprint(blueprint, blueprintPolicy);
       runStore.appendEvent({ runId }, { type: 'SOL_CALL_RECORDED', data: {} });
       runStore.appendEvent({ runId }, { type: 'BLUEPRINT_ACCEPTED', data: { blueprint } });
-      const state = await executeOne({ runId }, blueprint);
+      const actor = createWorkflowActor(createWorkflowMachine(initialWorkflowContext(runId, clientId)));
+      actor.start();
+      actor.send({ type: 'CONTEXT_FROZEN' });
+      actor.send({ type: 'PLAN_REQUESTED' });
+      actor.send({ type: 'BLUEPRINT_ACCEPTED' });
+      actor.send({ type: 'EXECUTION_STARTED' });
+      persistWorkflow(runStore, { runId }, actor);
+      const state = await executeOne({ runId }, blueprint, actor);
       return { runId, state, validatedBeforeExecution: true };
     } catch (error) {
       throw error;
@@ -165,15 +207,18 @@ function createOrchestrator({
 
   async function inspect(values) {
     const run = runStore.loadRun({ runId: values['--run'] });
-    return { runId: run.runRef.runId, state: runState(run, blueprintFor(run)), events: run.events, costs: run.costs, totals: run.totals };
+    return { runId: run.runRef.runId, state: workflowActorFor(run).getSnapshot().value, events: run.events, costs: run.costs, totals: run.totals };
   }
 
   async function resume(values) {
-    requirePlanner();
     const runRef = { runId: values['--run'] };
     const run = runStore.loadRun(runRef);
     const blueprint = blueprintFor(run);
-    const state = await executeOne(runRef, blueprint);
+    const actor = workflowActorFor(run);
+    if (actor.getSnapshot().value !== 'executing') {
+      throw cliError('CLI_RESUME_INVALID_STATE', 'Only executing runs may be resumed');
+    }
+    const state = await executeOne(runRef, blueprint, actor);
     const current = runStore.loadRun(runRef);
     return { runId: runRef.runId, state, costs: current.costs };
   }
@@ -182,7 +227,8 @@ function createOrchestrator({
     const event = values['--event'];
     const runRef = { runId: values['--run'] };
     const run = runStore.loadRun(runRef);
-    const state = runState(run, blueprintFor(run));
+    const actor = workflowActorFor(run);
+    const state = actor.getSnapshot().value;
     const transitions = {
       'final-approval-requested': ['candidate', 'FINAL_APPROVAL_REQUESTED'],
       'final-approved': ['awaiting_final_approval', 'FINAL_APPROVED']
@@ -190,8 +236,12 @@ function createOrchestrator({
     const transition = transitions[event];
     if (!transition) throw cliError('CLI_EVENT_UNKNOWN', 'Unknown approval event');
     if (state !== transition[0]) throw cliError('CLI_EVENT_INVALID_STATE', 'Approval event is not valid for the current run state');
-    runStore.appendEvent(runRef, { type: transition[1], data: {} });
-    return { runId: runRef.runId, state: runState(runStore.loadRun(runRef), blueprintFor(run)) };
+    const actorId = assertSafeSlug(approver);
+    actor.send({ type: transition[1] });
+    if (actor.getSnapshot().value === state) throw cliError('CLI_EVENT_INVALID_STATE', 'Approval event was rejected by the workflow');
+    runStore.appendEvent(runRef, { type: 'APPROVAL_RECORDED', data: { actor: actorId, event: transition[1] } });
+    persistWorkflow(runStore, runRef, actor);
+    return { runId: runRef.runId, state: actor.getSnapshot().value };
   }
 
   async function execute(argv) {
@@ -203,10 +253,12 @@ function createOrchestrator({
   return { execute };
 }
 
-async function main(argv = process.argv.slice(2), io = process) {
+async function main(argv = process.argv.slice(2), io = process, dependencies = {}) {
   try {
     const rootDir = process.env.ORCHESTRATOR_ROOT || require('node:path').resolve('.orchestration', 'runs');
-    const result = await createOrchestrator({ rootDir }).execute(argv);
+    const adapterModule = process.env.ORCHESTRATOR_ADAPTER_MODULE;
+    const configured = adapterModule ? require(require('node:path').resolve(adapterModule)) : {};
+    const result = await createOrchestrator({ rootDir, ...configured, ...dependencies }).execute(argv);
     io.stdout.write(`${JSON.stringify(result)}\n`);
     return 0;
   } catch (error) {

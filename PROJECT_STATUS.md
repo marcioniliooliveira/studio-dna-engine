@@ -29,8 +29,8 @@ This file separates observed project state from product vision. Update a claim o
 | Accessibility is verified | No executable accessibility audit is configured | Unverified |
 | Performance is verified | No reproducible performance budget or artifact is configured | Unverified |
 | Static HTML + Next.js are both generated | No operational Next.js generation path was found at baseline | Unverified/unsupported |
-| Fixture-only orchestration control plane | `node --test test/orchestration-*.test.js test/blueprint-validator.test.js test/artifact-registry.test.js test/run-store.test.js test/workflow-machine.test.js test/budget-governor.test.js test/dag-scheduler.test.js` on 2026-08-31 | Observed pass (59/59): validated plan, pause/resume, independent fixture verification and unknown-cost persistence |
-| Full automated suite including orchestration fixture proof | `npm test` on 2026-08-31 | Observed pass (115/115) |
+| Fixture-only orchestration control plane | `node --test test/orchestration-*.test.js test/blueprint-validator.test.js test/artifact-registry.test.js test/run-store.test.js test/workflow-machine.test.js test/budget-governor.test.js test/dag-scheduler.test.js` on 2026-08-31 | Observed pass (61/61): validated plan, persisted workflow approvals, pause/resume, independent fixture verification and unknown-cost persistence |
+| Full automated suite including orchestration fixture proof | `npm test` on 2026-08-31 | Observed pass (117/117) |
 | Live Sol planning execution | No live model request or API credential was used in this run | Unverified |
 | Gemini execution | No Gemini executor was configured or exercised in this run | Unverified |
 | New control-plane visual QA, accessibility and performance | No independent visual, accessibility or performance artifact was produced in this run | Unverified |
