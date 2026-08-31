@@ -103,6 +103,16 @@ test('fails closed for paths, artifacts, gates, and attempts outside the node sc
       code: 'TASK_PACKAGE_GATES_INVALID'
     },
     {
+      name: 'empty tool allowlist',
+      mutate: (current) => { current.toolLabels = []; },
+      code: 'TASK_PACKAGE_TOOLS_INVALID'
+    },
+    {
+      name: 'duplicate tool allowlist entry',
+      mutate: (current) => { current.toolLabels = ['patch.apply', 'patch.apply']; },
+      code: 'TASK_PACKAGE_TOOLS_INVALID'
+    },
+    {
       name: 'attempt cap',
       mutate: (current) => { current.budget.maxAttempts = 4; },
       code: 'TASK_PACKAGE_BUDGET_INVALID'

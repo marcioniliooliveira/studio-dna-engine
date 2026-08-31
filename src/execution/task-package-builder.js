@@ -80,7 +80,9 @@ function buildTaskPackage({ blueprint, node, artifacts = [] }) {
   if (!Array.isArray(node.outputs) || node.outputs.length === 0 || !node.outputs.every((output) => typeof output === 'string' && output.length > 0)) {
     throw packageError('TASK_PACKAGE_OUTPUT_INVALID', 'Node outputs are invalid');
   }
-  if (!Array.isArray(node.toolLabels) || !node.toolLabels.every((tool) => typeof tool === 'string' && tool.length > 0)) {
+  if (!Array.isArray(node.toolLabels) || node.toolLabels.length === 0
+    || !node.toolLabels.every((tool) => typeof tool === 'string' && tool.length > 0)
+    || new Set(node.toolLabels).size !== node.toolLabels.length) {
     throw packageError('TASK_PACKAGE_TOOLS_INVALID', 'Node tools are invalid');
   }
   if (!Array.isArray(node.gates) || node.gates.length === 0 || !node.gates.every((gate) => typeof gate === 'string' && gate.length > 0)) {
