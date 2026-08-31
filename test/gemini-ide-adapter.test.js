@@ -45,6 +45,12 @@ function taskResult(overrides = {}) {
   };
 }
 
+async function resultEnvelope(exchangeDir, result = taskResult()) {
+  const manifestPath = path.join(exchangeDir, 'run-001', 'build-site', 'task-package.manifest.json');
+  const binding = JSON.parse(await fs.readFile(manifestPath, 'utf8')).binding;
+  return JSON.stringify({ v: 1, binding, result });
+}
+
 test('exports a compact task package atomically into its isolated run and node directory', async (t) => {
   const exchangeDir = await makeExchangeDir(t);
   const adapter = createGeminiIdeAdapter({ exchangeDir, now: () => 1700000000000 });
@@ -74,7 +80,7 @@ test('rejects malformed, out-of-scope, and package-unbound IDE results', async (
     (error) => error.code === 'TASK_RESULT_INVALID'
   );
 
-  await fs.writeFile(resultPath, JSON.stringify(taskResult({ cid: 'outro-cliente' })), 'utf8');
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir, taskResult({ cid: 'outro-cliente' })), 'utf8');
   await assert.rejects(
     () => adapter.collectResult('run-001', 'build-site'),
     (error) => error.code === 'TASK_RESULT_SCOPE_MISMATCH'
@@ -84,7 +90,7 @@ test('rejects malformed, out-of-scope, and package-unbound IDE results', async (
   const tampered = JSON.parse(await fs.readFile(packagePath, 'utf8'));
   tampered.ctx.summary = 'Tampered summary';
   await fs.writeFile(packagePath, JSON.stringify(tampered), 'utf8');
-  await fs.writeFile(resultPath, JSON.stringify(taskResult()), 'utf8');
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir), 'utf8');
   await assert.rejects(
     () => adapter.collectResult('run-001', 'build-site'),
     (error) => error.code === 'TASK_PACKAGE_BINDING_MISMATCH'
@@ -97,7 +103,7 @@ test('returns TaskResultWire plus unknown IDE cost evidence without polling or r
   const task = taskPackage();
   const pending = await adapter.execute(task);
   const resultPath = path.join(exchangeDir, 'run-001', 'build-site', 'task-result.json');
-  await fs.writeFile(resultPath, JSON.stringify(taskResult()), 'utf8');
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir), 'utf8');
 
   const collected = await adapter.collectResult('run-001', 'build-site');
 
@@ -120,7 +126,7 @@ test('preserves token metadata supplied by the IDE result', async (t) => {
   const adapter = createGeminiIdeAdapter({ exchangeDir });
   await adapter.execute(taskPackage());
   const resultPath = path.join(exchangeDir, 'run-001', 'build-site', 'task-result.json');
-  await fs.writeFile(resultPath, JSON.stringify(taskResult({ use: { it: 21, ct: 8, ot: 13 } })), 'utf8');
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir, taskResult({ use: { it: 21, ct: 8, ot: 13 } })), 'utf8');
 
   const collected = await adapter.collectResult('run-001', 'build-site');
 
@@ -130,4 +136,31 @@ test('preserves token metadata supplied by the IDE result', async (t) => {
   assert.equal(collected.costEvent.ot, 13);
   assert.equal(collected.costEvent.usd, null);
   assert.equal(collected.costEvent.est, false);
+});
+
+test('rejects a stale result after re-export and scope violations inside a bound result', async (t) => {
+  const exchangeDir = await makeExchangeDir(t);
+  const adapter = createGeminiIdeAdapter({ exchangeDir });
+  const resultPath = path.join(exchangeDir, 'run-001', 'build-site', 'task-result.json');
+  await adapter.execute(taskPackage());
+  const staleResult = await resultEnvelope(exchangeDir);
+  await adapter.execute({ ...taskPackage(), ctx: { summary: 'A new export generation.' } });
+
+  await fs.writeFile(resultPath, staleResult, 'utf8');
+  await assert.rejects(
+    () => adapter.collectResult('run-001', 'build-site'),
+    (error) => error.code === 'TASK_RESULT_BINDING_MISMATCH'
+  );
+
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir, taskResult({ art: [{ id: 'secret', sha: 'b'.repeat(64) }] })), 'utf8');
+  await assert.rejects(
+    () => adapter.collectResult('run-001', 'build-site'),
+    (error) => error.code === 'TASK_RESULT_ARTIFACT_SCOPE_VIOLATION'
+  );
+
+  await fs.writeFile(resultPath, await resultEnvelope(exchangeDir, taskResult({ chg: ['clientes/piloto-elyse-luxe/private.md'] })), 'utf8');
+  await assert.rejects(
+    () => adapter.collectResult('run-001', 'build-site'),
+    (error) => error.code === 'TASK_RESULT_CHANGE_SCOPE_VIOLATION'
+  );
 });
