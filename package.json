@@ -42,6 +42,7 @@
     "cheerio": "^1.2.0",
     "playwright": "^1.41.0",
     "postcss": "^8.5.26",
+    "xstate": "5.32.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
