@@ -6,6 +6,8 @@ const { createBudgetGovernor } = require('../src/orchestration/budget-governor')
 const { createDagScheduler } = require('../src/orchestration/dag-scheduler');
 const { createWorkflowMachine, createWorkflowActor } = require('../src/orchestration/workflow-machine');
 const { createArtifactRegistry } = require('../src/orchestration/artifact-registry');
+const { CostEventWire } = require('../src/orchestration/contracts');
+const { buildTaskPackage } = require('../src/execution/task-package-builder');
 const { isDeepStrictEqual } = require('node:util');
 
 function cliError(code, message) {
@@ -124,6 +126,8 @@ function createOrchestrator({
   rootDir,
   planner,
   executors,
+  executionAdapters,
+  serviceRouter,
   verifier,
   runIdFactory,
   readManifest,
@@ -142,20 +146,31 @@ function createOrchestrator({
   }
   const runStore = createRunStore({ rootDir });
   const artifactRegistry = createArtifactRegistry({ rootDir });
+  const routedExecutionAdapters = executionAdapters || serviceRouter;
 
   function requireStartDependencies() {
     if (!planner || typeof planner.plan !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'A planner adapter must be injected for start');
     }
-    if (!executors || !verifier || !blueprintPolicy || typeof runIdFactory !== 'function' || typeof readManifest !== 'function') {
+    if ((!executors && !routedExecutionAdapters) || !verifier || !blueprintPolicy || typeof runIdFactory !== 'function' || typeof readManifest !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Execution adapters must be injected by the composition root');
     }
   }
 
   function requireExecutionDependencies() {
-    if (!executors || !verifier || !blueprintPolicy || typeof candidateArtifact !== 'function' || typeof qaEvidence !== 'function') {
+    if ((!executors && !routedExecutionAdapters) || !verifier || !blueprintPolicy || typeof candidateArtifact !== 'function' || typeof qaEvidence !== 'function') {
       throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Execution adapters must be injected by the composition root');
     }
+  }
+
+  function routedExecutorFor(node) {
+    const executor = typeof routedExecutionAdapters?.forNode === 'function'
+      ? routedExecutionAdapters.forNode(node)
+      : routedExecutionAdapters?.default;
+    if (!executor || typeof executor.identity !== 'string' || typeof executor.execute !== 'function') {
+      throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Service router must provide an executable adapter for each node');
+    }
+    return executor;
   }
 
   async function finalizeCandidate(runRef, blueprint, actor) {
@@ -221,18 +236,41 @@ function createOrchestrator({
       persistWorkflow(runStore, runRef, actor);
       return actor.getSnapshot().value;
     }
-    const nodeExecutors = Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
-      identity: executor.identity,
-      async execute(taskPackage) {
-        const result = await executor.execute(taskPackage);
-        runStore.appendCost(runRef, {
-          v: 1, rid: runRef.runId, nid: taskPackage.node.id, m: executor.identity, svc: 'ide',
-          it: result.use?.it ?? null, ct: result.use?.ct ?? null, ot: result.use?.ot ?? null,
-          ms: 0, try: 1, usd: null, est: false
-        });
-        return result;
-      }
-    }]));
+    const nodeExecutors = executors
+      ? Object.fromEntries(Object.entries(executors).map(([kind, executor]) => [kind, {
+        identity: executor.identity,
+        async execute(taskPackage) {
+          const result = await executor.execute(taskPackage);
+          runStore.appendCost(runRef, {
+            v: 1, rid: runRef.runId, nid: taskPackage.node.id, m: executor.identity, svc: 'ide',
+            it: result.use?.it ?? null, ct: result.use?.ct ?? null, ot: result.use?.ot ?? null,
+            ms: 0, try: 1, usd: null, est: false
+          });
+          return result;
+        }
+      }]))
+      : (() => {
+        const executor = routedExecutorFor(node);
+        return {
+          [node.kind]: {
+            identity: executor.identity,
+            async execute(taskPackage) {
+              const packageForAdapter = buildTaskPackage({
+                blueprint,
+                node: taskPackage.node,
+                artifacts: taskPackage.dependencyArtifacts
+              });
+              const executed = await executor.execute(packageForAdapter);
+              const costEvent = CostEventWire.parse(executed?.costEvent);
+              if (costEvent.rid !== runRef.runId || costEvent.nid !== taskPackage.node.id) {
+                throw cliError('EXECUTOR_COST_IDENTITY_MISMATCH', 'Adapter cost event is not bound to the active task');
+              }
+              runStore.appendCost(runRef, costEvent);
+              return executed.result;
+            }
+          }
+        };
+      })();
     const scheduler = createDagScheduler({
       executors: nodeExecutors,
       verifier,

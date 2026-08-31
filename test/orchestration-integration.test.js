@@ -58,6 +58,13 @@ function successfulResult(taskPackage) {
   };
 }
 
+function successfulAdapterResult(taskPackage) {
+  return {
+    v: 1, rid: taskPackage.rid, cid: taskPackage.cid, nid: taskPackage.nid,
+    st: 'ok', art: [], chg: [], use: { it: null, ct: null, ot: null }, err: null
+  };
+}
+
 function nonexistentCandidateArtifact() {
   return {
     id: 'b'.repeat(64), sha256: 'b'.repeat(64), runId: 'run-001', clientId: 'client-alpha', type: 'site',
@@ -164,6 +171,60 @@ test('plans once, pauses, resumes only pending work, and remains a candidate', a
   assert.equal(candidate.state, 'candidate');
   assert.notEqual(candidate.state, 'verified');
   assert.equal(candidate.costs.some((entry) => entry.data.usd === null), true);
+});
+
+test('routes the ready node through the service router and persists its actual cost event', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-service-router-'));
+  const routed = [];
+  const packages = [];
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes[0] = {
+    ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch'
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    serviceRouter: {
+      forNode(node) {
+        routed.push(node);
+        return {
+          identity: `gemini-${node.service}`,
+          async execute(taskPackage) {
+            packages.push(taskPackage);
+            return {
+              result: successfulAdapterResult(taskPackage),
+              costEvent: {
+                v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'batch',
+                it: 12, ct: 4, ot: 8, ms: 37, try: 2, usd: null, est: false
+              }
+            };
+          }
+        };
+      }
+    },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+  const actual = inspected.costs.find((entry) => entry.data.m === 'gemini-3.7-flash');
+
+  assert.deepEqual(routed.map((node) => node.id), ['n1']);
+  assert.deepEqual(packages, [{
+    v: 1, rid: 'run-001', cid: 'client-alpha', nid: 'n1', k: 'extract', ni: true,
+    in: [], p: ['clientes/client-alpha/site/first.html'], out: ['first'], tl: ['pipeline.build'], g: ['core-runtime'],
+    b: { it: 10, ot: 10, usd: 0.1, try: 1 }
+  }]);
+  assert.deepEqual(actual.data, {
+    v: 1, rid: 'run-001', nid: 'n1', m: 'gemini-3.7-flash', svc: 'batch',
+    it: 12, ct: 4, ot: 8, ms: 37, try: 2, usd: null, est: false
+  });
 });
 
 test('does not finalize a failed DAG when the run is resumed', async () => {
