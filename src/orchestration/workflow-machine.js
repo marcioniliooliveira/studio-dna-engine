@@ -1,6 +1,8 @@
 const { assign, createActor, createMachine } = require('xstate');
 
 const MAX_REPAIR_ATTEMPTS = 2;
+const machineInitialContexts = new WeakMap();
+const PROMOTED_STATES = new Set(['candidate', 'awaiting_final_approval', 'verified']);
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -10,11 +12,20 @@ function isPlainObject(value) {
 
 function isArtifactRef(value) {
   return isPlainObject(value) && typeof value.id === 'string' && value.id.length > 0 &&
-    typeof value.sha256 === 'string' && /^[a-f0-9]{64}$/.test(value.sha256);
+    typeof value.sha256 === 'string' && /^[a-f0-9]{64}$/.test(value.sha256) && value.id === value.sha256 &&
+    typeof value.runId === 'string' && typeof value.clientId === 'string' &&
+    typeof value.type === 'string' && /^[a-z0-9-]+$/.test(value.type) &&
+    typeof value.relativePath === 'string' &&
+    value.relativePath === `${value.clientId}/${value.runId}/artifacts/${value.type}/${value.sha256}.json`;
+}
+
+function isBoundArtifactRef(value, context) {
+  return isArtifactRef(value) && value.runId === context.runId && value.clientId === context.clientId;
 }
 
 function isFullQaEvidence(value) {
   if (!isPlainObject(value) || typeof value.reportId !== 'string' || value.reportId.length === 0 ||
+    typeof value.artifactSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(value.artifactSha256) ||
     value.status !== 'candidate' || !isPlainObject(value.gates)) return false;
 
   const { antiSlop, console: consoleGate, network, structural } = value.gates;
@@ -36,22 +47,66 @@ function validateInitialContext(initialContext) {
     throw new TypeError('initialContext must contain durable run, client, plan version, and attempt fields');
   }
 
-  if (initialContext.candidateArtifact !== null && !isArtifactRef(initialContext.candidateArtifact)) {
+  if (initialContext.candidateArtifact !== null && !isBoundArtifactRef(initialContext.candidateArtifact, initialContext)) {
     throw new TypeError('initialContext candidateArtifact must be null or an immutable artifact reference');
   }
 
   if (initialContext.blockingEvidence !== null && !isPlainObject(initialContext.blockingEvidence)) {
     throw new TypeError('initialContext blockingEvidence must be null or persisted evidence');
   }
+
+  if (initialContext.qaEvidence !== undefined && initialContext.qaEvidence !== null && !isFullQaEvidence(initialContext.qaEvidence)) {
+    throw new TypeError('initialContext qaEvidence must be null or valid full-QA evidence');
+  }
+}
+
+function normalizedInitialContext(initialContext) {
+  return { ...initialContext, qaEvidence: initialContext.qaEvidence ?? null };
+}
+
+function snapshotError(message) {
+  return new TypeError(`workflow snapshot is invalid: ${message}`);
+}
+
+function validateSnapshot(machine, snapshot) {
+  const expected = machineInitialContexts.get(machine);
+  if (!expected) throw new TypeError('machine must be created by createWorkflowMachine');
+  if (!isPlainObject(snapshot) || typeof snapshot.value !== 'string' || !isPlainObject(snapshot.context)) {
+    throw snapshotError('state and context are required');
+  }
+
+  const context = snapshot.context;
+  if (context.runId !== expected.runId || context.clientId !== expected.clientId ||
+    !Number.isInteger(context.planVersion) || context.planVersion !== expected.planVersion ||
+    !Number.isInteger(context.attempts) || context.attempts < 0 || context.attempts > MAX_REPAIR_ATTEMPTS ||
+    !Object.hasOwn(context, 'candidateArtifact') || !Object.hasOwn(context, 'blockingEvidence') || !Object.hasOwn(context, 'qaEvidence')) {
+    throw snapshotError('context does not match the run identity or durable fields');
+  }
+
+  if (context.candidateArtifact !== null && !isBoundArtifactRef(context.candidateArtifact, context)) {
+    throw snapshotError('candidate artifact is not an immutable artifact for this run and client');
+  }
+  if (context.qaEvidence !== null && (!isFullQaEvidence(context.qaEvidence) || !isBoundArtifactRef(context.candidateArtifact, context) ||
+    context.qaEvidence.artifactSha256 !== context.candidateArtifact.sha256)) {
+    throw snapshotError('QA proof is incomplete or does not bind to the candidate artifact');
+  }
+  if (context.blockingEvidence !== null && !isPlainObject(context.blockingEvidence)) {
+    throw snapshotError('blocking evidence is malformed');
+  }
+  if (PROMOTED_STATES.has(snapshot.value) && (!isBoundArtifactRef(context.candidateArtifact, context) ||
+    !isFullQaEvidence(context.qaEvidence) || context.qaEvidence.artifactSha256 !== context.candidateArtifact.sha256)) {
+    throw snapshotError('promoted state lacks an artifact-bound QA proof');
+  }
 }
 
 function createWorkflowMachine(initialContext) {
   validateInitialContext(initialContext);
+  const context = normalizedInitialContext(initialContext);
 
-  return createMachine({
+  const machine = createMachine({
     id: 'persisted-workflow',
     initial: 'draft',
-    context: { ...initialContext },
+    context,
     on: {
       WORKFLOW_FAILED: {
         target: '.failed'
@@ -81,11 +136,12 @@ function createWorkflowMachine(initialContext) {
       executing: {
         on: {
           EXECUTION_COMPLETED: {
-            guard: ({ event }) => isArtifactRef(event.candidateArtifact),
+            guard: ({ context: currentContext, event }) => isBoundArtifactRef(event.candidateArtifact, currentContext),
             target: 'verifying',
             actions: assign({
               candidateArtifact: ({ event }) => event.candidateArtifact,
-              blockingEvidence: () => null
+              blockingEvidence: () => null,
+              qaEvidence: () => null
             })
           }
         }
@@ -93,8 +149,12 @@ function createWorkflowMachine(initialContext) {
       verifying: {
         on: {
           FULL_QA_PASSED: {
-            guard: ({ context, event }) => isArtifactRef(context.candidateArtifact) && isFullQaEvidence(event.evidence),
-            target: 'candidate'
+            guard: ({ context: currentContext, event }) => isBoundArtifactRef(currentContext.candidateArtifact, currentContext) &&
+              isFullQaEvidence(event.evidence) && event.evidence.artifactSha256 === currentContext.candidateArtifact.sha256,
+            target: 'candidate',
+            actions: assign({
+              qaEvidence: ({ event }) => event.evidence
+            })
           },
           QA_BLOCKED: [
             {
@@ -141,12 +201,15 @@ function createWorkflowMachine(initialContext) {
       }
     }
   });
+  machineInitialContexts.set(machine, context);
+  return machine;
 }
 
 function createWorkflowActor(machine, snapshot) {
   if (!machine || typeof machine.transition !== 'function') {
     throw new TypeError('machine must be an XState workflow machine');
   }
+  if (snapshot !== undefined) validateSnapshot(machine, snapshot);
   return createActor(machine, snapshot === undefined ? undefined : { snapshot });
 }
 

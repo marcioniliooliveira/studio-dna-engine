@@ -24,6 +24,7 @@ function fullQaEvidence() {
   return {
     reportId: 'qa-report-001',
     status: 'candidate',
+    artifactSha256: 'a'.repeat(64),
     gates: {
       antiSlop: { passed: true },
       console: { passed: true, errorsCount: 0 },
@@ -33,12 +34,23 @@ function fullQaEvidence() {
   };
 }
 
+function artifactRef(sha256 = 'a'.repeat(64), clientId = initialContext.clientId, runId = initialContext.runId) {
+  return {
+    id: sha256,
+    sha256,
+    runId,
+    clientId,
+    type: 'site',
+    relativePath: `${clientId}/${runId}/artifacts/site/${sha256}.json`
+  };
+}
+
 function advanceToVerifying(actor) {
   actor.send({ type: 'CONTEXT_FROZEN' });
   actor.send({ type: 'PLAN_REQUESTED' });
   actor.send({ type: 'BLUEPRINT_ACCEPTED' });
   actor.send({ type: 'EXECUTION_STARTED' });
-  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: { id: 'artifact-001', sha256: 'a'.repeat(64) } });
+  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifactRef() });
   assert.equal(actor.getSnapshot().value, 'verifying');
 }
 
@@ -53,11 +65,12 @@ test('moves through the explicit workflow lifecycle only after persisted full-QA
   assert.equal(actor.getSnapshot().value, 'tasks_ready');
   actor.send({ type: 'EXECUTION_STARTED' });
   assert.equal(actor.getSnapshot().value, 'executing');
-  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: { id: 'artifact-001', sha256: 'a'.repeat(64) } });
+  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifactRef() });
   assert.equal(actor.getSnapshot().value, 'verifying');
 
   actor.send({ type: 'FULL_QA_PASSED', evidence: fullQaEvidence() });
   assert.equal(actor.getSnapshot().value, 'candidate');
+  assert.deepEqual(actor.getSnapshot().context.qaEvidence, fullQaEvidence());
 
   actor.send({ type: 'FINAL_APPROVED' });
   assert.equal(actor.getSnapshot().value, 'candidate');
@@ -76,6 +89,18 @@ test('requires a complete persisted QA report before candidate promotion', () =>
   assert.equal(actor.getSnapshot().value, 'verifying');
 });
 
+test('rejects an artifact that belongs to another client before verification', () => {
+  const actor = startActor();
+  actor.send({ type: 'CONTEXT_FROZEN' });
+  actor.send({ type: 'PLAN_REQUESTED' });
+  actor.send({ type: 'BLUEPRINT_ACCEPTED' });
+  actor.send({ type: 'EXECUTION_STARTED' });
+
+  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifactRef('d'.repeat(64), 'other-client') });
+
+  assert.equal(actor.getSnapshot().value, 'executing');
+});
+
 test('routes the third QA block to human intervention after two bounded repairs', () => {
   const actor = startActor();
   advanceToVerifying(actor);
@@ -85,13 +110,13 @@ test('routes the third QA block to human intervention after two bounded repairs'
   assert.equal(actor.getSnapshot().context.attempts, 1);
   actor.send({ type: 'REPAIR_COMPLETED' });
   assert.equal(actor.getSnapshot().value, 'executing');
-  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: { id: 'artifact-002', sha256: 'b'.repeat(64) } });
+  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifactRef('b'.repeat(64)) });
 
   actor.send({ type: 'QA_BLOCKED', evidence: { reportId: 'qa-2', status: 'failed' } });
   assert.equal(actor.getSnapshot().value, 'repairing');
   assert.equal(actor.getSnapshot().context.attempts, 2);
   actor.send({ type: 'REPAIR_COMPLETED' });
-  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: { id: 'artifact-003', sha256: 'c'.repeat(64) } });
+  actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifactRef('c'.repeat(64)) });
 
   actor.send({ type: 'QA_BLOCKED', evidence: { reportId: 'qa-3', status: 'failed' } });
   assert.equal(actor.getSnapshot().value, 'human_intervention');
@@ -110,4 +135,25 @@ test('restores a serializable persisted snapshot without re-running prior events
   assert.equal(restored.getSnapshot().value, 'verifying');
   restored.send({ type: 'FULL_QA_PASSED', evidence: fullQaEvidence() });
   assert.equal(restored.getSnapshot().value, 'candidate');
+});
+
+test('rejects forged candidate and verified snapshots without an artifact-bound QA proof', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  actor.send({ type: 'FULL_QA_PASSED', evidence: fullQaEvidence() });
+  const candidate = actor.getPersistedSnapshot();
+  candidate.context.candidateArtifact.clientId = 'other-client';
+
+  assert.throws(
+    () => createWorkflowActor(createWorkflowMachine(initialContext), candidate),
+    /snapshot/i
+  );
+
+  const verified = actor.getPersistedSnapshot();
+  verified.value = 'verified';
+  verified.context.qaEvidence = null;
+  assert.throws(
+    () => createWorkflowActor(createWorkflowMachine(initialContext), verified),
+    /snapshot/i
+  );
 });
