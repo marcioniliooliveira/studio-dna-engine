@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { parseBlueprintWire } = require('../src/orchestration/contracts');
+const { parseBlueprintWire, TaskResultWire } = require('../src/orchestration/contracts');
 
 function validBlueprint() {
   return {
@@ -42,5 +42,30 @@ test('rejects blueprint wire payloads that break the compact contract', () => {
     const blueprint = validBlueprint();
     mutate(blueprint);
     assert.throws(() => parseBlueprintWire(blueprint), undefined, name);
+  }
+});
+
+test('rejects unknown fields inside nested task-result wire objects', () => {
+  const validResult = {
+    v: 1,
+    rid: 'run-001',
+    cid: 'piloto-elyse-luxe',
+    nid: 'n1',
+    st: 'ok',
+    art: [{ id: 'site', sha: 'a'.repeat(64) }],
+    chg: ['clientes/piloto-elyse-luxe/site/index.html'],
+    use: { it: 20000, ct: null, ot: 4000 },
+    err: { code: 'NONE', msg: 'No error' }
+  };
+  const cases = [
+    ['artifact', (result) => { result.art[0].extra = true; }],
+    ['usage', (result) => { result.use.extra = true; }],
+    ['error', (result) => { result.err.extra = true; }]
+  ];
+
+  for (const [name, mutate] of cases) {
+    const result = structuredClone(validResult);
+    mutate(result);
+    assert.throws(() => TaskResultWire.parse(result), undefined, name);
   }
 });

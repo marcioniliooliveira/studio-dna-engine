@@ -46,14 +46,14 @@ const TaskResultWire = z.object({
   cid: z.string(),
   nid: z.string(),
   st: z.enum(['ok', 'err', 'blocked']),
-  art: z.array(z.object({ id: z.string(), sha: z.string().length(64) })),
+  art: z.array(z.object({ id: z.string(), sha: z.string().length(64) }).strict()),
   chg: z.array(z.string()),
   use: z.object({
     it: z.number().int().nonnegative().nullable(),
     ct: z.number().int().nonnegative().nullable(),
     ot: z.number().int().nonnegative().nullable()
-  }),
-  err: z.object({ code: z.string(), msg: z.string() }).nullable()
+  }).strict(),
+  err: z.object({ code: z.string(), msg: z.string() }).strict().nullable()
 }).strict();
 
 const CostEventWire = z.object({
