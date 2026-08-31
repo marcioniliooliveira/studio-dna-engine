@@ -257,6 +257,43 @@ test('filters node context and passes only verified direct-dependency artifacts'
   }]);
 });
 
+test('does not leak an undeclared secret artifact to a dependent executor', async () => {
+  const packages = [];
+  const runStore = createMemoryRunStore();
+  runStore.events.push({
+    type: 'TASK_PASSED',
+    data: {
+      nodeId: 'n1',
+      evidence: null,
+      artifacts: [
+        { id: 'n1-output', sha: 'c'.repeat(64) },
+        { id: 'undeclared-secret', sha: 'd'.repeat(64) }
+      ]
+    }
+  });
+  const scheduler = createDagScheduler({
+    executors: {
+      build: {
+        identity: 'builder',
+        execute: async (taskPackage) => {
+          packages.push(taskPackage);
+          return successfulResult(taskPackage);
+        }
+      }
+    },
+    verifier: { identity: 'quality-gate', independent: true, verify: async () => ({ passed: true }) },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  await scheduler.execute({ runRef: { runId: 'run-001' }, blueprint: blueprint([node('n1'), node('n2', ['n1'])]) });
+
+  assert.deepEqual(packages[0].dependencyArtifacts, [{
+    runId: 'run-001', clientId: 'client-alpha', nodeId: 'n1', id: 'n1-output', sha: 'c'.repeat(64)
+  }]);
+  assert.equal(JSON.stringify(packages[0]).includes('undeclared-secret'), false);
+});
+
 test('records the reserved cost when an authorized executor throws', async () => {
   const runStore = createMemoryRunStore();
   const scheduler = createDagScheduler({

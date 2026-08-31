@@ -8,7 +8,7 @@ const WORKFLOW_STATES = new Set([
   'repairing', 'candidate', 'awaiting_final_approval', 'human_intervention', 'failed', 'verified'
 ]);
 const PROMOTED_STATES = new Set(['candidate', 'awaiting_final_approval', 'verified']);
-const REQUIRED_QA_SCOPES = ['security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'];
+const REQUIRED_VERIFIED_QA_SCOPES = ['security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'];
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -35,7 +35,12 @@ function isFullQaEvidence(value, context) {
     !isBoundArtifactRef(value.reportArtifact, context) || value.reportArtifact.type !== 'qa-report' ||
     value.status !== 'candidate' || !isPlainObject(value.gates)) return false;
 
-  return REQUIRED_QA_SCOPES.every((scope) =>
+  const { antiSlop, console: consoleGate, network, structural } = value.gates;
+  return isPlainObject(antiSlop) && antiSlop.passed === true &&
+    isPlainObject(consoleGate) && consoleGate.passed === true && consoleGate.errorsCount === 0 &&
+    isPlainObject(network) && network.passed === true && network.failedRequestsCount === 0 &&
+    isPlainObject(structural) && structural.passed === true && structural.brokenImagesCount === 0 &&
+    REQUIRED_VERIFIED_QA_SCOPES.every((scope) =>
     isPlainObject(value.gates[scope]) && value.gates[scope].passed === true
   );
 }

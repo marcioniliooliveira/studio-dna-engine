@@ -46,15 +46,24 @@ function assertExecutionCaps(blueprint, events) {
 
 function dependencyArtifacts(events, runRef, blueprint, node) {
   const dependencyIds = new Set(node.dependencies);
+  const persistedBlueprint = events.find((event) => event.type === 'BLUEPRINT_ACCEPTED')?.data?.blueprint;
+  const producers = new Map(
+    [...(persistedBlueprint?.nodes || []), ...blueprint.nodes].map((producer) => [producer.id, producer])
+  );
   return events
     .filter((event) => event.type === 'TASK_PASSED' && dependencyIds.has(event.data.nodeId))
-    .flatMap((event) => (event.data.artifacts || []).map((artifact) => ({
-      runId: runRef.runId,
-      clientId: blueprint.clientId,
-      nodeId: event.data.nodeId,
-      id: artifact.id,
-      sha: artifact.sha
-    })));
+    .flatMap((event) => {
+      const authorizedOutputIds = new Set(producers.get(event.data.nodeId)?.outputs || []);
+      return (event.data.artifacts || [])
+        .filter((artifact) => authorizedOutputIds.has(artifact.id))
+        .map((artifact) => ({
+          runId: runRef.runId,
+          clientId: blueprint.clientId,
+          nodeId: event.data.nodeId,
+          id: artifact.id,
+          sha: artifact.sha
+        }));
+    });
 }
 
 function taskPackage(runRef, blueprint, node, events) {

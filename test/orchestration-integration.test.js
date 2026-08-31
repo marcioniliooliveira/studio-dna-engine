@@ -77,6 +77,10 @@ function fixtureQaEvidenceFor(artifactSha256) {
       relativePath: `client-alpha/run-001/artifacts/qa-report/${'c'.repeat(64)}.json`
     },
     gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 },
+      network: { passed: true, failedRequestsCount: 0 },
+      structural: { passed: true, brokenImagesCount: 0 },
       security: { passed: true }, semantic: { passed: true }, dna: { passed: true },
       visual: { passed: true }, accessibility: { passed: true }, performance: { passed: true }
     }
@@ -291,6 +295,46 @@ test('requires artifact-bound QA before a recorded approver can advance the pers
     approvalProcess.execute(['resume', '--run', 'run-001']),
     (error) => error.code === 'CLI_RESUME_INVALID_STATE'
   );
+});
+
+test('keeps the end-to-end workflow out of candidate when any full-QA gate is omitted', async () => {
+  const requiredScopes = [
+    'antiSlop', 'console', 'network', 'structural',
+    'security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'
+  ];
+
+  for (const scope of requiredScopes) {
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), `orchestration-qa-omits-${scope}-`));
+    const options = {
+      rootDir,
+      planner: { async plan() { return fixtureBlueprint(); } },
+      executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      approver: 'fixture-approver',
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence(parameters) {
+        const payload = fixtureQaEvidenceFor(parameters.candidateArtifact.sha256);
+        delete payload.reportArtifact;
+        delete payload.gates[scope];
+        const reportArtifact = parameters.artifactRegistry.putJson({
+          runId: parameters.runRef.runId,
+          clientId: parameters.blueprint.clientId,
+          type: 'qa-report',
+          value: payload,
+          sources: [parameters.candidateArtifact]
+        });
+        return { ...payload, reportArtifact };
+      }
+    };
+
+    await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+    const result = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+
+    assert.equal(result.state, 'repairing', `omitted ${scope}`);
+  }
 });
 
 test('composes an injected fixture command without a model key', async () => {

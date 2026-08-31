@@ -27,6 +27,10 @@ function fullQaEvidence() {
     artifactSha256: 'a'.repeat(64),
     reportArtifact: artifactRef('e'.repeat(64), initialContext.clientId, initialContext.runId, 'qa-report'),
     gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 },
+      network: { passed: true, failedRequestsCount: 0 },
+      structural: { passed: true, brokenImagesCount: 0 },
       security: { passed: true },
       semantic: { passed: true },
       dna: { passed: true },
@@ -106,6 +110,22 @@ test('requires every documented core scope before candidate promotion', () => {
   actor.send({ type: 'FULL_QA_PASSED', evidence: legacyRuntimeOnly });
 
   assert.equal(actor.getSnapshot().value, 'verifying');
+});
+
+test('rejects full-QA evidence when any required gate is omitted', () => {
+  for (const scope of [
+    'antiSlop', 'console', 'network', 'structural',
+    'security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'
+  ]) {
+    const actor = startActor();
+    advanceToVerifying(actor);
+    const incompleteEvidence = fullQaEvidence();
+    delete incompleteEvidence.gates[scope];
+
+    actor.send({ type: 'FULL_QA_PASSED', evidence: incompleteEvidence });
+
+    assert.equal(actor.getSnapshot().value, 'verifying', `omitted ${scope}`);
+  }
 });
 
 test('guards final approval with the still-bound full-QA proof', () => {
