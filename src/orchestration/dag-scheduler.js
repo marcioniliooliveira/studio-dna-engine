@@ -1,4 +1,5 @@
 const { TaskResultWire } = require('./contracts');
+const { isDeepStrictEqual } = require('node:util');
 
 function schedulerError(code, message) {
   const error = new Error(message);
@@ -46,10 +47,7 @@ function assertExecutionCaps(blueprint, events) {
 
 function dependencyArtifacts(events, runRef, blueprint, node) {
   const dependencyIds = new Set(node.dependencies);
-  const persistedBlueprint = events.find((event) => event.type === 'BLUEPRINT_ACCEPTED')?.data?.blueprint;
-  const producers = new Map(
-    [...(persistedBlueprint?.nodes || []), ...blueprint.nodes].map((producer) => [producer.id, producer])
-  );
+  const producers = new Map(blueprint.nodes.map((producer) => [producer.id, producer]));
   return events
     .filter((event) => event.type === 'TASK_PASSED' && dependencyIds.has(event.data.nodeId))
     .flatMap((event) => {
@@ -113,6 +111,54 @@ function assertRunIdentity(run, runRef, blueprint) {
   }
 }
 
+function acceptedBlueprintFor(events) {
+  const blueprint = events.find((event) => event.type === 'BLUEPRINT_ACCEPTED')?.data?.blueprint;
+  if (!blueprint) throw schedulerError('RUN_BLUEPRINT_MISSING', 'Run has no accepted blueprint');
+  return blueprint;
+}
+
+function declarationsAreUnique(blueprint) {
+  if (!Array.isArray(blueprint?.nodes) || blueprint.nodes.length === 0) return false;
+  const nodeIds = new Set();
+  const outputIds = new Set();
+  for (const node of blueprint.nodes) {
+    if (nodeIds.has(node.id) || !Array.isArray(node.outputs) || node.outputs.length === 0) return false;
+    nodeIds.add(node.id);
+    for (const outputId of node.outputs) {
+      if (outputIds.has(outputId)) return false;
+      outputIds.add(outputId);
+    }
+  }
+  return true;
+}
+
+function blueprintMetadata(blueprint) {
+  const { nodes, ...metadata } = blueprint;
+  return metadata;
+}
+
+function bindAcceptedBlueprint(run, runRef, callerBlueprint) {
+  assertRunIdentity(run, runRef, callerBlueprint);
+  const acceptedBlueprint = acceptedBlueprintFor(run.events);
+  assertRunIdentity(run, runRef, acceptedBlueprint);
+  if (!declarationsAreUnique(acceptedBlueprint)) {
+    throw schedulerError('RUN_ACCEPTED_BLUEPRINT_INVALID', 'Accepted blueprint has ambiguous producer declarations');
+  }
+  if (!declarationsAreUnique(callerBlueprint) ||
+    !isDeepStrictEqual(blueprintMetadata(callerBlueprint), blueprintMetadata(acceptedBlueprint))) {
+    throw schedulerError('RUN_BLUEPRINT_DRIFT', 'Caller blueprint differs from the accepted blueprint');
+  }
+  const acceptedNodes = new Map(acceptedBlueprint.nodes.map((node) => [node.id, node]));
+  const executionNodes = callerBlueprint.nodes.map((node) => acceptedNodes.get(node.id));
+  if (executionNodes.some((node, index) => !node || !isDeepStrictEqual(node, callerBlueprint.nodes[index]))) {
+    throw schedulerError('RUN_BLUEPRINT_DRIFT', 'Caller blueprint differs from the accepted blueprint');
+  }
+  return {
+    acceptedBlueprint,
+    executionBlueprint: { ...acceptedBlueprint, nodes: executionNodes }
+  };
+}
+
 function isIndependentExecutor(executor, verifier) {
   return typeof executor?.identity === 'string'
     && typeof verifier.identity === 'string'
@@ -133,16 +179,16 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
 
   async function execute({ runRef, blueprint }) {
     const run = runStore.loadRun(runRef);
-    assertRunIdentity(run, runRef, blueprint);
-    assertExecutionCaps(blueprint, run.events);
+    const { acceptedBlueprint, executionBlueprint } = bindAcceptedBlueprint(run, runRef, blueprint);
+    assertExecutionCaps(acceptedBlueprint, run.events);
     const passed = completedNodeIds(run.events);
     const failed = failedNodeIds(run.events);
     const executedNodeIds = [];
 
     while (true) {
-      const node = readyNodes(blueprint.nodes, passed, failed)[0];
+      const node = readyNodes(executionBlueprint.nodes, passed, failed)[0];
       if (!node) {
-        const blockedNode = nextBlockedNode(blueprint.nodes, passed, failed);
+        const blockedNode = nextBlockedNode(executionBlueprint.nodes, passed, failed);
         if (!blockedNode) break;
         const dependencyIds = blockedNode.dependencies.filter((dependency) => !passed.has(dependency));
         const code = dependencyIds.some((dependency) => failed.has(dependency))
@@ -153,7 +199,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         continue;
       }
       const currentRun = runStore.loadRun(runRef);
-      assertRunIdentity(currentRun, runRef, blueprint);
+      assertRunIdentity(currentRun, runRef, acceptedBlueprint);
       const executor = executors[node.kind];
       if (!executor || typeof executor.execute !== 'function') {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_UNAVAILABLE', evidence: null } });
@@ -178,7 +224,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
       runStore.appendEvent(runRef, { type: 'TASK_AUTHORIZED', data: { nodeId: node.id, reservedUsd: authorization.reservedUsd } });
       runStore.appendCost(runRef, reservationCostEvent(runRef, node, authorization.reservedUsd));
 
-      const packageForNode = taskPackage(runRef, blueprint, node, currentRun.events);
+      const packageForNode = taskPackage(runRef, acceptedBlueprint, node, currentRun.events);
       let result;
       try {
         result = TaskResultWire.parse(await executor.execute(packageForNode));
@@ -197,7 +243,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
-      if (!changesStayWithinNodeScope(result.chg, blueprint, node)) {
+      if (!changesStayWithinNodeScope(result.chg, acceptedBlueprint, node)) {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'TASK_RESULT_SCOPE_VIOLATION', evidence: { changedPaths: result.chg } } });
         failed.add(node.id);
         continue;
