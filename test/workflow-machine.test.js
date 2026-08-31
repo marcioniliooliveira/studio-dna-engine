@@ -193,3 +193,14 @@ test('rejects a restored promoted snapshot with a forged QA report reference', (
     /snapshot/i
   );
 });
+
+test('rejects a restored snapshot with an unknown lifecycle state', () => {
+  const actor = startActor();
+  const snapshot = actor.getPersistedSnapshot();
+  snapshot.value = 'model_decided_verified';
+
+  assert.throws(
+    () => createWorkflowActor(createWorkflowMachine(initialContext), snapshot),
+    /snapshot/i
+  );
+});

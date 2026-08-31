@@ -3,6 +3,10 @@ const { assertSafeSlug } = require('../server/security');
 
 const MAX_REPAIR_ATTEMPTS = 2;
 const machineInitialContexts = new WeakMap();
+const WORKFLOW_STATES = new Set([
+  'draft', 'context_ready', 'planning', 'tasks_ready', 'executing', 'verifying',
+  'repairing', 'candidate', 'awaiting_final_approval', 'human_intervention', 'failed', 'verified'
+]);
 const PROMOTED_STATES = new Set(['candidate', 'awaiting_final_approval', 'verified']);
 
 function isPlainObject(value) {
@@ -78,6 +82,7 @@ function validateSnapshot(machine, snapshot) {
   if (!isPlainObject(snapshot) || typeof snapshot.value !== 'string' || !isPlainObject(snapshot.context)) {
     throw snapshotError('state and context are required');
   }
+  if (!WORKFLOW_STATES.has(snapshot.value)) throw snapshotError('state is not a legal workflow state');
 
   const context = snapshot.context;
   if (context.runId !== expected.runId || context.clientId !== expected.clientId ||
