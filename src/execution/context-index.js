@@ -53,10 +53,10 @@ function leadingCommentStart(source, comments, nodeStart) {
   return preceding.start;
 }
 
-function symbolFromDeclaration(source, comments, declaration, exported) {
-  if (declaration.type === 'FunctionDeclaration' && declaration.id) {
+function symbolFromDeclaration(source, comments, declaration, exported, fallbackName) {
+  if (declaration.type === 'FunctionDeclaration' && (declaration.id || fallbackName)) {
     return {
-      name: declaration.id.name,
+      name: declaration.id?.name || fallbackName,
       kind: 'function',
       async: declaration.async,
       signature: functionSignature(source, declaration),
@@ -68,9 +68,9 @@ function symbolFromDeclaration(source, comments, declaration, exported) {
       exported
     };
   }
-  if (declaration.type === 'ClassDeclaration' && declaration.id) {
+  if (declaration.type === 'ClassDeclaration' && (declaration.id || fallbackName)) {
     return {
-      name: declaration.id.name,
+      name: declaration.id?.name || fallbackName,
       kind: 'class',
       async: false,
       signature: classSignature(declaration),
@@ -101,6 +101,62 @@ function symbolFromDeclaration(source, comments, declaration, exported) {
   return [];
 }
 
+function requireImport(declaration) {
+  const imports = [];
+  for (const entry of declaration.declarations) {
+    const call = entry.init;
+    if (
+      call?.type !== 'CallExpression' || call.callee.type !== 'Identifier' || call.callee.name !== 'require'
+      || call.arguments.length !== 1 || call.arguments[0].type !== 'Literal' || typeof call.arguments[0].value !== 'string'
+    ) continue;
+    let specifiers = [];
+    if (entry.id.type === 'Identifier') specifiers = [entry.id.name];
+    if (entry.id.type === 'ObjectPattern') {
+      specifiers = entry.id.properties
+        .filter((property) => property.type === 'Property' && property.value.type === 'Identifier')
+        .map((property) => property.value.name);
+    }
+    if (specifiers.length > 0) imports.push({ source: call.arguments[0].value, specifiers });
+  }
+  return imports;
+}
+
+function commonJsExportNames(statement) {
+  if (statement.type !== 'ExpressionStatement' || statement.expression.type !== 'AssignmentExpression') return [];
+  const { left, right } = statement.expression;
+  if (left.type !== 'MemberExpression' || left.computed) return [];
+  const property = left.property.type === 'Identifier' ? left.property.name : null;
+  const isModuleExports = left.object.type === 'Identifier' && left.object.name === 'module' && property === 'exports';
+  const isExportsProperty = left.object.type === 'Identifier' && left.object.name === 'exports' && property;
+  const isModuleExportsProperty = left.object.type === 'MemberExpression' && !left.object.computed
+    && left.object.object.type === 'Identifier' && left.object.object.name === 'module'
+    && left.object.property.type === 'Identifier' && left.object.property.name === 'exports' && property;
+  if (isExportsProperty || isModuleExportsProperty) return [property];
+  if (!isModuleExports) return [];
+  if (right.type === 'ObjectExpression') {
+    return right.properties
+      .filter((property) => property.type === 'Property' && !property.computed)
+      .map((property) => property.key.type === 'Identifier' ? property.key.name : property.key.value)
+      .filter((name) => typeof name === 'string');
+  }
+  return ['default'];
+}
+
+function commonJsAssignmentSymbol(source, comments, statement, name) {
+  return {
+    name,
+    kind: 'assignment',
+    async: false,
+    signature: `CommonJS export ${name}`,
+    start: statement.start,
+    end: statement.end,
+    sliceStart: leadingCommentStart(source, comments, statement.start),
+    startLine: statement.loc.start.line,
+    endLine: statement.loc.end.line,
+    exported: true
+  };
+}
+
 function asArray(value) {
   return Array.isArray(value) ? value : value ? [value] : [];
 }
@@ -120,6 +176,8 @@ function buildRecord(source, relativePath) {
       continue;
     }
 
+    if (statement.type === 'VariableDeclaration') imports.push(...requireImport(statement));
+
     if (statement.type === 'ExportNamedDeclaration') {
       if (statement.declaration) {
         const entries = asArray(symbolFromDeclaration(source, comments, statement.declaration, true));
@@ -133,13 +191,28 @@ function buildRecord(source, relativePath) {
 
     if (statement.type === 'ExportDefaultDeclaration') {
       const declaration = statement.declaration;
-      const entries = asArray(symbolFromDeclaration(source, comments, declaration, true));
+      const entries = asArray(symbolFromDeclaration(source, comments, declaration, true, 'default'));
+      if (entries.length === 0) {
+        entries.push({
+          name: 'default', kind: 'default', async: false, signature: 'default export',
+          start: declaration.start, end: declaration.end,
+          sliceStart: leadingCommentStart(source, comments, statement.start),
+          startLine: declaration.loc.start.line, endLine: declaration.loc.end.line, exported: true
+        });
+      }
       entries.forEach((entry) => { entry.sliceStart = leadingCommentStart(source, comments, statement.start); });
-      entries.forEach((entry) => exportedNames.add(entry.name));
+      exportedNames.add('default');
       symbols.push(...entries);
       continue;
     }
 
+    const commonJsNames = commonJsExportNames(statement);
+    for (const name of commonJsNames) {
+      exportedNames.add(name);
+      const existing = symbols.find((entry) => entry.name === name);
+      if (existing) existing.exported = true;
+      else symbols.push(commonJsAssignmentSymbol(source, comments, statement, name));
+    }
     symbols.push(...asArray(symbolFromDeclaration(source, comments, statement, false)));
   }
 
@@ -162,7 +235,12 @@ function createContextIndex({ projectRoot, allowedPaths }) {
   if (typeof projectRoot !== 'string' || !Array.isArray(allowedPaths)) {
     throw new TypeError('projectRoot and allowedPaths are required');
   }
-  const root = path.resolve(projectRoot);
+  let root;
+  try {
+    root = fs.realpathSync(projectRoot);
+  } catch {
+    throw new TypeError('projectRoot must be an existing directory');
+  }
   const allowed = new Set(allowedPaths);
   const records = new Map();
 
@@ -174,9 +252,32 @@ function createContextIndex({ projectRoot, allowedPaths }) {
     ) {
       throw contextError('CONTEXT_PATH_UNAUTHORIZED', 'Context path is not allow-listed');
     }
-    const absolutePath = path.resolve(root, ...relativePath.split('/'));
-    if (path.relative(root, absolutePath).startsWith('..') || path.relative(root, absolutePath) === '') {
+    const pathSegments = relativePath.split('/');
+    const absolutePath = path.resolve(root, ...pathSegments);
+    const relativeToRoot = path.relative(root, absolutePath);
+    if (relativeToRoot === '' || relativeToRoot === '..' || relativeToRoot.startsWith(`..${path.sep}`) || path.isAbsolute(relativeToRoot)) {
       throw contextError('CONTEXT_PATH_UNAUTHORIZED', 'Context path escapes project root');
+    }
+    let currentPath = root;
+    for (const segment of pathSegments) {
+      currentPath = path.join(currentPath, segment);
+      try {
+        if (fs.lstatSync(currentPath).isSymbolicLink()) {
+          throw contextError('CONTEXT_PATH_UNAUTHORIZED', 'Context path contains a symlink or junction');
+        }
+      } catch (error) {
+        if (error.code === 'CONTEXT_PATH_UNAUTHORIZED') throw error;
+        break;
+      }
+    }
+    try {
+      const realTarget = fs.realpathSync(absolutePath);
+      const targetRelative = path.relative(root, realTarget);
+      if (targetRelative === '..' || targetRelative.startsWith(`..${path.sep}`) || path.isAbsolute(targetRelative)) {
+        throw contextError('CONTEXT_PATH_UNAUTHORIZED', 'Context path resolves outside project root');
+      }
+    } catch (error) {
+      if (error.code === 'CONTEXT_PATH_UNAUTHORIZED') throw error;
     }
     return absolutePath;
   }

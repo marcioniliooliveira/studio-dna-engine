@@ -10,6 +10,8 @@ const fixturePath = path.join(__dirname, 'fixtures', 'context-index', 'sample.js
 function createProject() {
   const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'context-index-'));
   fs.copyFileSync(fixturePath, path.join(projectRoot, 'sample.js'));
+  fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'commonjs.js'), path.join(projectRoot, 'commonjs.js'));
+  fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'anonymous-default.js'), path.join(projectRoot, 'anonymous-default.js'));
   return projectRoot;
 }
 
@@ -79,4 +81,53 @@ test('invalidates stale symbol offsets when the indexed file content changes', (
   assert.notEqual(second.sha256, first.sha256);
   assert.throws(() => index.readSymbol('sample.js', 'buildMessage'), { code: 'CONTEXT_SYMBOL_NOT_FOUND' });
   assert.equal(index.readSymbol('sample.js', 'replacement'), 'export function replacement() { return `new`; }');
+});
+
+test('indexes CommonJS require imports and module export symbols', (t) => {
+  const projectRoot = createProject();
+  t.after(() => fs.rmSync(projectRoot, { recursive: true, force: true }));
+  const index = createContextIndex({ projectRoot, allowedPaths: ['commonjs.js'] });
+
+  const summary = index.getSummary('commonjs.js');
+
+  assert.deepEqual(summary.imports, [
+    { source: 'node:path', specifiers: ['joinPath'] },
+    { source: './formatter.js', specifiers: ['formatter'] }
+  ]);
+  assert.deepEqual(summary.exports.map((entry) => entry.name), ['render', 'version']);
+  assert.equal(index.readSymbol('commonjs.js', 'render'), [
+    'function render(value) {',
+    "  return formatter(joinPath('pages', value));",
+    '}'
+  ].join('\n'));
+});
+
+test('indexes anonymous default exports under the default symbol', (t) => {
+  const projectRoot = createProject();
+  t.after(() => fs.rmSync(projectRoot, { recursive: true, force: true }));
+  const index = createContextIndex({ projectRoot, allowedPaths: ['anonymous-default.js'] });
+
+  const summary = index.getSummary('anonymous-default.js');
+
+  assert.deepEqual(summary.exports, [{ name: 'default' }]);
+  assert.equal(summary.symbols[0].name, 'default');
+  assert.equal(index.readSymbol('anonymous-default.js', 'default'), [
+    'export default function () {',
+    '  return `anonymous default`;',
+    '}'
+  ].join('\n'));
+});
+
+test('rejects an allow-listed symlink or junction instead of following it outside the project root', (t) => {
+  const projectRoot = createProject();
+  const externalRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'context-index-external-'));
+  t.after(() => {
+    fs.rmSync(projectRoot, { recursive: true, force: true });
+    fs.rmSync(externalRoot, { recursive: true, force: true });
+  });
+  fs.writeFileSync(path.join(externalRoot, 'escape.js'), 'export const escaped = true;\n');
+  fs.symlinkSync(externalRoot, path.join(projectRoot, 'linked'), 'junction');
+  const index = createContextIndex({ projectRoot, allowedPaths: ['linked/escape.js'] });
+
+  assert.throws(() => index.indexFile('linked/escape.js'), { code: 'CONTEXT_PATH_UNAUTHORIZED' });
 });
