@@ -12,6 +12,7 @@ function definition(id, description = `${id} description`) {
       required: ['path'],
       additionalProperties: false
     },
+    pathFields: ['path'],
     handler: ({ path }) => ({ path })
   };
 }
@@ -29,8 +30,9 @@ function definitions() {
 
 test('resolves only requested compact model definitions', () => {
   const catalog = createToolCatalog(definitions());
+  const taskPackage = { tl: ['context.summary', 'patch.apply'], p: ['clientes/piloto-elyse-luxe/DNA.md'] };
 
-  const resolved = catalog.resolve(['context.summary', 'patch.apply']);
+  const resolved = catalog.resolve(['context.summary', 'patch.apply'], taskPackage);
   const serialized = JSON.stringify(resolved);
 
   assert.deepEqual(resolved.map((tool) => tool.id), ['context.summary', 'patch.apply']);
@@ -39,7 +41,19 @@ test('resolves only requested compact model definitions', () => {
   assert.equal(serialized.includes('test.focused'), false);
   assert.equal(serialized.includes('qa.core'), false);
   assert.equal(serialized.includes('handler'), false);
-  assert.ok(catalog.definitionBytes(['context.summary', 'patch.apply']) > 0);
+  assert.ok(catalog.definitionBytes(['context.summary', 'patch.apply'], taskPackage) > 0);
+});
+
+test('does not expose a registered tool absent from the active task package', () => {
+  const catalog = createToolCatalog(definitions());
+
+  assert.throws(
+    () => catalog.resolve(['context.summary', 'qa.core'], {
+      tl: ['context.summary'],
+      p: ['clientes/piloto-elyse-luxe/DNA.md']
+    }),
+    (error) => error.code === 'TOOL_UNDECLARED'
+  );
 });
 
 test('fails closed before invoking an unknown or undeclared tool', async () => {
@@ -76,6 +90,58 @@ test('fails closed before invoking a read outside task allowed paths', async () 
     (error) => error.code === 'TOOL_PATH_FORBIDDEN'
   );
   assert.equal(calls, 0);
+});
+
+test('uses declared nested path validators before handler invocation', async () => {
+  let calls = 0;
+  const catalog = createToolCatalog([{
+    id: 'context.symbol',
+    description: 'read one symbol',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        sourcePath: { type: 'string' },
+        options: {
+          type: 'object',
+          properties: { alternate: { type: 'string' } },
+          required: ['alternate'],
+          additionalProperties: false
+        }
+      },
+      required: ['sourcePath', 'options'],
+      additionalProperties: false
+    },
+    pathFields: ['sourcePath', 'options.alternate'],
+    handler: () => { calls += 1; }
+  }]);
+
+  await assert.rejects(
+    () => catalog.invoke('context.symbol', {
+      sourcePath: 'clientes/piloto-elyse-luxe/DNA.md',
+      options: { alternate: '../other-client/private.md' }
+    }, {
+      tl: ['context.symbol'],
+      p: ['clientes/piloto-elyse-luxe/DNA.md']
+    }),
+    (error) => error.code === 'TOOL_PATH_FORBIDDEN'
+  );
+  assert.equal(calls, 0);
+});
+
+test('rejects a schema with an undeclared path-bearing property', () => {
+  assert.throws(
+    () => createToolCatalog([{
+      ...definition('context.lines'),
+      inputSchema: {
+        type: 'object',
+        properties: { sourcePath: { type: 'string' } },
+        required: ['sourcePath'],
+        additionalProperties: false
+      },
+      pathFields: []
+    }]),
+    (error) => error.code === 'TOOL_PATH_SCHEMA_INVALID'
+  );
 });
 
 test('rejects duplicate IDs and arguments outside a strict schema', async () => {
