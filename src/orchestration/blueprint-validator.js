@@ -1,3 +1,5 @@
+const path = require('node:path');
+
 class BlueprintValidationError extends Error {
   constructor(violations) {
     super(`Blueprint validation failed with ${violations.length} violation(s)`);
@@ -88,13 +90,21 @@ function checkContextReferencesExist(blueprint) {
 }
 
 function checkClientPaths(blueprint) {
-  const allowedPrefix = `clientes/${blueprint.clientId}/`;
+  const clientRoot = path.posix.resolve('/', 'clientes', blueprint.clientId);
   const violations = [];
   const paths = blueprint.context.map((context) => ({ nodeId: '', path: context.path }))
     .concat(blueprint.nodes.flatMap((node) => node.paths.map((path) => ({ nodeId: node.id, path }))));
 
   for (const entry of paths) {
-    if (!entry.path.startsWith(allowedPrefix)) {
+    const hasTraversal = entry.path.split('/').includes('..');
+    const resolvedPath = path.posix.resolve('/', entry.path);
+    const relativePath = path.posix.relative(clientRoot, resolvedPath);
+    const isWithinClientRoot = relativePath !== ''
+      && relativePath !== '..'
+      && !relativePath.startsWith('../')
+      && !path.posix.isAbsolute(relativePath);
+
+    if (entry.path.includes('\\') || path.posix.isAbsolute(entry.path) || hasTraversal || !isWithinClientRoot) {
       violations.push(violation('CROSS_CLIENT_INPUT', entry.nodeId, `Path ${entry.path} is outside client ${blueprint.clientId}`));
     }
   }

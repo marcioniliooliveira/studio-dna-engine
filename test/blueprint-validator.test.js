@@ -100,6 +100,69 @@ test('rejects node paths outside the selected client', () => {
   assert.ok(violations.some((violation) => violation.code === 'CROSS_CLIENT_INPUT'));
 });
 
+test('rejects context paths that traverse out of the selected client root', () => {
+  const blueprint = validBlueprint();
+  blueprint.context[0].path = 'clientes/piloto-elyse-luxe/../../outro-cliente/DNA.md';
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'CROSS_CLIENT_INPUT'));
+});
+
+test('rejects node paths that traverse out of the selected client root', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].paths = ['clientes/piloto-elyse-luxe/../../outro-cliente/DNA.md'];
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'CROSS_CLIENT_INPUT'));
+});
+
+test('reports missing dependencies', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].dependencies = ['missing-node'];
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'MISSING_DEPENDENCY'));
+});
+
+test('reports missing context references', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].inputs = ['missing-context'];
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'MISSING_CONTEXT_REFERENCE'));
+});
+
+test('reports duplicate node IDs', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].id = 'n1';
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'DUPLICATE_NODE_ID'));
+});
+
+test('reports tools not permitted by policy', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].toolLabels = ['pipeline.deploy'];
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'DISALLOWED_TOOL'));
+});
+
+test('reports gates not permitted by policy', () => {
+  const blueprint = validBlueprint();
+  blueprint.nodes[1].gates = ['manual-approval'];
+
+  const violations = violationsFor(blueprint);
+
+  assert.ok(violations.some((violation) => violation.code === 'DISALLOWED_GATE'));
+});
+
 test('returns the same valid three-node DAG', () => {
   const blueprint = validBlueprint();
 
