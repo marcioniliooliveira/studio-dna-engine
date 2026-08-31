@@ -1,4 +1,5 @@
 const { assign, createActor, createMachine } = require('xstate');
+const { assertSafeSlug } = require('../server/security');
 
 const MAX_REPAIR_ATTEMPTS = 2;
 const machineInitialContexts = new WeakMap();
@@ -23,9 +24,10 @@ function isBoundArtifactRef(value, context) {
   return isArtifactRef(value) && value.runId === context.runId && value.clientId === context.clientId;
 }
 
-function isFullQaEvidence(value) {
-  if (!isPlainObject(value) || typeof value.reportId !== 'string' || value.reportId.length === 0 ||
+function isFullQaEvidence(value, context) {
+  if (!isPlainObject(value) || !isPlainObject(context) ||
     typeof value.artifactSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(value.artifactSha256) ||
+    !isBoundArtifactRef(value.reportArtifact, context) || value.reportArtifact.type !== 'qa-report' ||
     value.status !== 'candidate' || !isPlainObject(value.gates)) return false;
 
   const { antiSlop, console: consoleGate, network, structural } = value.gates;
@@ -46,6 +48,8 @@ function validateInitialContext(initialContext) {
     initialContext.planVersion < 1 || !Number.isInteger(initialContext.attempts) || initialContext.attempts < 0) {
     throw new TypeError('initialContext must contain durable run, client, plan version, and attempt fields');
   }
+  assertSafeSlug(initialContext.runId);
+  assertSafeSlug(initialContext.clientId);
 
   if (initialContext.candidateArtifact !== null && !isBoundArtifactRef(initialContext.candidateArtifact, initialContext)) {
     throw new TypeError('initialContext candidateArtifact must be null or an immutable artifact reference');
@@ -55,7 +59,7 @@ function validateInitialContext(initialContext) {
     throw new TypeError('initialContext blockingEvidence must be null or persisted evidence');
   }
 
-  if (initialContext.qaEvidence !== undefined && initialContext.qaEvidence !== null && !isFullQaEvidence(initialContext.qaEvidence)) {
+  if (initialContext.qaEvidence !== undefined && initialContext.qaEvidence !== null && !isFullQaEvidence(initialContext.qaEvidence, initialContext)) {
     throw new TypeError('initialContext qaEvidence must be null or valid full-QA evidence');
   }
 }
@@ -86,7 +90,7 @@ function validateSnapshot(machine, snapshot) {
   if (context.candidateArtifact !== null && !isBoundArtifactRef(context.candidateArtifact, context)) {
     throw snapshotError('candidate artifact is not an immutable artifact for this run and client');
   }
-  if (context.qaEvidence !== null && (!isFullQaEvidence(context.qaEvidence) || !isBoundArtifactRef(context.candidateArtifact, context) ||
+  if (context.qaEvidence !== null && (!isFullQaEvidence(context.qaEvidence, context) || !isBoundArtifactRef(context.candidateArtifact, context) ||
     context.qaEvidence.artifactSha256 !== context.candidateArtifact.sha256)) {
     throw snapshotError('QA proof is incomplete or does not bind to the candidate artifact');
   }
@@ -94,7 +98,7 @@ function validateSnapshot(machine, snapshot) {
     throw snapshotError('blocking evidence is malformed');
   }
   if (PROMOTED_STATES.has(snapshot.value) && (!isBoundArtifactRef(context.candidateArtifact, context) ||
-    !isFullQaEvidence(context.qaEvidence) || context.qaEvidence.artifactSha256 !== context.candidateArtifact.sha256)) {
+    !isFullQaEvidence(context.qaEvidence, context) || context.qaEvidence.artifactSha256 !== context.candidateArtifact.sha256)) {
     throw snapshotError('promoted state lacks an artifact-bound QA proof');
   }
 }
@@ -150,7 +154,7 @@ function createWorkflowMachine(initialContext) {
         on: {
           FULL_QA_PASSED: {
             guard: ({ context: currentContext, event }) => isBoundArtifactRef(currentContext.candidateArtifact, currentContext) &&
-              isFullQaEvidence(event.evidence) && event.evidence.artifactSha256 === currentContext.candidateArtifact.sha256,
+              isFullQaEvidence(event.evidence, currentContext) && event.evidence.artifactSha256 === currentContext.candidateArtifact.sha256,
             target: 'candidate',
             actions: assign({
               qaEvidence: ({ event }) => event.evidence

@@ -22,9 +22,10 @@ function startActor() {
 
 function fullQaEvidence() {
   return {
-    reportId: 'qa-report-001',
+    reportId: 'untrusted-display-id',
     status: 'candidate',
     artifactSha256: 'a'.repeat(64),
+    reportArtifact: artifactRef('e'.repeat(64), initialContext.clientId, initialContext.runId, 'qa-report'),
     gates: {
       antiSlop: { passed: true },
       console: { passed: true, errorsCount: 0 },
@@ -34,14 +35,14 @@ function fullQaEvidence() {
   };
 }
 
-function artifactRef(sha256 = 'a'.repeat(64), clientId = initialContext.clientId, runId = initialContext.runId) {
+function artifactRef(sha256 = 'a'.repeat(64), clientId = initialContext.clientId, runId = initialContext.runId, type = 'site') {
   return {
     id: sha256,
     sha256,
     runId,
     clientId,
-    type: 'site',
-    relativePath: `${clientId}/${runId}/artifacts/site/${sha256}.json`
+    type,
+    relativePath: `${clientId}/${runId}/artifacts/${type}/${sha256}.json`
   };
 }
 
@@ -101,6 +102,28 @@ test('rejects an artifact that belongs to another client before verification', (
   assert.equal(actor.getSnapshot().value, 'executing');
 });
 
+test('requires a durable QA report artifact owned by the active run and client', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  const forgedEvidence = fullQaEvidence();
+  forgedEvidence.reportArtifact.clientId = 'other-client';
+
+  actor.send({ type: 'FULL_QA_PASSED', evidence: forgedEvidence });
+
+  assert.equal(actor.getSnapshot().value, 'verifying');
+});
+
+test('rejects traversal-like run and client IDs before creating a workflow', () => {
+  assert.throws(
+    () => createWorkflowMachine({ ...initialContext, runId: '../run-001' }),
+    /unsafe slug/i
+  );
+  assert.throws(
+    () => createWorkflowMachine({ ...initialContext, clientId: 'client/other' }),
+    /unsafe slug/i
+  );
+});
+
 test('routes the third QA block to human intervention after two bounded repairs', () => {
   const actor = startActor();
   advanceToVerifying(actor);
@@ -154,6 +177,19 @@ test('rejects forged candidate and verified snapshots without an artifact-bound 
   verified.context.qaEvidence = null;
   assert.throws(
     () => createWorkflowActor(createWorkflowMachine(initialContext), verified),
+    /snapshot/i
+  );
+});
+
+test('rejects a restored promoted snapshot with a forged QA report reference', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  actor.send({ type: 'FULL_QA_PASSED', evidence: fullQaEvidence() });
+  const candidate = actor.getPersistedSnapshot();
+  candidate.context.qaEvidence.reportArtifact.relativePath = 'other-client/run-001/artifacts/qa-report/evidence.json';
+
+  assert.throws(
+    () => createWorkflowActor(createWorkflowMachine(initialContext), candidate),
     /snapshot/i
   );
 });
