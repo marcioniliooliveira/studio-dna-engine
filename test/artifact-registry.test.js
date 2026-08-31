@@ -70,3 +70,57 @@ test('rejects unsafe slugs before creating artifact directories', (t) => {
   );
   assert.deepEqual(fs.readdirSync(rootDir), []);
 });
+
+test('does not replace a destination created while publishing', (t) => {
+  const { registry } = withRegistry(t);
+  const originalLinkSync = fs.linkSync;
+  t.after(() => { fs.linkSync = originalLinkSync; });
+
+  fs.linkSync = (source, destination) => {
+    fs.writeFileSync(destination, 'concurrent-content');
+    return originalLinkSync(source, destination);
+  };
+
+  assert.throws(
+    () => registry.putJson({
+      runId: 'run-001', clientId: 'client-alpha', type: 'blueprint', value: { ok: true }, sources: []
+    }),
+    (error) => error.code === 'ARTIFACT_HASH_MISMATCH'
+  );
+});
+
+test('rejects artifact directories that resolve through a client symlink', (t) => {
+  const { registry, rootDir } = withRegistry(t);
+  const externalDir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-registry-external-'));
+  const clientDir = path.join(rootDir, 'client-alpha');
+  fs.symlinkSync(externalDir, clientDir, 'junction');
+  t.after(() => fs.rmSync(externalDir, { recursive: true, force: true }));
+
+  assert.throws(
+    () => registry.putJson({
+      runId: 'run-001', clientId: 'client-alpha', type: 'blueprint', value: { ok: true }, sources: []
+    }),
+    (error) => error.code === 'ARTIFACT_PATH_ESCAPE'
+  );
+  assert.deepEqual(fs.readdirSync(externalDir), []);
+});
+
+test('rejects non-JSON-safe values before creating artifact directories', (t) => {
+  const cases = [
+    ['undefined', { value: undefined }],
+    ['function', { value: () => {} }],
+    ['symbol', { value: Symbol('token') }],
+    ['nonfinite number', { value: Number.NaN }],
+    ['nested undefined', { value: { nested: undefined } }]
+  ];
+
+  for (const [name, input] of cases) {
+    const { registry, rootDir } = withRegistry(t);
+    assert.throws(
+      () => registry.putJson({ runId: 'run-001', clientId: 'client-alpha', type: 'blueprint', sources: [], ...input }),
+      /JSON-safe/i,
+      name
+    );
+    assert.deepEqual(fs.readdirSync(rootDir), [], name);
+  }
+});

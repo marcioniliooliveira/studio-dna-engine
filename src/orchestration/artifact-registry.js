@@ -9,6 +9,47 @@ function artifactError(code, message) {
   return error;
 }
 
+function jsonSafeError() {
+  return new TypeError('Artifact content must contain only JSON-safe values');
+}
+
+function assertJsonSafe(value, ancestors = new Set()) {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return;
+  if (typeof value === 'number') {
+    if (Number.isFinite(value)) return;
+    throw jsonSafeError();
+  }
+  if (typeof value !== 'object') throw jsonSafeError();
+  if (ancestors.has(value)) throw jsonSafeError();
+
+  ancestors.add(value);
+  try {
+    if (Array.isArray(value)) {
+      if (Object.getOwnPropertySymbols(value).length > 0) throw jsonSafeError();
+      for (let index = 0; index < value.length; index += 1) {
+        if (!Object.hasOwn(value, index)) throw jsonSafeError();
+        assertJsonSafe(value[index], ancestors);
+      }
+      if (Object.keys(value).some((key) => !/^(0|[1-9]\d*)$/.test(key) || Number(key) >= value.length)) {
+        throw jsonSafeError();
+      }
+      return;
+    }
+
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) throw jsonSafeError();
+    if (Object.getOwnPropertySymbols(value).length > 0) throw jsonSafeError();
+    for (const key of Object.keys(value)) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) throw jsonSafeError();
+      assertJsonSafe(value[key], ancestors);
+    }
+    if (Object.getOwnPropertyNames(value).length !== Object.keys(value).length) throw jsonSafeError();
+  } finally {
+    ancestors.delete(value);
+  }
+}
+
 function sortJson(value) {
   if (Array.isArray(value)) return value.map(sortJson);
   if (value && typeof value === 'object') {
@@ -18,11 +59,8 @@ function sortJson(value) {
 }
 
 function canonicalJson(value) {
-  const serialized = JSON.stringify(value);
-  if (typeof serialized !== 'string') {
-    throw new TypeError('Artifact content must be JSON serializable');
-  }
-  return JSON.stringify(sortJson(JSON.parse(serialized)));
+  assertJsonSafe(value);
+  return JSON.stringify(sortJson(value));
 }
 
 function sha256(content) {
@@ -31,6 +69,14 @@ function sha256(content) {
 
 function createArtifactRegistry({ rootDir, now = Date.now }) {
   let temporaryFileCount = 0;
+
+  function assertContained(realPath) {
+    const realRoot = fs.realpathSync(rootDir);
+    const prefix = realRoot.endsWith(path.sep) ? realRoot : `${realRoot}${path.sep}`;
+    if (realPath !== realRoot && !realPath.startsWith(prefix)) {
+      throw artifactError('ARTIFACT_PATH_ESCAPE', 'Artifact path resolves outside the registry root');
+    }
+  }
 
   function assertReference(ref) {
     const clientId = assertSafeSlug(ref && ref.clientId);
@@ -49,7 +95,39 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
   }
 
   function pathFor(reference) {
-    return path.resolve(rootDir, ...reference.relativePath.split('/'));
+    const root = path.resolve(rootDir);
+    const artifactPath = path.resolve(root, ...reference.relativePath.split('/'));
+    const prefix = root.endsWith(path.sep) ? root : `${root}${path.sep}`;
+    if (!artifactPath.startsWith(prefix)) {
+      throw artifactError('ARTIFACT_PATH_ESCAPE', 'Artifact path escapes the registry root');
+    }
+    return artifactPath;
+  }
+
+  function assertArtifactDirectory(destination) {
+    fs.mkdirSync(rootDir, { recursive: true });
+    let current = path.resolve(rootDir);
+    const segments = path.relative(current, path.dirname(destination)).split(path.sep).filter(Boolean);
+    assertContained(fs.realpathSync(current));
+    for (const segment of segments) {
+      current = path.join(current, segment);
+      if (!fs.existsSync(current)) fs.mkdirSync(current);
+      assertContained(fs.realpathSync(current));
+    }
+  }
+
+  function readStored(destination) {
+    assertContained(fs.realpathSync(path.dirname(destination)));
+    if (fs.lstatSync(destination).isSymbolicLink()) {
+      throw artifactError('ARTIFACT_PATH_ESCAPE', 'Artifact file must not be a symbolic link');
+    }
+    let descriptor;
+    try {
+      descriptor = fs.openSync(destination, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+      return fs.readFileSync(descriptor, 'utf8');
+    } finally {
+      if (descriptor !== undefined) fs.closeSync(descriptor);
+    }
   }
 
   function verify(reference) {
@@ -57,7 +135,7 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
     const artifactPath = pathFor(ref);
     let stored;
     try {
-      stored = fs.readFileSync(artifactPath, 'utf8');
+      stored = readStored(artifactPath);
     } catch (error) {
       if (error.code === 'ENOENT') {
         throw artifactError('ARTIFACT_NOT_FOUND', 'Artifact does not exist');
@@ -81,23 +159,33 @@ function createArtifactRegistry({ rootDir, now = Date.now }) {
     const ref = { id: digest, sha256: digest, runId: safeRunId, clientId: safeClientId, type: safeType, relativePath };
     const destination = pathFor(ref);
 
+    assertArtifactDirectory(destination);
     if (fs.existsSync(destination)) {
       verify(ref);
       return ref;
     }
-
-    fs.mkdirSync(path.dirname(destination), { recursive: true });
     const temporary = path.join(
       path.dirname(destination),
       `.${digest}.${process.pid}.${now()}.${temporaryFileCount += 1}.tmp`
     );
     try {
-      fs.writeFileSync(temporary, content, { encoding: 'utf8', flag: 'wx' });
-      if (fs.existsSync(destination)) {
+      const descriptor = fs.openSync(
+        temporary,
+        fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_NOFOLLOW,
+        0o600
+      );
+      try {
+        fs.writeFileSync(descriptor, content, 'utf8');
+      } finally {
+        fs.closeSync(descriptor);
+      }
+      try {
+        fs.linkSync(temporary, destination);
+      } catch (error) {
+        if (error.code !== 'EEXIST') throw error;
         verify(ref);
         return ref;
       }
-      fs.renameSync(temporary, destination);
     } finally {
       if (fs.existsSync(temporary)) fs.rmSync(temporary, { force: true });
     }
