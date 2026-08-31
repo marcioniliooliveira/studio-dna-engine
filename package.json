@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
+    "orchestrate": "node bin/orchestrator.js",
     "start": "node bin/cli.js --preview --port 4000",
     "preview": "node bin/cli.js --preview --port 4000",
     "scrape": "node bin/cli.js",
