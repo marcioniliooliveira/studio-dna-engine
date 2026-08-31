@@ -121,25 +121,29 @@ function requireImport(declaration) {
   return imports;
 }
 
-function commonJsExportNames(statement) {
-  if (statement.type !== 'ExpressionStatement' || statement.expression.type !== 'AssignmentExpression') return [];
+function commonJsExportAction(statement) {
+  if (statement.type !== 'ExpressionStatement' || statement.expression.type !== 'AssignmentExpression') return null;
   const { left, right } = statement.expression;
-  if (left.type !== 'MemberExpression' || left.computed) return [];
+  if (left.type !== 'MemberExpression' || left.computed) return null;
   const property = left.property.type === 'Identifier' ? left.property.name : null;
   const isModuleExports = left.object.type === 'Identifier' && left.object.name === 'module' && property === 'exports';
   const isExportsProperty = left.object.type === 'Identifier' && left.object.name === 'exports' && property;
   const isModuleExportsProperty = left.object.type === 'MemberExpression' && !left.object.computed
     && left.object.object.type === 'Identifier' && left.object.object.name === 'module'
     && left.object.property.type === 'Identifier' && left.object.property.name === 'exports' && property;
-  if (isExportsProperty || isModuleExportsProperty) return [property];
-  if (!isModuleExports) return [];
+  if (isExportsProperty) return { type: 'property', names: [property], throughExportsAlias: true };
+  if (isModuleExportsProperty) return { type: 'property', names: [property], throughExportsAlias: false };
+  if (!isModuleExports) return null;
   if (right.type === 'ObjectExpression') {
-    return right.properties
+    return {
+      type: 'replace',
+      names: right.properties
       .filter((property) => property.type === 'Property' && !property.computed)
       .map((property) => property.key.type === 'Identifier' ? property.key.name : property.key.value)
-      .filter((name) => typeof name === 'string');
+      .filter((name) => typeof name === 'string')
+    };
   }
-  return ['default'];
+  return { type: 'replace', names: ['default'] };
 }
 
 function commonJsAssignmentSymbol(source, comments, statement, name) {
@@ -166,6 +170,8 @@ function buildRecord(source, relativePath) {
   const imports = [];
   const symbols = [];
   const exportedNames = new Set();
+  const commonJsExportedNames = new Set();
+  let exportsAliasActive = true;
 
   for (const statement of ast.body) {
     if (statement.type === 'ImportDeclaration') {
@@ -206,12 +212,18 @@ function buildRecord(source, relativePath) {
       continue;
     }
 
-    const commonJsNames = commonJsExportNames(statement);
-    for (const name of commonJsNames) {
-      exportedNames.add(name);
+    const commonJsAction = commonJsExportAction(statement);
+    if (commonJsAction?.type === 'replace') {
+      commonJsExportedNames.clear();
+      exportsAliasActive = false;
+    }
+    if (commonJsAction && (!commonJsAction.throughExportsAlias || exportsAliasActive)) {
+      for (const name of commonJsAction.names) {
+        commonJsExportedNames.add(name);
       const existing = symbols.find((entry) => entry.name === name);
       if (existing) existing.exported = true;
       else symbols.push(commonJsAssignmentSymbol(source, comments, statement, name));
+      }
     }
     symbols.push(...asArray(symbolFromDeclaration(source, comments, statement, false)));
   }
@@ -225,7 +237,7 @@ function buildRecord(source, relativePath) {
       path: relativePath,
       sha256: sha256(source),
       imports: Object.freeze(imports.map((entry) => Object.freeze({ ...entry, specifiers: Object.freeze([...entry.specifiers]) }))),
-      exports: Object.freeze([...exportedNames].map((name) => Object.freeze({ name }))),
+      exports: Object.freeze([...exportedNames, ...commonJsExportedNames].map((name) => Object.freeze({ name }))),
       symbols: Object.freeze(publicSymbols.map((entry) => Object.freeze({ ...entry })))
     })
   };

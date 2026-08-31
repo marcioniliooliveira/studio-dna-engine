@@ -94,7 +94,7 @@ test('indexes CommonJS require imports and module export symbols', (t) => {
     { source: 'node:path', specifiers: ['joinPath'] },
     { source: './formatter.js', specifiers: ['formatter'] }
   ]);
-  assert.deepEqual(summary.exports.map((entry) => entry.name), ['render', 'version']);
+  assert.deepEqual(summary.exports.map((entry) => entry.name), ['render']);
   assert.equal(index.readSymbol('commonjs.js', 'render'), [
     'function render(value) {',
     "  return formatter(joinPath('pages', value));",
