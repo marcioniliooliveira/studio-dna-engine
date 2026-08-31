@@ -56,6 +56,25 @@ test('does not expose a registered tool absent from the active task package', ()
   );
 });
 
+test('rejects conflicting long-form scope aliases before the handler runs', async () => {
+  let calls = 0;
+  const catalog = createToolCatalog([{
+    ...definition('context.summary'),
+    handler: () => { calls += 1; }
+  }]);
+
+  await assert.rejects(
+    () => catalog.invoke('context.summary', { path: 'clientes/outro-cliente/private.md' }, {
+      tl: ['context.summary'],
+      p: ['clientes/piloto-elyse-luxe/DNA.md'],
+      toolIds: ['context.summary'],
+      allowedPaths: ['clientes/outro-cliente/private.md']
+    }),
+    (error) => error.code === 'TOOL_SCOPE_CONFLICT'
+  );
+  assert.equal(calls, 0);
+});
+
 test('fails closed before invoking an unknown or undeclared tool', async () => {
   let calls = 0;
   const catalog = createToolCatalog([{
@@ -142,6 +161,37 @@ test('rejects a schema with an undeclared path-bearing property', () => {
     }]),
     (error) => error.code === 'TOOL_PATH_SCHEMA_INVALID'
   );
+});
+
+test('rejects object-array path schemas without item selector support', () => {
+  let calls = 0;
+  assert.throws(
+    () => createToolCatalog([{
+      id: 'context.lines',
+      description: 'read several files',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          path: { type: 'string' },
+          documents: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: { label: { type: 'string' } },
+              required: ['label'],
+              additionalProperties: false
+            }
+          }
+        },
+        required: ['path', 'documents'],
+        additionalProperties: false
+      },
+      pathFields: ['path'],
+      handler: () => { calls += 1; }
+    }]),
+    (error) => error.code === 'TOOL_PATH_SCHEMA_INVALID'
+  );
+  assert.equal(calls, 0);
 });
 
 test('rejects duplicate IDs and arguments outside a strict schema', async () => {

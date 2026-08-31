@@ -51,6 +51,12 @@ function collectPathBearingSelectors(schema, prefix = []) {
   });
 }
 
+function hasObjectArray(schema) {
+  return Object.values(schema.properties).some((child) => (
+    child && child.type === 'array' && child.items && child.items.type === 'object'
+  ) || (child && child.type === 'object' && hasObjectArray(child)));
+}
+
 function assertPathFields(schema, pathFields) {
   if (!Array.isArray(pathFields) || pathFields.length === 0 || new Set(pathFields).size !== pathFields.length
     || !pathFields.every((selector) => typeof selector === 'string' && selector.length > 0)) {
@@ -67,6 +73,9 @@ function assertPathFields(schema, pathFields) {
   const declared = new Set(pathFields);
   if (collectPathBearingSelectors(schema).some((selector) => !declared.has(selector))) {
     throw toolError('TOOL_PATH_SCHEMA_INVALID', 'Path-bearing schema properties require explicit path metadata');
+  }
+  if (hasObjectArray(schema)) {
+    throw toolError('TOOL_PATH_SCHEMA_INVALID', 'Object arrays are not supported in scoped tool schemas');
   }
 }
 
@@ -127,20 +136,33 @@ function scopedPaths(args, pathFields) {
   return values;
 }
 
+function sameArray(left, right) {
+  return Array.isArray(left) && Array.isArray(right)
+    && left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function compactScope(taskScope) {
+  if (!taskScope || !Array.isArray(taskScope.tl) || !Array.isArray(taskScope.p)) {
+    throw toolError('TOOL_SCOPE_INVALID', 'Task scope must use compact tl and p fields');
+  }
+  if ((Object.hasOwn(taskScope, 'toolIds') && !sameArray(taskScope.toolIds, taskScope.tl))
+    || (Object.hasOwn(taskScope, 'allowedPaths') && !sameArray(taskScope.allowedPaths, taskScope.p))) {
+    throw toolError('TOOL_SCOPE_CONFLICT', 'Long-form scope aliases conflict with the task package');
+  }
+  return taskScope;
+}
+
 function assertDeclared(toolId, taskScope) {
-  const toolIds = taskScope && (taskScope.toolIds || taskScope.tl);
-  if (!Array.isArray(toolIds) || !toolIds.includes(toolId)) {
+  const compact = compactScope(taskScope);
+  if (!compact.tl.includes(toolId)) {
     throw toolError('TOOL_UNDECLARED', 'Tool is not declared by the active task package');
   }
 }
 
 function assertScope(toolId, args, taskScope, pathFields) {
-  assertDeclared(toolId, taskScope);
-  const allowedPaths = taskScope && (taskScope.allowedPaths || taskScope.p);
-  if (!Array.isArray(allowedPaths)) {
-    throw toolError('TOOL_SCOPE_INVALID', 'Task scope must declare allowed paths');
-  }
-  const allowed = new Set(allowedPaths);
+  const compact = compactScope(taskScope);
+  assertDeclared(toolId, compact);
+  const allowed = new Set(compact.p);
   for (const candidate of scopedPaths(args, pathFields)) {
     if (!isSafePath(candidate) || !allowed.has(candidate)) {
       throw toolError('TOOL_PATH_FORBIDDEN', 'Tool path is outside the active task scope');
