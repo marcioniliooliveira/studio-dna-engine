@@ -124,6 +124,12 @@ function requireImport(declaration) {
 function commonJsExportAction(statement) {
   if (statement.type !== 'ExpressionStatement' || statement.expression.type !== 'AssignmentExpression') return null;
   const { left, right } = statement.expression;
+  const isModuleExportsReference = right.type === 'MemberExpression' && !right.computed
+    && right.object.type === 'Identifier' && right.object.name === 'module'
+    && right.property.type === 'Identifier' && right.property.name === 'exports';
+  if (left.type === 'Identifier' && left.name === 'exports') {
+    return { type: isModuleExportsReference ? 'alias-restore' : 'alias-break', names: [] };
+  }
   if (left.type !== 'MemberExpression' || left.computed) return null;
   const property = left.property.type === 'Identifier' ? left.property.name : null;
   const isModuleExports = left.object.type === 'Identifier' && left.object.name === 'module' && property === 'exports';
@@ -217,6 +223,8 @@ function buildRecord(source, relativePath) {
       commonJsExportedNames.clear();
       exportsAliasActive = false;
     }
+    if (commonJsAction?.type === 'alias-restore') exportsAliasActive = true;
+    if (commonJsAction?.type === 'alias-break') exportsAliasActive = false;
     if (commonJsAction && (!commonJsAction.throughExportsAlias || exportsAliasActive)) {
       for (const name of commonJsAction.names) {
         commonJsExportedNames.add(name);
@@ -237,7 +245,7 @@ function buildRecord(source, relativePath) {
       path: relativePath,
       sha256: sha256(source),
       imports: Object.freeze(imports.map((entry) => Object.freeze({ ...entry, specifiers: Object.freeze([...entry.specifiers]) }))),
-      exports: Object.freeze([...exportedNames, ...commonJsExportedNames].map((name) => Object.freeze({ name }))),
+      exports: Object.freeze([...new Set([...exportedNames, ...commonJsExportedNames])].map((name) => Object.freeze({ name }))),
       symbols: Object.freeze(publicSymbols.map((entry) => Object.freeze({ ...entry })))
     })
   };

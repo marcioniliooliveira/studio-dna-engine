@@ -12,6 +12,8 @@ function createProject() {
   fs.copyFileSync(fixturePath, path.join(projectRoot, 'sample.js'));
   fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'commonjs.js'), path.join(projectRoot, 'commonjs.js'));
   fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'anonymous-default.js'), path.join(projectRoot, 'anonymous-default.js'));
+  fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'mixed-exports.js'), path.join(projectRoot, 'mixed-exports.js'));
+  fs.copyFileSync(path.join(__dirname, 'fixtures', 'context-index', 'restored-exports-alias.js'), path.join(projectRoot, 'restored-exports-alias.js'));
   return projectRoot;
 }
 
@@ -130,4 +132,23 @@ test('rejects an allow-listed symlink or junction instead of following it outsid
   const index = createContextIndex({ projectRoot, allowedPaths: ['linked/escape.js'] });
 
   assert.throws(() => index.indexFile('linked/escape.js'), { code: 'CONTEXT_PATH_UNAUTHORIZED' });
+});
+
+test('deduplicates names shared by ESM and CommonJS exports', (t) => {
+  const projectRoot = createProject();
+  t.after(() => fs.rmSync(projectRoot, { recursive: true, force: true }));
+  const index = createContextIndex({ projectRoot, allowedPaths: ['mixed-exports.js'] });
+
+  assert.deepEqual(index.getSummary('mixed-exports.js').exports, [{ name: 'shared' }]);
+});
+
+test('restores the exports alias after an explicit exports equals module exports assignment', (t) => {
+  const projectRoot = createProject();
+  t.after(() => fs.rmSync(projectRoot, { recursive: true, force: true }));
+  const index = createContextIndex({ projectRoot, allowedPaths: ['restored-exports-alias.js'] });
+
+  assert.deepEqual(index.getSummary('restored-exports-alias.js').exports, [
+    { name: 'primary' },
+    { name: 'restored' }
+  ]);
 });
