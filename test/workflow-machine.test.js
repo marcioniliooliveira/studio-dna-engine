@@ -147,6 +147,16 @@ test('routes the third QA block to human intervention after two bounded repairs'
   assert.deepEqual(actor.getSnapshot().context.blockingEvidence, { reportId: 'qa-3', status: 'failed' });
 });
 
+test('allows a failed repair to require human intervention without replaying the same candidate', () => {
+  const actor = startActor();
+  advanceToVerifying(actor);
+  actor.send({ type: 'QA_BLOCKED', evidence: { reportId: 'qa-1', status: 'failed' } });
+  assert.equal(actor.getSnapshot().value, 'repairing');
+
+  actor.send({ type: 'HUMAN_INTERVENTION_REQUIRED', evidence: { reportId: 'repair-1', status: 'failed' } });
+  assert.equal(actor.getSnapshot().value, 'human_intervention');
+});
+
 test('restores a serializable persisted snapshot without re-running prior events', () => {
   const actor = startActor();
   advanceToVerifying(actor);

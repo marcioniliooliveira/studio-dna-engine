@@ -107,6 +107,7 @@ function createOrchestrator({
   blueprintPolicy,
   candidateArtifact,
   qaEvidence,
+  repairCandidate,
   approver
 } = {}) {
   if (typeof rootDir !== 'string' || rootDir.length === 0) throw new TypeError('rootDir is required');
@@ -154,6 +155,14 @@ function createOrchestrator({
       persistWorkflow(runStore, runRef, actor);
       return actor.getSnapshot().value;
     }
+  }
+
+  function requireHumanIntervention(runRef, actor, reportId) {
+    const evidence = { reportId, status: 'failed' };
+    runStore.appendEvent(runRef, { type: 'REPAIR_BLOCKED', data: { evidence } });
+    actor.send({ type: 'HUMAN_INTERVENTION_REQUIRED', evidence });
+    persistWorkflow(runStore, runRef, actor);
+    return actor.getSnapshot().value;
   }
 
   async function executeOne(runRef, blueprint, actor) {
@@ -237,8 +246,32 @@ function createOrchestrator({
     const blueprint = blueprintFor(run);
     const actor = workflowActorFor(run);
     if (actor.getSnapshot().value === 'repairing') {
+      const previousArtifact = actor.getSnapshot().context.candidateArtifact;
+      if (typeof repairCandidate !== 'function' || previousArtifact === null) {
+        return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-unavailable`), costs: runStore.loadRun(runRef).costs };
+      }
+      let repairedArtifact;
+      try {
+        repairedArtifact = await repairCandidate({
+          runRef,
+          blueprint,
+          previousArtifact,
+          blockingEvidence: actor.getSnapshot().context.blockingEvidence
+        });
+      } catch (error) {
+        return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-failed`), costs: runStore.loadRun(runRef).costs };
+      }
+      if (!repairedArtifact || repairedArtifact.sha256 === previousArtifact.sha256) {
+        return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-unchanged`), costs: runStore.loadRun(runRef).costs };
+      }
       actor.send({ type: 'REPAIR_COMPLETED' });
-      persistWorkflow(runStore, runRef, actor);
+      actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: repairedArtifact });
+      if (actor.getSnapshot().value !== 'verifying') {
+        return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-invalid`), costs: runStore.loadRun(runRef).costs };
+      }
+      const state = await finalizeCandidate(runRef, blueprint, actor);
+      const current = runStore.loadRun(runRef);
+      return { runId: runRef.runId, state, costs: current.costs };
     } else if (actor.getSnapshot().value !== 'executing') {
       throw cliError('CLI_RESUME_INVALID_STATE', 'Only executing runs may be resumed');
     }

@@ -65,8 +65,12 @@ function fixtureCandidateArtifact() {
 }
 
 function fixtureQaEvidence() {
+  return fixtureQaEvidenceFor('b'.repeat(64));
+}
+
+function fixtureQaEvidenceFor(artifactSha256) {
   return {
-    reportId: 'fixture-qa', status: 'candidate', artifactSha256: 'b'.repeat(64),
+    reportId: 'fixture-qa', status: 'candidate', artifactSha256,
     reportArtifact: {
       id: 'c'.repeat(64), sha256: 'c'.repeat(64), runId: 'run-001', clientId: 'client-alpha', type: 'qa-report',
       relativePath: `client-alpha/run-001/artifacts/qa-report/${'c'.repeat(64)}.json`
@@ -209,7 +213,13 @@ test('persists malformed QA as a bounded repair state and recovers without re-ru
     readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
     blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
     candidateArtifact: fixtureCandidateArtifact,
-    qaEvidence: () => repairAttempt ? fixtureQaEvidence() : { status: 'candidate' },
+    qaEvidence: ({ candidateArtifact }) => repairAttempt ? fixtureQaEvidenceFor(candidateArtifact.sha256) : { status: 'candidate' },
+    repairCandidate: async ({ previousArtifact }) => ({
+      ...previousArtifact,
+      id: 'd'.repeat(64),
+      sha256: 'd'.repeat(64),
+      relativePath: `client-alpha/run-001/artifacts/site/${'d'.repeat(64)}.json`
+    }),
     approver: 'fixture-approver'
   };
   const process = createOrchestrator(options);
@@ -224,6 +234,28 @@ test('persists malformed QA as a bounded repair state and recovers without re-ru
   const recovered = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
   assert.equal(recovered.state, 'candidate');
   assert.deepEqual(executorCalls, ['n1', 'n2']);
+  const repaired = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+  assert.equal(repaired.events.filter((event) => event.type === 'WORKFLOW_SNAPSHOT').at(-1).data.snapshot.context.candidateArtifact.sha256, 'd'.repeat(64));
+});
+
+test('moves a QA-blocked run to human intervention when no repair action is injected', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-no-repair-'));
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: fixtureCandidateArtifact,
+    qaEvidence: () => ({ status: 'candidate' }),
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+  await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
 });
 
 test('rejects missing approver and invalid external adapter configuration before command execution', async () => {

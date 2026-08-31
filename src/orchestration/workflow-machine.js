@@ -119,6 +119,13 @@ function createWorkflowMachine(initialContext) {
     on: {
       WORKFLOW_FAILED: {
         target: '.failed'
+      },
+      HUMAN_INTERVENTION_REQUIRED: {
+        guard: ({ event }) => isBlockingEvidence(event.evidence),
+        target: '.human_intervention',
+        actions: assign({
+          blockingEvidence: ({ event }) => event.evidence
+        })
       }
     },
     states: {
