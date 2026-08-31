@@ -120,6 +120,19 @@ function createRunStore({ rootDir, now = Date.now }) {
     }
   }
 
+  function syncDirectory(directory) {
+    let descriptor;
+    try {
+      descriptor = fs.openSync(directory, fs.constants.O_RDONLY);
+      fs.fsyncSync(descriptor);
+    } catch (error) {
+      // Windows and some filesystems do not permit opening directories this way.
+      if (!['EINVAL', 'EISDIR', 'EPERM', 'ENOTSUP', 'ENOSYS', 'EBADF'].includes(error.code)) throw error;
+    } finally {
+      if (descriptor !== undefined) fs.closeSync(descriptor);
+    }
+  }
+
   function readLedger(filePath, expectedType) {
     if (!fs.existsSync(filePath)) return [];
     const content = fs.readFileSync(filePath, 'utf8');
@@ -173,12 +186,17 @@ function createRunStore({ rootDir, now = Date.now }) {
     writeAndSync(temporary, JSON.stringify(snapshot), 'wx');
     try {
       fs.renameSync(temporary, filePath);
+      syncDirectory(path.dirname(filePath));
     } finally {
       if (fs.existsSync(temporary)) fs.rmSync(temporary, { force: true });
     }
   }
 
-  function loadRun(runRef) {
+  function sameJson(left, right) {
+    return JSON.stringify(sortJson(left)) === JSON.stringify(sortJson(right));
+  }
+
+  function replayRun(runRef) {
     const filePaths = pathsFor(runRef);
     if (!fs.existsSync(filePaths.snapshot)) throw runStoreError('RUN_NOT_FOUND', 'Run does not exist');
     let snapshot;
@@ -187,15 +205,42 @@ function createRunStore({ rootDir, now = Date.now }) {
     } catch (error) {
       throw runStoreError('RUN_LEDGER_CORRUPT', 'Run snapshot contains invalid JSON');
     }
-    if (!isPlainObject(snapshot) || snapshot.v !== 1 || !Object.hasOwn(snapshot, 'state')) {
+    if (!isPlainObject(snapshot) || Object.keys(snapshot).length !== 5 || snapshot.v !== 1 ||
+      !Object.hasOwn(snapshot, 'state') || !Number.isInteger(snapshot.eventCount) || snapshot.eventCount < 0 ||
+      !Number.isInteger(snapshot.costCount) || snapshot.costCount < 0 || !isPlainObject(snapshot.totals)) {
       throw runStoreError('RUN_LEDGER_CORRUPT', 'Run snapshot is malformed');
     }
-    assertJsonSafe(snapshot.state);
-    const events = readLedger(filePaths.events, 'Event');
+    try {
+      assertJsonSafe(snapshot.state);
+    } catch (error) {
+      throw runStoreError('RUN_LEDGER_CORRUPT', 'Run snapshot state is invalid');
+    }
+    const eventLedger = readLedger(filePaths.events, 'Event');
     const costs = readLedger(filePaths.costs, 'Cost');
+    if (eventLedger.length === 0 || eventLedger[0].type !== 'RUN_CREATED' || !isPlainObject(eventLedger[0].data) ||
+      Object.keys(eventLedger[0].data).length !== 1 || !Object.hasOwn(eventLedger[0].data, 'state')) {
+      throw runStoreError('RUN_LEDGER_CORRUPT', 'Run event ledger has no valid initial state');
+    }
+    const state = eventLedger[0].data.state;
+    try {
+      assertJsonSafe(state);
+    } catch (error) {
+      throw runStoreError('RUN_LEDGER_CORRUPT', 'Run initial state is invalid');
+    }
+    const events = eventLedger.slice(1);
     for (const entry of events) validateEvent({ type: entry.type, data: entry.data });
     for (const entry of costs) validateCost(filePaths.runId, entry.data);
-    return { runRef: { runId: filePaths.runId }, state: snapshot.state, events, costs, totals: totalsFor(costs) };
+    const totals = totalsFor(costs);
+    if (!sameJson(snapshot.state, state) || snapshot.eventCount !== events.length || snapshot.costCount !== costs.length ||
+      !sameJson(snapshot.totals, totals)) {
+      throw runStoreError('RUN_LEDGER_CORRUPT', 'Run snapshot does not match replayed ledgers');
+    }
+    return { runRef: { runId: filePaths.runId }, state, events, eventLedger, costs, totals };
+  }
+
+  function loadRun(runRef) {
+    const run = replayRun(runRef);
+    return { runRef: run.runRef, state: run.state, events: run.events, costs: run.costs, totals: run.totals };
   }
 
   function createRun(initialState) {
@@ -206,14 +251,19 @@ function createRunStore({ rootDir, now = Date.now }) {
     assertJsonSafe(initialState);
     const filePaths = pathsFor({ runId });
     fs.mkdirSync(rootDir, { recursive: true });
+    syncDirectory(path.dirname(path.resolve(rootDir)));
+    syncDirectory(rootDir);
     try {
       fs.mkdirSync(filePaths.directory);
+      syncDirectory(rootDir);
     } catch (error) {
       if (error.code === 'EEXIST') throw runStoreError('RUN_ALREADY_EXISTS', 'Run already exists');
       throw error;
     }
     try {
-      writeAndSync(filePaths.events, '', 'wx');
+      const initialEntry = { seq: 1, at: now(), type: 'RUN_CREATED', data: { state: initialState }, prev: null };
+      initialEntry.hash = hashEntry(initialEntry);
+      writeAndSync(filePaths.events, `${JSON.stringify(initialEntry)}\n`, 'wx');
       writeAndSync(filePaths.costs, '', 'wx');
       writeSnapshot(filePaths.snapshot, snapshotFor(initialState, [], []));
     } catch (error) {
@@ -223,17 +273,34 @@ function createRunStore({ rootDir, now = Date.now }) {
     return { runId };
   }
 
+  function acquireMutationLock(directory) {
+    const lockDirectory = path.join(directory, '.run-store.lock');
+    try {
+      fs.mkdirSync(lockDirectory);
+    } catch (error) {
+      if (error.code === 'EEXIST') throw runStoreError('RUN_BUSY', 'Run is being changed by another store');
+      throw error;
+    }
+    return lockDirectory;
+  }
+
   function append(runRef, filePath, kind, type, data) {
-    const run = loadRun(runRef);
-    const entries = kind === 'event' ? run.events : run.costs;
-    const previous = entries.at(-1);
-    const entry = { seq: entries.length + 1, at: now(), type, data, prev: previous ? previous.hash : null };
-    entry.hash = hashEntry(entry);
-    writeAndSync(filePath, `${JSON.stringify(entry)}\n`, 'a');
-    const events = kind === 'event' ? [...run.events, entry] : run.events;
-    const costs = kind === 'cost' ? [...run.costs, entry] : run.costs;
-    writeSnapshot(pathsFor(runRef).snapshot, snapshotFor(run.state, events, costs));
-    return entry;
+    const filePaths = pathsFor(runRef);
+    const lockDirectory = acquireMutationLock(filePaths.directory);
+    try {
+      const run = replayRun(runRef);
+      const entries = kind === 'event' ? run.eventLedger : run.costs;
+      const previous = entries.at(-1);
+      const entry = { seq: entries.length + 1, at: now(), type, data, prev: previous ? previous.hash : null };
+      entry.hash = hashEntry(entry);
+      writeAndSync(filePath, `${JSON.stringify(entry)}\n`, 'a');
+      const events = kind === 'event' ? [...run.events, entry] : run.events;
+      const costs = kind === 'cost' ? [...run.costs, entry] : run.costs;
+      writeSnapshot(filePaths.snapshot, snapshotFor(run.state, events, costs));
+      return entry;
+    } finally {
+      fs.rmSync(lockDirectory, { recursive: true, force: true });
+    }
   }
 
   function appendEvent(runRef, event) {

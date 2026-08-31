@@ -61,6 +61,84 @@ test('rejects a run whose event ledger was tampered with', (t) => {
   );
 });
 
+for (const [field, tamper] of [
+  ['state', (snapshot) => { snapshot.state.phase = 'published'; }],
+  ['eventCount', (snapshot) => { snapshot.eventCount += 1; }],
+  ['costCount', (snapshot) => { snapshot.costCount += 1; }],
+  ['totals', (snapshot) => { snapshot.totals.usd = 999; }]
+]) {
+  test(`rejects a snapshot with a tampered ${field}`, (t) => {
+    const { rootDir, store } = withStore(t);
+    const runRef = createRun(store);
+    store.appendEvent(runRef, { type: 'CONTEXT_FROZEN', data: { manifest: 'ctx-sha' } });
+    store.appendCost(runRef, ideCost({ usd: 0.02, estimated: true }));
+    const snapshotPath = path.join(rootDir, 'run-001', 'snapshot.json');
+    const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
+    tamper(snapshot);
+    fs.writeFileSync(snapshotPath, JSON.stringify(snapshot));
+
+    assert.throws(
+      () => createRunStore({ rootDir }).loadRun(runRef),
+      (error) => error.code === 'RUN_LEDGER_CORRUPT'
+    );
+  });
+}
+
+test('fails closed when another store owns the run mutation lock', (t) => {
+  const { rootDir, store } = withStore(t);
+  const runRef = createRun(store);
+  fs.mkdirSync(path.join(rootDir, 'run-001', '.run-store.lock'));
+
+  assert.throws(
+    () => createRunStore({ rootDir }).appendEvent(runRef, { type: 'CONTEXT_FROZEN', data: {} }),
+    (error) => error.code === 'RUN_BUSY'
+  );
+});
+
+test('attempts to sync the run directory after replacing a snapshot', (t) => {
+  const { rootDir, store } = withStore(t);
+  const originalOpenSync = fs.openSync;
+  const runDirectory = path.join(rootDir, 'run-001');
+  let directoryOpenAttempts = 0;
+  fs.openSync = (filePath, ...args) => {
+    if (filePath === runDirectory) {
+      directoryOpenAttempts += 1;
+      const error = new Error('directory fsync unsupported in this test');
+      error.code = 'EINVAL';
+      throw error;
+    }
+    return originalOpenSync(filePath, ...args);
+  };
+  t.after(() => { fs.openSync = originalOpenSync; });
+
+  const runRef = createRun(store);
+  store.appendEvent(runRef, { type: 'CONTEXT_FROZEN', data: {} });
+
+  assert.ok(directoryOpenAttempts >= 1);
+});
+
+test('attempts to sync the store root parent after creating it', (t) => {
+  const temporaryParent = fs.mkdtempSync(path.join(os.tmpdir(), 'run-store-parent-'));
+  t.after(() => fs.rmSync(temporaryParent, { recursive: true, force: true }));
+  const rootDir = path.join(temporaryParent, 'new-store-root');
+  const originalOpenSync = fs.openSync;
+  let parentOpenAttempts = 0;
+  fs.openSync = (filePath, ...args) => {
+    if (filePath === temporaryParent) {
+      parentOpenAttempts += 1;
+      const error = new Error('directory fsync unsupported in this test');
+      error.code = 'EINVAL';
+      throw error;
+    }
+    return originalOpenSync(filePath, ...args);
+  };
+  t.after(() => { fs.openSync = originalOpenSync; });
+
+  createRunStore({ rootDir }).createRun({ runId: 'run-001', clientId: 'client-alpha', phase: 'draft' });
+
+  assert.ok(parentOpenAttempts >= 1);
+});
+
 test('uses monotonic cost sequences that are isolated per run', (t) => {
   const { store } = withStore(t);
   const firstRun = createRun(store);
