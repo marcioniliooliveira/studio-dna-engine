@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "rates": [
+    {
+      "version": "gemini-3.7-flash-standard-2026",
+      "model": "gemini-3.7-flash",
+      "service": "standard",
+      "effectiveFrom": "2026-01-01T00:00:00.000Z",
+      "effectiveUntil": "2026-12-31T23:59:59.999Z",
+      "inputUsdPerMillion": "0.75",
+      "outputUsdPerMillion": "3.75",
+      "cacheReadUsdPerMillion": "0.075",
+      "cacheWriteUsdPerMillion": "0.50",
+      "source": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    {
+      "version": "gemini-3.7-flash-standard-2027",
+      "model": "gemini-3.7-flash",
+      "service": "standard",
+      "effectiveFrom": "2027-01-01T00:00:00.000Z",
+      "effectiveUntil": null,
+      "inputUsdPerMillion": "1.50",
+      "outputUsdPerMillion": "7.50",
+      "cacheReadUsdPerMillion": "0.15",
+      "cacheWriteUsdPerMillion": "1.00",
+      "source": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    {
+      "version": "gpt-5.6-sol-ide-2026",
+      "model": "gpt-5.6-sol",
+      "service": "ide",
+      "effectiveFrom": "2026-01-01T00:00:00.000Z",
+      "effectiveUntil": null,
+      "inputUsdPerMillion": "2.50",
+      "outputUsdPerMillion": "10.00",
+      "cacheReadUsdPerMillion": "0.25",
+      "cacheWriteUsdPerMillion": "8.00",
+      "source": "internal-sol-rate-card"
+    }
+  ]
+}
