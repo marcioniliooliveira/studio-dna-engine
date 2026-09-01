@@ -82,6 +82,16 @@ function taskPackage(runRef, blueprint, node, events) {
   };
 }
 
+function verifierTaskPackage(task) {
+  return {
+    rid: task.runId,
+    cid: task.clientId,
+    nid: task.node.id,
+    out: [...task.node.outputs],
+    g: [...task.node.gates]
+  };
+}
+
 function changesStayWithinNodeScope(changedPaths, blueprint, node) {
   const clientPrefix = `clientes/${blueprint.clientId}/`;
   const allowedPaths = new Set(node.paths);
@@ -220,6 +230,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
       }
       const packageForNode = taskPackage(runRef, acceptedBlueprint, node, currentRun.events);
       let result;
+      let execution;
       try {
         const waiting = isWaitingForExternalResult(currentRun.events, node.id);
         if (!waiting) {
@@ -238,7 +249,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         if (waiting && typeof executor.collectResult !== 'function') {
           throw schedulerError('EXECUTOR_COLLECTION_UNAVAILABLE', 'Waiting executor cannot collect its external result');
         }
-        const execution = waiting
+        execution = waiting
           ? await executor.collectResult(packageForNode)
           : await executor.execute(packageForNode);
         if (execution?.status === 'awaiting_external_result') {
@@ -251,9 +262,23 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
           runStore.appendEvent(runRef, { type: 'TASK_WAITING', data: waiting });
           return { passedNodeIds: [...passed].sort(), failedNodeIds: [...failed].sort(), executedNodeIds, waiting };
         }
-        result = TaskResultWire.parse(execution);
       } catch (error) {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: error.code || 'EXECUTOR_EXCEPTION', evidence: { message: error.message } } });
+        failed.add(node.id);
+        continue;
+      }
+      try {
+        result = TaskResultWire.parse(execution);
+      } catch {
+        let verification;
+        try {
+          verification = await verifier.verify({ taskPackage: verifierTaskPackage(packageForNode), taskResult: execution });
+        } catch (error) {
+          runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'VERIFIER_EXCEPTION', evidence: { message: error.message } } });
+          failed.add(node.id);
+          continue;
+        }
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'VERIFICATION_REJECTED', evidence: verification?.evidence || null } });
         failed.add(node.id);
         continue;
       }
@@ -275,7 +300,7 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
 
       let verification;
       try {
-        verification = await verifier.verify({ taskPackage: packageForNode, result });
+        verification = await verifier.verify({ taskPackage: verifierTaskPackage(packageForNode), taskResult: result });
       } catch (error) {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'VERIFIER_EXCEPTION', evidence: { message: error.message } } });
         failed.add(node.id);

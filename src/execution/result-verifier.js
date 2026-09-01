@@ -22,7 +22,7 @@ function parseTaskResult(taskResult) {
   try {
     return TaskResultWire.parse(taskResult);
   } catch {
-    throw verifierError('TASK_RESULT_SCHEMA_INVALID', 'Executor result does not match the strict task-result schema');
+    return null;
   }
 }
 
@@ -47,15 +47,11 @@ function compactGateResult(id, result) {
   return { id, passed: result.passed, evidence: result.evidence ?? null };
 }
 
-function failureForArtifact(error, artifactId) {
+function failedVerification(id, evidence, artifactRefs = []) {
   return {
     passed: false,
-    gateResults: [{
-      id: 'artifact.hash',
-      passed: false,
-      evidence: { code: error.code || 'ARTIFACT_VERIFICATION_FAILED', artifactId }
-    }],
-    artifactRefs: []
+    gateResults: [{ id, passed: false, evidence }],
+    artifactRefs
   };
 }
 
@@ -65,14 +61,31 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
     throw new TypeError('gateCatalog and artifactRegistry are required');
   }
 
+  function persist(taskPackage, verification) {
+    const verifierArtifact = artifactRegistry.putJson({
+      runId: taskPackage.rid,
+      clientId: taskPackage.cid,
+      type: 'verification',
+      value: verification,
+      sources: verification.artifactRefs
+    });
+    return { ...verification, evidence: { verifierArtifact } };
+  }
+
   async function verify({ taskPackage, taskResult }) {
     assertTaskPackage(taskPackage);
     const result = parseTaskResult(taskResult);
-    if (result.rid !== taskPackage.rid || result.cid !== taskPackage.cid || result.nid !== taskPackage.nid) {
-      throw verifierError('TASK_RESULT_IDENTITY_MISMATCH', 'Executor result is not bound to the task package');
+    if (!result) {
+      return persist(taskPackage, failedVerification('task-result.schema', { code: 'TASK_RESULT_SCHEMA_INVALID' }));
     }
-    if (!result.art.every((artifact) => taskPackage.out.includes(artifact.id))) {
-      throw verifierError('TASK_RESULT_ARTIFACT_UNDECLARED', 'Executor result contains an undeclared artifact');
+    if (result.rid !== taskPackage.rid || result.cid !== taskPackage.cid || result.nid !== taskPackage.nid) {
+      return persist(taskPackage, failedVerification('task-result.identity', { code: 'TASK_RESULT_IDENTITY_MISMATCH' }));
+    }
+    const outputIds = result.art.map((artifact) => artifact.id);
+    if (outputIds.length !== taskPackage.out.length
+      || new Set(outputIds).size !== outputIds.length
+      || outputIds.some((id) => !taskPackage.out.includes(id))) {
+      return persist(taskPackage, failedVerification('artifact.manifest', { code: 'TASK_RESULT_OUTPUTS_INVALID' }));
     }
 
     const artifactRefs = [];
@@ -82,14 +95,16 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
         reference = artifactReference(taskPackage, artifact);
         artifactRegistry.verify(reference);
       } catch (error) {
-        return failureForArtifact(error, artifact.id);
+        return persist(taskPackage, failedVerification('artifact.hash', {
+          code: error.code || 'ARTIFACT_VERIFICATION_FAILED', artifactId: artifact.id
+        }));
       }
       artifactRefs.push(reference);
     }
 
     const gateResults = [];
     for (const gateId of taskPackage.g) {
-      const gate = gateCatalog[gateId];
+      const gate = Object.hasOwn(gateCatalog, gateId) ? gateCatalog[gateId] : undefined;
       if (typeof gate !== 'function') {
         gateResults.push({ id: gateId, passed: false, evidence: { code: 'GATE_UNAVAILABLE' } });
         continue;
@@ -106,14 +121,7 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
       gateResults,
       artifactRefs
     };
-    artifactRegistry.putJson({
-      runId: taskPackage.rid,
-      clientId: taskPackage.cid,
-      type: 'verification',
-      value: verification,
-      sources: artifactRefs
-    });
-    return verification;
+    return persist(taskPackage, verification);
   }
 
   return Object.freeze({ identity: 'result-verifier', independent: true, verify });

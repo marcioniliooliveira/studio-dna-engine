@@ -20,7 +20,7 @@ function taskPackage(gates = ['qa.core']) {
     rid: 'run-001',
     cid: 'client-alpha',
     nid: 'build-site',
-    out: ['site'],
+    out: [],
     g: gates
   };
 }
@@ -80,13 +80,13 @@ test('rejects command-shaped executor results and runs only package-declared gat
     artifactRegistry
   });
 
-  await assert.rejects(
-    verifier.verify({
-      taskPackage: taskPackage(['qa.core']),
-      taskResult: taskResult({ cmd: 'powershell Remove-Item -Recurse -Force .' })
-    }),
-    (error) => error.code === 'TASK_RESULT_SCHEMA_INVALID'
-  );
+  const malformed = await verifier.verify({
+    taskPackage: taskPackage(['qa.core']),
+    taskResult: taskResult({ cmd: 'powershell Remove-Item -Recurse -Force .' })
+  });
+  assert.equal(malformed.passed, false);
+  assert.equal(malformed.gateResults[0].evidence.code, 'TASK_RESULT_SCHEMA_INVALID');
+  assert.equal(malformed.evidence.verifierArtifact.type, 'verification');
   assert.deepEqual(called, []);
 
   const verification = await verifier.verify({ taskPackage: taskPackage(['qa.core']), taskResult: taskResult() });
@@ -111,7 +111,7 @@ test('fails artifact integrity before running any gate when an executor artifact
   });
 
   const verification = await verifier.verify({
-    taskPackage: taskPackage(),
+    taskPackage: { ...taskPackage(), out: ['site'] },
     taskResult: taskResult({ art: [{ id: 'site', sha: candidate.sha256 }] })
   });
 
@@ -120,5 +120,30 @@ test('fails artifact integrity before running any gate when an executor artifact
     id: 'artifact.hash', passed: false, evidence: { code: 'ARTIFACT_HASH_MISMATCH', artifactId: 'site' }
   }]);
   assert.deepEqual(verification.artifactRefs, []);
+  assert.equal(verification.evidence.verifierArtifact.type, 'verification');
+  assert.equal(gateCalls, 0);
+});
+
+test('rejects missing and duplicate declared output artifacts before any gate runs', async (t) => {
+  const createResultVerifier = loadVerifier();
+  const { artifactRegistry } = withRegistry(t);
+  const candidate = artifactRegistry.putJson({
+    runId: 'run-001', clientId: 'client-alpha', type: 'site', value: { version: 1 }, sources: []
+  });
+  let gateCalls = 0;
+  const verifier = createResultVerifier({
+    gateCatalog: { 'qa.core': async () => { gateCalls += 1; return { passed: true }; } },
+    artifactRegistry
+  });
+  const packageForSite = { ...taskPackage(), out: ['site'] };
+
+  for (const art of [[], [{ id: 'site', sha: candidate.sha256 }, { id: 'site', sha: candidate.sha256 }]]) {
+    const verification = await verifier.verify({ taskPackage: packageForSite, taskResult: taskResult({ art }) });
+    assert.equal(verification.passed, false);
+    assert.deepEqual(verification.gateResults, [{
+      id: 'artifact.manifest', passed: false, evidence: { code: 'TASK_RESULT_OUTPUTS_INVALID' }
+    }]);
+    assert.equal(verification.evidence.verifierArtifact.type, 'verification');
+  }
   assert.equal(gateCalls, 0);
 });

@@ -1,6 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const { createDagScheduler } = require('../src/orchestration/dag-scheduler');
+const { createArtifactRegistry } = require('../src/orchestration/artifact-registry');
+const { createResultVerifier } = require('../src/execution/result-verifier');
 
 function node(id, dependencies = []) {
   return {
@@ -86,6 +91,90 @@ test('records verification rejection instead of passing an executor-reported suc
     type: 'TASK_FAILED',
     data: { nodeId: 'n1', code: 'VERIFICATION_REJECTED', evidence: { gate: 'core-runtime' } }
   });
+});
+
+test('passes one explicit verifier package and persists its verifier evidence', async () => {
+  const runStore = createMemoryRunStore();
+  let verificationRequest;
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'builder', execute: async (currentTask) => successfulResult(currentTask) } },
+    verifier: {
+      identity: 'quality-gate', independent: true,
+      verify: async (request) => {
+        verificationRequest = request;
+        return { passed: true, evidence: { verifierArtifact: { id: 'proof' } } };
+      }
+    },
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
+
+  assert.deepEqual(verificationRequest.taskPackage, {
+    rid: 'run-001', cid: 'client-alpha', nid: 'n1', out: ['n1-output'], g: ['core-runtime']
+  });
+  assert.equal(verificationRequest.taskResult.st, 'ok');
+  assert.deepEqual(runStore.events.at(-1).data.evidence, { verifierArtifact: { id: 'proof' } });
+});
+
+test('records a durable verifier rejection when an executor omits its declared output', async (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'scheduler-result-verifier-'));
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+  const artifactRegistry = createArtifactRegistry({ rootDir, now: () => 0 });
+  const verifier = createResultVerifier({
+    gateCatalog: { 'core-runtime': async () => ({ passed: true }) },
+    artifactRegistry
+  });
+  const runStore = createMemoryRunStore();
+  const scheduler = createDagScheduler({
+    executors: { build: { identity: 'builder', execute: async (currentTask) => successfulResult(currentTask) } },
+    verifier,
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  const outcome = await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
+
+  assert.deepEqual(outcome.failedNodeIds, ['n1']);
+  const failure = runStore.events.at(-1);
+  assert.equal(failure.data.code, 'VERIFICATION_REJECTED');
+  const persisted = artifactRegistry.read(failure.data.evidence.verifierArtifact);
+  assert.deepEqual(persisted.value, {
+    passed: false,
+    gateResults: [{ id: 'artifact.manifest', passed: false, evidence: { code: 'TASK_RESULT_OUTPUTS_INVALID' } }],
+    artifactRefs: []
+  });
+});
+
+test('records a durable verifier rejection for a schema-invalid executor result', async (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'scheduler-result-schema-'));
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+  const artifactRegistry = createArtifactRegistry({ rootDir, now: () => 0 });
+  const verifier = createResultVerifier({
+    gateCatalog: { 'core-runtime': async () => ({ passed: true }) },
+    artifactRegistry
+  });
+  const runStore = createMemoryRunStore();
+  const scheduler = createDagScheduler({
+    executors: {
+      build: {
+        identity: 'builder',
+        execute: async (currentTask) => ({ ...successfulResult(currentTask), cmd: 'powershell whoami' })
+      }
+    },
+    verifier,
+    runStore,
+    budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+  });
+
+  await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
+
+  const failure = runStore.events.at(-1);
+  assert.equal(failure.data.code, 'VERIFICATION_REJECTED');
+  assert.deepEqual(artifactRegistry.read(failure.data.evidence.verifierArtifact).value.gateResults, [{
+    id: 'task-result.schema', passed: false, evidence: { code: 'TASK_RESULT_SCHEMA_INVALID' }
+  }]);
 });
 
 test('rejects over-budget work before invoking its executor', async () => {
