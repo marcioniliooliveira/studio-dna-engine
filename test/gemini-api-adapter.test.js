@@ -97,6 +97,50 @@ test('rejects a tool call beyond the task tool budget without another model call
   assert.equal(modelCalls, 2);
 });
 
+test('preserves the model function call in the SDK conversation before its function response', async () => {
+  const requests = [];
+  const functionCall = { id: 'call-001', name: 'context.summary', args: {} };
+  const modelContent = { role: 'model', parts: [{ functionCall }] };
+  const client = { models: { generateContent: async (request) => {
+    requests.push(request);
+    if (requests.length === 1) {
+      return {
+        candidates: [{ content: modelContent }],
+        usageMetadata: { promptTokenCount: 10, candidatesTokenCount: 3 }
+      };
+    }
+    return {
+      text: JSON.stringify(taskResult()),
+      usageMetadata: { promptTokenCount: 5, candidatesTokenCount: 7 }
+    };
+  } } };
+
+  const executed = await createGeminiApiAdapter({ client, toolCatalog: toolCatalog() }).execute(taskPackage());
+
+  assert.deepEqual(requests[1].contents.slice(1), [
+    modelContent,
+    {
+      role: 'user',
+      parts: [{
+        functionResponse: {
+          id: 'call-001',
+          name: 'context.summary',
+          response: {
+            output: {
+              id: 'context.summary', args: {}, paths: ['clientes/piloto-elyse-luxe/site/index.html']
+            }
+          }
+        }
+      }]
+    }
+  ]);
+  assert.equal(requests.length, 2);
+  assert.deepEqual(executed.usage, {
+    inputTokens: 15, cachedTokens: null, outputTokens: 10, thinkingTokens: null, usd: null, estimated: false
+  });
+  assert.equal(executed.costEvent.try, 2);
+});
+
 test('aborts a timed-out API request and does not start a retry before it settles', async () => {
   let calls = 0;
   let aborted = false;

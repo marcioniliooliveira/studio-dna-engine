@@ -44,6 +44,14 @@ function functionCalls(response) {
     .map((part) => part.functionCall) || [];
 }
 
+function modelContentForToolCalls(response, calls) {
+  const content = response?.candidates?.[0]?.content;
+  if (content?.role === 'model' && Array.isArray(content.parts) && content.parts.some((part) => part.functionCall)) {
+    return structuredClone(content);
+  }
+  return { role: 'model', parts: calls.map((functionCall) => ({ functionCall: structuredClone(functionCall) })) };
+}
+
 function usageFor(metadata) {
   const source = metadata || {};
   return {
@@ -156,7 +164,10 @@ function createGeminiApiAdapter({
         const responses = await Promise.all(calls.map(async (call) => ({
           functionResponse: { id: call.id, name: call.name, response: { output: await toolCatalog.invoke(call.name, call.args || {}, taskPackage) } }
         })));
-        contents = contents.concat({ role: 'user', parts: responses });
+        contents = contents.concat(
+          modelContentForToolCalls(response, calls),
+          { role: 'user', parts: responses }
+        );
       }
 
       const result = parseResponse(response);

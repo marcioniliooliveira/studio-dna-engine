@@ -610,17 +610,27 @@ test('IDE fallback pauses explicitly and resumes through controlled result colle
   const process = createOrchestrator(options);
 
   const first = await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
-  const stillWaiting = await process.execute(['resume', '--run', 'run-001']);
+  const afterFirstWait = await process.execute(['inspect', '--run', 'run-001']);
+  const waitingResumes = [];
+  for (let index = 0; index < 10; index += 1) {
+    waitingResumes.push(await process.execute(['resume', '--run', 'run-001']));
+  }
+  const afterRepeatedWaits = await process.execute(['inspect', '--run', 'run-001']);
   ready = true;
   const candidate = await process.execute(['resume', '--run', 'run-001']);
   const inspected = await process.execute(['inspect', '--run', 'run-001']);
 
   assert.equal(first.state, 'paused');
   assert.equal(first.waiting.status, 'awaiting_external_result');
-  assert.equal(stillWaiting.state, 'paused');
+  assert.equal(waitingResumes.every((resume) => resume.state === 'paused'), true);
+  assert.equal(
+    afterRepeatedWaits.events.filter((event) => event.type === 'TASK_AUTHORIZED').length,
+    afterFirstWait.events.filter((event) => event.type === 'TASK_AUTHORIZED').length
+  );
+  assert.equal(afterRepeatedWaits.costs.length, afterFirstWait.costs.length);
   assert.equal(candidate.state, 'candidate');
   assert.equal(executeCalls, 1);
-  assert.equal(collectCalls, 2);
+  assert.equal(collectCalls, 11);
   assert.equal(inspected.events.some((event) => event.type === 'TASK_FAILED'), false);
   assert.equal(inspected.costs.filter((entry) => entry.data.m === 'gemini-ide').length, 1);
 });

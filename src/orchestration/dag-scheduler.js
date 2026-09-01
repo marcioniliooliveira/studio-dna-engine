@@ -15,6 +15,13 @@ function failedNodeIds(events) {
   return new Set(events.filter((event) => event.type === 'TASK_FAILED').map((event) => event.data.nodeId));
 }
 
+function isWaitingForExternalResult(events, nodeId) {
+  return events.filter((event) => (
+    (event.type === 'TASK_WAITING' || event.type === 'TASK_PASSED' || event.type === 'TASK_FAILED')
+    && event.data.nodeId === nodeId
+  )).at(-1)?.type === 'TASK_WAITING';
+}
+
 function unknownReservations(events, costs) {
   const costNodeIds = new Set(costs.filter((entry) => entry.data.usd === null).map((entry) => entry.data.nid));
   return events
@@ -211,23 +218,29 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
-      const authorization = budgetGovernor.authorize(node, {
-        usd: currentRun.totals.usd,
-        reservedUsd: unknownReservations(currentRun.events, currentRun.costs)
-      });
-      if (!authorization.allowed) {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: authorization.reason, evidence: null } });
-        failed.add(node.id);
-        continue;
-      }
-
-      runStore.appendEvent(runRef, { type: 'TASK_AUTHORIZED', data: { nodeId: node.id, reservedUsd: authorization.reservedUsd } });
-      runStore.appendCost(runRef, reservationCostEvent(runRef, node, authorization.reservedUsd));
-
       const packageForNode = taskPackage(runRef, acceptedBlueprint, node, currentRun.events);
       let result;
       try {
-        const execution = await executor.execute(packageForNode);
+        const waiting = isWaitingForExternalResult(currentRun.events, node.id);
+        if (!waiting) {
+          const authorization = budgetGovernor.authorize(node, {
+            usd: currentRun.totals.usd,
+            reservedUsd: unknownReservations(currentRun.events, currentRun.costs)
+          });
+          if (!authorization.allowed) {
+            runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: authorization.reason, evidence: null } });
+            failed.add(node.id);
+            continue;
+          }
+          runStore.appendEvent(runRef, { type: 'TASK_AUTHORIZED', data: { nodeId: node.id, reservedUsd: authorization.reservedUsd } });
+          runStore.appendCost(runRef, reservationCostEvent(runRef, node, authorization.reservedUsd));
+        }
+        if (waiting && typeof executor.collectResult !== 'function') {
+          throw schedulerError('EXECUTOR_COLLECTION_UNAVAILABLE', 'Waiting executor cannot collect its external result');
+        }
+        const execution = waiting
+          ? await executor.collectResult(packageForNode)
+          : await executor.execute(packageForNode);
         if (execution?.status === 'awaiting_external_result') {
           const waiting = {
             status: execution.status,

@@ -279,21 +279,24 @@ function createOrchestrator({
                 node: taskPackage.node,
                 artifacts: taskPackage.dependencyArtifacts
               });
-              const currentRun = runStore.loadRun(runRef);
-              const waiting = currentRun.events.filter((event) => (
-                (event.type === 'TASK_WAITING' || event.type === 'TASK_PASSED' || event.type === 'TASK_FAILED')
-                && event.data.nodeId === node.id
-              )).at(-1)?.type === 'TASK_WAITING';
               let executed;
               try {
-                if (waiting) {
-                  if (typeof executor.collectResult !== 'function') {
-                    throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Waiting adapter must support controlled result collection');
-                  }
-                  executed = await executor.collectResult(runRef.runId, node.id);
-                } else {
-                  executed = await executor.execute(packageForAdapter);
-                }
+                executed = await executor.execute(packageForAdapter);
+              } catch (error) {
+                if (error?.costEvent) appendAdapterCost(taskPackage, error.costEvent);
+                throw error;
+              }
+              if (executed?.status === 'awaiting_external_result') return executed;
+              appendAdapterCost(taskPackage, executed?.costEvent);
+              return executed.result;
+            },
+            async collectResult(taskPackage) {
+              if (typeof executor.collectResult !== 'function') {
+                throw cliError('CLI_COMPOSITION_UNAVAILABLE', 'Waiting adapter must support controlled result collection');
+              }
+              let executed;
+              try {
+                executed = await executor.collectResult(runRef.runId, node.id);
               } catch (error) {
                 if (error?.costEvent) appendAdapterCost(taskPackage, error.costEvent);
                 throw error;
