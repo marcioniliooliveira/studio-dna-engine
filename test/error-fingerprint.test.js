@@ -49,3 +49,28 @@ test('creates a bounded failure delta without retaining the full log', () => {
   assert.equal(delta.summary.includes('noise 0'), false);
   assert.equal(delta.summary.includes('noise 9999'), false);
 });
+
+test('redacts credentials before fingerprinting and bounds delta bytes, characters, and lines', () => {
+  const secretA = 'sk-live-' + 'a'.repeat(20000);
+  const secretB = 'sk-live-' + 'b'.repeat(20000);
+  const evidenceFor = (secret) => ({
+    gate: 'runtime.console',
+    files: ['clientes/acme/site/index.html'],
+    message: `Authorization: Bearer ${secret}`,
+    log: Array.from({ length: 1000 }, (_, index) => (
+      `runtime.console line ${index} api_key=${secret}`
+    )).join('\n'),
+    diff: `+const password = "${secret}";`
+  });
+
+  const first = createFailureDelta(evidenceFor(secretA));
+  const second = createFailureDelta(evidenceFor(secretB));
+
+  assert.equal(first.fp, second.fp);
+  assert.equal(first.diffHash, second.diffHash);
+  assert.equal(first.summary.includes(secretA), false);
+  assert.match(first.summary, /<redacted>/i);
+  assert.ok(first.summary.split('\n').length <= 40);
+  assert.ok(first.summary.length <= 8192);
+  assert.ok(Buffer.byteLength(first.summary, 'utf8') <= 16384);
+});

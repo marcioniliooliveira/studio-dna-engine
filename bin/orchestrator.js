@@ -9,6 +9,8 @@ const { createArtifactRegistry } = require('../src/orchestration/artifact-regist
 const { CostEventWire } = require('../src/orchestration/contracts');
 const { buildTaskPackage } = require('../src/execution/task-package-builder');
 const { createExecutionAdapters } = require('../src/execution/service-router');
+const { createFailureDelta } = require('../src/execution/error-fingerprint');
+const { decideRepair } = require('../src/execution/repair-controller');
 const { isDeepStrictEqual } = require('node:util');
 
 function cliError(code, message) {
@@ -123,6 +125,59 @@ function qaReportPayload(evidence) {
   return payload;
 }
 
+function failedQaGate(evidence) {
+  const failed = Object.entries(evidence?.gates || {})
+    .filter(([, result]) => result?.passed !== true)
+    .map(([gate]) => gate)
+    .sort();
+  return failed.length ? `qa.${failed.join('+')}` : 'qa.full';
+}
+
+function verifiedQaReport({ evidence, runRef, clientId, candidateArtifact, artifactRegistry }) {
+  if (!isBoundRegistryRef(evidence?.reportArtifact, runRef, clientId, 'qa-report')) return null;
+  try {
+    const stored = artifactRegistry.verify(evidence.reportArtifact);
+    if (!isDeepStrictEqual(stored.value, qaReportPayload(evidence)) || !Array.isArray(stored.sources)
+      || !stored.sources.some((source) => isDeepStrictEqual(source, candidateArtifact))) return null;
+    return evidence.reportArtifact;
+  } catch {
+    return null;
+  }
+}
+
+function candidateProducerNode(blueprint, artifact, artifactRegistry, visited = new Set()) {
+  if (!artifact || visited.has(artifact.sha256)) return null;
+  visited.add(artifact.sha256);
+  let stored;
+  try {
+    stored = artifactRegistry.verify(artifact);
+  } catch {
+    return null;
+  }
+  const producerIds = (stored.sources || []).filter((source) => typeof source === 'string');
+  const producers = blueprint.nodes.filter((node) => producerIds.includes(node.id));
+  if (producers.length === 1) return producers[0];
+  for (const source of stored.sources || []) {
+    if (source?.type === 'site') {
+      const producer = candidateProducerNode(blueprint, source, artifactRegistry, visited);
+      if (producer) return producer;
+    }
+  }
+  return null;
+}
+
+function repairedArtifactHasProvenance({ artifact, previousArtifact, blockingEvidence, runRef, clientId, artifactRegistry }) {
+  if (!isBoundRegistryRef(artifact, runRef, clientId, 'site') || artifact.sha256 === previousArtifact.sha256) return false;
+  try {
+    const stored = artifactRegistry.verify(artifact);
+    const requiredSources = [previousArtifact, blockingEvidence.failureArtifact, blockingEvidence.verifierArtifact];
+    return Array.isArray(stored.sources)
+      && requiredSources.every((required) => stored.sources.some((source) => isDeepStrictEqual(source, required)));
+  } catch {
+    return false;
+  }
+}
+
 function createOrchestrator({
   rootDir,
   planner,
@@ -179,8 +234,9 @@ function createOrchestrator({
   }
 
   async function finalizeCandidate(runRef, blueprint, actor) {
+    let artifact = actor.getSnapshot().context.candidateArtifact;
+    let evidence = null;
     try {
-      let artifact = actor.getSnapshot().context.candidateArtifact;
       if (artifact === null) artifact = await candidateArtifact({ runRef, blueprint, artifactRegistry });
       if (!isBoundRegistryRef(artifact, runRef, blueprint.clientId, 'site')) {
         throw new TypeError('Candidate artifact is not bound to this run and client');
@@ -188,19 +244,13 @@ function createOrchestrator({
       artifactRegistry.verify(artifact);
       actor.send({ type: 'EXECUTION_COMPLETED', candidateArtifact: artifact });
       if (actor.getSnapshot().value !== 'verifying') throw new TypeError('Candidate artifact was rejected by the workflow');
-      const evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact, artifactRegistry });
-      if (!isBoundRegistryRef(evidence?.reportArtifact, runRef, blueprint.clientId, 'qa-report')) {
-        throw new TypeError('QA report artifact is not bound to this run and client');
-      }
-      const storedReport = artifactRegistry.verify(evidence.reportArtifact);
-      if (!isDeepStrictEqual(storedReport.value, qaReportPayload(evidence)) ||
-        !Array.isArray(storedReport.sources) ||
-        !storedReport.sources.some((source) => isDeepStrictEqual(source, artifact))) {
+      evidence = await qaEvidence({ runRef, blueprint, candidateArtifact: artifact, artifactRegistry });
+      if (!verifiedQaReport({ evidence, runRef, clientId: blueprint.clientId, candidateArtifact: artifact, artifactRegistry })) {
         throw new TypeError('QA evidence does not match its candidate-bound registry report');
       }
-      runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
       actor.send({ type: 'FULL_QA_PASSED', evidence });
       if (actor.getSnapshot().value === 'candidate') {
+        runStore.appendEvent(runRef, { type: 'QA_EVIDENCE_RECORDED', data: { evidence } });
         persistWorkflow(runStore, runRef, actor);
         return 'candidate';
       }
@@ -212,17 +262,51 @@ function createOrchestrator({
         persistWorkflow(runStore, runRef, actor);
         return actor.getSnapshot().value;
       }
-      const evidence = { reportId: `${runRef.runId}-qa-evidence`, status: 'failed' };
-      runStore.appendEvent(runRef, { type: 'QA_BLOCKED', data: { evidence } });
-      actor.send({ type: 'QA_BLOCKED', evidence });
+      const delta = createFailureDelta({
+        gate: failedQaGate(evidence),
+        files: blueprint.nodes.flatMap((node) => node.paths),
+        message: evidence?.message || error.message || 'Full QA failed',
+        log: evidence?.log,
+        diff: evidence?.diff
+      });
+      const blockingEvidence = {
+        reportId: `${runRef.runId}-qa-evidence`,
+        status: 'failed',
+        runId: runRef.runId,
+        fingerprint: delta.fp,
+        gate: delta.gate,
+        files: delta.files,
+        message: delta.summary.split('\n')[0] || `${delta.gate} failed`,
+        failureDelta: delta
+      };
+      const verifierArtifact = verifiedQaReport({
+        evidence, runRef, clientId: blueprint.clientId, candidateArtifact: artifact, artifactRegistry
+      });
+      if (verifierArtifact) {
+        const failureArtifact = artifactRegistry.putJson({
+          runId: runRef.runId,
+          clientId: blueprint.clientId,
+          type: 'failure-delta',
+          value: { runId: runRef.runId, fingerprint: delta.fp, verifierArtifact, delta },
+          sources: [verifierArtifact]
+        });
+        blockingEvidence.reportId = failureArtifact.id;
+        blockingEvidence.verifierArtifact = verifierArtifact;
+        blockingEvidence.failureArtifact = failureArtifact;
+      }
+      runStore.appendEvent(runRef, { type: 'QA_BLOCKED', data: { evidence: blockingEvidence } });
+      actor.send({ type: 'QA_BLOCKED', evidence: blockingEvidence });
       persistWorkflow(runStore, runRef, actor);
       return actor.getSnapshot().value;
     }
   }
 
-  function requireHumanIntervention(runRef, actor, reportId) {
-    const evidence = { reportId, status: 'failed' };
-    runStore.appendEvent(runRef, { type: 'REPAIR_BLOCKED', data: { evidence } });
+  function requireHumanIntervention(runRef, actor, details) {
+    const evidence = typeof details === 'string'
+      ? { reportId: details, status: 'failed' }
+      : { reportId: details.reportId, status: 'failed' };
+    const data = typeof details === 'string' ? { evidence } : { ...details, evidence };
+    runStore.appendEvent(runRef, { type: 'REPAIR_BLOCKED', data });
     actor.send({ type: 'HUMAN_INTERVENTION_REQUIRED', evidence });
     persistWorkflow(runStore, runRef, actor);
     return actor.getSnapshot().value;
@@ -379,22 +463,72 @@ function createOrchestrator({
     const actor = workflowActorFor(run);
     if (actor.getSnapshot().value === 'repairing') {
       const previousArtifact = actor.getSnapshot().context.candidateArtifact;
+      const blockingEvidence = actor.getSnapshot().context.blockingEvidence;
       if (typeof repairCandidate !== 'function' || previousArtifact === null) {
         return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-unavailable`), costs: runStore.loadRun(runRef).costs };
       }
+      const producerNode = candidateProducerNode(blueprint, previousArtifact, artifactRegistry);
+      const preRepairRun = runStore.loadRun(runRef);
+      const authorizations = preRepairRun.events.filter((event) => event.type === 'REPAIR_AUTHORIZED'
+        && (!producerNode || event.data.nodeId === producerNode.id));
+      const remainingBudget = Number.isFinite(preRepairRun.totals.usd) && Number.isFinite(blueprint.budget?.maxUsd)
+        ? blueprint.budget.maxUsd - preRepairRun.totals.usd
+        : Number.NaN;
+      const decision = decideRepair({
+        runId: runRef.runId,
+        node: producerNode,
+        attempts: authorizations.length,
+        previousFingerprints: authorizations.map((event) => event.data.fingerprint),
+        evidence: blockingEvidence,
+        remainingBudget,
+        artifactRegistry
+      });
+      if (decision !== 'retry') {
+        return {
+          runId: runRef.runId,
+          state: requireHumanIntervention(runRef, actor, {
+            reportId: `${runRef.runId}-repair-${decision}`,
+            decision,
+            fingerprint: blockingEvidence?.fingerprint || null
+          }),
+          costs: runStore.loadRun(runRef).costs
+        };
+      }
+      const attempt = authorizations.length + 1;
+      runStore.appendEvent(runRef, {
+        type: 'REPAIR_AUTHORIZED',
+        data: {
+          nodeId: producerNode.id,
+          attempt,
+          fingerprint: blockingEvidence.fingerprint,
+          failureArtifact: blockingEvidence.failureArtifact,
+          verifierArtifact: blockingEvidence.verifierArtifact
+        }
+      });
+      runStore.appendCost(runRef, {
+        v: 1, rid: runRef.runId, nid: producerNode.id, m: 'repair-reservation', svc: 'standard',
+        it: null, ct: null, ot: null, ms: 0, try: attempt, usd: producerNode.budget.maxUsd, est: true
+      });
       let repairedArtifact;
       try {
         repairedArtifact = await repairCandidate({
           runRef,
           blueprint,
           previousArtifact,
-          blockingEvidence: actor.getSnapshot().context.blockingEvidence,
+          blockingEvidence,
           artifactRegistry
         });
       } catch (error) {
         return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-failed`), costs: runStore.loadRun(runRef).costs };
       }
-      if (!repairedArtifact || repairedArtifact.sha256 === previousArtifact.sha256) {
+      if (!repairedArtifactHasProvenance({
+        artifact: repairedArtifact,
+        previousArtifact,
+        blockingEvidence,
+        runRef,
+        clientId: blueprint.clientId,
+        artifactRegistry
+      })) {
         return { runId: runRef.runId, state: requireHumanIntervention(runRef, actor, `${runRef.runId}-repair-unchanged`), costs: runStore.loadRun(runRef).costs };
       }
       actor.send({ type: 'REPAIR_COMPLETED' });

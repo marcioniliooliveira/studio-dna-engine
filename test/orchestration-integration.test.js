@@ -119,6 +119,57 @@ function registeredQaEvidence({ runRef, blueprint, candidateArtifact, artifactRe
   return { ...payload, reportArtifact };
 }
 
+function registeredFailedQaEvidence({ runRef, blueprint, candidateArtifact, artifactRegistry }) {
+  const payload = fixtureQaEvidenceFor(candidateArtifact.sha256);
+  delete payload.reportArtifact;
+  payload.status = 'failed';
+  payload.message = 'runtime.console failed Authorization: Bearer super-secret-token';
+  payload.log = 'runtime.console: ReferenceError at clientes/client-alpha/site/first.html:42 api_key=super-secret-token';
+  payload.gates.console = { passed: false, errorsCount: 1 };
+  const reportArtifact = artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'qa-report',
+    value: payload,
+    sources: [candidateArtifact]
+  });
+  return { ...payload, reportArtifact };
+}
+
+function oneNodeBlueprint() {
+  const plan = fixtureBlueprint();
+  plan.nodes = [plan.nodes[0]];
+  plan.nodes[0].budget.maxAttempts = 3;
+  return plan;
+}
+
+function registeredOneNodeCandidate({ runRef, blueprint, artifactRegistry }) {
+  return artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'site',
+    value: { fixture: 'candidate' },
+    sources: ['n1']
+  });
+}
+
+function knownCostExecutionAdapters() {
+  return {
+    default: {
+      identity: 'fixture-gemini', model: 'gemini-3.7-flash', service: 'standard',
+      async execute(taskPackage) {
+        return {
+          result: successfulAdapterResult(taskPackage),
+          costEvent: {
+            v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'standard',
+            it: 1, ct: 0, ot: 1, ms: 1, try: 1, usd: 0.01, est: false
+          }
+        };
+      }
+    }
+  };
+}
+
 test('plans once, pauses, resumes only pending work, and remains a candidate', async () => {
   assert.equal(typeof createOrchestrator, 'function');
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-e2e-'));
@@ -427,50 +478,119 @@ test('composes an injected fixture command without a model key', async () => {
   assert.deepEqual(JSON.parse(output[0]), { runId: 'run-001', state: 'paused', validatedBeforeExecution: true });
 });
 
-test('persists malformed QA as a bounded repair state and recovers without re-running completed nodes', async () => {
+test('authorizes one provenance-bound repair and blocks a repeated fingerprint before another model call', async () => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-qa-repair-'));
-  const executorCalls = [];
-  let repairAttempt = false;
-  let repairedArtifact;
+  let repairCalls = 0;
   const options = {
     rootDir,
-    planner: { async plan() { return fixtureBlueprint(); } },
-    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { executorCalls.push(taskPackage.node.id); return successfulResult(taskPackage); } } },
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
     verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
     runIdFactory: () => 'run-001',
     readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
     blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
-    candidateArtifact: registeredCandidateArtifact,
-    qaEvidence: (parameters) => repairAttempt ? registeredQaEvidence(parameters) : { status: 'candidate' },
-    repairCandidate: async ({ runRef, blueprint, previousArtifact, artifactRegistry }) => {
-      repairedArtifact = artifactRegistry.putJson({
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async ({ runRef, blueprint, previousArtifact, blockingEvidence, artifactRegistry }) => {
+      repairCalls += 1;
+      return artifactRegistry.putJson({
         runId: runRef.runId,
         clientId: blueprint.clientId,
         type: 'site',
         value: { fixture: 'repaired-candidate' },
-        sources: [previousArtifact]
+        sources: [previousArtifact, blockingEvidence.failureArtifact, blockingEvidence.verifierArtifact]
       });
-      return repairedArtifact;
     },
     approver: 'fixture-approver'
   };
   const process = createOrchestrator(options);
-  await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
-  const blocked = await process.execute(['resume', '--run', 'run-001']);
-  assert.equal(blocked.state, 'repairing');
-  const persisted = await process.execute(['inspect', '--run', 'run-001']);
-  assert.equal(persisted.state, 'repairing');
-  assert.equal(persisted.events.some((event) => event.type === 'QA_BLOCKED'), true);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'repairing');
+  assert.equal(repairCalls, 1);
 
-  repairAttempt = true;
-  const recovered = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
-  assert.equal(recovered.state, 'candidate');
-  assert.deepEqual(executorCalls, ['n1', 'n2']);
-  const repaired = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
-  assert.equal(
-    repaired.events.filter((event) => event.type === 'WORKFLOW_SNAPSHOT').at(-1).data.snapshot.context.candidateArtifact.sha256,
-    repairedArtifact.sha256
-  );
+  const blocked = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+  assert.equal(blocked.state, 'human_intervention');
+  assert.equal(repairCalls, 1);
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.filter((event) => event.type === 'REPAIR_AUTHORIZED').length, 1);
+  assert.equal(JSON.stringify(persisted.events).includes('super-secret-token'), false);
+});
+
+test('does not call repair code when QA failure lacks verifier artifact provenance', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unproven-repair-'));
+  let repairCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: () => ({ status: 'failed', message: 'unpersisted failure' }),
+    repairCandidate: async () => { repairCalls += 1; },
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  assert.equal(repairCalls, 0);
+});
+
+test('rejects a new repair artifact that is not sourced from its fingerprint and verifier evidence', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unbound-repair-output-'));
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async ({ runRef, blueprint, previousArtifact, artifactRegistry }) => artifactRegistry.putJson({
+      runId: runRef.runId,
+      clientId: blueprint.clientId,
+      type: 'site',
+      value: { fixture: 'unbound-repair' },
+      sources: [previousArtifact]
+    }),
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.filter((event) => event.type === 'REPAIR_AUTHORIZED').length, 1);
+});
+
+test('does not call repair code when remaining spend is unknown', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unknown-repair-budget-'));
+  let repairCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async () => { repairCalls += 1; },
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  assert.equal(repairCalls, 0);
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.find((event) => event.type === 'REPAIR_BLOCKED').data.decision, 'budget_blocked');
 });
 
 test('moves a QA-blocked run to human intervention when no repair action is injected', async () => {
