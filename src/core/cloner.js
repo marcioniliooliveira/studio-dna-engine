@@ -204,15 +204,24 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const box = await iframeEl.boundingBox();
       const src = await iframeEl.getAttribute('src') || '';
       const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
-      const hasNoSrc = !src || src === 'about:blank' || src.startsWith('javascript:');
-      if (box && box.width > 500 && box.height > 300 && !isVideo && !hasNoSrc) {
+      if (box && box.width > 500 && box.height > 300 && !isVideo) {
         const frame = await iframeEl.contentFrame();
         if (frame) {
           target = frame;
-          await frame.waitForLoadState('networkidle');
+          console.log(`ℹ️ [Site Cloner] Iframe de conteúdo detectado (${Math.round(box.width)}x${Math.round(box.height)}). Entrando no frame...`);
+          await frame.waitForLoadState('networkidle').catch(() => {});
+          await page.waitForTimeout(2000);
           break;
         }
       }
+    }
+
+    if (target !== page && !isIncremental) {
+      try {
+        const { autoScroll } = require('../utils/auto-scroll');
+        await autoScroll(target);
+        await page.waitForTimeout(1000);
+      } catch (e) {}
     }
 
     // Re-injetar templates se existirem

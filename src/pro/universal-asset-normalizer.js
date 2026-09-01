@@ -187,11 +187,12 @@ class UniversalAssetNormalizer {
     return `<script id="universal-resilience-polyfills">
 (function() {
   'use strict';
-  // 1. Mocks de Analytics & Rastreamento
+  // 1. Mocks de Analytics, Rastreamento & WebFont
   window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
   window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
   window.dataLayer = window.dataLayer || [];
   window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
 
   // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
   window.addEventListener('DOMContentLoaded', function() {

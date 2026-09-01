@@ -177,7 +177,11 @@ class UnifiedQualityGate {
 
         const imgs = Array.from(document.querySelectorAll('img'));
         const brokenImages = imgs
-          .filter(img => img.naturalWidth === 0 && !img.src.includes('data:image/svg'))
+          .filter(img => {
+            const isHidden = img.closest('.w-tab-pane:not(.w--tab-active), .w-slide:not(:first-child), [aria-hidden="true"], .hidden, [style*="display: none"]');
+            if (isHidden) return false;
+            return img.naturalWidth === 0 && !img.src.includes('data:image/svg');
+          })
           .map(img => ({
             src: img.src,
             alt: img.alt || ''

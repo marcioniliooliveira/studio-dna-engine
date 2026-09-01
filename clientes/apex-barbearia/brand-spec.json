@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "brandName": "Apex Barbearia",
+    "clientSlug": "apex-barbearia",
+    "tagline": "A Arte do Visagismo & Cuidado Preciso",
+    "city": "Maringá - PR",
+    "unitsCount": 2,
+    "establishedYear": 2021,
+    "title": "Apex Barbearia — Maringá | 2 Unidades: Zona 01 e Zona 02",
+    "description": "Barbearia de excelência em Maringá com 2 unidades. Especialistas em visagismo, corte clássico e contemporâneo, barboterapia e atendimento exclusivo.",
+    "lang": "pt-BR",
+    "currency": "BRL",
+    "currencySymbol": "R$"
+  },
+  "theme": {
+    "colors": {
+      "gold": "#C8A97E",
+      "goldLight": "#D4BC96",
+      "goldDark": "#A8885E",
+      "black": "#0A0A0A",
+      "blackLight": "#141414",
+      "blackMedium": "#1A1A1A",
+      "white": "#FAFAF9",
+      "whiteDim": "#E8E6E1",
+      "gray": "#6B6B6B",
+      "grayLight": "#999999"
+    },
+    "typography": {
+      "display": "Bebas Neue, Impact, sans-serif",
+      "serif": "Playfair Display, Georgia, serif",
+      "sans": "Inter, -apple-system, sans-serif"
+    }
+  },
+  "hero": {
+    "tagline": "Est. 2021 — 2 Unidades em Maringá",
+    "titleLine1": "A ARTE DO",
+    "titleLine2": "VISAGISMO &",
+    "titleLine3Stroke": "CUIDADO PRECISO",
+    "description": "Uma experiência completa de corte, barba e visagismo. Unimos técnicas clássicas e estilo contemporâneo para valorizar a sua melhor versão nas nossas 2 unidades em Maringá.",
+    "primaryCta": "Agendar Horário",
+    "secondaryCta": "Nossos Serviços"
+  },
+  "marquee": [
+    "Cortes Clássicos",
+    "Barboterapia",
+    "Navalha Tradicional",
+    "Fade de Precisão",
+    "Visagismo Masculino",
+    "Toalha Quente",
+    "Terapia Capilar",
+    "2 Unidades em Maringá"
+  ],
+  "about": {
+    "tagline": "Nossa História",
+    "titleMain": "MAIS QUE UMA BARBEARIA.",
+    "titleItalic": "Uma Experiência.",
+    "text1": "Fundada no coração de Maringá, a Apex Barbearia nasceu da paixão pelo trabalho artesanal e da convicção de que todo homem merece um momento de cuidado que vai além do comum. Nosso espaço foi projetado para ser o seu refúgio — onde a tradição é honrada e cada detalhe importa.",
+    "text2": "Do aroma das toalhas quentes ao alinhamento final da lâmina, cada atendimento é conduzido com calma e maestria. Hoje, com duas unidades na cidade, continuamos firmes no propósito de elevar sua autoestima e confiança.",
+    "stats": [
+      { "value": "5+", "label": "Anos em Maringá" },
+      { "value": "12K+", "label": "Clientes Atendidos" },
+      { "value": "2", "label": "Unidades na Cidade" }
+    ],
+    "monogram": "APEX"
+  },
+  "services": [
+    {
+      "id": "corte-assinatura",
+      "name": "CORTE ASSINATURA",
+      "desc": "Corte personalizado com consultoria de visagismo, lavagem relaxante e finalização com pomada premium.",
+      "price": "R$ 55",
+      "duration": "40 Min",
+      "icon": "solar:scissors-bold"
+    },
+    {
+      "id": "barboterapia",
+      "name": "BARBOTERAPIA QUENTE",
+      "desc": "Barbear clássico com toalha quente aromatizada, espuma aquecida, navalha e bálsamo hidratante.",
+      "price": "R$ 45",
+      "duration": "35 Min",
+      "icon": "solar:fire-bold"
+    },
+    {
+      "id": "alinhamento-barba",
+      "name": "ALINHAMENTO DE BARBA",
+      "desc": "Desenho e simetria das linhas da barba, aparo de volume e finalização com óleo de tratamento.",
+      "price": "R$ 35",
+      "duration": "25 Min",
+      "icon": "solar:crown-bold"
+    },
+    {
+      "id": "combo-real",
+      "name": "O PACOTE REAL",
+      "desc": "Nosso combo completo: corte assinatura, barboterapia relaxante, esfoliação facial e massagem capilar.",
+      "price": "R$ 120",
+      "duration": "75 Min",
+      "icon": "solar:star-bold"
+    },
+    {
+      "id": "hair-design",
+      "name": "DESIGN & FADE ARTÍSTICO",
+      "desc": "Degradês refinados (low, mid, high fade), riscas geométricas e acabamento de alta definição.",
+      "price": "R$ 65",
+      "duration": "45 Min",
+      "icon": "solar:pallete-2-bold"
+    },
+    {
+      "id": "terapia-capilar",
+      "name": "TERAPIA CAPILAR DETOX",
+      "desc": "Higienização profunda do couro cabeludo, esfoliação suave e tônico fortificante antiqueda.",
+      "price": "R$ 50",
+      "duration": "30 Min",
+      "icon": "solar:waterdrop-bold"
+    },
+    {
+      "id": "camuflagem",
+      "name": "CAMUFLAGEM GRISALHA",
+      "desc": "Tonalização natural e discreta dos fios brancos da barba ou cabelo com resultado rejuvenescido.",
+      "price": "R$ 55",
+      "duration": "35 Min",
+      "icon": "solar:magic-stick-3-bold"
+    },
+    {
+      "id": "limpeza-facial",
+      "name": "LIMPEZA FACIAL EXPRESS",
+      "desc": "Esfoliação facial profunda, máscara de hidratação e massagem relaxante com creme refrescante.",
+      "price": "R$ 45",
+      "duration": "30 Min",
+      "icon": "solar:face-scan-circle-bold"
+    }
+  ],
+  "team": [
+    {
+      "name": "ALEXANDRE SILVEIRA",
+      "role": "Fundador & Head Barber",
+      "image": "https://images.unsplash.com/photo-1557862921-37829c790f19?w=800&q=80"
+    },
+    {
+      "name": "RODRIGO RAMOS",
+      "role": "Especialista em Fade & Freestyle",
+      "image": "https://images.unsplash.com/photo-1597116648852-75764ecaf6f5?w=800&q=80"
+    },
+    {
+      "name": "CARLOS EDUARDO",
+      "role": "Mestre em Barboterapia & Visagismo",
+      "image": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?w=800&q=80"
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "A Apex é a melhor barbearia de Maringá sem sombra de dúvidas. O atendimento na Unidade Tiradentes é impecável, café de primeira e o corte do Alexandre é perfeito.",
+      "author": "Marcos Vinícius",
+      "title": "Cliente Unidade Zona 01"
+    },
+    {
+      "quote": "Frequento a Unidade Cerro Azul desde a abertura. A pontualidade é britânica e o pacote de corte com barboterapia faz toda a diferença para recarregar as energias.",
+      "author": "Gabriel Fontes",
+      "title": "Cliente Unidade Zona 02"
+    },
+    {
+      "quote": "Ambiente nota 10, profissionais qualificados e preço justo pelo nível de entrega. Recomendo para qualquer homem em Maringá que valoriza a própria imagem.",
+      "author": "Bruno Castro",
+      "title": "Cliente desde 2021"
+    }
+  ],
+  "locations": [
+    {
+      "name": "Unidade 01 — Zona 01 (Centro)",
+      "address": "Av. Tiradentes, 1020 - Zona 01, Maringá - PR",
+      "phone": "(44) 3025-8800",
+      "hours": "Segunda a Sexta: 09h às 20h | Sábado: 08h30 às 18h30"
+    },
+    {
+      "name": "Unidade 02 — Zona 02 (Cerro Azul)",
+      "address": "Av. Cerro Azul, 840 - Zona 02, Maringá - PR",
+      "phone": "(44) 3028-4422",
+      "hours": "Segunda a Sexta: 09h às 20h | Sábado: 08h30 às 18h30"
+    }
+  ],
+  "contact": {
+    "whatsapp": "(44) 99876-5432",
+    "instagram": "@apexbarbeariamga",
+    "email": "contato@apexbarbearia.com.br"
+  },
+  "membership": [
+    {
+      "id": "silver-club",
+      "name": "SILVER CLUB",
+      "tag": "Cortes Ilimitados",
+      "price": "R$ 99",
+      "period": "/ mês",
+      "isPopular": false,
+      "benefits": [
+        "Cortes de cabelo ilimitados no mês",
+        "Válido nas Unidades 01 e 02 em Maringá",
+        "10% de desconto em pomadas e produtos",
+        "Lavagem e finalização premium inclusas"
+      ]
+    },
+    {
+      "id": "gold-club",
+      "name": "GOLD CLUB",
+      "tag": "Corte + Barba Ilimitados",
+      "price": "R$ 159",
+      "period": "/ mês",
+      "isPopular": true,
+      "benefits": [
+        "Cortes e Barboterapias ilimitadas no mês",
+        "Acesso total às 2 unidades de Maringá",
+        "15% de desconto em toda a linha de cosméticos",
+        "Bebida cortesia do lounge em todas as visitas",
+        "Canal de agendamento prioritário sem fila"
+      ]
+    },
+    {
+      "id": "black-vip",
+      "name": "BLACK DIAMOND VIP",
+      "tag": "Experiência Total & Tratamentos",
+      "price": "R$ 229",
+      "period": "/ mês",
+      "isPopular": false,
+      "benefits": [
+        "Acesso total (Corte, Barba, Terapia Capilar e Limpeza Facial)",
+        "1 Convidado mensal com 50% de desconto",
+        "Atendimento exclusivo sem fila de espera",
+        "20% de desconto em produtos da barbearia",
+        "Acesso ao concierge VIP de agendamento"
+      ]
+    }
+  ]
+}
+

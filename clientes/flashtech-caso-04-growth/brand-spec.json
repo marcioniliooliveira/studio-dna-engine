@@ -1,0 +1,18 @@
+{
+  "brandName": "NEXUS Growth Engine",
+  "niche": "Assessoria de Growth, SEO Técnico e Inteligência de Conversão",
+  "theme": {
+    "bgBase": "#090909",
+    "bgSurface": "#fffcf2",
+    "bgCard": "#fff9e5",
+    "accent": "#FFC552",
+    "textMain": "#090909",
+    "textMuted": "#686868",
+    "textLight": "#FFFFFF"
+  },
+  "meta": {
+    "title": "NEXUS Growth Engine | SEO Técnico & Inteligência de Crescimento",
+    "description": "Assessoria premium orientada a receita. Multiplique tráfego qualificado, autoridade orgânica e conversão com tecnologia proprietária e SEO de alta escala.",
+    "lang": "pt-BR"
+  }
+}

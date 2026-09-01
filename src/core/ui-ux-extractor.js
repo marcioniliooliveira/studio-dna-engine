@@ -101,7 +101,26 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
       await assetInterceptor.finalize(page);
     }
 
-    const uiFeatures = await page.evaluate(() => {
+    // Detecta iframe de conteúdo full-page
+    let evaluationTarget = page;
+    const allIframes = await page.$$('iframe');
+    for (const iframeEl of allIframes) {
+      const box = await iframeEl.boundingBox();
+      const src = await iframeEl.getAttribute('src') || '';
+      const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
+      if (box && box.width > 500 && box.height > 300 && !isVideo) {
+        const contentFrame = await iframeEl.contentFrame();
+        if (contentFrame) {
+          evaluationTarget = contentFrame;
+          console.log(`ℹ️ [UI/UX Extractor] Iframe de conteúdo detectado (${Math.round(box.width)}x${Math.round(box.height)}). Entrando no frame...`);
+          await contentFrame.waitForLoadState('networkidle').catch(() => {});
+          await page.waitForTimeout(1000);
+          break;
+        }
+      }
+    }
+
+    const uiFeatures = await evaluationTarget.evaluate(() => {
       const results = {
         gsap: { detected: false, version: null, hasScrollTrigger: false, scrollTriggerInstances: 0, tweensCount: 0, plugins: [], timelines: [] },
         lenis: { detected: false, config: null },

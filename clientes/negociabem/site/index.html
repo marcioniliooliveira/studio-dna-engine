@@ -868,15 +868,30 @@
       img, svg, canvas, video {
         content-visibility: visible;
       }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
+      }
     </style>
 <script id="universal-resilience-polyfills">
 (function() {
   'use strict';
-  // 1. Mocks de Analytics & Rastreamento
+  // 1. Mocks de Analytics, Rastreamento & WebFont
   window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
   window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
   window.dataLayer = window.dataLayer || [];
   window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
 
   // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
   window.addEventListener('DOMContentLoaded', function() {
