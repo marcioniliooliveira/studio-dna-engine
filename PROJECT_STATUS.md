@@ -11,7 +11,7 @@ This file separates observed project state from product vision. Update a claim o
 |---|---|---|
 | JavaScript source is syntactically valid | `node --check` across 55 project JavaScript files on 2026-08-28 | Observed pass (0 syntax errors) |
 | Dependency audit has no known production vulnerability | `npm audit --omit=dev` on 2026-08-28 | Observed pass at that date |
-| Automated test suite passes | `npm test` executed on 2026-08-30 across security, pipeline, ICM, vault, transmuter, anti-slop, pilot runner and unified quality gate | Observed pass (51/51) |
+| Automated test suite passes | `npm test` executed on 2026-09-01 across security, pipeline, ICM, vault, transmuter, anti-slop, pilot runner, unified quality gate and fixture-only Gemini execution | Observed pass (216/216) |
 | CI uses reproducible install commands | Lockfile versioned and CI configured with `npm ci` and `npm test` | Documented; remote CI execution unverified |
 | Clean-worktree reproduction passes | Detached worktree at `e03f833`: `npm ci` (0 vulnerabilities), `npm test` (51/51) and pilot candidate audit on 2026-08-30 | Observed pass for `e03f833` |
 | Preview is client-isolated | Path traversal and cross-client leakage blocked and tested in `test/server-security.test.js` | Observed pass |
@@ -32,7 +32,8 @@ This file separates observed project state from product vision. Update a claim o
 | Fixture-only orchestration control plane | `node --test test/orchestration-*.test.js test/blueprint-validator.test.js test/artifact-registry.test.js test/run-store.test.js test/workflow-machine.test.js test/budget-governor.test.js test/dag-scheduler.test.js` on 2026-08-31 | Observed pass (65/65): validated plan, persisted workflow approvals, artifact-changing bounded QA repair, pause/resume, independent fixture verification and unknown-cost persistence |
 | Full automated suite including orchestration fixture proof | `npm test` on 2026-08-31 | Observed pass (121/121) |
 | Live Sol planning execution | No live model request or API credential was used in this run | Unverified |
-| Gemini execution | No Gemini executor was configured or exercised in this run | Unverified |
+| Fixture-only Gemini bounded repair workflow | `node --test test/gemini-executor.integration.test.js test/*executor*.test.js test/context-index.test.js test/tool-catalog.test.js test/result-verifier.test.js test/repair-controller.test.js test/cost-estimator.test.js` on 2026-09-01 | Observed pass (42/42): controlled 404 fixture, scoped package/context/node tools, routed fake adapter, independent runtime verifier, immutable candidate and cost-ledger evidence, repeated-fingerprint human intervention, and pre-execution budget block |
+| Live Gemini execution | No live Gemini request or API credential was used; all Gemini responses in automated evidence are injected fakes | Unverified |
 | New control-plane visual QA, accessibility and performance | No independent visual, accessibility or performance artifact was produced in this run | Unverified |
 
 ## Client inventory
