@@ -88,7 +88,8 @@ function verifierTaskPackage(task) {
     cid: task.clientId,
     nid: task.node.id,
     out: [...task.node.outputs],
-    g: [...task.node.gates]
+    g: [...task.node.gates],
+    p: [...task.node.paths]
   };
 }
 
@@ -282,27 +283,23 @@ function createDagScheduler({ executors, verifier, runStore, budgetGovernor }) {
         failed.add(node.id);
         continue;
       }
-      if (!matchesTaskPackage(result, packageForNode)) {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'TASK_RESULT_IDENTITY_MISMATCH', evidence: null } });
-        failed.add(node.id);
-        continue;
-      }
-      if (result.st !== 'ok') {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'EXECUTOR_REPORTED_FAILURE', evidence: result.err } });
-        failed.add(node.id);
-        continue;
-      }
-      if (!changesStayWithinNodeScope(result.chg, acceptedBlueprint, node)) {
-        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'TASK_RESULT_SCOPE_VIOLATION', evidence: { changedPaths: result.chg } } });
-        failed.add(node.id);
-        continue;
-      }
-
       let verification;
       try {
         verification = await verifier.verify({ taskPackage: verifierTaskPackage(packageForNode), taskResult: result });
       } catch (error) {
         runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: 'VERIFIER_EXCEPTION', evidence: { message: error.message } } });
+        failed.add(node.id);
+        continue;
+      }
+      const rejectionCode = !matchesTaskPackage(result, packageForNode)
+        ? 'TASK_RESULT_IDENTITY_MISMATCH'
+        : result.st !== 'ok'
+          ? 'EXECUTOR_REPORTED_FAILURE'
+          : !changesStayWithinNodeScope(result.chg, acceptedBlueprint, node)
+            ? 'TASK_RESULT_SCOPE_VIOLATION'
+            : null;
+      if (rejectionCode) {
+        runStore.appendEvent(runRef, { type: 'TASK_FAILED', data: { nodeId: node.id, code: rejectionCode, evidence: verification?.evidence || null } });
         failed.add(node.id);
         continue;
       }

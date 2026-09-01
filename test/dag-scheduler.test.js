@@ -112,7 +112,8 @@ test('passes one explicit verifier package and persists its verifier evidence', 
   await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
 
   assert.deepEqual(verificationRequest.taskPackage, {
-    rid: 'run-001', cid: 'client-alpha', nid: 'n1', out: ['n1-output'], g: ['core-runtime']
+    rid: 'run-001', cid: 'client-alpha', nid: 'n1', out: ['n1-output'], g: ['core-runtime'],
+    p: ['clientes/client-alpha/site/index.html']
   });
   assert.equal(verificationRequest.taskResult.st, 'ok');
   assert.deepEqual(runStore.events.at(-1).data.evidence, { verifierArtifact: { id: 'proof' } });
@@ -175,6 +176,57 @@ test('records a durable verifier rejection for a schema-invalid executor result'
   assert.deepEqual(artifactRegistry.read(failure.data.evidence.verifierArtifact).value.gateResults, [{
     id: 'task-result.schema', passed: false, evidence: { code: 'TASK_RESULT_SCHEMA_INVALID' }
   }]);
+});
+
+test('records verifier evidence for identity, executor-status, and scope rejections', async (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'scheduler-verifier-preflight-'));
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+  const artifactRegistry = createArtifactRegistry({ rootDir, now: () => 0 });
+  const verifier = createResultVerifier({
+    gateCatalog: { 'core-runtime': async () => ({ passed: true }) },
+    artifactRegistry
+  });
+  const scenarios = [
+    {
+      name: 'identity',
+      result: (currentTask) => ({ ...successfulResult(currentTask), nid: 'other-node' }),
+      code: 'TASK_RESULT_IDENTITY_MISMATCH', verifierGate: 'task-result.identity'
+    },
+    {
+      name: 'executor status',
+      result: (currentTask) => ({ ...successfulResult(currentTask), st: 'err', err: { code: 'FAILED', msg: 'failed' } }),
+      code: 'EXECUTOR_REPORTED_FAILURE', verifierGate: 'task-result.status'
+    },
+    {
+      name: 'scope',
+      result: (currentTask) => ({
+        ...successfulResult(currentTask),
+        art: [{ id: 'n1-output', sha: artifactRegistry.putJson({
+          runId: 'run-001', clientId: 'client-alpha', type: 'n1-output', value: { version: 1 }, sources: []
+        }).sha256 }],
+        chg: ['clientes/client-beta/site/index.html']
+      }),
+      code: 'TASK_RESULT_SCOPE_VIOLATION', verifierGate: 'task-result.scope'
+    }
+  ];
+
+  for (const scenario of scenarios) {
+    const runStore = createMemoryRunStore();
+    const scheduler = createDagScheduler({
+      executors: { build: { identity: 'builder', execute: async (currentTask) => scenario.result(currentTask) } },
+      verifier,
+      runStore,
+      budgetGovernor: { authorize: () => ({ allowed: true, reservedUsd: 0.1, reason: 'BUDGET_OK' }) }
+    });
+    await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
+    const failure = runStore.events.at(-1);
+    assert.equal(failure.data.code, scenario.code, scenario.name);
+    assert.equal(
+      artifactRegistry.read(failure.data.evidence.verifierArtifact).value.gateResults[0].id,
+      scenario.verifierGate,
+      scenario.name
+    );
+  }
 });
 
 test('rejects over-budget work before invoking its executor', async () => {
@@ -311,7 +363,7 @@ test('rejects executor changes outside the active client and node paths', async 
   const result = await executeAccepted(scheduler, runStore, blueprint([node('n1')]));
 
   assert.deepEqual(result.failedNodeIds, ['n1']);
-  assert.equal(verifierCalls, 0);
+  assert.equal(verifierCalls, 1);
   assert.equal(runStore.events.at(-1).data.code, 'TASK_RESULT_SCOPE_VIOLATION');
 });
 

@@ -21,7 +21,8 @@ function taskPackage(gates = ['qa.core']) {
     cid: 'client-alpha',
     nid: 'build-site',
     out: [],
-    g: gates
+    g: gates,
+    p: []
   };
 }
 
@@ -116,9 +117,11 @@ test('fails artifact integrity before running any gate when an executor artifact
   });
 
   assert.equal(verification.passed, false);
-  assert.deepEqual(verification.gateResults, [{
-    id: 'artifact.hash', passed: false, evidence: { code: 'ARTIFACT_HASH_MISMATCH', artifactId: 'site' }
-  }]);
+  assert.equal(verification.gateResults[0].id, 'artifact.hash');
+  assert.equal(verification.gateResults[0].passed, false);
+  assert.equal(verification.gateResults[0].evidence.code, 'ARTIFACT_HASH_MISMATCH');
+  assert.equal(verification.gateResults[0].evidence.artifactId, 'site');
+  assert.equal(verification.gateResults[0].evidence.artifactRef.type, 'site');
   assert.deepEqual(verification.artifactRefs, []);
   assert.equal(verification.evidence.verifierArtifact.type, 'verification');
   assert.equal(gateCalls, 0);
@@ -146,4 +149,29 @@ test('rejects missing and duplicate declared output artifacts before any gate ru
     assert.equal(verification.evidence.verifierArtifact.type, 'verification');
   }
   assert.equal(gateCalls, 0);
+});
+
+test('preserves verified and claimed artifact references when a later output hash fails', async (t) => {
+  const createResultVerifier = loadVerifier();
+  const { rootDir, artifactRegistry } = withRegistry(t);
+  const first = artifactRegistry.putJson({
+    runId: 'run-001', clientId: 'client-alpha', type: 'first', value: { version: 1 }, sources: []
+  });
+  const second = artifactRegistry.putJson({
+    runId: 'run-001', clientId: 'client-alpha', type: 'second', value: { version: 1 }, sources: []
+  });
+  fs.writeFileSync(path.join(rootDir, second.relativePath), '{"sources":[],"value":{"version":2}}', 'utf8');
+  const verifier = createResultVerifier({
+    gateCatalog: { 'qa.core': async () => ({ passed: true }) },
+    artifactRegistry
+  });
+  const verification = await verifier.verify({
+    taskPackage: { ...taskPackage(), out: ['first', 'second'] },
+    taskResult: taskResult({ art: [{ id: 'first', sha: first.sha256 }, { id: 'second', sha: second.sha256 }] })
+  });
+
+  assert.deepEqual(verification.artifactRefs, [first]);
+  const persisted = artifactRegistry.read(verification.evidence.verifierArtifact);
+  assert.deepEqual(persisted.sources, [first, second]);
+  assert.deepEqual(persisted.value.gateResults[0].evidence.artifactRef, second);
 });

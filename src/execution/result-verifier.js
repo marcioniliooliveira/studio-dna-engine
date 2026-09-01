@@ -12,8 +12,10 @@ function assertTaskPackage(taskPackage) {
     || !Array.isArray(taskPackage.out) || !taskPackage.out.every((id) => typeof id === 'string' && id.length > 0)
     || !Array.isArray(taskPackage.g) || taskPackage.g.length === 0
     || !taskPackage.g.every((id) => typeof id === 'string' && id.length > 0)
+    || !Array.isArray(taskPackage.p) || !taskPackage.p.every((candidate) => typeof candidate === 'string' && candidate.length > 0)
     || new Set(taskPackage.out).size !== taskPackage.out.length
-    || new Set(taskPackage.g).size !== taskPackage.g.length) {
+    || new Set(taskPackage.g).size !== taskPackage.g.length
+    || new Set(taskPackage.p).size !== taskPackage.p.length) {
     throw verifierError('TASK_PACKAGE_INVALID', 'Task package must contain unique declared outputs and gates');
   }
 }
@@ -47,6 +49,17 @@ function compactGateResult(id, result) {
   return { id, passed: result.passed, evidence: result.evidence ?? null };
 }
 
+function changesStayWithinTaskScope(changedPaths, taskPackage) {
+  const clientPrefix = `clientes/${taskPackage.cid}/`;
+  const allowedPaths = new Set(taskPackage.p);
+  return changedPaths.every((changedPath) =>
+    changedPath.startsWith(clientPrefix)
+    && !changedPath.includes('\\')
+    && !changedPath.split('/').includes('..')
+    && allowedPaths.has(changedPath)
+  );
+}
+
 function failedVerification(id, evidence, artifactRefs = []) {
   return {
     passed: false,
@@ -61,13 +74,13 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
     throw new TypeError('gateCatalog and artifactRegistry are required');
   }
 
-  function persist(taskPackage, verification) {
+  function persist(taskPackage, verification, sources = verification.artifactRefs) {
     const verifierArtifact = artifactRegistry.putJson({
       runId: taskPackage.rid,
       clientId: taskPackage.cid,
       type: 'verification',
       value: verification,
-      sources: verification.artifactRefs
+      sources
     });
     return { ...verification, evidence: { verifierArtifact } };
   }
@@ -80,6 +93,14 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
     }
     if (result.rid !== taskPackage.rid || result.cid !== taskPackage.cid || result.nid !== taskPackage.nid) {
       return persist(taskPackage, failedVerification('task-result.identity', { code: 'TASK_RESULT_IDENTITY_MISMATCH' }));
+    }
+    if (result.st !== 'ok') {
+      return persist(taskPackage, failedVerification('task-result.status', {
+        code: 'EXECUTOR_REPORTED_FAILURE', error: result.err
+      }));
+    }
+    if (!changesStayWithinTaskScope(result.chg, taskPackage)) {
+      return persist(taskPackage, failedVerification('task-result.scope', { code: 'TASK_RESULT_SCOPE_VIOLATION' }));
     }
     const outputIds = result.art.map((artifact) => artifact.id);
     if (outputIds.length !== taskPackage.out.length
@@ -96,8 +117,8 @@ function createResultVerifier({ gateCatalog, artifactRegistry }) {
         artifactRegistry.verify(reference);
       } catch (error) {
         return persist(taskPackage, failedVerification('artifact.hash', {
-          code: error.code || 'ARTIFACT_VERIFICATION_FAILED', artifactId: artifact.id
-        }));
+          code: error.code || 'ARTIFACT_VERIFICATION_FAILED', artifactId: artifact.id, artifactRef: reference || null
+        }, artifactRefs), reference ? [...artifactRefs, reference] : artifactRefs);
       }
       artifactRefs.push(reference);
     }
