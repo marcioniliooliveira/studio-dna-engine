@@ -1,0 +1,17 @@
+{
+  "brandName": "Nome da Marca / Empreendimento",
+  "niche": "Luxury Real Estate / Architecture",
+  "theme": {
+    "bgBase": "#080807",
+    "bgSurface": "#121210",
+    "bgCard": "#181816",
+    "accent": "#C5A880",
+    "textMain": "#F5F5F0",
+    "textMuted": "#A0A09A"
+  },
+  "meta": {
+    "title": "Nome da Marca | Residências Exclusivas",
+    "description": "Empreendimento imobiliário exclusivo com arquitetura autoral e bem-estar.",
+    "lang": "pt-BR"
+  }
+}

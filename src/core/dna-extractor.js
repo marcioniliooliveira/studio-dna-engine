@@ -25,7 +25,13 @@ async function extractDesignDna(targetUrl, outputFolder = null, customConfig = {
   const page = await context.newPage();
 
   try {
-    await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: config.timeout });
+    try {
+      await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: Math.min(config.timeout, 15000) });
+    } catch (netErr) {
+      if (page.url() === 'about:blank') {
+        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: config.timeout }).catch(() => {});
+      }
+    }
     await page.waitForTimeout(2000);
 
     // Simula interação para destravar scripts deferidos

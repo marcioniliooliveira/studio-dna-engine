@@ -1,0 +1,54 @@
+{
+  "client": {
+    "id": "novo-cliente-slug",
+    "name": "Nome da Empresa",
+    "tagline": "Slogan de alto impacto",
+    "niche": "MedicalBusiness | TechSaaS | RealEstate | Ecommerce",
+    "language": "pt-BR"
+  },
+  "colors": {
+    "primary": "#000",
+    "accent": "#0000",
+    "background": "#080807",
+    "surface": "rgba(255, 255, 255, 0.03)",
+    "text": "#fafaf9"
+  },
+  "seo": {
+    "title": "Nome da Empresa — Slogan de Destaque",
+    "description": "Descrição de alto padrão para motores de busca e compartilhamento em redes sociais.",
+    "ogImage": "./assets/images/og-preview.png",
+    "canonicalUrl": "https://minhaempresa.com"
+  },
+  "typography": {
+    "headings": "sans-serif",
+    "body": "monospace"
+  },
+  "copyOverrides": {
+    "hero": {
+      "eyebrow": "TECNOLOGIA · ALTA PERFORMANCE",
+      "title": "Experiências Digitais que Transformam Resultados.",
+      "description": "Criamos presenças digitais exclusivas para marcas que lideram seus mercados.",
+      "primaryCta": "Agendar Reunião",
+      "secondaryCta": "Ver Projetos"
+    },
+    "metrics": [
+      {
+        "number": "99.8%",
+        "label": "Precisão & Confiabilidade"
+      },
+      {
+        "number": "15k+",
+        "label": "Atendimentos Realizados"
+      },
+      {
+        "number": "24/7",
+        "label": "Monitoramento Contínuo"
+      }
+    ],
+    "contact": {
+      "whatsapp": "5511999999999",
+      "email": "contato@empresa.com",
+      "address": "São Paulo, Brasil"
+    }
+  }
+}

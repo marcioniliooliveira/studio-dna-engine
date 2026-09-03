@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "runId": "scalex-hero-a2-approved-light-001",
+  "clientScope": "flashtech-caso-04-growth",
+  "budget": {
+    "maxRetries": 1
+  },
+  "allowedTools": [
+    "read-file",
+    "edit-file",
+    "run-targeted-test",
+    "capture-screenshot",
+    "run-quality-gate"
+  ],
+  "allowedGates": [
+    "unified-quality",
+    "visual-comparison",
+    "reduced-motion"
+  ],
+  "tasks": [
+    {
+      "id": "hero-a2-implementation",
+      "dependsOn": [],
+      "allowedTools": [
+        "read-file",
+        "edit-file",
+        "run-targeted-test",
+        "capture-screenshot"
+      ],
+      "allowedGates": [
+        "visual-comparison",
+        "reduced-motion"
+      ],
+      "input": {
+        "role": "gemini-ide-executor",
+        "readOnly": [
+          "clientes/flashtech-caso-04-growth/DNA.md",
+          "clientes/flashtech-caso-04-growth/brand-spec.json",
+          "clientes/flashtech-caso-04-growth/DESIGN.md",
+          "clientes/flashtech-caso-04-growth/design/goldens/manifest.json",
+          "clientes/flashtech-caso-04-growth/design/goldens/hero-a2-approved-v1.png"
+        ],
+        "forbidden": [
+          "clientes/flashtech-caso-04-growth/design/goldens/hero-a2-dark-lift-v1.png",
+          "copias/",
+          "other client directories"
+        ],
+        "writeScope": [
+          "clientes/flashtech-caso-04-growth/site/index.html",
+          "test/components/hero-a2-approved.test.js"
+        ],
+        "goal": "Implement the approved A2 hero composition using semantic HTML and the existing client asset library. Write the regression test before changing site code.",
+        "acceptance": [
+          "Match headline-left, conversion-block-left and vertical-rocket-right composition at 1440 by 900.",
+          "Keep the exact approved navigation, headline, supporting copy and CTA labels.",
+          "Do not overlay the rocket on any text or control.",
+          "Use #F8F8F6 as the page canvas, #0B0D11 as ink and #FFC552 as the sole accent.",
+          "At 375 by 812, stack content before the rocket with no horizontal overflow or clipped text.",
+          "Use transform and opacity only for motion, with reduced-motion fallback."
+        ]
+      }
+    },
+    {
+      "id": "hero-a2-verification",
+      "dependsOn": [
+        "hero-a2-implementation"
+      ],
+      "allowedTools": [
+        "run-quality-gate",
+        "capture-screenshot",
+        "read-file"
+      ],
+      "allowedGates": [
+        "unified-quality",
+        "visual-comparison",
+        "reduced-motion"
+      ],
+      "input": {
+        "role": "deterministic-verifier",
+        "goal": "Compare desktop and mobile screenshots to the approved golden and report only observable failures.",
+        "acceptance": [
+          "Targeted regression test passes.",
+          "Unified Quality Gate reports no runtime, network, overflow, clipping or broken-image failure.",
+          "Visual review confirms the rocket does not cover content and the hero CTA is visible in the first viewport.",
+          "Reduced-motion verification is recorded."
+        ]
+      }
+    }
+  ]
+}

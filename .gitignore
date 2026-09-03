@@ -8,6 +8,19 @@ node_modules/
 .pnp.js
 .worktrees/
 
+# Local design-tool workspace and generated canvas exports
+.kombai/
+clientes/**/kombai-canvas/
+
+# Canonical SCALEX component canvases are executable test fixtures
+!clientes/flashtech-caso-04-growth/kombai-canvas/
+clientes/flashtech-caso-04-growth/kombai-canvas/*
+!clientes/flashtech-caso-04-growth/kombai-canvas/Scalex — Sessao 01_ Hero e Navbar.html
+!clientes/flashtech-caso-04-growth/kombai-canvas/Scalex — Sessao 02_ Sobre e Metricas.html
+
+# Standalone design-canvas exports belong inside client artifacts, not the repo root
+/*.html
+
 # ── Build / Framework Caches ──────────────────────────────────────────────────
 dist/
 dist-community/
@@ -46,9 +59,16 @@ projetos/**/site/assets/
 *.webm
 *.mov
 
-design-vault/*/tokens.json
-design-vault/*/tailwind.config.js
-design-vault/*/brand-spec.template.json
+# Approved and rejected visual baselines are source evidence, not disposable screenshots
+!clientes/**/design/goldens/*.png
+
+# SCALEX runtime tests require these three immutable local review-card fixtures
+!clientes/flashtech-caso-04-growth/site/assets/
+clientes/flashtech-caso-04-growth/site/assets/*
+!clientes/flashtech-caso-04-growth/site/assets/69d88c4d1e28dbd62b778bc2_review_20card_20image_204.avif
+!clientes/flashtech-caso-04-growth/site/assets/69d88c4d8f905c724ee05c1e_review_20card_20image_203.avif
+!clientes/flashtech-caso-04-growth/site/assets/69d88c4d9ea5b9163355470b_review_20card_20image_205.avif
+
 design-vault/**/site/assets/
 
 # ── QA Reports & Screenshots de Auditoria ────────────────────────────────────

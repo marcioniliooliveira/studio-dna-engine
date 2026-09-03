@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "runId": "scalex-a2-asset-readiness-002",
+  "taskId": "a2-asset-readiness",
+  "clientScope": "flashtech-caso-04-growth",
+  "input": {
+    "objective": "Repair the Unified Quality Gate classification of lazy image readiness without weakening real broken-image, console, or network failure detection.",
+    "evidence": {
+      "command": "node scripts/run-unified-gate.js flashtech-caso-04-growth",
+      "observed": {
+        "consoleErrors": 0,
+        "networkFailures": 0,
+        "brokenImages": 0,
+        "readinessFailures": 33,
+        "failureKind": "external lazy images remained unresolved after the auditor scrolled through the page"
+      },
+      "report": "clientes/flashtech-caso-04-growth/qa-reports/a2-approved/unified-quality.json"
+    },
+    "requirements": [
+      "Write or extend a failing regression test in test/unified-quality-gate.test.js before production changes.",
+      "Keep a real broken image and a failed network request as release-blocking failures.",
+      "Do not classify an offscreen lazy image as broken solely because it was not requested during the audit.",
+      "Do not use a fixed waitForTimeout as the readiness mechanism; use image lifecycle events, decode state, viewport/staged loading evidence, or an explicit indeterminate classification.",
+      "Do not modify any file under clientes/flashtech-caso-04-growth/site or its assets.",
+      "Return compact before/after evidence and the exact commands executed."
+    ],
+    "readScope": [
+      "src/qa/unified-quality-gate.js",
+      "scripts/run-unified-gate.js",
+      "test/unified-quality-gate.test.js",
+      "clientes/flashtech-caso-04-growth/qa-reports/a2-approved/unified-quality.json"
+    ],
+    "writeScope": [
+      "src/qa/unified-quality-gate.js",
+      "test/unified-quality-gate.test.js"
+    ],
+    "resultPath": "clientes/flashtech-caso-04-growth/orchestration/ide-exchange/a2-asset-readiness.task-result.json"
+  }
+}

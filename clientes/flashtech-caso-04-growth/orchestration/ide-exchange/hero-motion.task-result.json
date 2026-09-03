@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "runId": "scalex-motion-iteration-001",
+  "taskId": "hero-motion",
+  "clientScope": "flashtech-caso-04-growth",
+  "status": "passed",
+  "output": {
+    "filesModified": [
+      "clientes/flashtech-caso-04-growth/site/index.html"
+    ],
+    "featuresImplemented": [
+      "Masked character-level Anton reveal for .hero-display-text-1 and .hero-display-text-2 with overflow: hidden word masks and GSAP stagger",
+      "Scroll-driven orbit rotation for .hero-orbit-path._01 and ._02 (transform: rotate only, passive scroll listener, desktop-only)",
+      "Desktop-only subtle illustration cursor parallax on .hero-image-move (pointer: fine, transform-only, subtle bounded offset)",
+      "Full prefers-reduced-motion compliance across all hero motions (transforms disabled, instant opacity: 1 for Anton copy)"
+    ],
+    "verificationEvidence": {
+      "desktopResponsive": true,
+      "mobileResponsive": true,
+      "reducedMotionCompliant": true,
+      "unitTestsPassed": true,
+      "testFile": "test/components/hero-motion.test.js"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
+const { ExecutionLedger } = require('../orchestration/execution-ledger');
 
 const VALID_MODES = new Set(['all', 'clone', 'dna', 'ui']);
 
@@ -50,6 +52,10 @@ function createPipelineRunner(dependencies) {
     const designSystemFolder = path.join(masterFolder, 'design-system');
     const uiUxFolder = path.join(masterFolder, 'ui-ux');
     const statusPath = path.join(masterFolder, 'PIPELINE_STATUS.json');
+    const recordExecution = options.recordExecution === true;
+    const ledgerPath = recordExecution
+      ? path.resolve(options.ledgerPath || path.join(masterFolder, 'EXECUTION_LEDGER.json'))
+      : null;
 
     fs.mkdirSync(siteFolder, { recursive: true });
     fs.mkdirSync(designSystemFolder, { recursive: true });
@@ -72,6 +78,50 @@ function createPipelineRunner(dependencies) {
       fs.renameSync(temporaryPath, statusPath);
     }
 
+    const ledger = recordExecution
+      ? (fs.existsSync(ledgerPath) ? ExecutionLedger.load(ledgerPath) : new ExecutionLedger())
+      : null;
+    const runId = recordExecution
+      ? `pipeline-${siteName}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`
+      : null;
+    const inputHash = recordExecution
+      ? `sha256:${crypto.createHash('sha256').update(JSON.stringify({ url, siteName, mode })).digest('hex')}`
+      : null;
+    // The input hash identifies the requested work; the artifact hash is
+    // computed only after the selected stages have materialized their output.
+    // Failed runs retain an explicit pending marker instead of claiming an
+    // artifact that was never finalized.
+    let artifactHash = recordExecution ? 'pending' : null;
+    function hashArtifacts() {
+      const hash = crypto.createHash('sha256');
+      const files = [];
+      function collect(folder) {
+        for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+          const absolute = path.join(folder, entry.name);
+          if (entry.isDirectory()) collect(absolute);
+          else if (entry.name !== 'EXECUTION_LEDGER.json' && entry.name !== 'PIPELINE_STATUS.json') {
+            files.push(absolute);
+          }
+        }
+      }
+      collect(masterFolder);
+      files.sort().forEach(file => {
+        hash.update(path.relative(masterFolder, file).replaceAll(path.sep, '/'));
+        hash.update('\0');
+        hash.update(fs.readFileSync(file));
+        hash.update('\0');
+      });
+      return `sha256:${hash.digest('hex')}`;
+    }
+    function persistLedger() {
+      if (ledger) ledger.save(ledgerPath);
+    }
+    function recordEvent(event) {
+      if (!ledger) return;
+      ledger.appendEvent(runId, { at: new Date().toISOString(), ...event });
+      persistLedger();
+    }
+
     async function runStage(name, operation) {
       const stage = {
         name,
@@ -81,12 +131,14 @@ function createPipelineRunner(dependencies) {
       };
       pipelineStatus.stages.push(stage);
       persistStatus();
+      recordEvent({ type: 'stage', stage: name, status: 'started' });
 
       try {
         const result = await operation();
         stage.status = 'passed';
         stage.completedAt = new Date().toISOString();
         persistStatus();
+        recordEvent({ type: 'stage', stage: name, status: 'passed' });
         return result;
       } catch (cause) {
         stage.status = 'failed';
@@ -98,11 +150,31 @@ function createPipelineRunner(dependencies) {
         pipelineStatus.status = 'failed';
         pipelineStatus.completedAt = stage.completedAt;
         persistStatus();
+        recordEvent({ type: 'stage', stage: name, status: 'failed', error: stage.error });
+        if (ledger) {
+          ledger.updateRun(runId, { status: 'failed', completedAt: stage.completedAt });
+          persistLedger();
+        }
         throw new PipelineStageError(name, cause);
       }
     }
 
     persistStatus();
+    if (ledger) {
+      ledger.createRun({
+        runId,
+        taskId: `pipeline:${siteName}`,
+        model: options.model || 'pipeline-runner',
+        inputTokens: options.inputTokens || 0,
+        outputTokens: options.outputTokens || 0,
+        retries: options.retries || 0,
+        status: 'running',
+        gates: {},
+        artifactHash,
+        inputHash
+      });
+      persistLedger();
+    }
 
     let siteInfo;
     let dna = null;
@@ -184,6 +256,12 @@ function createPipelineRunner(dependencies) {
     pipelineStatus.status = 'completed';
     pipelineStatus.completedAt = new Date().toISOString();
     persistStatus();
+    if (ledger) {
+      artifactHash = hashArtifacts();
+      ledger.updateRun(runId, { status: 'completed', completedAt: pipelineStatus.completedAt });
+      ledger.updateRun(runId, { artifactHash });
+      persistLedger();
+    }
 
     return {
       status: pipelineStatus.status,

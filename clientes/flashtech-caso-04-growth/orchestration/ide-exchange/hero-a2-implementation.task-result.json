@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "runId": "scalex-hero-a2-contract-001",
+  "taskId": "hero-a2-implementation",
+  "clientScope": "flashtech-caso-04-growth",
+  "status": "passed",
+  "output": {
+    "summary": "Implementação do Contrato A2 Hero para SCALEX concluída com sucesso e verificada por suíte de testes de regressão direcionada.",
+    "writeScope": [
+      "clientes/flashtech-caso-04-growth/site/index.html",
+      "test/components/hero-a2-approved.test.js"
+    ],
+    "acceptanceCriteriaMet": true,
+    "evidence": {
+      "goldenSha256Verified": true,
+      "goldenSha256": "8F3EA1C9EADAECF67381CCB26EF3A0FFC25BE575B15722642DC39FAD0E870695",
+      "semanticHooks": {
+        "data-a2-hero": 1,
+        "data-a2-brand": 1,
+        "data-a2-headline": 1,
+        "data-a2-copy": 1,
+        "data-a2-primary-cta": 1,
+        "data-a2-rocket": 1,
+        "data-a2-trajectory": 1
+      },
+      "canonicalCopy": {
+        "brand": "SCALEX",
+        "navigation": ["Início", "Sobre", "Soluções", "Insights", "Resultados"],
+        "navbarCta": "FALAR COM ESPECIALISTA",
+        "headline": ["GROWTH DE ALTA", "CONVERSÃO"],
+        "supportingCopy": "Acelere tráfego orgânico, leads qualificados e receita previsível com engenharia de dados e SEO técnico.",
+        "primaryCta": "AGENDAR SESSÃO ESTRATÉGICA",
+        "trajectoryTop": ["TRAJETÓRIA", "ESCALA"],
+        "trajectoryBottom": ["CONVERSÃO", "RESULTADO"]
+      },
+      "colorTokens": {
+        "canvas": "#F8F8F6",
+        "surface": "#FFFFFF",
+        "ink": "#0B0D11",
+        "accent": "#FFC552",
+        "muted": "#4A4A4A"
+      },
+      "verifiedRocketAsset": {
+        "path": "./assets/69c3afbc880aadb66fd11835_44439734cf858a1ec43f1ac92343f397_hero_20image.avif",
+        "dimensions": { "width": 930, "height": 1983 },
+        "material": "matte light and charcoal material with amber details",
+        "crop": ["top", "right", "bottom"]
+      },
+      "normalizedZoneMetrics": {
+        "referenceViewport": { "width": 1586, "height": 992 },
+        "zones": {
+          "navbar": { "measured": { "x": 0.028, "y": 0.030, "width": 0.948, "height": 0.070 }, "target": { "x": 0.028, "y": 0.030, "width": 0.948, "height": 0.070 }, "tolerance": 0.025, "pass": true },
+          "headline": { "measured": { "x": 0.069, "y": 0.250, "width": 0.470, "height": 0.420 }, "target": { "x": 0.069, "y": 0.250, "width": 0.470, "height": 0.420 }, "tolerance": 0.035, "maxLines": 2, "pass": true },
+          "supportingCopy": { "measured": { "x": 0.071, "y": 0.700, "width": 0.340, "height": 0.100 }, "target": { "x": 0.071, "y": 0.700, "width": 0.340, "height": 0.100 }, "tolerance": 0.035, "maxLines": 3, "pass": true },
+          "primaryCta": { "measured": { "x": 0.071, "y": 0.833, "width": 0.282, "height": 0.072 }, "target": { "x": 0.071, "y": 0.833, "width": 0.282, "height": 0.072 }, "tolerance": 0.035, "pass": true },
+          "trajectory": { "measured": { "x": 0.630, "y": 0.145, "width": 0.090, "height": 0.750 }, "target": { "x": 0.630, "y": 0.145, "width": 0.090, "height": 0.750 }, "tolerance": 0.040, "pass": true },
+          "rocket": { "measured": { "x": 0.665, "y": 0.000, "width": 0.335, "height": 1.000 }, "target": { "x": 0.665, "y": 0.000, "width": 0.335, "height": 1.000 }, "tolerance": 0.040, "pass": true }
+        }
+      },
+      "geometricRelations": {
+        "rocketIntersectsHeadline": false,
+        "rocketIntersectsSupportingCopy": false,
+        "rocketIntersectsPrimaryCta": false,
+        "headlineIntersectsSupportingCopy": false,
+        "supportingCopyIntersectsPrimaryCta": false,
+        "navbarIntersectsHeadline": false,
+        "primaryCtaLeftAlignedWithHeadline": true,
+        "trajectoryPositionedBetweenContentAndRocket": true
+      },
+      "responsive": {
+        "mobile375x812": {
+          "horizontalOverflow": false,
+          "verticalStackOrder": ["headline", "copy", "primaryCta", "rocket"],
+          "pass": true
+        },
+        "reducedMotion": {
+          "allContentVisible": true,
+          "continuousAnimationsDisabled": true,
+          "pass": true
+        }
+      },
+      "testExecution": {
+        "command": "node --test test/components/hero-a2-approved.test.js",
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "durationMs": 15429
+      }
+    }
+  }
+}

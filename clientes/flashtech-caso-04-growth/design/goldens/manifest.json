@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "clientScope": "flashtech-caso-04-growth",
+  "approved": {
+    "id": "hero-a2-approved-v1",
+    "path": "clientes/flashtech-caso-04-growth/design/goldens/hero-a2-approved-v1.png",
+    "sha256": "8F3EA1C9EADAECF67381CCB26EF3A0FFC25BE575B15722642DC39FAD0E870695",
+    "role": "approved-page-visual-reference",
+    "status": "approved"
+  },
+  "rejected": [
+    {
+      "id": "hero-a2-dark-lift-v1",
+      "path": "clientes/flashtech-caso-04-growth/design/goldens/hero-a2-dark-lift-v1.png",
+      "role": "unapproved-alternative",
+      "status": "do-not-implement"
+    }
+  ]
+}

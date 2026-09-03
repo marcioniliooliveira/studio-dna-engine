@@ -1,0 +1,1 @@
+{"version":1,"runs":[{"runId":"scalex-a2-asset-readiness-002","taskId":"workflow:scalex-a2-asset-readiness-002","model":"gemini-3.7-flash","inputTokens":0,"outputTokens":0,"retries":0,"status":"running","gates":{},"artifactHash":"pending","inputHash":"sha256:74df44dc8a785aa2db9615d78cea79cb52ef1db4e78d7fd8bcf8e6462f4a02e0","events":[]}]}

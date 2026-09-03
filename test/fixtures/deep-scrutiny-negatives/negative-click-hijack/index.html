@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Negative Test: Click Hijack</title>
+  <style>
+    .btn-wrapper { position: relative; width: 200px; height: 50px; display: inline-block; }
+    .primary-btn { display: block; width: 100%; height: 100%; background: blue; color: white; }
+    .hijack-layer { position: absolute; inset: 0; z-index: 999; background: rgba(0,0,0,0); pointer-events: auto; }
+  </style>
+</head>
+<body>
+  <div class="btn-wrapper">
+    <a href="#contact" class="primary-btn">Falar com Especialista</a>
+    <div class="hijack-layer" id="intruder-div"></div>
+  </div>
+</body>
+</html>

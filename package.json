@@ -5,16 +5,24 @@
   "description": "Studio DNA PRO — Awwwards Web Cloner, Design DNA, ICM Pipeline & Client Production Factory",
   "main": "index.js",
   "bin": {
-    "studio-dna": "./bin/cli.js"
+    "studio-dna": "./bin/cli.js",
+    "studio-dna-orchestrate": "./bin/orchestrator.js"
   },
   "scripts": {
     "test": "node --test test/*.test.js",
     "start": "node bin/cli.js --preview --port 4000",
     "preview": "node bin/cli.js --preview --port 4000",
     "scrape": "node bin/cli.js",
+    "orchestrate": "node bin/orchestrator.js",
     "client": "node src/generators/client-factory.js",
+    "transmute": "node src/pipeline/transmuter.js",
     "tokens": "node src/extractors/token-compiler.js",
     "audit": "node scripts/box-diff-linter.js",
+    "audit:scrutiny": "node scripts/run-scrutiny-test.js",
+    "audit:unified": "node scripts/run-unified-gate.js",
+    "test:falsifiability": "node --test test/deep-scrutiny-falsifiability.test.js",
+    "test:components": "node --test --test-concurrency=1 test/components/*.test.js",
+    "clean:scratch": "node scripts/cleanup-scratch.js",
     "normalize": "node scripts/normalize-all-copies.js",
     "inject": "node src/generators/slot-injector.js",
     "setup": "npx playwright install --with-deps chromium"

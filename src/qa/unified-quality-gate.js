@@ -91,6 +91,7 @@ class UnifiedQualityGate {
     let server;
     let browser;
     const networkFailures = [];
+    const failedNetworkUrls = new Set();
     const jsErrors = [];
 
     try {
@@ -129,8 +130,19 @@ class UnifiedQualityGate {
 
       page.on('pageerror', err => jsErrors.push(err.message));
       page.on('response', resp => {
-        if (resp.status() >= 400 && !resp.url().includes('favicon')) {
+        if (resp.status() >= 400 && !resp.url().includes('favicon') && !failedNetworkUrls.has(resp.url())) {
+          failedNetworkUrls.add(resp.url());
           networkFailures.push({ url: resp.url(), status: resp.status() });
+        }
+      });
+      page.on('requestfailed', request => {
+        if (!request.url().includes('favicon') && !failedNetworkUrls.has(request.url())) {
+          failedNetworkUrls.add(request.url());
+          networkFailures.push({
+            url: request.url(),
+            status: null,
+            error: request.failure()?.errorText || 'Request failed without an HTTP response'
+          });
         }
       });
 
@@ -143,26 +155,60 @@ class UnifiedQualityGate {
         await page.goto(`http://127.0.0.1:${port}/index.html`, { timeout: timeoutMs });
       }
 
-      await page.waitForTimeout(500);
+      const imageReadiness = await page.evaluate(async ({ readinessTimeoutMs }) => {
+        const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+        const images = Array.from(document.images)
+          .filter(img => !img.src.startsWith('data:image/svg'));
 
-      // Trigger lazy images via scroll
-      await page.evaluate(async () => {
-        const distance = 400;
-        const totalHeight = document.body.scrollHeight;
-        let currentScroll = 0;
-        while (currentScroll < totalHeight) {
-          window.scrollBy(0, distance);
-          currentScroll += distance;
-          await new Promise(r => setTimeout(r, 50));
+        for (const image of images) {
+          image.scrollIntoView({ block: 'center', inline: 'nearest' });
+          await nextFrame();
         }
-        window.scrollTo(0, 0);
-        await new Promise(r => setTimeout(r, 200));
-      });
 
-      await page.waitForTimeout(500);
+        const readiness = await Promise.all(images.map(image => new Promise(resolve => {
+          let settled = false;
+          let timeout;
+          const cleanup = () => {
+            clearTimeout(timeout);
+            image.removeEventListener('load', onLoad);
+            image.removeEventListener('error', onError);
+          };
+          const finish = async state => {
+            if (settled) return;
+            settled = true;
+            cleanup();
+
+            if (state === 'loaded') {
+              try {
+                await image.decode();
+                resolve({ src: image.currentSrc || image.src, state: 'decoded' });
+                return;
+              } catch (_) {
+                resolve({ src: image.currentSrc || image.src, state: 'undecodable' });
+                return;
+              }
+            }
+            resolve({ src: image.currentSrc || image.src, state });
+          };
+          const onLoad = () => finish('loaded');
+          const onError = () => finish('broken');
+          timeout = setTimeout(() => finish('unresolved'), readinessTimeoutMs);
+
+          image.addEventListener('load', onLoad, { once: true });
+          image.addEventListener('error', onError, { once: true });
+
+          if (image.complete) {
+            finish(image.naturalWidth > 0 ? 'loaded' : 'broken');
+          }
+        })));
+
+        window.scrollTo(0, 0);
+        await nextFrame();
+        return readiness;
+      }, { readinessTimeoutMs: Math.max(1000, Math.floor(timeoutMs / 3)) });
 
       // 3. Avaliação Estrutural no DOM
-      const domAudit = await page.evaluate(() => {
+      const domAudit = await page.evaluate(imageReadiness => {
         const sections = Array.from(document.querySelectorAll('section, header, footer, main'));
         const boxes = sections.map((sec, idx) => {
           const rect = sec.getBoundingClientRect();
@@ -182,14 +228,18 @@ class UnifiedQualityGate {
             src: img.src,
             alt: img.alt || ''
           }));
+        const readinessFailures = imageReadiness
+          .filter(image => image.state !== 'decoded');
 
         return {
           boxes,
           totalImages: imgs.length,
           brokenImages,
-          validImages: imgs.length - brokenImages.length
+          validImages: imgs.length - brokenImages.length,
+          decodedImagesCount: imageReadiness.filter(image => image.state === 'decoded').length,
+          readinessFailures
         };
-      });
+      }, imageReadiness);
 
       // 4. Capturar Golden Screenshot de Verificação
       const reportsDir = path.join(parentDir, 'qa-reports');
@@ -202,7 +252,9 @@ class UnifiedQualityGate {
       // 5. Avaliação Final dos Gates
       const passed = antiSlopReport.passed &&
                      jsErrors.length === 0 &&
-                     domAudit.brokenImages.length === 0;
+                     networkFailures.length === 0 &&
+                     domAudit.brokenImages.length === 0 &&
+                     domAudit.readinessFailures.length === 0;
 
       const report = {
         timestamp: new Date().toISOString(),
@@ -226,10 +278,13 @@ class UnifiedQualityGate {
             failures: networkFailures
           },
           structural: {
-            passed: domAudit.brokenImages.length === 0,
+            passed: domAudit.brokenImages.length === 0 && domAudit.readinessFailures.length === 0,
             totalImages: domAudit.totalImages,
             brokenImagesCount: domAudit.brokenImages.length,
             brokenImages: domAudit.brokenImages,
+            decodedImagesCount: domAudit.decodedImagesCount,
+            readinessFailuresCount: domAudit.readinessFailures.length,
+            readinessFailures: domAudit.readinessFailures,
             sectionsCount: domAudit.boxes.length
           }
         },

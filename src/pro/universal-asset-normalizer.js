@@ -139,9 +139,16 @@ class UniversalAssetNormalizer {
         pointer-events: none !important;
       }
 
-      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis */
-      html, body {
-        overflow-x: hidden !important;
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis mantendo position: sticky */
+      html {
+        overflow-x: clip !important;
+        overflow-y: auto !important;
+        height: auto !important;
+      }
+      body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+        height: auto !important;
       }
       html.lenis-stopped, 
       body.lenis-stopped, 
@@ -149,7 +156,7 @@ class UniversalAssetNormalizer {
       body.is-loading,
       body.no-scroll {
         overflow: auto !important;
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
         height: auto !important;
       }
 

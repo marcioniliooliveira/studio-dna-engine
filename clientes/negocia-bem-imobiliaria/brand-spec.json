@@ -1,10 +1,18 @@
 {
-  "brandName": "Negocia Bem Imobiliaria",
+  "brandName": "Negocia Bem Consultoria Imobiliária",
   "clientSlug": "negocia-bem-imobiliaria",
-  "createdAt": "2026-08-25T16:28:49.126Z",
-  "referenceUsed": "negociabem-imobiliaria",
-  "niche": "Geral",
-  "toneOfVoice": "Premium e Minimalista",
+  "createdAt": "2026-08-31T01:05:00.000Z",
+  "referenceUsed": "elyse-residence-dev-webflow-io",
+  "niche": "Consultoria imobiliária residencial, locação e investimento",
+  "toneOfVoice": "Próximo, claro e seguro",
   "primaryColor": "#FFFFFF",
-  "secondaryColor": "#080A12"
+  "secondaryColor": "#080A12",
+  "accentColor": "#3E9B67",
+  "textColor": "#FFFFFF",
+  "fontFamily": "Plus Jakarta Sans",
+  "creci": "CRECI 9314-J",
+  "address": "Av. Curitiba, 140 - Centro, Paiçandu/PR",
+  "region": "Paiçandu / Região Metropolitana de Maringá",
+  "whatsapp": "554438016654",
+  "assetStatus": "temporary-reference-placeholder"
 }
