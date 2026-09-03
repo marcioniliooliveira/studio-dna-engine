@@ -107,6 +107,14 @@ test('rejects empty and placeholder identifiers, tools, gates, and duplicate arr
   assert.throws(() => validateTaskContractV2({ ...valid(), taskId: '' }, workspaceRoot), /taskId/);
 });
 
+test('rejects empty and duplicate path allowlists and required outputs', () => {
+  assert.throws(() => validateTaskContractV2({ ...valid(), readAllowlist: [] }, workspaceRoot), /readAllowlist/);
+  assert.throws(() => validateTaskContractV2({ ...valid(), writeAllowlist: [] }, workspaceRoot), /writeAllowlist/);
+  assert.throws(() => validateTaskContractV2({ ...valid(), readAllowlist: ['copias/**', 'copias/**'] }, workspaceRoot), /readAllowlist/);
+  assert.throws(() => validateTaskContractV2({ ...valid(), writeAllowlist: ['clientes/client-a/output/**', 'clientes/client-a/output/**'] }, workspaceRoot), /writeAllowlist/);
+  assert.throws(() => validateTaskContractV2({ ...valid(), requiredOutputs: ['clientes/client-a/output/page.html', 'clientes/client-a/output/page.html'] }, workspaceRoot), /requiredOutputs/);
+});
+
 test('rejects invalid mutation flags and strict budget shapes', () => {
   assert.throws(() => validateTaskContractV2({ ...valid(), mutatesWorkspace: 'yes' }, workspaceRoot), /mutatesWorkspace/);
   assert.throws(() => validateTaskContractV2({ ...valid(), budget: { ...valid().budget, maxAttempts: 4 } }, workspaceRoot), /maxAttempts/);
@@ -183,6 +191,18 @@ test('rejects unsafe JSON values, non-plain objects, and cycles', () => {
 });
 
 test('rejects network policies outside the deny or hostname allowlist forms', () => {
+  const blockedZones = [
+    'localhost', 'service.localhost',
+    'local', 'service.local',
+    'invalid', 'service.invalid',
+    'test', 'service.test',
+    'example', 'service.example',
+    'example.com', 'service.example.com',
+    'example.net', 'service.example.net',
+    'example.org', 'service.example.org',
+    'home.arpa', 'service.home.arpa',
+    'onion', 'service.onion'
+  ];
   for (const policy of [
     'allow',
     { mode: 'allowlist', hosts: [] },
@@ -192,12 +212,12 @@ test('rejects network policies outside the deny or hostname allowlist forms', ()
     { mode: 'allowlist', hosts: ['api.openai.com/path'] },
     { mode: 'allowlist', hosts: ['*.openai.com'] },
     { mode: 'allowlist', hosts: ['127.0.0.1'] },
-    { mode: 'allowlist', hosts: ['localhost'] },
-    { mode: 'allowlist', hosts: ['service.local'] },
     { mode: 'allowlist', hosts: ['API.openai.com'] },
-    { mode: 'allowlist', hosts: ['api.example.com'] },
     { mode: 'allowlist', hosts: ['api.openai.com'], extra: true }
   ]) {
     assert.throws(() => validateTaskContractV2({ ...valid(), networkPolicy: policy }, workspaceRoot), /networkPolicy|host/i);
+  }
+  for (const host of blockedZones) {
+    assert.throws(() => validateTaskContractV2({ ...valid(), networkPolicy: { mode: 'allowlist', hosts: [host] } }, workspaceRoot), /networkPolicy|host/i, host);
   }
 });

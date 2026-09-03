@@ -19,7 +19,7 @@ const ROLES = new Set([
 const VERIFIER_ROLES = new Set(['technical_verifier_agent', 'visual_critic_agent']);
 const PLACEHOLDER = /tbd|todo/i;
 const SHA256 = /^sha256:[0-9a-f]{64}$/;
-const SPECIAL_HOST_SUFFIXES = ['.localhost', '.local', '.test', '.example', '.example.com', '.invalid', '.onion', '.home.arpa'];
+const SPECIAL_HOST_ZONES = ['localhost', 'local', 'invalid', 'test', 'example', 'example.com', 'example.net', 'example.org', 'home.arpa', 'onion'];
 
 function isPlainObject(value) {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -169,7 +169,7 @@ function assertNetworkPolicy(policy) {
 function isPublicDnsHostname(host) {
   if (typeof host !== 'string' || host.length === 0 || host.length > 253 || net.isIP(host) !== 0) return false;
   if (!/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/.test(host)) return false;
-  return host !== 'localhost' && !SPECIAL_HOST_SUFFIXES.some(suffix => host.endsWith(suffix));
+  return !SPECIAL_HOST_ZONES.some(zone => host === zone || host.endsWith(`.${zone}`));
 }
 
 function deepFreeze(value, seen = new Set()) {
