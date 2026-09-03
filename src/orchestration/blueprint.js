@@ -1,5 +1,7 @@
 'use strict';
 
+const { validateTaskContractV2 } = require('./task-contract-v2');
+
 const BLUEPRINT_KEYS = new Set(['version', 'runId', 'clientScope', 'tasks', 'budget', 'allowedTools', 'allowedGates']);
 const TASK_KEYS = new Set(['id', 'dependsOn', 'budget', 'allowedTools', 'allowedGates', 'input']);
 const BUDGET_KEYS = new Set(['maxRetries']);
@@ -111,4 +113,4 @@ function validateBlueprint(input) {
   return JSON.parse(JSON.stringify(input));
 }
 
-module.exports = { validateBlueprint };
+module.exports = { validateBlueprint, validateTaskContractV2 };
