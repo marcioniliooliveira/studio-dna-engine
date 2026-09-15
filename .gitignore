@@ -10,6 +10,13 @@ node_modules/
 
 # Local design-tool workspace and generated canvas exports
 .kombai/
+!.kombai/
+.kombai/*
+!.kombai/canvas/
+.kombai/canvas/*
+!.kombai/canvas/ACON24 home — faithful canvas clone.html
+!.kombai/canvas/jumpflex-home-journey.canvas
+!.kombai/canvas/jumpflex-com-home.canvas
 clientes/**/kombai-canvas/
 
 # Canonical SCALEX component canvases are executable test fixtures
