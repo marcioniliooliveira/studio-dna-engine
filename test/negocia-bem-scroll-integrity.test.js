@@ -149,7 +149,11 @@ test('Probe 2: FAQ interatividade sem click hijacking por containers anteriores'
 
     const firstFaqLine = page.locator('.faq-line').first();
     await firstFaqLine.click();
-    await page.waitForTimeout(150);
+    await page.waitForFunction(
+      el => el && el.classList.contains('is-active'),
+      await firstFaqLine.elementHandle(),
+      { timeout: 3000 }
+    ).catch(() => {});
 
     const isActive = await firstFaqLine.evaluate(el => el.classList.contains('is-active'));
     assert.equal(isActive, true, 'O clique no FAQ deve ativar a linha sem sofrer intercepção');
