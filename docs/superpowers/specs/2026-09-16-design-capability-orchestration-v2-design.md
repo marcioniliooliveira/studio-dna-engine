@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed for user review. This specification defines the target architecture; it does not claim that the described capabilities are implemented.
+Approved for incremental implementation on 2026-09-16. This specification defines the target architecture; only capabilities backed by current runtime evidence may be described as implemented.
 
 ## Purpose
 
@@ -65,6 +65,11 @@ One large task JSON would mix evidence, creative intent, permissions and accepta
 |---|---|---|---|
 | `client-evidence` | Sourced facts, content and missing information | content analyst/human | design architect |
 | `design-intent` | Audience, emotion, narrative, design dials and negative constraints | architect + human | direction generator |
+| `reference-candidate` | Untrusted source identity, roles, provenance and declared usage intent | discovery adapter | qualification core |
+| `reference-qualification` | Separate merit, extraction, fit, runtime, provenance and risk evidence | deterministic verifier + reviewer | portfolio selector |
+| `reference-probe` | Bounded reconstruction results, cost and quality delta | executor + verifier | promotion gate |
+| `reference-promotion` | Human approval bound to candidate, qualification and probe hashes | human + promotion gate | approved source registry |
+| `reference-portfolio` | Non-dominated promoted sources assigned to explicit design roles | portfolio compiler | reference-packet compiler |
 | `reference-packet` | Approved reference evidence and extracted design grammar | reference compiler | direction generator |
 | `visual-direction` | One candidate composition, tokens, assets and motion strategy | architect | board renderer |
 | `human-decision` | Approved/rejected direction or release bound to hashes | human | orchestrator |
@@ -188,6 +193,31 @@ Normative acceptance is a closed union. Free prose cannot be used as a pass cond
 Subjective goals use `human-review-anchor` entries outside the deterministic gate. Each entry must reference an intent-golden hash, a named region and a human decision checkpoint. It can request review but cannot produce a machine pass.
 
 ## Design intelligence model
+
+### Discovery, quarantine and promotion
+
+External websites, repositories, registries and MCP servers are untrusted discovery inputs. They cannot write to `copias/`, become executable dependencies or enter a Reference Pack directly.
+
+The lifecycle is closed and monotonic:
+
+```text
+discovered → quarantined → qualified → probed → promoted
+                      └→ rejected      └→ rejected
+```
+
+Promotion requires all of the following:
+
+1. canonical identity and immutable revision or capture hash;
+2. explicit license evidence or `inspiration-only` usage;
+3. qualification evidence for every claimed role;
+4. a bounded probe with zero P0 failures and a positive measured quality delta;
+5. explicit human approval bound to the candidate, qualification and probe hashes.
+
+Quality is a vector, not one opaque score. Creative merit, extractability, client fit, runtime quality and provenance are benefit axes; security, licensing and implementation complexity are risk axes. Selection uses the non-dominated Pareto set per required role. Popularity, stars and download counts may help discovery but cannot promote a source.
+
+One source is not expected to provide every capability. A portfolio may combine art direction from a captured site, motion mechanics from a licensed experiment, component behavior from an approved Storybook and accessibility behavior from a design system.
+
+The domain core is transport-independent. GitHub, registry, Storybook, Figma, Penpot and catalog integrations are adapters that produce `reference-candidate` contracts. MCP is an optional protocol boundary and never an authorization or quality boundary. External instructions, tool descriptions, README content and metadata are treated as untrusted data.
 
 ### Reference Pack
 
@@ -414,12 +444,14 @@ The work is delivered as vertical slices prioritized by perceptible output:
 
 1. freeze a visual baseline;
 2. implement surgical contracts and diff verification;
-3. produce one reference pack and three hero directions;
-4. implement the selected hero through Gemini;
-5. prove visual and responsive fidelity;
-6. generalize tokens and design registry;
-7. add the review console;
-8. run the blind benchmark;
-9. extend from hero to complete sites.
+3. implement the local quarantine, qualification, probe and promotion core;
+4. add read-only discovery adapters and promote one role-based reference portfolio;
+5. produce one reference pack and three hero directions;
+6. implement the selected hero through Gemini;
+7. prove visual and responsive fidelity;
+8. generalize tokens and design registry;
+9. add the review console;
+10. run the blind benchmark;
+11. extend from hero to complete sites.
 
 No client is promoted to `verified` or `production` solely because the V2 workflow exists.

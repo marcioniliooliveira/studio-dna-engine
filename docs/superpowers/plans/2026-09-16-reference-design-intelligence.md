@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-16-design-capability-orchestration-v2-design.md`
 
+**Prerequisite:** Complete `docs/superpowers/plans/2026-09-16-reference-discovery-qualification.md`. This plan consumes promoted sources; it does not discover, score or approve external candidates.
+
 ## Global Constraints
 
 - Read only the active client's evidence and explicitly approved references.
@@ -22,7 +24,7 @@
 
 ---
 
-### Task 1: Typed reference provenance registry
+### Task 1: Approved reference source projection
 
 **Files:**
 - Create: `src/design/reference-source-contract.js`
@@ -31,11 +33,12 @@
 - Test: `test/reference-registry-v2.test.js`
 
 **Interfaces:**
-- Produces: `registerReferenceSource(input): RegisteredReferenceSource`
+- Consumes: `ReferencePromotion`
+- Produces: `registerReferenceSource(promotion): RegisteredReferenceSource`
 - Produces: `getApprovedReferenceSources({ clientScope, sourceIds }): RegisteredReferenceSource[]`
 
-- [ ] **Step 1: Write failing tests for `git-repository`, `web-page`, `uploaded-image`, `local-capture`, `figma-file`, `penpot-file`, `design-system` and `client-asset`**
-- [ ] **Step 2: Prove Git requires a commit while web pages require capture timestamp and content hash**
+- [ ] **Step 1: Write failing tests projecting promoted `git-repository`, `web-page`, `uploaded-image`, `local-capture`, `figma-file`, `penpot-file`, `design-system` and `client-asset` candidates**
+- [ ] **Step 2: Prove the source preserves the immutable Git commit or web capture timestamp and content hash from the promotion evidence**
 
 ```js
 test('does not require a Git commit for a captured web page', () => {
@@ -45,7 +48,7 @@ test('does not require a Git commit for a captured web page', () => {
 });
 ```
 
-- [ ] **Step 3: Reject sources without role, provenance, usage status or client/global scope**
+- [ ] **Step 3: Reject direct source input and promotions without role, provenance, usage status or client/global scope**
 - [ ] **Step 4: Reject `inspiration-only` sources used as executable code dependencies**
 - [ ] **Step 5: Run focused and Vault integrity tests**
 - [ ] **Step 6: Commit with `feat(design): add typed reference provenance registry`**

@@ -9,7 +9,8 @@ Increase observable design quality first, while building only the orchestration 
 ```text
 Baseline visual
 → Delegation kernel
-→ Reference intelligence
+→ Reference discovery and qualification
+→ Reference grammar
 → Three approved directions
 → Gemini implementation
 → Visual proof
@@ -44,7 +45,22 @@ Baseline visual
 
 Implementation plan: `docs/superpowers/plans/2026-09-16-surgical-delegation-kernel.md`.
 
-## Milestone 2 — Reference intelligence and design grammar
+## Milestone 2A — Reference discovery and qualification
+
+**Perceptible impact:** better raw material reaches the design process without asking the creator to curate the internet manually.
+
+- Discover candidates through read-only adapters rather than granting external catalogs execution authority.
+- Quarantine every external candidate and bind it to canonical identity, immutable revision, license evidence and hashes.
+- Score creative merit, extractability, client fit, runtime quality, provenance and risk as separate dimensions.
+- Select non-dominated candidates by role instead of using popularity or one opaque aggregate score.
+- Run bounded probe builds and require measured improvement plus explicit human approval before promotion.
+- Keep MCP as an optional adapter around a local domain core; an MCP listing is never treated as proof of quality or safety.
+
+**Exit gate:** an untrusted candidate cannot enter a Reference Pack until provenance, qualification, probe evidence and human approval all match the promoted artifact hashes.
+
+Implementation plan: `docs/superpowers/plans/2026-09-16-reference-discovery-qualification.md`.
+
+## Milestone 2B — Reference intelligence and design grammar
 
 **Perceptible impact:** stronger hierarchy, less generic composition and better understanding of why a reference works.
 
@@ -132,4 +148,3 @@ Infrastructure work is admitted only when it unlocks one of the following observ
 6. lower cost per approved result.
 
 Anything else remains outside this roadmap.
-
