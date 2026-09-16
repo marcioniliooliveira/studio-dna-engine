@@ -24,30 +24,22 @@ const ReferenceProbeSchema = z.object({
   }),
   probeHash: z.string().regex(SHA256)
 }).strict();
+const ReferenceProbeInputSchema = ReferenceProbeSchema.extend({ probeHash: z.string().regex(SHA256).optional() }).strict();
 
 function validateReferenceProbe(input) {
   canonicalize(input);
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('probe must be an object');
-  const probe = { ...input };
-  if (probe.probeHash === undefined) {
-    probe.probeHash = hashCanonical(probe);
-  }
-  const validated = ReferenceProbeSchema.parse(probe);
-  assertCanonicalOrder(validated.evidenceIds, 'evidenceIds');
-  const { probeHash, ...withoutHash } = validated;
-  if (probeHash !== hashCanonical(withoutHash)) throw new TypeError('probeHash does not match probe content');
-  return validated;
+  const parsed = ReferenceProbeInputSchema.parse(input);
+  const { probeHash: suppliedProbeHash, ...withoutHash } = parsed;
+  const probe = { ...withoutHash, evidenceIds: [...withoutHash.evidenceIds].sort(compareOrdinal) };
+  const expectedHash = hashCanonical(probe);
+  const probeHash = suppliedProbeHash === undefined ? expectedHash : suppliedProbeHash;
+  if (probeHash !== expectedHash) throw new TypeError('probeHash does not match probe content');
+  return ReferenceProbeSchema.parse({ ...probe, probeHash });
 }
 
 function generateReferenceProbeJsonSchema() {
   return z.toJSONSchema(ReferenceProbeSchema);
-}
-
-function assertCanonicalOrder(items, label) {
-  const sorted = [...items].sort(compareOrdinal);
-  if (items.some((item, index) => item !== sorted[index])) {
-    throw new TypeError(`${label} must use canonical lexicographic order`);
-  }
 }
 
 module.exports = {

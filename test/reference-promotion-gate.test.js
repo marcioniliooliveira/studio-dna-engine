@@ -38,7 +38,7 @@ function makeCandidate(overrides = {}) {
   return { ...candidate, candidateHash: candidateHash || hashCanonical(unregistered) };
 }
 
-function makeQualification(candidate = makeCandidate()) {
+function makeQualification(candidate = makeCandidate(), evidence = { 'evidence-001': { sourceHash: ARTIFACT_HASH, path: 'audit/report.json' } }) {
   return qualifyReferenceCandidate({
     candidate,
     rubricVersion: 'v1',
@@ -50,7 +50,7 @@ function makeQualification(candidate = makeCandidate()) {
       provenanceConfidence: { value: 90, evidenceIds: ['evidence-001'] },
       risk: { value: 20, evidenceIds: ['evidence-001'] }
     },
-    evidence: { 'evidence-001': { sourceHash: ARTIFACT_HASH, path: 'audit/report.json' } }
+    evidence
   });
 }
 
@@ -74,7 +74,10 @@ function makeProbe(candidate = makeCandidate(), qualification = makeQualificatio
     ...overrides
   };
   const { probeHash, ...withoutHash } = probe;
-  return { ...probe, probeHash: probeHash || hashCanonical(withoutHash) };
+  return {
+    ...probe,
+    probeHash: probeHash || hashCanonical({ ...withoutHash, evidenceIds: [...withoutHash.evidenceIds].sort() })
+  };
 }
 
 function makeDecision(candidate, qualification, probe, overrides = {}) {
@@ -115,11 +118,32 @@ test('rejects probe unknown fields, invalid metrics, and unordered duplicate evi
   for (const overrides of [
     { unexpected: true }, { acceptancePassRatio: 1.1 }, { p0Failures: -1 },
     { pairwiseQualityDelta: 101 }, { attempts: 4 }, { inputTokens: -1 },
-    { outputTokens: 1.5 }, { durationMs: -1 }, { evidenceIds: ['z', 'a'] },
+    { outputTokens: 1.5 }, { durationMs: -1 },
     { evidenceIds: ['evidence-001', 'evidence-001'] }
   ]) {
     assert.throws(() => validateReferenceProbe(makeProbe(candidate, qualification, overrides)));
   }
+});
+
+test('normalizes unordered probe evidence IDs before hashing and promotion', () => {
+  const candidate = makeCandidate();
+  const qualification = makeQualification(candidate, {
+    'evidence-001': { sourceHash: ARTIFACT_HASH, path: 'audit/report.json' },
+    z: { sourceHash: ARTIFACT_HASH, path: 'audit/z.json' },
+    a: { sourceHash: ARTIFACT_HASH, path: 'audit/a.json' }
+  });
+  const unordered = makeProbe(candidate, qualification, { evidenceIds: ['z', 'a'] });
+  const reversed = makeProbe(candidate, qualification, { evidenceIds: ['a', 'z'] });
+  const runtimeProbe = validateReferenceProbe(unordered);
+  const schemaValidate = new Ajv2020({ strict: false, allErrors: true, validateFormats: false }).compile(probeSchema);
+
+  assert.equal(schemaValidate(unordered), true, JSON.stringify(schemaValidate.errors));
+  assert.deepEqual(runtimeProbe.evidenceIds, ['a', 'z']);
+  assert.equal(runtimeProbe.probeHash, validateReferenceProbe(reversed).probeHash);
+  assert.doesNotThrow(() => promoteReference({
+    candidate, qualification, probe: runtimeProbe,
+    humanDecision: makeDecision(candidate, qualification, runtimeProbe)
+  }));
 });
 
 test('promotion rejects forged links, insufficient evidence, invalid human decisions, and cross-client inputs', () => {
