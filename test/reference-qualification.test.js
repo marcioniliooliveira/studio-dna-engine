@@ -262,3 +262,14 @@ test('produces an ordinally ordered mixed-case Unicode qualification accepted by
     qualifications: [qualification], requiredRoles: ['composition'], maxCandidates: 1
   }).candidateIds, ['B']);
 });
+
+test('schema and runtime reject an empty evidence object', () => {
+  const invalid = makeQualification('alpha', ['composition']);
+  invalid.evidence = {};
+  const { qualificationHash, ...withoutHash } = invalid;
+  invalid.qualificationHash = hashCanonical(withoutHash);
+  const validate = new Ajv2020({ strict: false, allErrors: true, validateFormats: false }).compile(referenceQualificationSchema);
+
+  assert.throws(() => validateReferenceQualification(invalid));
+  assert.equal(validate(invalid), false, JSON.stringify(validate.errors));
+});

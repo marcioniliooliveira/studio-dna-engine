@@ -12,7 +12,7 @@ const EvidenceRecordSchema = z.object({
   path: z.string().min(1)
 }).strict();
 
-const EvidenceSchema = z.record(z.string().min(1), EvidenceRecordSchema).refine(evidence => Object.keys(evidence).length > 0, {
+const EvidenceSchema = z.record(z.string().min(1), EvidenceRecordSchema).meta({ minProperties: 1 }).refine(evidence => Object.keys(evidence).length > 0, {
   message: 'evidence must not be empty'
 });
 
