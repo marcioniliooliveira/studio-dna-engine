@@ -40,6 +40,9 @@ class ContextRouter {
 
       // 2. Verificar leitura não autorizada de cópias brutas
       if (normalizedPath.startsWith('copias/')) {
+        if (stageName === STAGES.STAGE_01_REFERENCE_SELECTION) {
+          violations.push(`Raw reference access is forbidden during ${stageName}: "${normalizedPath}"`);
+        }
         const parts = normalizedPath.split('/');
         const refInPath = parts[1];
         if (selectedRefSlug && refInPath !== selectedRefSlug) {

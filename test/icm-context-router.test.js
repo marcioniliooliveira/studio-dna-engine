@@ -3,6 +3,18 @@ const assert = require('node:assert/strict');
 const { ContextRouter } = require('../icm/_core/context-router');
 const { STAGES, STAGE_CONTRACTS } = require('../icm/_core/contracts');
 const { hashCanonical } = require('../src/design/canonical-json');
+const { qualifyReferenceCandidate } = require('../src/design/reference-qualification');
+const { promoteReference } = require('../src/design/reference-promotion-gate');
+const { buildReferencePortfolio } = require('../src/design/reference-portfolio');
+
+function makeTrustedPromotion() {
+  const candidateWithoutHash = { schemaVersion: 2, contractKind: 'reference-candidate', candidateId: 'reference-001', clientScope: 'cliente-a', sourceType: 'git-repository', roles: ['composition'], usageIntent: 'code-candidate', provenance: { canonicalUri: 'https://github.com/example/reference-001', commit: '0123456789abcdef0123456789abcdef01234567', license: { spdxId: 'MIT', evidenceUri: 'https://github.com/example/license' } } };
+  const candidate = { ...candidateWithoutHash, lifecycle: 'quarantined', registeredAt: '2026-09-16T12:00:00.000Z', candidateHash: hashCanonical(candidateWithoutHash) };
+  const qualification = qualifyReferenceCandidate({ candidate, rubricVersion: 'v1', signals: Object.fromEntries(['creativeMerit', 'extractability', 'clientFit', 'runtimeQuality', 'provenanceConfidence', 'risk'].map(name => [name, { value: name === 'risk' ? 20 : 80, evidenceIds: ['evidence-001'] }])), evidence: { 'evidence-001': { sourceHash: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', path: 'audit/report.json' } } });
+  const probeWithoutHash = { schemaVersion: 2, contractKind: 'reference-probe', candidateId: candidate.candidateId, clientScope: candidate.clientScope, candidateHash: candidate.candidateHash, qualificationHash: qualification.qualificationHash, artifactHash: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', acceptancePassRatio: 1, p0Failures: 0, pairwiseQualityDelta: 1, attempts: 1, inputTokens: 100, outputTokens: 200, durationMs: 300, evidenceIds: ['evidence-001'] };
+  const probe = { ...probeWithoutHash, probeHash: hashCanonical(probeWithoutHash) };
+  return promoteReference({ candidate, qualification, probe, humanDecision: { schemaVersion: 2, contractKind: 'human-reference-decision', clientScope: candidate.clientScope, status: 'approved', actorId: 'reviewer-001', decidedAt: '2026-09-16T12:30:00.000Z', candidateHash: candidate.candidateHash, qualificationHash: qualification.qualificationHash, probeHash: probe.probeHash } });
+}
 
 function makePortfolio(clientScope = 'cliente-a') {
   const withoutHash = {
@@ -71,13 +83,27 @@ test('ICM Stage Contract validates reference selection output', () => {
   assert.equal(validRes.valid, true);
 });
 
-test('ICM Stage 01 preserves V1 validation and accepts a valid V2 role-scoped portfolio', () => {
+test('ICM Stage 01 blocks raw copies even when the reference is selected', () => {
+  const router = new ContextRouter();
+  const res = router.validateContextAccess(STAGES.STAGE_01_REFERENCE_SELECTION, ['copias/selected-ref/index.html'], { selectedRefSlug: 'selected-ref' });
+  assert.equal(res.allowed, false);
+  assert.ok(res.violations.some(v => v.includes('Raw reference access')));
+});
+
+test('ICM Stage 01 preserves V1 validation and fails closed for V2 without trusted promotions', () => {
   const contract = STAGE_CONTRACTS[STAGES.STAGE_01_REFERENCE_SELECTION];
   assert.equal(contract.validateOutput({ selectedRefSlug: 'reference-001', compatibilityScore: 92 }).valid, true);
   assert.equal(contract.validateOutput({
     schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92,
     referencePortfolio: makePortfolio('cliente-a')
-  }, { activeClientSlug: 'cliente-a' }).valid, true);
+  }, { activeClientSlug: 'cliente-a' }).valid, false);
+});
+
+test('ICM Stage 01 accepts V2 only with a matching trusted promotion context', () => {
+  const contract = STAGE_CONTRACTS[STAGES.STAGE_01_REFERENCE_SELECTION];
+  const promotion = makeTrustedPromotion();
+  const referencePortfolio = buildReferencePortfolio({ clientScope: 'cliente-a', requiredRoles: ['composition'], promotions: [promotion] });
+  assert.equal(contract.validateOutput({ schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio }, { activeClientSlug: 'cliente-a', promotions: [promotion] }).valid, true);
 });
 
 test('ICM Stage 01 rejects missing, forged, and client-mismatched V2 portfolios', () => {
@@ -86,9 +112,10 @@ test('ICM Stage 01 rejects missing, forged, and client-mismatched V2 portfolios'
   for (const output of [
     { schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92 },
     { schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio: { ...valid, portfolioHash: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' } },
-    { schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio: valid }
+    { schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio: valid, extra: true },
+    { schemaVersion: 3, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio: valid }
   ]) {
-    assert.equal(contract.validateOutput(output, { activeClientSlug: output === undefined ? 'cliente-a' : 'cliente-b' }).valid, false);
+    assert.equal(contract.validateOutput(output, { activeClientSlug: 'cliente-b' }).valid, false);
   }
 });
 

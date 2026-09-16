@@ -32,9 +32,10 @@ const STAGE_CONTRACTS = {
         return { valid: false, error: 'compatibilityScore deve ser um número entre 0 e 100' };
       }
       if (Object.hasOwn(data, 'schemaVersion')) {
-        if (data.schemaVersion !== 2 || !Object.hasOwn(data, 'referencePortfolio')) return { valid: false, error: 'Stage 01 V2 requires referencePortfolio' };
+        const keys = Object.keys(data).sort();
+        if (data.schemaVersion !== 2 || keys.join(',') !== 'compatibilityScore,referencePortfolio,schemaVersion,selectedRefSlug' || typeof data.selectedRefSlug !== 'string' || typeof data.referencePortfolio !== 'object' || data.referencePortfolio === null || Array.isArray(data.referencePortfolio)) return { valid: false, error: 'Stage 01 V2 requires an exact referencePortfolio envelope' };
         try {
-          const portfolio = validateReferencePortfolio(data.referencePortfolio);
+          const portfolio = validateReferencePortfolio(data.referencePortfolio, { promotions: options.promotions });
           if (options.activeClientSlug && portfolio.clientScope !== options.activeClientSlug) return { valid: false, error: 'referencePortfolio does not match active client' };
         } catch (error) {
           return { valid: false, error: `invalid referencePortfolio: ${error.message}` };

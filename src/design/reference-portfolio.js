@@ -16,17 +16,31 @@ const ReferencePortfolioSchema = z.object({
 
 function sourceOrder(left, right) { return compareOrdinal(left.candidateId, right.candidateId) || compareOrdinal(left.promotionHash, right.promotionHash); }
 
-function validateReferencePortfolio(input) {
+// JSON Schema is structural only; source-to-promotion authorization requires trusted runtime context.
+function validateReferencePortfolio(input, options = {}) {
   canonicalize(input);
   const portfolio = ReferencePortfolioSchema.parse(input);
   const sorted = [...portfolio.sources].sort(sourceOrder);
   if (portfolio.sources.some((source, index) => source !== sorted[index])) throw new TypeError('sources must use canonical order');
   const required = new Set(portfolio.requiredRoles);
+  if (!Array.isArray(options.promotions) || options.promotions.length === 0) throw new TypeError('trusted promotions are required to authorize a portfolio');
+  const promotionsByCandidate = new Map();
+  for (const promotion of options.promotions.map(validateReferencePromotion)) {
+    if (promotionsByCandidate.has(promotion.candidateId)) throw new TypeError('trusted promotions must not repeat candidates');
+    promotionsByCandidate.set(promotion.candidateId, promotion);
+  }
   const covered = new Set();
-  for (const source of portfolio.sources) for (const role of source.roles) {
+  for (const source of portfolio.sources) {
+    const promotion = promotionsByCandidate.get(source.candidateId);
+    if (!promotion || promotion.promotionHash !== source.promotionHash) throw new TypeError('source is not authorized by a trusted promotion');
+    if (promotion.clientScope !== portfolio.clientScope && promotion.clientScope !== 'global') throw new TypeError('trusted promotion client scope is not allowed');
+    const approvedRoles = promotion.roles.filter(role => required.has(role)).sort(compareOrdinal);
+    if (source.roles.length !== approvedRoles.length || source.roles.some((role, index) => role !== approvedRoles[index])) throw new TypeError('source roles do not exactly match trusted promotion evidence');
+    for (const role of source.roles) {
     if (!required.has(role)) throw new TypeError('source roles must be required by the portfolio');
     if (covered.has(role)) throw new TypeError('portfolio must not assign a role more than once');
     covered.add(role);
+    }
   }
   if (covered.size !== required.size) throw new TypeError('portfolio does not cover every required role');
   const { portfolioHash, ...withoutHash } = portfolio;
@@ -52,7 +66,7 @@ function buildReferencePortfolio(input) {
   }).filter(source => source.roles.length > 0).sort(sourceOrder);
   const portfolio = { schemaVersion: 2, contractKind: 'reference-portfolio', clientScope, requiredRoles, sources };
   portfolio.portfolioHash = hashCanonical(portfolio);
-  return validateReferencePortfolio(portfolio);
+  return validateReferencePortfolio(portfolio, { promotions: input.promotions });
 }
 
 function generateReferencePortfolioJsonSchema() { return z.toJSONSchema(ReferencePortfolioSchema); }

@@ -99,3 +99,22 @@ test('rejects assignments outside promotion evidence and unknown portfolio field
   assert.equal(validateSchema({ ...portfolio, extra: true }), false, JSON.stringify(validateSchema.errors));
   assert.equal(validateSchema({ ...portfolio, requiredRoles: ['composition', 'composition'] }), false, JSON.stringify(validateSchema.errors));
 });
+
+test('requires trusted promotions to authorize a self-hashed portfolio source', () => {
+  const promotion = makePromotion('candidate-a', ['composition']);
+  const portfolio = buildReferencePortfolio({ clientScope: 'client-a', requiredRoles: ['composition'], promotions: [promotion] });
+  assert.throws(() => validateReferencePortfolio(portfolio));
+  assert.throws(() => validateReferencePortfolio(portfolio, { promotions: [] }));
+  assert.throws(() => validateReferencePortfolio(portfolio, { promotions: [makePromotion('candidate-b', ['composition'])] }));
+  assert.deepEqual(validateReferencePortfolio(portfolio, { promotions: [promotion] }), portfolio);
+});
+
+test('retains exactly one and exactly five trusted sources at portfolio boundaries', () => {
+  const one = makePromotion('candidate-a', ['composition']);
+  const five = [
+    one, makePromotion('candidate-b', ['typography']), makePromotion('candidate-c', ['interaction']),
+    makePromotion('candidate-d', ['motion']), makePromotion('candidate-e', ['material'])
+  ];
+  assert.equal(buildReferencePortfolio({ clientScope: 'client-a', requiredRoles: ['composition'], promotions: [one] }).sources.length, 1);
+  assert.equal(buildReferencePortfolio({ clientScope: 'client-a', requiredRoles: ['composition', 'typography', 'interaction', 'motion', 'material'], promotions: five }).sources.length, 5);
+});
