@@ -28,7 +28,7 @@
 
 `provenance` is strict and always contains `canonicalUri`. A Git repository additionally requires a 40-character lowercase hexadecimal `commit` and `license: { spdxId, evidenceUri }`. A web page requires ISO `capturedAt` and `contentSha256` matching `sha256:` plus 64 lowercase hexadecimal characters. Other source types require `contentSha256`; `code-candidate` additionally requires license evidence. Registration adds `lifecycle: "quarantined"`, `registeredAt` and `candidateHash` and never accepts those derived fields from discovery input.
 
-`ReferenceQualification` contains candidate identity/hash, scope, roles, `rubricVersion`, and strict score entries for `creativeMerit`, `extractability`, `clientFit`, `runtimeQuality`, `provenanceConfidence` and `risk`. Every entry is `{ value: integer 0..100, evidenceIds: non-empty unique string[] }`. It also contains a canonical `qualificationHash`.
+`ReferenceQualification` contains candidate identity/hash, scope, roles, `rubricVersion`, and strict score entries for `creativeMerit`, `extractability`, `clientFit`, `runtimeQuality`, `provenanceConfidence` and `risk`. Every entry is `{ value: integer 0..100, evidenceIds: non-empty unique string[] }`. The `evidence` input is a strict array of `{ id, sourceHash, path }`, and every score evidence ID must resolve to one of those entries. The result also contains the evidence array and a canonical `qualificationHash`.
 
 `ReferenceProbe` contains candidate, qualification and artifact hashes plus `acceptancePassRatio` in `0..1`, non-negative integer `p0Failures`, signed integer `pairwiseQualityDelta` in `-100..100`, integer `attempts` in `1..3`, non-negative integer `inputTokens`, `outputTokens`, `durationMs` and non-empty `evidenceIds`. `HumanReferenceDecision` is strict and contains `status: "approved" | "rejected"`, `actorId`, ISO `decidedAt`, `candidateHash`, `qualificationHash` and `probeHash`. `ReferencePromotion` preserves `candidateId`, `clientScope`, candidate/qualification/probe hashes, the approved roles and usage intent, decision actor/time and adds a canonical `promotionHash`; it contains no source code or raw reference content.
 
@@ -92,7 +92,7 @@ test('registers an external candidate in quarantine and rejects self-approval', 
 
 - [ ] **Step 1: Write a failing test requiring literal 0–100 values for `creativeMerit`, `extractability`, `clientFit`, `runtimeQuality`, `provenanceConfidence` and `risk`**
 - [ ] **Step 2: Run the focused test and verify RED because qualification is missing**
-- [ ] **Step 3: Write failing tests proving every score has evidence IDs, a quarantined candidate cannot claim executable-code usage, and popularity fields are rejected**
+- [ ] **Step 3: Write failing tests proving every score has resolvable evidence IDs, qualification preserves quarantine instead of granting execution authority, and popularity fields are rejected**
 - [ ] **Step 4: Write a failing Pareto test where a candidate dominated on every benefit axis with equal-or-higher risk is excluded without averaging the dimensions**
 
 ```js
