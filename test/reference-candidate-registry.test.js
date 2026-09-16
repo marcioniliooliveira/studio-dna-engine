@@ -3,11 +3,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const Ajv2020 = require('ajv/dist/2020');
 
 const {
   registerReferenceCandidate,
   listReferenceCandidates
 } = require('../src/design/reference-candidate-registry');
+const { validateReferenceCandidate } = require('../src/design/reference-candidate-contract');
+const referenceCandidateSchema = require('../schemas/v2/reference-candidate.schema.json');
 
 function makeGitCandidate(overrides = {}) {
   return {
@@ -148,5 +151,46 @@ test('rejects duplicate identifiers and isolates listing by client scope', () =>
     );
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('rejects symbol-keyed and non-enumerable discovery fields', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'reference-candidate-'));
+  const registryPath = path.join(directory, 'registry.json');
+  const symbolCandidate = makeGitCandidate();
+  const hiddenCandidate = makeGitCandidate({ candidateId: 'hidden-001' });
+  symbolCandidate[Symbol('untrusted')] = 'value';
+  Object.defineProperty(hiddenCandidate, 'untrusted', { value: 'value', enumerable: false });
+
+  try {
+    for (const candidate of [symbolCandidate, hiddenCandidate]) {
+      assert.throws(() => registerReferenceCandidate({
+        registryPath,
+        candidate,
+        now: '2026-09-16T12:00:00.000Z'
+      }), /Non-JSON-safe/);
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('checked-in JSON Schema rejects duplicate roles and invalid provenance combinations', () => {
+  const validate = new Ajv2020({ strict: false, allErrors: true, validateFormats: false }).compile(referenceCandidateSchema);
+  const duplicateRoles = makeGitCandidate({ roles: ['composition', 'composition'] });
+  const missingGitEvidence = makeGitCandidate({
+    provenance: { canonicalUri: 'https://github.com/example/reference' }
+  });
+  const missingCodeLicense = makeGitCandidate({
+    sourceType: 'local-capture',
+    provenance: {
+      canonicalUri: 'file:///capture.png',
+      contentSha256: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+    }
+  });
+
+  for (const candidate of [duplicateRoles, missingGitEvidence, missingCodeLicense]) {
+    assert.throws(() => validateReferenceCandidate(candidate));
+    assert.equal(validate(candidate), false, JSON.stringify(validate.errors));
   }
 });

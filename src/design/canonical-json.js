@@ -15,6 +15,7 @@ function serialize(value, location) {
   }
 
   if (Array.isArray(value)) {
+    assertSafeArray(value, location);
     return `[${value.map((item, index) => serialize(item, `${location}[${index}]`)).join(',')}]`;
   }
 
@@ -24,12 +25,42 @@ function serialize(value, location) {
       throw new TypeError(`Non-JSON-safe object at ${location}`);
     }
 
-    return `{${Object.keys(value).sort().map(key => (
-      `${JSON.stringify(key)}:${serialize(value[key], `${location}.${key}`)}`
+    const keys = ownEnumerableDataKeys(value, location);
+    return `{${keys.sort().map(key => (
+      `${JSON.stringify(key)}:${serialize(Object.getOwnPropertyDescriptor(value, key).value, `${location}.${key}`)}`
     )).join(',')}}`;
   }
 
   throw new TypeError(`Non-JSON-safe value at ${location}`);
+}
+
+function ownEnumerableDataKeys(value, location) {
+  const keys = Reflect.ownKeys(value);
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (typeof key !== 'string' || !descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) {
+      throw new TypeError(`Non-JSON-safe property at ${location}`);
+    }
+  }
+  return keys;
+}
+
+function assertSafeArray(value, location) {
+  const keys = Reflect.ownKeys(value);
+  for (const key of keys) {
+    if (key === 'length') continue;
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    const index = Number(key);
+    if (
+      typeof key !== 'string' || !descriptor.enumerable || !Object.hasOwn(descriptor, 'value') ||
+      !Number.isInteger(index) || index < 0 || String(index) !== key || index >= value.length
+    ) {
+      throw new TypeError(`Non-JSON-safe property at ${location}`);
+    }
+  }
+  for (let index = 0; index < value.length; index += 1) {
+    if (!Object.hasOwn(value, index)) throw new TypeError(`Non-JSON-safe array hole at ${location}[${index}]`);
+  }
 }
 
 function hashCanonical(value) {

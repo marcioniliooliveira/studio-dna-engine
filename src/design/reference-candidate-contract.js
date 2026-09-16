@@ -18,7 +18,7 @@ const LicenseSchema = z.object({
   evidenceUri: z.string().url()
 }).strict();
 
-const ProvenanceSchema = z.object({
+const ProvenanceBaseSchema = z.object({
   canonicalUri: z.string().url(),
   commit: z.string().regex(GIT_COMMIT).optional(),
   license: LicenseSchema.optional(),
@@ -26,39 +26,53 @@ const ProvenanceSchema = z.object({
   contentSha256: z.string().regex(SHA256).optional()
 }).strict();
 
-const ReferenceCandidateSchema = z.object({
+const RolesSchema = z.array(z.enum(ROLES)).min(1).refine(roles => new Set(roles).size === roles.length, {
+  message: 'roles must not contain duplicates'
+}).meta({ uniqueItems: true });
+
+const CandidateBaseSchema = z.object({
   schemaVersion: z.literal(2),
   contractKind: z.literal('reference-candidate'),
   candidateId: z.string().min(1),
   clientScope: z.string().min(1),
-  sourceType: z.enum(SOURCE_TYPES),
-  roles: z.array(z.enum(ROLES)).min(1).refine(roles => new Set(roles).size === roles.length, {
-    message: 'roles must not contain duplicates'
-  }),
-  usageIntent: z.enum(USAGE_INTENTS),
-  provenance: ProvenanceSchema
-}).strict().superRefine((candidate, context) => {
-  const { provenance } = candidate;
-  const add = (message) => context.addIssue({ code: 'custom', path: ['provenance'], message });
+  roles: RolesSchema
+}).strict();
 
-  if (candidate.sourceType === 'git-repository') {
-    if (!provenance.commit) add('git-repository requires commit');
-    if (!provenance.license) add('git-repository requires license evidence');
-  } else if (candidate.sourceType === 'web-page') {
-    if (!provenance.capturedAt) add('web-page requires capturedAt');
-    if (!provenance.contentSha256) add('web-page requires contentSha256');
-  } else if (!provenance.contentSha256) {
-    add(`${candidate.sourceType} requires contentSha256`);
-  }
+const GitProvenanceSchema = ProvenanceBaseSchema.extend({
+  commit: z.string().regex(GIT_COMMIT),
+  license: LicenseSchema
+}).strict();
+const WebProvenanceSchema = ProvenanceBaseSchema.extend({
+  capturedAt: z.iso.datetime({ offset: true }),
+  contentSha256: z.string().regex(SHA256)
+}).strict();
+const ContentProvenanceSchema = ProvenanceBaseSchema.extend({
+  contentSha256: z.string().regex(SHA256)
+}).strict();
+const LicensedWebProvenanceSchema = WebProvenanceSchema.extend({ license: LicenseSchema }).strict();
+const LicensedContentProvenanceSchema = ContentProvenanceSchema.extend({ license: LicenseSchema }).strict();
+const NonCodeIntentSchema = z.enum(['inspiration-only', 'asset-candidate']);
+const OtherSourceTypeSchema = z.enum(SOURCE_TYPES.filter(type => type !== 'git-repository' && type !== 'web-page'));
 
-  if (candidate.usageIntent === 'code-candidate' && !provenance.license) {
-    add('code-candidate requires license evidence');
-  }
-});
+function candidateVariant(sourceType, usageIntent, provenance) {
+  return CandidateBaseSchema.extend({ sourceType, usageIntent, provenance }).strict();
+}
+
+const ReferenceCandidateSchema = z.union([
+  candidateVariant(z.literal('git-repository'), z.enum(USAGE_INTENTS), GitProvenanceSchema),
+  candidateVariant(z.literal('web-page'), NonCodeIntentSchema, WebProvenanceSchema),
+  candidateVariant(z.literal('web-page'), z.literal('code-candidate'), LicensedWebProvenanceSchema),
+  candidateVariant(OtherSourceTypeSchema, NonCodeIntentSchema, ContentProvenanceSchema),
+  candidateVariant(OtherSourceTypeSchema, z.literal('code-candidate'), LicensedContentProvenanceSchema)
+]);
 
 function validateReferenceCandidate(input) {
   canonicalize(input);
   return ReferenceCandidateSchema.parse(input);
+}
+
+function generateReferenceCandidateJsonSchema() {
+  return z.toJSONSchema(ReferenceCandidateSchema);
 }
 
 module.exports = {
@@ -66,5 +80,6 @@ module.exports = {
   ROLES,
   USAGE_INTENTS,
   ReferenceCandidateSchema,
+  generateReferenceCandidateJsonSchema,
   validateReferenceCandidate
 };
