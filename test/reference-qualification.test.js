@@ -52,7 +52,7 @@ function makeScores(overrides = {}) {
 }
 
 function makeEvidence(overrides = {}) {
-  return [{ id: 'evidence-001', sourceHash: HASH, path: 'audit/report.json', ...overrides }];
+  return { 'evidence-001': { sourceHash: HASH, path: 'audit/report.json', ...overrides } };
 }
 
 test('rejects scores outside integer bounds', () => {
@@ -99,19 +99,16 @@ test('returns a stable canonical qualification with sorted evidence and evidence
   const first = qualifyReferenceCandidate({
     candidate: makeCandidate(), rubricVersion: 'v1',
     signals: makeScores({ creativeMerit: { value: 80, evidenceIds: ['evidence-002', 'evidence-001'] } }),
-    evidence: [
-      { id: 'evidence-002', sourceHash: HASH, path: 'audit/second.json' },
-      ...makeEvidence()
-    ]
+    evidence: { 'evidence-002': { sourceHash: HASH, path: 'audit/second.json' }, ...makeEvidence() }
   });
   const second = qualifyReferenceCandidate({
     candidate: makeCandidate(), rubricVersion: 'v1',
     signals: makeScores({ creativeMerit: { value: 80, evidenceIds: ['evidence-001', 'evidence-002'] } }),
-    evidence: [...makeEvidence(), { id: 'evidence-002', sourceHash: HASH, path: 'audit/second.json' }]
+    evidence: { ...makeEvidence(), 'evidence-002': { sourceHash: HASH, path: 'audit/second.json' } }
   });
 
   assert.deepEqual(first, second);
-  assert.deepEqual(first.evidence.map(item => item.id), ['evidence-001', 'evidence-002']);
+  assert.deepEqual(Object.keys(first.evidence), ['evidence-001', 'evidence-002']);
   assert.deepEqual(first.scores.creativeMerit.evidenceIds, ['evidence-001', 'evidence-002']);
   assert.match(first.qualificationHash, /^sha256:[a-f0-9]{64}$/);
 });
@@ -208,15 +205,15 @@ test('rejects non-ISO registeredAt values accepted by Date.parse', () => {
   }), /registeredAt/i);
 });
 
-test('schema and runtime reject duplicate score evidence IDs and duplicate evidence records', () => {
+test('schema and runtime reject duplicate score evidence IDs and unknown evidence record fields', () => {
   const qualification = makeQualification('alpha', ['composition']);
   const duplicateScoreEvidence = structuredClone(qualification);
   duplicateScoreEvidence.scores.risk.evidenceIds.push('evidence-001');
-  const duplicateEvidence = structuredClone(qualification);
-  duplicateEvidence.evidence.push(structuredClone(duplicateEvidence.evidence[0]));
+  const unknownEvidenceField = structuredClone(qualification);
+  unknownEvidenceField.evidence['evidence-001'].untrusted = true;
   const validate = new Ajv2020({ strict: false, allErrors: true, validateFormats: false }).compile(referenceQualificationSchema);
 
-  for (const invalid of [duplicateScoreEvidence, duplicateEvidence]) {
+  for (const invalid of [duplicateScoreEvidence, unknownEvidenceField]) {
     assert.throws(() => validateReferenceQualification(invalid));
     assert.equal(validate(invalid), false, JSON.stringify(validate.errors));
   }
@@ -226,13 +223,42 @@ test('rejects externally supplied qualifications that are hashed but not canonic
   const qualification = qualifyReferenceCandidate({
     candidate: makeCandidate({ roles: ['typography', 'composition'] }), rubricVersion: 'v1',
     signals: makeScores({ creativeMerit: { value: 80, evidenceIds: ['evidence-002', 'evidence-001'] } }),
-    evidence: [...makeEvidence(), { id: 'evidence-002', sourceHash: HASH, path: 'audit/second.json' }]
+    evidence: { ...makeEvidence(), 'evidence-002': { sourceHash: HASH, path: 'audit/second.json' } }
   });
   qualification.roles.reverse();
-  qualification.evidence.reverse();
   qualification.scores.creativeMerit.evidenceIds.reverse();
   const { qualificationHash, ...withoutHash } = qualification;
   qualification.qualificationHash = hashCanonical(withoutHash);
 
   assert.throws(() => validateReferenceQualification(qualification), /canonical/i);
+});
+
+test('rejects array evidence and treats evidence identifiers as strict object keys', () => {
+  assert.throws(() => qualifyReferenceCandidate({
+    candidate: makeCandidate(), rubricVersion: 'v1', signals: makeScores(),
+    evidence: [{ id: 'evidence-001', sourceHash: HASH, path: 'audit/report.json' }]
+  }));
+  assert.throws(() => qualifyReferenceCandidate({
+    candidate: makeCandidate(), rubricVersion: 'v1', signals: makeScores(),
+    evidence: makeEvidence({ untrusted: true })
+  }));
+});
+
+test('produces an ordinally ordered mixed-case Unicode qualification accepted by Pareto selection', () => {
+  const qualification = qualifyReferenceCandidate({
+    candidate: makeCandidate({ candidateId: 'B', roles: ['typography', 'composition'] }), rubricVersion: 'v1',
+    signals: makeScores({ creativeMerit: { value: 80, evidenceIds: ['é', 'a', 'B'] } }),
+    evidence: {
+      'evidence-001': { sourceHash: HASH, path: 'audit/default.json' },
+      'é': { sourceHash: HASH, path: 'audit/unicode.json' },
+      a: { sourceHash: HASH, path: 'audit/lowercase.json' },
+      B: { sourceHash: HASH, path: 'audit/uppercase.json' }
+    }
+  });
+
+  assert.doesNotThrow(() => validateReferenceQualification(qualification));
+  assert.deepEqual(qualification.scores.creativeMerit.evidenceIds, ['B', 'a', 'é']);
+  assert.deepEqual(selectParetoCandidates({
+    qualifications: [qualification], requiredRoles: ['composition'], maxCandidates: 1
+  }).candidateIds, ['B']);
 });

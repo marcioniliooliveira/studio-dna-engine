@@ -1,13 +1,13 @@
 const { canonicalize } = require('./canonical-json');
 const { ROLES } = require('./reference-candidate-contract');
-const { SCORE_NAMES, validateReferenceQualification } = require('./reference-qualification');
+const { SCORE_NAMES, compareOrdinal, validateReferenceQualification } = require('./reference-qualification');
 
 const BENEFIT_AXES = SCORE_NAMES.filter(name => name !== 'risk');
 
 function selectParetoCandidates(input) {
   canonicalize(input);
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('Pareto selection input must be an object');
-  if (Object.keys(input).sort().join(',') !== 'maxCandidates,qualifications,requiredRoles') {
+  if (Object.keys(input).sort(compareOrdinal).join(',') !== 'maxCandidates,qualifications,requiredRoles') {
     throw new TypeError('Pareto selection input contains unknown or missing fields');
   }
   const { qualifications, requiredRoles, maxCandidates } = input;
@@ -27,14 +27,14 @@ function selectParetoCandidates(input) {
     candidateIds.add(qualification.candidateId);
   }
 
-  const roles = [...requiredRoles].sort();
+  const roles = [...requiredRoles].sort(compareOrdinal);
   const contributors = validated.filter(qualification => qualification.roles.some(role => roles.includes(role)));
   const byRole = Object.fromEntries(roles.map(role => {
     const contenders = contributors.filter(qualification => qualification.roles.includes(role));
     const nonDominated = contenders
       .filter(candidate => !contenders.some(other => other !== candidate && dominates(other, candidate)))
       .map(candidate => candidate.candidateId)
-      .sort();
+      .sort(compareOrdinal);
     return [role, nonDominated];
   }));
   const missingRoles = roles.filter(role => byRole[role].length === 0);
@@ -56,7 +56,7 @@ function dominates(left, right) {
 }
 
 function coverageSelection(byRole, roles, maxCandidates) {
-  const candidates = [...new Set(roles.flatMap(role => byRole[role]))].sort();
+  const candidates = [...new Set(roles.flatMap(role => byRole[role]))].sort(compareOrdinal);
   if (candidates.length <= maxCandidates) return candidates;
   for (let size = 1; size <= Math.min(maxCandidates, candidates.length); size += 1) {
     const selection = firstCoveringCombination(candidates, size, roles, byRole);

@@ -7,11 +7,14 @@ const SCORE_NAMES = [
 ];
 const SHA256 = /^sha256:[a-f0-9]{64}$/;
 
-const EvidenceSchema = z.object({
-  id: z.string().min(1),
+const EvidenceRecordSchema = z.object({
   sourceHash: z.string().min(1),
   path: z.string().min(1)
 }).strict();
+
+const EvidenceSchema = z.record(z.string().min(1), EvidenceRecordSchema).refine(evidence => Object.keys(evidence).length > 0, {
+  message: 'evidence must not be empty'
+});
 
 const ScoreSchema = z.object({
   value: z.number().int().min(0).max(100),
@@ -34,9 +37,7 @@ const ReferenceQualificationSchema = z.object({
   lifecycle: z.literal('quarantined'),
   rubricVersion: z.string().min(1),
   scores: ScoresSchema,
-  evidence: z.array(EvidenceSchema).min(1).meta({ uniqueItems: true }).refine(items => new Set(items.map(item => item.id)).size === items.length, {
-    message: 'evidence IDs must be unique'
-  }),
+  evidence: EvidenceSchema,
   qualificationHash: z.string().regex(SHA256)
 }).strict();
 
@@ -65,22 +66,17 @@ function registeredCandidate(input) {
 function qualifyReferenceCandidate(input) {
   canonicalize(input);
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('qualification input must be an object');
-  const keys = Object.keys(input).sort();
+  const keys = Object.keys(input).sort(compareOrdinal);
   if (keys.join(',') !== 'candidate,evidence,rubricVersion,signals') throw new TypeError('qualification input contains unknown or missing fields');
   const candidate = registeredCandidate(input.candidate);
   if (typeof input.rubricVersion !== 'string' || input.rubricVersion.length === 0) {
     throw new TypeError('rubricVersion is required');
   }
   const scores = ScoresSchema.parse(input.signals);
-  const evidence = z.array(EvidenceSchema).min(1).parse(input.evidence);
-  const evidenceIds = new Set();
-  for (const item of evidence) {
-    if (evidenceIds.has(item.id)) throw new TypeError(`duplicate evidence ID: ${item.id}`);
-    evidenceIds.add(item.id);
-  }
+  const evidence = EvidenceSchema.parse(input.evidence);
   for (const [name, score] of Object.entries(scores)) {
     for (const evidenceId of score.evidenceIds) {
-      if (!evidenceIds.has(evidenceId)) throw new TypeError(`${name} references unknown evidence ID: ${evidenceId}`);
+      if (!Object.hasOwn(evidence, evidenceId)) throw new TypeError(`${name} references unknown evidence ID: ${evidenceId}`);
     }
   }
 
@@ -90,17 +86,17 @@ function qualifyReferenceCandidate(input) {
     candidateId: candidate.candidateId,
     clientScope: candidate.clientScope,
     candidateHash: candidate.candidateHash,
-    roles: [...candidate.roles].sort(),
+    roles: [...candidate.roles].sort(compareOrdinal),
     lifecycle: 'quarantined',
     rubricVersion: input.rubricVersion,
     scores: Object.fromEntries(SCORE_NAMES.map(name => [name, {
       value: scores[name].value,
-      evidenceIds: [...scores[name].evidenceIds].sort()
+      evidenceIds: [...scores[name].evidenceIds].sort(compareOrdinal)
     }])),
-    evidence: [...evidence].sort((left, right) => left.id.localeCompare(right.id))
+    evidence: Object.fromEntries(Object.entries(evidence).sort(([left], [right]) => compareOrdinal(left, right)))
   };
   qualification.qualificationHash = hashCanonical(qualification);
-  return ReferenceQualificationSchema.parse(qualification);
+  return validateReferenceQualification(qualification);
 }
 
 function generateReferenceQualificationJsonSchema() {
@@ -110,29 +106,33 @@ function generateReferenceQualificationJsonSchema() {
 function validateReferenceQualification(input) {
   canonicalize(input);
   const qualification = ReferenceQualificationSchema.parse(input);
-  const evidenceIds = new Set(qualification.evidence.map(item => item.id));
   for (const [name, score] of Object.entries(qualification.scores)) {
     assertCanonicalOrder(score.evidenceIds, `${name}.evidenceIds`);
     for (const evidenceId of score.evidenceIds) {
-      if (!evidenceIds.has(evidenceId)) throw new TypeError(`${name} references unknown evidence ID: ${evidenceId}`);
+      if (!Object.hasOwn(qualification.evidence, evidenceId)) throw new TypeError(`${name} references unknown evidence ID: ${evidenceId}`);
     }
   }
   assertCanonicalOrder(qualification.roles, 'roles');
-  assertCanonicalOrder(qualification.evidence.map(item => item.id), 'evidence');
   const { qualificationHash, ...withoutHash } = qualification;
   if (qualificationHash !== hashCanonical(withoutHash)) throw new TypeError('qualificationHash does not match qualification content');
   return qualification;
 }
 
 function assertCanonicalOrder(items, label) {
-  const sorted = [...items].sort();
+  const sorted = [...items].sort(compareOrdinal);
   if (items.some((item, index) => item !== sorted[index])) {
     throw new TypeError(`${label} must use canonical lexicographic order`);
   }
 }
 
+function compareOrdinal(left, right) {
+  if (left === right) return 0;
+  return left < right ? -1 : 1;
+}
+
 module.exports = {
   SCORE_NAMES,
+  compareOrdinal,
   ReferenceQualificationSchema,
   generateReferenceQualificationJsonSchema,
   qualifyReferenceCandidate,
