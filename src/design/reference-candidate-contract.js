@@ -1,5 +1,5 @@
 const { z } = require('zod');
-const { canonicalize } = require('./canonical-json');
+const { canonicalize, hashCanonical } = require('./canonical-json');
 
 const SOURCE_TYPES = [
   'git-repository', 'web-page', 'uploaded-image', 'local-capture',
@@ -71,6 +71,10 @@ function validateReferenceCandidate(input) {
   return ReferenceCandidateSchema.parse(input);
 }
 
+function hashReferenceCandidate(input) {
+  return hashCanonical(validateReferenceCandidate(input));
+}
+
 function generateReferenceCandidateJsonSchema() {
   return z.toJSONSchema(ReferenceCandidateSchema);
 }
@@ -81,5 +85,6 @@ module.exports = {
   USAGE_INTENTS,
   ReferenceCandidateSchema,
   generateReferenceCandidateJsonSchema,
+  hashReferenceCandidate,
   validateReferenceCandidate
 };

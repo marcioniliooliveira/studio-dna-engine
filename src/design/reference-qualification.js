@@ -1,6 +1,6 @@
 const { z } = require('zod');
 const { canonicalize, hashCanonical } = require('./canonical-json');
-const { ROLES, validateReferenceCandidate } = require('./reference-candidate-contract');
+const { ROLES, hashReferenceCandidate, validateReferenceCandidate } = require('./reference-candidate-contract');
 
 const SCORE_NAMES = [
   'creativeMerit', 'extractability', 'clientFit', 'runtimeQuality', 'provenanceConfidence', 'risk'
@@ -15,7 +15,7 @@ const EvidenceSchema = z.object({
 
 const ScoreSchema = z.object({
   value: z.number().int().min(0).max(100),
-  evidenceIds: z.array(z.string().min(1)).min(1).refine(ids => new Set(ids).size === ids.length, {
+  evidenceIds: z.array(z.string().min(1)).min(1).meta({ uniqueItems: true }).refine(ids => new Set(ids).size === ids.length, {
     message: 'evidenceIds must not contain duplicates'
   })
 }).strict();
@@ -34,7 +34,7 @@ const ReferenceQualificationSchema = z.object({
   lifecycle: z.literal('quarantined'),
   rubricVersion: z.string().min(1),
   scores: ScoresSchema,
-  evidence: z.array(EvidenceSchema).min(1).refine(items => new Set(items.map(item => item.id)).size === items.length, {
+  evidence: z.array(EvidenceSchema).min(1).meta({ uniqueItems: true }).refine(items => new Set(items.map(item => item.id)).size === items.length, {
     message: 'evidence IDs must be unique'
   }),
   qualificationHash: z.string().regex(SHA256)
@@ -51,10 +51,14 @@ function registeredCandidate(input) {
   if (Object.keys(input).some(key => !expectedKeys.has(key))) throw new TypeError('candidate contains unknown fields');
   const validatedCandidate = validateReferenceCandidate(candidate);
   if (lifecycle !== 'quarantined') throw new TypeError('candidate lifecycle must be quarantined');
-  if (typeof registeredAt !== 'string' || Number.isNaN(Date.parse(registeredAt))) {
-    throw new TypeError('candidate registeredAt must be an ISO date');
+  const canonicalRegisteredAt = z.iso.datetime({ offset: true }).safeParse(registeredAt);
+  if (!canonicalRegisteredAt.success || new Date(registeredAt).toISOString() !== registeredAt) {
+    throw new TypeError('candidate registeredAt must be a canonical ISO date');
   }
   if (typeof candidateHash !== 'string' || !SHA256.test(candidateHash)) throw new TypeError('candidateHash must be a sha256 hash');
+  if (candidateHash !== hashReferenceCandidate(validatedCandidate)) {
+    throw new TypeError('candidateHash does not match the validated Task 1 candidate');
+  }
   return { ...validatedCandidate, lifecycle, registeredAt, candidateHash };
 }
 
@@ -108,13 +112,23 @@ function validateReferenceQualification(input) {
   const qualification = ReferenceQualificationSchema.parse(input);
   const evidenceIds = new Set(qualification.evidence.map(item => item.id));
   for (const [name, score] of Object.entries(qualification.scores)) {
+    assertCanonicalOrder(score.evidenceIds, `${name}.evidenceIds`);
     for (const evidenceId of score.evidenceIds) {
       if (!evidenceIds.has(evidenceId)) throw new TypeError(`${name} references unknown evidence ID: ${evidenceId}`);
     }
   }
+  assertCanonicalOrder(qualification.roles, 'roles');
+  assertCanonicalOrder(qualification.evidence.map(item => item.id), 'evidence');
   const { qualificationHash, ...withoutHash } = qualification;
   if (qualificationHash !== hashCanonical(withoutHash)) throw new TypeError('qualificationHash does not match qualification content');
   return qualification;
+}
+
+function assertCanonicalOrder(items, label) {
+  const sorted = [...items].sort();
+  if (items.some((item, index) => item !== sorted[index])) {
+    throw new TypeError(`${label} must use canonical lexicographic order`);
+  }
 }
 
 module.exports = {

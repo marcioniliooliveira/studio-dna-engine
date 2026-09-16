@@ -1,12 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const Ajv2020 = require('ajv/dist/2020');
+const { hashCanonical } = require('../src/design/canonical-json');
 
 const {
   qualifyReferenceCandidate,
-  generateReferenceQualificationJsonSchema
+  generateReferenceQualificationJsonSchema,
+  validateReferenceQualification
 } = require('../src/design/reference-qualification');
 const { selectParetoCandidates } = require('../src/design/reference-pareto-selector');
 const referenceQualificationSchema = require('../schemas/v2/reference-qualification.schema.json');
@@ -14,7 +14,7 @@ const referenceQualificationSchema = require('../schemas/v2/reference-qualificat
 const HASH = 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 
 function makeCandidate(overrides = {}) {
-  return {
+  const registered = {
     schemaVersion: 2,
     contractKind: 'reference-candidate',
     candidateId: 'reference-001',
@@ -32,6 +32,11 @@ function makeCandidate(overrides = {}) {
     candidateHash: HASH,
     ...overrides
   };
+  if (!Object.hasOwn(overrides, 'candidateHash')) {
+    const { lifecycle, registeredAt, candidateHash, ...candidate } = registered;
+    registered.candidateHash = hashCanonical(candidate);
+  }
+  return registered;
 }
 
 function makeScores(overrides = {}) {
@@ -127,7 +132,7 @@ test('keeps checked-in schema deterministic and rejects invalid qualification at
 
 function makeQualification(candidateId, roles, scoreOverrides = {}) {
   return qualifyReferenceCandidate({
-    candidate: makeCandidate({ candidateId, roles, candidateHash: HASH }),
+    candidate: makeCandidate({ candidateId, roles }),
     rubricVersion: 'v1', signals: makeScores(scoreOverrides), evidence: makeEvidence()
   });
 }
@@ -189,4 +194,45 @@ test('rejects externally supplied qualifications with unresolved score evidence'
   assert.throws(() => selectParetoCandidates({
     qualifications: [invalid], requiredRoles: ['composition'], maxCandidates: 1
   }), /evidence/i);
+});
+
+test('rejects registered candidates whose candidate hash does not match the Task 1 projection', () => {
+  assert.throws(() => qualifyReferenceCandidate({
+    candidate: makeCandidate({ candidateHash: HASH }), rubricVersion: 'v1', signals: makeScores(), evidence: makeEvidence()
+  }), /candidateHash/i);
+});
+
+test('rejects non-ISO registeredAt values accepted by Date.parse', () => {
+  assert.throws(() => qualifyReferenceCandidate({
+    candidate: makeCandidate({ registeredAt: 'September 16, 2026' }), rubricVersion: 'v1', signals: makeScores(), evidence: makeEvidence()
+  }), /registeredAt/i);
+});
+
+test('schema and runtime reject duplicate score evidence IDs and duplicate evidence records', () => {
+  const qualification = makeQualification('alpha', ['composition']);
+  const duplicateScoreEvidence = structuredClone(qualification);
+  duplicateScoreEvidence.scores.risk.evidenceIds.push('evidence-001');
+  const duplicateEvidence = structuredClone(qualification);
+  duplicateEvidence.evidence.push(structuredClone(duplicateEvidence.evidence[0]));
+  const validate = new Ajv2020({ strict: false, allErrors: true, validateFormats: false }).compile(referenceQualificationSchema);
+
+  for (const invalid of [duplicateScoreEvidence, duplicateEvidence]) {
+    assert.throws(() => validateReferenceQualification(invalid));
+    assert.equal(validate(invalid), false, JSON.stringify(validate.errors));
+  }
+});
+
+test('rejects externally supplied qualifications that are hashed but not canonically ordered', () => {
+  const qualification = qualifyReferenceCandidate({
+    candidate: makeCandidate({ roles: ['typography', 'composition'] }), rubricVersion: 'v1',
+    signals: makeScores({ creativeMerit: { value: 80, evidenceIds: ['evidence-002', 'evidence-001'] } }),
+    evidence: [...makeEvidence(), { id: 'evidence-002', sourceHash: HASH, path: 'audit/second.json' }]
+  });
+  qualification.roles.reverse();
+  qualification.evidence.reverse();
+  qualification.scores.creativeMerit.evidenceIds.reverse();
+  const { qualificationHash, ...withoutHash } = qualification;
+  qualification.qualificationHash = hashCanonical(withoutHash);
+
+  assert.throws(() => validateReferenceQualification(qualification), /canonical/i);
 });

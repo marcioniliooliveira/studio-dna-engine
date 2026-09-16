@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { hashCanonical } = require('./canonical-json');
-const { validateReferenceCandidate } = require('./reference-candidate-contract');
+const { hashReferenceCandidate, validateReferenceCandidate } = require('./reference-candidate-contract');
 
 function readRegistry(registryPath) {
   if (!fs.existsSync(registryPath)) return [];
@@ -50,7 +49,7 @@ function registerReferenceCandidate({ registryPath, candidate, now }) {
     ...validatedCandidate,
     lifecycle: 'quarantined',
     registeredAt: registeredAt(now),
-    candidateHash: hashCanonical(validatedCandidate)
+    candidateHash: hashReferenceCandidate(validatedCandidate)
   };
   writeRegistryAtomically(registryPath, [...registry, registered]);
   return registered;
