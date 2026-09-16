@@ -70,8 +70,8 @@ class ContextRouter {
     switch (stageName) {
       case STAGES.STAGE_01_REFERENCE_SELECTION:
         return {
-          vaultIndex: 'design-vault/INDEX.json',
-          clientBriefing: clientSlug ? `clientes/${clientSlug}/briefing.json` : null
+          clientBriefing: clientSlug ? `clientes/${clientSlug}/briefing.json` : null,
+          referencePortfolio: clientSlug ? `clientes/${clientSlug}/references/reference-portfolio.json` : null
         };
 
       case STAGES.STAGE_02_BRAND_SPEC:

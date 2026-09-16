@@ -12,6 +12,7 @@ const STAGES = {
   STAGE_04_BUILD_COMPILATION: '04-build-compilation',
   STAGE_05_QUALITY_GATE: '05-quality-gate'
 };
+const { validateReferencePortfolio } = require('../../src/design/reference-portfolio');
 
 const STAGE_CONTRACTS = {
   [STAGES.STAGE_01_REFERENCE_SELECTION]: {
@@ -24,11 +25,20 @@ const STAGE_CONTRACTS = {
       /\.env/
     ],
     outputFiles: ['reference-selection.json'],
-    validateOutput(data) {
+    validateOutput(data, options = {}) {
       if (!data || typeof data !== 'object') return { valid: false, error: 'Output deve ser um objeto JSON' };
       if (!data.selectedRefSlug) return { valid: false, error: 'selectedRefSlug é obrigatório' };
       if (typeof data.compatibilityScore !== 'number' || data.compatibilityScore < 0 || data.compatibilityScore > 100) {
         return { valid: false, error: 'compatibilityScore deve ser um número entre 0 e 100' };
+      }
+      if (Object.hasOwn(data, 'schemaVersion')) {
+        if (data.schemaVersion !== 2 || !Object.hasOwn(data, 'referencePortfolio')) return { valid: false, error: 'Stage 01 V2 requires referencePortfolio' };
+        try {
+          const portfolio = validateReferencePortfolio(data.referencePortfolio);
+          if (options.activeClientSlug && portfolio.clientScope !== options.activeClientSlug) return { valid: false, error: 'referencePortfolio does not match active client' };
+        } catch (error) {
+          return { valid: false, error: `invalid referencePortfolio: ${error.message}` };
+        }
       }
       return { valid: true };
     }
