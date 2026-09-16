@@ -90,10 +90,10 @@ test('rejects missing coverage, duplicate sources, excessive sources, cross-clie
 test('rejects assignments outside promotion evidence and unknown portfolio fields', () => {
   const composition = makePromotion('candidate-a', ['composition']);
   const portfolio = buildReferencePortfolio({ clientScope: 'client-a', requiredRoles: ['composition'], promotions: [composition] });
-  assert.throws(() => validateReferencePortfolio({ ...portfolio, extra: true }));
+  assert.throws(() => validateReferencePortfolio({ ...portfolio, extra: true }, { promotions: [composition] }), /unrecognized key/i);
   assert.throws(() => validateReferencePortfolio({
     ...portfolio, sources: [{ ...portfolio.sources[0], roles: ['typography'] }]
-  }));
+  }, { promotions: [composition] }), /source roles do not exactly match trusted promotion evidence/i);
   const validateSchema = new Ajv2020({ strict: false, allErrors: true }).compile(portfolioSchema);
   assert.deepEqual(portfolioSchema, generateReferencePortfolioJsonSchema());
   assert.equal(validateSchema({ ...portfolio, extra: true }), false, JSON.stringify(validateSchema.errors));
