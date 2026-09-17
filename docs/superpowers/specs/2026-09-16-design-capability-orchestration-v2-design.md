@@ -434,7 +434,7 @@ The initial implementation uses plain HTML, CSS and browser JavaScript served on
 - Path policy covers symlinks, junctions, non-existent output parents and alternate data streams.
 - Artifact identity is a canonical tree hash, not a hash of one HTML file.
 - Ledger events form a hash chain; run state is calculated from events.
-- Human approvals use a local signing key and bind checkpoint, artifact hash, contract hash and timestamp.
+- Human approvals use Ed25519, bind checkpoint, artifact hash, contract hash and timestamp, and are accepted only when their key ID resolves through the caller's explicit trusted public-key map.
 - Builder and verifier actor IDs must differ.
 - Verification freezes the artifact until all gates finish.
 

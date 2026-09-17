@@ -1,18 +1,23 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const Ajv2020 = require('ajv/dist/2020');
-const { hashCanonical } = require('../src/design/canonical-json');
+const { canonicalize, hashCanonical } = require('../src/design/canonical-json');
 const { qualifyReferenceCandidate } = require('../src/design/reference-qualification');
 const {
   validateReferenceProbe,
   generateReferenceProbeJsonSchema
 } = require('../src/design/reference-probe-contract');
 const {
-  promoteReference,
+  promoteReference: rawPromoteReference,
   generateReferencePromotionJsonSchema
 } = require('../src/design/reference-promotion-gate');
 const probeSchema = require('../schemas/v2/reference-probe.schema.json');
 const promotionSchema = require('../schemas/v2/reference-promotion.schema.json');
+const keyPair = crypto.generateKeyPairSync('ed25519');
+const trustedPublicKeys = { 'reviewer-key-1': keyPair.publicKey };
+
+function promoteReference(input) { return rawPromoteReference(input, { trustedPublicKeys }); }
 
 const ARTIFACT_HASH = 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 
@@ -81,17 +86,28 @@ function makeProbe(candidate = makeCandidate(), qualification = makeQualificatio
 }
 
 function makeDecision(candidate, qualification, probe, overrides = {}) {
-  return {
+  const payload = {
     schemaVersion: 2,
     contractKind: 'human-reference-decision',
     clientScope: candidate.clientScope,
     status: 'approved',
+    candidateId: candidate.candidateId,
+    roles: [...candidate.roles].sort(),
+    usageIntent: candidate.usageIntent,
     actorId: 'reviewer-001',
     decidedAt: '2026-09-16T12:30:00.000Z',
     candidateHash: candidate.candidateHash,
     qualificationHash: qualification.qualificationHash,
     probeHash: probe.probeHash,
     ...overrides
+  };
+  const signedPayload = canonicalize(payload);
+  return {
+    ...payload,
+    signedPayload,
+    keyId: 'reviewer-key-1',
+    algorithm: 'ed25519',
+    signature: crypto.sign(null, Buffer.from(signedPayload), keyPair.privateKey).toString('base64')
   };
 }
 
@@ -204,7 +220,10 @@ test('promotes only an approved exact evidence chain without raw candidate conte
   assert.equal(promotion.candidateHash, candidate.candidateHash);
   assert.equal(promotion.qualificationHash, qualification.qualificationHash);
   assert.equal(promotion.probeHash, probe.probeHash);
-  assert.deepEqual(promotion.decision, { actorId: 'reviewer-001', decidedAt: '2026-09-16T12:30:00.000Z' });
+  assert.equal(promotion.decision.actorId, 'reviewer-001');
+  assert.equal(promotion.decision.algorithm, 'ed25519');
+  assert.equal(promotion.decision.keyId, 'reviewer-key-1');
+  assert.match(promotion.decision.signature, /^[A-Za-z0-9+/]+={0,2}$/);
   assert.equal(Object.hasOwn(promotion, 'provenance'), false);
   assert.equal(Object.hasOwn(promotion, 'evidence'), false);
   assert.match(promotion.promotionHash, /^sha256:[a-f0-9]{64}$/);
@@ -234,6 +253,13 @@ test('runtime and checked-in JSON Schemas reject representative invalid payloads
   }));
   invalidRolePromotion.roles = ['untrusted-role'];
   assert.equal(promotionValidate(invalidRolePromotion), false, JSON.stringify(promotionValidate.errors));
+
+  const forgedExternalIntent = structuredClone(promoteReference({
+    candidate, qualification, probe: makeProbe(candidate, qualification),
+    humanDecision: makeDecision(candidate, qualification, makeProbe(candidate, qualification))
+  }));
+  forgedExternalIntent.usageIntent = 'external-copy-paste';
+  assert.equal(promotionValidate(forgedExternalIntent), false, JSON.stringify(promotionValidate.errors));
 
   const noncanonicalPromotion = structuredClone(promoteReference({
     candidate, qualification, probe: makeProbe(candidate, qualification),

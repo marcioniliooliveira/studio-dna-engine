@@ -1,11 +1,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const { ContextRouter } = require('../icm/_core/context-router');
 const { STAGES, STAGE_CONTRACTS } = require('../icm/_core/contracts');
-const { hashCanonical } = require('../src/design/canonical-json');
+const { canonicalize, hashCanonical } = require('../src/design/canonical-json');
 const { qualifyReferenceCandidate } = require('../src/design/reference-qualification');
 const { promoteReference } = require('../src/design/reference-promotion-gate');
 const { buildReferencePortfolio } = require('../src/design/reference-portfolio');
+const keyPair = crypto.generateKeyPairSync('ed25519');
+const trustedPublicKeys = { 'reviewer-key-1': keyPair.publicKey };
 
 function makeTrustedPromotion() {
   const candidateWithoutHash = { schemaVersion: 2, contractKind: 'reference-candidate', candidateId: 'reference-001', clientScope: 'cliente-a', sourceType: 'git-repository', roles: ['composition'], usageIntent: 'code-candidate', provenance: { canonicalUri: 'https://github.com/example/reference-001', commit: '0123456789abcdef0123456789abcdef01234567', license: { spdxId: 'MIT', evidenceUri: 'https://github.com/example/license' } } };
@@ -13,7 +16,9 @@ function makeTrustedPromotion() {
   const qualification = qualifyReferenceCandidate({ candidate, rubricVersion: 'v1', signals: Object.fromEntries(['creativeMerit', 'extractability', 'clientFit', 'runtimeQuality', 'provenanceConfidence', 'risk'].map(name => [name, { value: name === 'risk' ? 20 : 80, evidenceIds: ['evidence-001'] }])), evidence: { 'evidence-001': { sourceHash: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', path: 'audit/report.json' } } });
   const probeWithoutHash = { schemaVersion: 2, contractKind: 'reference-probe', candidateId: candidate.candidateId, clientScope: candidate.clientScope, candidateHash: candidate.candidateHash, qualificationHash: qualification.qualificationHash, artifactHash: 'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', acceptancePassRatio: 1, p0Failures: 0, pairwiseQualityDelta: 1, attempts: 1, inputTokens: 100, outputTokens: 200, durationMs: 300, evidenceIds: ['evidence-001'] };
   const probe = { ...probeWithoutHash, probeHash: hashCanonical(probeWithoutHash) };
-  return promoteReference({ candidate, qualification, probe, humanDecision: { schemaVersion: 2, contractKind: 'human-reference-decision', clientScope: candidate.clientScope, status: 'approved', actorId: 'reviewer-001', decidedAt: '2026-09-16T12:30:00.000Z', candidateHash: candidate.candidateHash, qualificationHash: qualification.qualificationHash, probeHash: probe.probeHash } });
+  const decisionPayload = { schemaVersion: 2, contractKind: 'human-reference-decision', clientScope: candidate.clientScope, status: 'approved', candidateId: candidate.candidateId, roles: ['composition'], usageIntent: 'code-candidate', actorId: 'reviewer-001', decidedAt: '2026-09-16T12:30:00.000Z', candidateHash: candidate.candidateHash, qualificationHash: qualification.qualificationHash, probeHash: probe.probeHash };
+  const signedPayload = canonicalize(decisionPayload);
+  return promoteReference({ candidate, qualification, probe, humanDecision: { ...decisionPayload, signedPayload, keyId: 'reviewer-key-1', algorithm: 'ed25519', signature: crypto.sign(null, Buffer.from(signedPayload), keyPair.privateKey).toString('base64') } }, { trustedPublicKeys });
 }
 
 function makePortfolio(clientScope = 'cliente-a') {
@@ -102,8 +107,8 @@ test('ICM Stage 01 preserves V1 validation and fails closed for V2 without trust
 test('ICM Stage 01 accepts V2 only with a matching trusted promotion context', () => {
   const contract = STAGE_CONTRACTS[STAGES.STAGE_01_REFERENCE_SELECTION];
   const promotion = makeTrustedPromotion();
-  const referencePortfolio = buildReferencePortfolio({ clientScope: 'cliente-a', requiredRoles: ['composition'], promotions: [promotion] });
-  assert.equal(contract.validateOutput({ schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio }, { activeClientSlug: 'cliente-a', promotions: [promotion] }).valid, true);
+  const referencePortfolio = buildReferencePortfolio({ clientScope: 'cliente-a', requiredRoles: ['composition'], promotions: [promotion], assignments: [{ candidateId: 'reference-001', roles: ['composition'] }] }, { trustedPublicKeys });
+  assert.equal(contract.validateOutput({ schemaVersion: 2, selectedRefSlug: 'reference-001', compatibilityScore: 92, referencePortfolio }, { activeClientSlug: 'cliente-a', promotions: [promotion], trustedPublicKeys }).valid, true);
 });
 
 test('ICM Stage 01 rejects missing, forged, and client-mismatched V2 portfolios', () => {

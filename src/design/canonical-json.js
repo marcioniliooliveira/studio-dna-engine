@@ -16,7 +16,7 @@ function serialize(value, location) {
 
   if (Array.isArray(value)) {
     assertSafeArray(value, location);
-    return `[${value.map((item, index) => serialize(item, `${location}[${index}]`)).join(',')}]`;
+    return `[${Array.prototype.map.call(value, (item, index) => serialize(item, `${location}[${index}]`)).join(',')}]`;
   }
 
   if (typeof value === 'object') {
@@ -46,6 +46,9 @@ function ownEnumerableDataKeys(value, location) {
 }
 
 function assertSafeArray(value, location) {
+  if (Object.getPrototypeOf(value) !== Array.prototype) {
+    throw new TypeError(`Non-JSON-safe array at ${location}`);
+  }
   const keys = Reflect.ownKeys(value);
   for (const key of keys) {
     if (key === 'length') continue;

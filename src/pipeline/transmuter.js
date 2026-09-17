@@ -761,7 +761,11 @@ async function transmuteClient(clientSlug) {
   if (!fs.existsSync(refPath)) {
     throw new Error(`reference-selection.json ausente em ${clientDir}`);
   }
-  const { selectedRefSlug } = JSON.parse(fs.readFileSync(refPath, 'utf8'));
+  const referenceSelection = JSON.parse(fs.readFileSync(refPath, 'utf8'));
+  if (referenceSelection && referenceSelection.schemaVersion === 2) {
+    throw new Error('V2 raw reference transmutation is blocked until the Reference Packet compiler and signing are available');
+  }
+  const { selectedRefSlug } = referenceSelection;
 
   // 2. Localizar esqueleto
   let skeletonPath = path.join(root, 'copias', selectedRefSlug, `${selectedRefSlug}.html`);

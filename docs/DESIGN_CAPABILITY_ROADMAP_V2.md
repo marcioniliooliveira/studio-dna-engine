@@ -1,5 +1,7 @@
 # Design Capability Roadmap V2
 
+> Safety boundary (documented 2026-09-16): the legacy transmuter must not consume V2 reference selections or raw `copias/` content. V2 raw transmutation remains blocked until a Reference Packet compiler exists and the promotion decision is signed by a trusted Ed25519 key.
+
 ## Goal
 
 Increase observable design quality first, while building only the orchestration controls required to delegate the work safely and precisely to Gemini.

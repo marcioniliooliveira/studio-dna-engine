@@ -30,9 +30,9 @@
 
 `ReferenceQualification` contains candidate identity/hash, scope, roles, `rubricVersion`, and strict score entries for `creativeMerit`, `extractability`, `clientFit`, `runtimeQuality`, `provenanceConfidence` and `risk`. Every entry is `{ value: integer 0..100, evidenceIds: non-empty unique string[] }`. The `evidence` input is a strict array of `{ id, sourceHash, path }`, and every score evidence ID must resolve to one of those entries. The result also contains the evidence array and a canonical `qualificationHash`.
 
-`ReferenceProbe` contains candidate, qualification and artifact hashes plus `acceptancePassRatio` in `0..1`, non-negative integer `p0Failures`, signed integer `pairwiseQualityDelta` in `-100..100`, integer `attempts` in `1..3`, non-negative integer `inputTokens`, `outputTokens`, `durationMs` and non-empty `evidenceIds`. `HumanReferenceDecision` is strict and contains `status: "approved" | "rejected"`, `actorId`, ISO `decidedAt`, `candidateHash`, `qualificationHash` and `probeHash`. `ReferencePromotion` preserves `candidateId`, `clientScope`, candidate/qualification/probe hashes, the approved roles and usage intent, decision actor/time and adds a canonical `promotionHash`; it contains no source code or raw reference content.
+`ReferenceProbe` contains candidate, qualification and artifact hashes plus `acceptancePassRatio` in `0..1`, non-negative integer `p0Failures`, signed integer `pairwiseQualityDelta` in `-100..100`, integer `attempts` in `1..3`, non-negative integer `inputTokens`, `outputTokens`, `durationMs` and non-empty `evidenceIds`. `HumanReferenceDecision` is strict and binds status, candidate ID, client scope, roles, the closed usage-intent enum, actor, canonical timestamp and candidate/qualification/probe hashes. Its canonical payload must be signed with Ed25519 and verified against an explicitly supplied trusted public-key map. `ReferencePromotion` preserves the complete signed decision plus the approved identity, hashes, roles and usage intent, and adds a canonical `promotionHash`; it contains no source code or raw reference content.
 
-`ReferencePortfolio` contains `schemaVersion: 2`, `contractKind: "reference-portfolio"`, `clientScope`, sorted unique `requiredRoles`, one to five source assignments shaped as `{ candidateId, promotionHash, roles }`, and `portfolioHash`. Each required role must be covered and an assignment may contain only roles present in its promotion.
+`ReferencePortfolio` contains `schemaVersion: 2`, `contractKind: "reference-portfolio"`, `clientScope`, sorted unique `requiredRoles`, one to five source assignments shaped as `{ candidateId, promotionHash, roles }`, and `portfolioHash`. The builder requires explicit `{ candidateId, roles }` assignments rather than inferring them from promotions. Each required role must be covered exactly once, an assignment may contain only roles authorized by its trusted promotion, and overlapping promotion capabilities are allowed when the selected assignments are disjoint.
 
 ---
 
@@ -121,7 +121,7 @@ test('excludes a candidate dominated on every quality axis', () => {
 
 **Interfaces:**
 - Produces: `validateReferenceProbe(input): ReferenceProbe`
-- Produces: `promoteReference({ candidate, qualification, probe, humanDecision }): ReferencePromotion`
+- Produces: `promoteReference({ candidate, qualification, probe, humanDecision }, { trustedPublicKeys }): ReferencePromotion`
 
 - [ ] **Step 1: Write a failing test for probe evidence containing artifact hash, acceptance pass ratio, P0 failures, pairwise quality delta, attempts, executor tokens and duration**
 - [ ] **Step 2: Run the focused test and verify RED because the probe contract is missing**
@@ -143,7 +143,7 @@ test('excludes a candidate dominated on every quality axis', () => {
 
 **Interfaces:**
 - Consumes: `ReferencePromotion[]`
-- Produces: `buildReferencePortfolio({ clientScope, requiredRoles, promotions }): ReferencePortfolio`
+- Produces: `buildReferencePortfolio({ clientScope, requiredRoles, promotions, assignments }, { trustedPublicKeys }): ReferencePortfolio`
 - Produces: Stage 01 V2 output `{ schemaVersion: 2, selectedRefSlug, compatibilityScore, referencePortfolio }` while preserving Stage 01 V1 validation
 
 - [ ] **Step 1: Write a failing test that assigns one to five promoted sources to explicit roles and preserves separate source contributions**
