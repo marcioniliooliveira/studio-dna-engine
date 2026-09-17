@@ -18,6 +18,9 @@ const { chromium } = require('playwright');
 const { installNoRemoteRuntimeGuard } = require('./helpers/local-runtime-determinism');
 
 const siteDir = path.resolve(__dirname, '..', 'clientes', 'negocia-bem', 'site');
+const NEGOCIA_BEM_ALLOWED_REMOTE_RUNTIME_URLS = Object.freeze([
+  'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap'
+]);
 
 function createTestServer() {
   const MIME_TYPES = {
@@ -55,7 +58,9 @@ function createTestServer() {
 
 async function openRuntimeReadyPage(browser, origin, viewport) {
   const page = await browser.newPage({ viewport });
-  const runtimeGuard = installNoRemoteRuntimeGuard(page, origin);
+  const runtimeGuard = installNoRemoteRuntimeGuard(page, origin, {
+    allowedUrls: NEGOCIA_BEM_ALLOWED_REMOTE_RUNTIME_URLS
+  });
 
   await page.goto(`${origin}/index.html`, { waitUntil: 'commit', timeout: 5000 });
   try {
@@ -63,6 +68,7 @@ async function openRuntimeReadyPage(browser, origin, viewport) {
   } catch (error) {
     assert.fail(`Negocia Bem runtime did not become ready while remote scripts/stylesheets were blocked. Aborted URLs: ${runtimeGuard.blockedUrls.join(', ') || '(none)'}. ${error.message}`);
   }
+  runtimeGuard.assertClean();
 
   return { page };
 }

@@ -15,6 +15,18 @@ const { chromium } = require('playwright');
 const { installNoRemoteRuntimeGuard } = require('./helpers/local-runtime-determinism');
 
 const siteRoot = path.resolve(__dirname, '../clientes/flashtech-caso-04-growth/site');
+const SCALEX_ALLOWED_REMOTE_RUNTIME_URLS = Object.freeze([
+  'https://fonts.googleapis.com/css?family=Anton:300,400,500,600,700%7CInter:300,400,500,600,700',
+  'https://challenges.cloudflare.com/turnstile/v0/api.js',
+  'https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69a94d5051ada59087892bea',
+  'https://cdn.prod.website-files.com/69a94d5051ada59087892bea/js/webflow.schunk.36b8fb49256177c8.js',
+  'https://cdn.prod.website-files.com/69a94d5051ada59087892bea/js/webflow.schunk.6f5953b19a7f5af8.js',
+  'https://cdn.prod.website-files.com/69a94d5051ada59087892bea/js/webflow.c1d9096e.c630e94305297084.js',
+  'https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js',
+  'https://cdn.prod.website-files.com/gsap/3.15.0/SplitText.min.js',
+  'https://cdn.prod.website-files.com/gsap/3.15.0/ScrollTrigger.min.js',
+  'https://cdn.prod.website-files.com/gsap/3.15.0/CustomEase.min.js'
+]);
 
 function startSiteServer() {
   const server = http.createServer((request, response) => {
@@ -56,9 +68,12 @@ test('Sticky Integrity: SCALEX sticky layout survives with off-origin stylesheet
   const address = server.address();
   const siteUrl = `http://127.0.0.1:${address.port}/`;
   const siteOrigin = new URL(siteUrl).origin;
-  const runtimeGuard = installNoRemoteRuntimeGuard(page, siteOrigin);
+  const runtimeGuard = installNoRemoteRuntimeGuard(page, siteOrigin, {
+    allowedUrls: SCALEX_ALLOWED_REMOTE_RUNTIME_URLS
+  });
 
   await page.goto(siteUrl);
+  runtimeGuard.assertClean();
 
   const blockedRemoteDiagnostic = runtimeGuard.blockedUrls.length
     ? runtimeGuard.blockedUrls.join(', ')

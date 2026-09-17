@@ -148,13 +148,17 @@ test('rejects a manifest file declared inside the client root when it is missing
   });
 });
 
-test('reports an injected external script URL when the page is guarded', async t => {
+test('reports only a newly injected external script outside an exact allowlist', async t => {
   await withTempDirectory(async fixtureRoot => {
     const sourceFixture = path.resolve(__dirname, 'fixtures', 'deep-scrutiny-negatives', 'negative-click-hijack', 'index.html');
     const fixturePath = path.join(fixtureRoot, 'index.html');
+    const allowedExternalUrl = 'https://runtime.example.invalid/known-temporary-runtime.js';
     const externalScriptUrl = 'https://runtime.example.invalid/future-runtime.js';
     const copiedHtml = await fs.readFile(sourceFixture, 'utf8');
-    await fs.writeFile(fixturePath, copiedHtml.replace('</head>', `<script src="${externalScriptUrl}"></script></head>`));
+    await fs.writeFile(
+      fixturePath,
+      copiedHtml.replace('</head>', `<script src="${allowedExternalUrl}"></script><script src="${externalScriptUrl}"></script></head>`)
+    );
 
     const server = await startFixtureServer(fixtureRoot);
     t.after(() => new Promise(resolve => server.close(resolve)));
@@ -162,10 +166,39 @@ test('reports an injected external script URL when the page is guarded', async t
     t.after(() => browser.close());
     const page = await browser.newPage();
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const guard = installNoRemoteRuntimeGuard(page, origin);
+    const guard = installNoRemoteRuntimeGuard(page, origin, { allowedUrls: [allowedExternalUrl] });
 
     await page.goto(`${origin}/index.html`);
 
-    assert.throws(() => guard.assertClean(), new RegExp(externalScriptUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.throws(() => guard.assertClean(), error => {
+      assert.match(error.message, new RegExp(externalScriptUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+      assert.doesNotMatch(error.message, new RegExp(allowedExternalUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+      return true;
+    });
+  });
+});
+
+test('reports a stale exact allowlist entry that was not blocked', async t => {
+  await withTempDirectory(async fixtureRoot => {
+    const sourceFixture = path.resolve(__dirname, 'fixtures', 'deep-scrutiny-negatives', 'negative-click-hijack', 'index.html');
+    const fixturePath = path.join(fixtureRoot, 'index.html');
+    const observedExternalUrl = 'https://runtime.example.invalid/known-temporary-runtime.js';
+    const staleExternalUrl = 'https://runtime.example.invalid/removed-temporary-runtime.js';
+    const copiedHtml = await fs.readFile(sourceFixture, 'utf8');
+    await fs.writeFile(fixturePath, copiedHtml.replace('</head>', `<script src="${observedExternalUrl}"></script></head>`));
+
+    const server = await startFixtureServer(fixtureRoot);
+    t.after(() => new Promise(resolve => server.close(resolve)));
+    const browser = await chromium.launch({ headless: true });
+    t.after(() => browser.close());
+    const page = await browser.newPage();
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    const guard = installNoRemoteRuntimeGuard(page, origin, {
+      allowedUrls: [observedExternalUrl, staleExternalUrl]
+    });
+
+    await page.goto(`${origin}/index.html`);
+
+    assert.throws(() => guard.assertClean(), new RegExp(staleExternalUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   });
 });

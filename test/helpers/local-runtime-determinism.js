@@ -121,8 +121,29 @@ async function validateLocalRuntimeManifest({ clientRoot, manifestPath }) {
   return { files };
 }
 
-function installNoRemoteRuntimeGuard(page, origin) {
+function exactAllowedUrls(allowedUrls) {
+  if (allowedUrls === undefined) return new Set();
+  if (!Array.isArray(allowedUrls)) {
+    throw new TypeError('allowedUrls must be an array of exact URLs');
+  }
+
+  const exactUrls = new Set();
+  for (const allowedUrl of allowedUrls) {
+    if (typeof allowedUrl !== 'string' || allowedUrl.length === 0 || allowedUrl.includes('*')) {
+      throw new TypeError('allowedUrls must contain exact URLs without wildcards');
+    }
+    new URL(allowedUrl);
+    if (exactUrls.has(allowedUrl)) {
+      throw new TypeError(`allowedUrls must not repeat ${allowedUrl}`);
+    }
+    exactUrls.add(allowedUrl);
+  }
+  return exactUrls;
+}
+
+function installNoRemoteRuntimeGuard(page, origin, { allowedUrls } = {}) {
   const trustedOrigin = new URL(origin).origin;
+  const allowedUrlSet = exactAllowedUrls(allowedUrls);
   const blockedUrls = [];
 
   page.route('**/*', route => {
@@ -142,8 +163,18 @@ function installNoRemoteRuntimeGuard(page, origin) {
   return {
     blockedUrls,
     assertClean() {
-      if (blockedUrls.length > 0) {
-        throw new Error(`Blocked off-origin runtime requests: ${blockedUrls.join(', ')}`);
+      const unexpectedUrls = blockedUrls.filter(url => !allowedUrlSet.has(url));
+      const observedUrls = new Set(blockedUrls);
+      const staleAllowedUrls = [...allowedUrlSet].filter(url => !observedUrls.has(url));
+      if (unexpectedUrls.length > 0 || staleAllowedUrls.length > 0) {
+        const diagnostics = [];
+        if (unexpectedUrls.length > 0) {
+          diagnostics.push(`Unexpected blocked off-origin runtime requests: ${unexpectedUrls.join(', ')}`);
+        }
+        if (staleAllowedUrls.length > 0) {
+          diagnostics.push(`Stale allowed off-origin runtime requests: ${staleAllowedUrls.join(', ')}`);
+        }
+        throw new Error(diagnostics.join('. '));
       }
     }
   };
