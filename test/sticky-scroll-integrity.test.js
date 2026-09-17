@@ -12,6 +12,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('path');
 const { chromium } = require('playwright');
+const { installNoRemoteRuntimeGuard } = require('./helpers/local-runtime-determinism');
 
 const siteRoot = path.resolve(__dirname, '../clientes/flashtech-caso-04-growth/site');
 
@@ -55,27 +56,12 @@ test('Sticky Integrity: SCALEX sticky layout survives with off-origin stylesheet
   const address = server.address();
   const siteUrl = `http://127.0.0.1:${address.port}/`;
   const siteOrigin = new URL(siteUrl).origin;
-  const blockedRemoteRequests = [];
-
-  await page.route('**/*', async route => {
-    const request = route.request();
-    const resourceType = request.resourceType();
-    const isRemoteRuntimeResource =
-      (resourceType === 'stylesheet' || resourceType === 'script') &&
-      new URL(request.url()).origin !== siteOrigin;
-
-    if (isRemoteRuntimeResource) {
-      blockedRemoteRequests.push(request.url());
-      await route.abort();
-      return;
-    }
-    await route.continue();
-  });
+  const runtimeGuard = installNoRemoteRuntimeGuard(page, siteOrigin);
 
   await page.goto(siteUrl);
 
-  const blockedRemoteDiagnostic = blockedRemoteRequests.length
-    ? blockedRemoteRequests.join(', ')
+  const blockedRemoteDiagnostic = runtimeGuard.blockedUrls.length
+    ? runtimeGuard.blockedUrls.join(', ')
     : 'none';
 
   try {
