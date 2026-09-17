@@ -1,0 +1,28 @@
+{
+  "runtimeAssets": [
+    {
+      "path": "assets/vendor/gsap-3.12.5.min.js",
+      "upstreamUrl": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js",
+      "version": "3.12.5",
+      "sha256": "28033e449a31ebcc396e5be8b13b63152bf03094288fb5867034321927bce087"
+    },
+    {
+      "path": "assets/vendor/ScrollTrigger-3.12.5.min.js",
+      "upstreamUrl": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js",
+      "version": "3.12.5",
+      "sha256": "ad33c2df9ada8a663c2147357828f980d0b7ca731ef33eb3c6e4f327c3b2cda5"
+    },
+    {
+      "path": "assets/vendor/tailwind-browser-4.3.3.min.js",
+      "upstreamUrl": "https://unpkg.com/@tailwindcss/browser@4.3.3/dist/index.global.js",
+      "version": "4.3.3",
+      "sha256": "a60c785630a06196808cbe79e6f7bdb4abcc8f4421a47b56f29338fc84805e3b"
+    },
+    {
+      "path": "assets/vendor/lucide-1.47.0.min.js",
+      "upstreamUrl": "https://unpkg.com/lucide@1.47.0/dist/umd/lucide.min.js",
+      "version": "1.47.0",
+      "sha256": "c3291ea757ff3da0fc45a41d3ff60d61da9b257314962c5cdded94ca0df05d7a"
+    }
+  ]
+}

@@ -12,10 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- Dependências de Animação e Ícones -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://unpkg.com/@tailwindcss/browser@4.3.3/dist/index.global.js" integrity="sha384-2ql948lIdLcGEE0/qxNiudyTjgauA3RDJERu5xW75kFCvSl5a9odyQYCb6tEjnmB" crossorigin="anonymous"></script>
+  <script src="assets/vendor/gsap-3.12.5.min.js"></script>
+  <script src="assets/vendor/ScrollTrigger-3.12.5.min.js"></script>
+  <script src="assets/vendor/lucide-1.47.0.min.js"></script>
+  <script src="assets/vendor/tailwind-browser-4.3.3.min.js"></script>
 
   <style>
     :root {
@@ -2036,6 +2036,7 @@
           }
         });
       }
+      window.__negociaBemRuntimeReady = true;
     })();
 
     // Sessão 06: FAQ Interatividade

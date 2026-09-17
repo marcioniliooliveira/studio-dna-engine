@@ -52,17 +52,52 @@ function createTestServer() {
   return server;
 }
 
+async function openRuntimeReadyPage(browser, origin, viewport) {
+  const page = await browser.newPage({ viewport });
+  const abortedRemoteRuntimeUrls = [];
+
+  await page.route('**/*', route => {
+    const request = route.request();
+    const resourceType = request.resourceType();
+    const url = new URL(request.url());
+    if ((resourceType === 'script' || resourceType === 'stylesheet') && url.origin !== origin) {
+      abortedRemoteRuntimeUrls.push(request.url());
+      return route.abort();
+    }
+    return route.continue();
+  });
+
+  await page.goto(`${origin}/index.html`, { waitUntil: 'commit', timeout: 5000 });
+  try {
+    await page.waitForFunction(() => window.__negociaBemRuntimeReady === true, null, { timeout: 3000 });
+  } catch (error) {
+    assert.fail(`Negocia Bem runtime did not become ready while remote scripts/stylesheets were blocked. Aborted URLs: ${abortedRemoteRuntimeUrls.join(', ') || '(none)'}. ${error.message}`);
+  }
+
+  return { page, abortedRemoteRuntimeUrls };
+}
+
+function assertNoAbortedVisualRuntime(abortedRemoteRuntimeUrls) {
+  const remoteVisualRuntimeUrls = abortedRemoteRuntimeUrls.filter(url =>
+    /(?:cdn\.jsdelivr\.net\/npm\/gsap|unpkg\.com\/(?:lucide|@tailwindcss))/i.test(url)
+  );
+  assert.deepEqual(
+    remoteVisualRuntimeUrls,
+    [],
+    `The local artifact requested remote visual runtime URLs: ${remoteVisualRuntimeUrls.join(', ') || '(none)'}`
+  );
+}
+
 test('Probe 1 & 5: Scroll dinâmico através de S02->S03 e S05->S06 não colide e sincroniza abas', async () => {
   const server = createTestServer();
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const port = server.address().port;
 
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const origin = `http://127.0.0.1:${port}`;
 
   try {
-    await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(500);
+    const { page, abortedRemoteRuntimeUrls } = await openRuntimeReadyPage(browser, origin, { width: 1440, height: 900 });
 
     // 1. Verificar transição Sessão 02 -> Sessão 03 (Dados da Região)
     const dadosRegiao = page.locator('#dados-regiao');
@@ -125,9 +160,11 @@ test('Probe 1 & 5: Scroll dinâmico através de S02->S03 e S05->S06 não colide 
 
     assert.equal(faqTitleOverlap, 0, 'O container de Oportunidades não pode colidir com o título do FAQ');
 
+    assertNoAbortedVisualRuntime(abortedRemoteRuntimeUrls);
   } finally {
     await browser.close();
-    server.close();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
   }
 });
 
@@ -137,11 +174,10 @@ test('Probe 2: FAQ interatividade sem click hijacking por containers anteriores'
   const port = server.address().port;
 
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const origin = `http://127.0.0.1:${port}`;
 
   try {
-    await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(500);
+    const { page, abortedRemoteRuntimeUrls } = await openRuntimeReadyPage(browser, origin, { width: 1440, height: 900 });
 
     const faq = page.locator('#faq');
     await faq.scrollIntoViewIfNeeded();
@@ -155,12 +191,14 @@ test('Probe 2: FAQ interatividade sem click hijacking por containers anteriores'
       { timeout: 3000 }
     ).catch(() => {});
 
+    assertNoAbortedVisualRuntime(abortedRemoteRuntimeUrls);
     const isActive = await firstFaqLine.evaluate(el => el.classList.contains('is-active'));
     assert.equal(isActive, true, 'O clique no FAQ deve ativar a linha sem sofrer intercepção');
 
   } finally {
     await browser.close();
-    server.close();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
   }
 });
 
@@ -170,12 +208,11 @@ test('Probe 3: Breakpoints de 880px e 768px alternam layouts sem vazamento simul
   const port = server.address().port;
 
   const browser = await chromium.launch({ headless: true });
+  const origin = `http://127.0.0.1:${port}`;
 
   try {
     // 1. Teste Breakpoint 768px (Oportunidades Desktop vs Mobile)
-    const pageDesktop769 = await browser.newPage({ viewport: { width: 769, height: 900 } });
-    await pageDesktop769.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await pageDesktop769.waitForTimeout(300);
+    const { page: pageDesktop769, abortedRemoteRuntimeUrls: desktop769Aborts } = await openRuntimeReadyPage(browser, origin, { width: 769, height: 900 });
 
     const d769 = await pageDesktop769.evaluate(() => {
       const d = document.querySelector('.nb-desktop');
@@ -185,9 +222,8 @@ test('Probe 3: Breakpoints de 880px e 768px alternam layouts sem vazamento simul
     assert.equal(d769, true, 'Em 769px a versão desktop de Oportunidades deve estar ativa');
     await pageDesktop769.close();
 
-    const pageMobile767 = await browser.newPage({ viewport: { width: 767, height: 900 } });
-    await pageMobile767.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await pageMobile767.waitForTimeout(300);
+    assertNoAbortedVisualRuntime(desktop769Aborts);
+    const { page: pageMobile767, abortedRemoteRuntimeUrls: mobile767Aborts } = await openRuntimeReadyPage(browser, origin, { width: 767, height: 900 });
 
     const m767 = await pageMobile767.evaluate(() => {
       const d = document.querySelector('.nb-desktop');
@@ -198,9 +234,8 @@ test('Probe 3: Breakpoints de 880px e 768px alternam layouts sem vazamento simul
     await pageMobile767.close();
 
     // 2. Teste Breakpoint 800px (Catálogo Modal Rail)
-    const page799 = await browser.newPage({ viewport: { width: 799, height: 900 } });
-    await page799.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await page799.waitForTimeout(300);
+    assertNoAbortedVisualRuntime(mobile767Aborts);
+    const { page: page799, abortedRemoteRuntimeUrls: page799Aborts } = await openRuntimeReadyPage(browser, origin, { width: 799, height: 900 });
 
     const railRelative799 = await page799.evaluate(() => {
       const rail = document.querySelector('.rail');
@@ -209,20 +244,21 @@ test('Probe 3: Breakpoints de 880px e 768px alternam layouts sem vazamento simul
     assert.equal(railRelative799, true, 'Em 799px o rail do catálogo deve ser relative (single column)');
     await page799.close();
 
-    const page801 = await browser.newPage({ viewport: { width: 801, height: 900 } });
-    await page801.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await page801.waitForTimeout(300);
+    assertNoAbortedVisualRuntime(page799Aborts);
+    const { page: page801, abortedRemoteRuntimeUrls: page801Aborts } = await openRuntimeReadyPage(browser, origin, { width: 801, height: 900 });
 
     const railSticky801 = await page801.evaluate(() => {
       const rail = document.querySelector('.rail');
       return window.getComputedStyle(rail).position === 'sticky';
     });
     assert.equal(railSticky801, true, 'Em 801px o rail do catálogo deve ser sticky');
+    assertNoAbortedVisualRuntime(page801Aborts);
     await page801.close();
 
   } finally {
     await browser.close();
-    server.close();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
   }
 });
 
@@ -232,13 +268,13 @@ test('Probe 4: Scroll reverso rápido não trava nem causa repique de coordenada
   const port = server.address().port;
 
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const origin = `http://127.0.0.1:${port}`;
 
   try {
-    await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(500);
+    const { page, abortedRemoteRuntimeUrls } = await openRuntimeReadyPage(browser, origin, { width: 1440, height: 900 });
 
     // Rolar até o rodapé
+    assertNoAbortedVisualRuntime(abortedRemoteRuntimeUrls);
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(400);
 
@@ -260,6 +296,7 @@ test('Probe 4: Scroll reverso rápido não trava nem causa repique de coordenada
 
   } finally {
     await browser.close();
-    server.close();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
   }
 });
