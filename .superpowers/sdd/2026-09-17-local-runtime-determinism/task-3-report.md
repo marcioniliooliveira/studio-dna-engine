@@ -46,3 +46,24 @@ Observed test commands and results:
 ## Concerns
 
 Observed: current production artifacts still request off-origin resources that Task 3 cannot change: Negocia Bem requests a Google Fonts stylesheet, and SCALEX requests a Google Fonts stylesheet plus pre-existing remote scripts. The shared guard aborts and records all of them; both visual suites preserve their existing layout assertions and include the blocked list in required-runtime failure diagnostics. Calling `assertClean()` in those suites would fail the current baseline solely on those out-of-scope requests. The helper's strict `assertClean()` behavior is exercised by the injected-script regression test.
+
+## Fix round 1 — exact temporary allowlists
+
+Binding ruling implemented: each visual suite now supplies a client-scoped, literal baseline of the currently observed off-origin `script` and `stylesheet` URLs. Negocia Bem has one Google Fonts stylesheet URL; SCALEX has one Google Fonts stylesheet and nine pre-existing script URLs. The lists are local to their respective test files, have no host or path wildcards, and are temporary debt until the corresponding production artifacts can be made fully local.
+
+`assertClean()` now fails when either condition occurs:
+
+- any blocked URL is absent from that exact client allowlist, reporting the full unexpected URL list;
+- any allowlisted URL was not observed, reporting the stale allowlist entries.
+
+RED evidence: `node --test test/local-runtime-determinism.test.js` failed 2 tests before the allowlist behavior existed. The new tests proved that a newly injected URL could not be hidden by an allowed URL, and that a stale allowed URL caused failure.
+
+GREEN evidence:
+
+| Command | Result |
+| --- | --- |
+| `node --test test/local-runtime-determinism.test.js test/negocia-bem-scroll-integrity.test.js test/sticky-scroll-integrity.test.js` (run 1) | 16 passed, 0 failed |
+| `node --test test/local-runtime-determinism.test.js test/negocia-bem-scroll-integrity.test.js test/sticky-scroll-integrity.test.js` (run 2) | 16 passed, 0 failed |
+| `npm.cmd test` | 169 passed, 0 failed |
+
+Implementation commit: `b15ad9b test(qa): baseline allowed remote runtime debt`.
