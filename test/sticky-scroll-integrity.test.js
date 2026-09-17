@@ -45,38 +45,47 @@ function startSiteServer() {
   });
 }
 
-test('Sticky Integrity: SCALEX service and insights sections use a local sticky layout stylesheet', async (t) => {
+test('Sticky Integrity: SCALEX sticky layout survives with off-origin stylesheets and scripts blocked', async (t) => {
   const server = await startSiteServer();
   t.after(() => new Promise(resolve => server.close(resolve)));
 
   const browser = await chromium.launch({ headless: true });
   t.after(() => browser.close());
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  const blockedStylesheets = [];
+  const address = server.address();
+  const siteUrl = `http://127.0.0.1:${address.port}/`;
+  const siteOrigin = new URL(siteUrl).origin;
+  const blockedRemoteRequests = [];
 
-  await page.route('https://cdn.prod.website-files.com/**', async route => {
-    if (route.request().resourceType() === 'stylesheet') {
-      blockedStylesheets.push(route.request().url());
+  await page.route('**/*', async route => {
+    const request = route.request();
+    const resourceType = request.resourceType();
+    const isRemoteRuntimeResource =
+      (resourceType === 'stylesheet' || resourceType === 'script') &&
+      new URL(request.url()).origin !== siteOrigin;
+
+    if (isRemoteRuntimeResource) {
+      blockedRemoteRequests.push(request.url());
       await route.abort();
       return;
     }
     await route.continue();
   });
 
-  const address = server.address();
-  const siteUrl = `http://127.0.0.1:${address.port}/`;
   await page.goto(siteUrl);
 
-  assert.deepEqual(
-    blockedStylesheets,
-    [],
-    `Remote SCALEX stylesheets were blocked: ${blockedStylesheets.join(', ')}`
-  );
+  const blockedRemoteDiagnostic = blockedRemoteRequests.length
+    ? blockedRemoteRequests.join(', ')
+    : 'none';
 
-  await page.waitForFunction(() => {
-    const stylesheet = document.querySelector('link[href="assets/vendor/acilav.webflow.shared.379082d56.css"]');
-    return stylesheet && stylesheet.sheet;
-  });
+  try {
+    await page.waitForFunction(() => {
+      const stylesheet = document.querySelector('link[href="assets/vendor/acilav.webflow.shared.379082d56.css"]');
+      return stylesheet && stylesheet.sheet;
+    });
+  } catch (error) {
+    assert.fail(`Local SCALEX stylesheet did not load; blocked off-origin requests: ${blockedRemoteDiagnostic}`);
+  }
 
   const stickyAnalysis = await page.evaluate(() => {
     const cards = Array.from(document.querySelectorAll('.service-card, .insight-scroll-area'));
@@ -102,9 +111,12 @@ test('Sticky Integrity: SCALEX service and insights sections use a local sticky 
     });
   });
 
-  assert.ok(stickyAnalysis.length >= 2, 'Deve encontrar ao menos os cards de serviço e área de insights');
+  assert.ok(
+    stickyAnalysis.length >= 2,
+    `Deve encontrar ao menos os cards de serviço e área de insights. Requests bloqueados: ${blockedRemoteDiagnostic}`
+  );
   stickyAnalysis.forEach(item => {
-    assert.equal(item.position, 'sticky', `Elemento .${item.class} deve ter position: sticky`);
-    assert.equal(item.offendingCount, 0, `Elemento .${item.class} não pode ter ancestrais com overflow!=visible/clip. Encontrados: ${JSON.stringify(item.offending)}`);
+    assert.equal(item.position, 'sticky', `Elemento .${item.class} deve ter position: sticky. Requests bloqueados: ${blockedRemoteDiagnostic}`);
+    assert.equal(item.offendingCount, 0, `Elemento .${item.class} não pode ter ancestrais com overflow!=visible/clip. Encontrados: ${JSON.stringify(item.offending)}. Requests bloqueados: ${blockedRemoteDiagnostic}`);
   });
 });
