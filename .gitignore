@@ -22,7 +22,7 @@ out/
 .svelte-kit/
 
 # ── Copias (Awwwards scrapes brutos e pesados) ─────────────────────────────────
-copias/
+copias/*
 !copias/README.md
 
 # ── Clientes de Produção & Projetos Customizados ──────────────────────────────

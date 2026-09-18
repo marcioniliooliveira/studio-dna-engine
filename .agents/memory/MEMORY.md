@@ -23,4 +23,5 @@
 - [caso-03-d2c] **APEX Wireless** (`clientes/flashtech-caso-03-d2c/`): Base `#02040A`, CTA `#00F0FF`, ref `copias/ciao-energy`.
 - [caso-02-ecommerce] **NorthTrail** (`clientes/flashtech-caso-02-ecommerce/`): Tokens `trail.orange=#ea580c`, `sand.100=#f5f1e8`.
 - [caso-apex-barbearia] **Apex Barbearia** (`clientes/apex-barbearia/`): Base `#0A0A0A`, CTA `#C8A97E`, Maringá - PR (2 Unidades), ref `copias/barbershop-landing-51-aura-build`.
+- [portfolio-webdev] **Web Developer Portfolio Reference** (ref `copias/likova-space/`): Referência pura clonada para futuro portfólio de web developer (Awwwards motion, Three.js, Obsidian Dark `#070B20`, TT Norms Pro, botões angulares). Clone mantido 100% intacto; transmutação será alinhada futuramente.
 

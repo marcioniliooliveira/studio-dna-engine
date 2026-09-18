@@ -109,3 +109,44 @@ O último comando deve encerrar com código diferente de zero para qualquer repr
 ## Revisão externa
 
 CodeRabbit não foi incluído como evidência: o CLI instalado no WSL retornou `not_authenticated`. Uma revisão externa exige autenticação explícita antes de rodar o comando de review.
+
+---
+
+## 🚀 Handoff: Cópia e Extração Likova Space (`copias/likova-space/`)
+
+> **Data do Handoff:** 18/09/2026  
+> **Branch de Trabalho:** `feature/clone-likova-portfolio`  
+> **URL de Origem:** [https://likova.space/](https://likova.space/)  
+> **Status:** Concluído, auditado e catalogado como evidência imutável.
+
+### 1. Intenções e Propósito Estratégico do Scrape
+- **Objetivo Principal:** O site [https://likova.space/](https://likova.space/) foi clonado e processado pelo **Studio DNA PRO** para servir como **esqueleto de referência arquitetural, visual e cinemático de alto padrão (Awwwards)** para o futuro **Portfólio Profissional de Desenvolvedor Web** do usuário.
+- **Diretriz de Imutabilidade (MANDATÓRIA):** Nenhuma alteração de texto, cor ou branding foi (ou deve ser) aplicada sobre a referência em `copias/likova-space/`. O clone deve ser rigorosamente mantido como evidência pura e intocada (`read-only`), conforme o protocolo ICM (*Interpretable Context Methodology*).
+- **Alinhamento Futuro:** A personalização do portfólio (nome, bio, cases reais, especialidades e serviços) será alinhada e transmutada futuramente em uma pasta de cliente isolada (`clientes/webdev-portfolio/`), sem contaminar o esqueleto original.
+
+### 2. O que foi Extraído e Validado
+1. **Pipeline Completo do Engine:**
+   - 9 estágios executados com sucesso (`PIPELINE_STATUS.json`): detecção de tipo, download de assets e mídias em alta resolução, saneamento de paths locais, extração de tokens de design, styleguide visual, mapeamento de particularidades de UI/UX, master spec, manifesto de assets e catálogo de prompts de IA.
+2. **Tokens Compilados no Design Vault:**
+   - Pasta: `design-vault/likova-space/`
+   - `tokens.json`: 49 variáveis de cores e 9 famílias de fontes.
+   - `tailwind.config.js`: Preset utilitário completo com a identidade do site.
+   - `brand-spec.template.json`: Template base pronto para orquestrar a futura transmutação determinística.
+3. **Quality Gate & Linter Headless:**
+   - Auditoria via `scripts/box-diff-linter.js` aprovada com **0 erros de runtime em JavaScript** (Barba.js wrapper e ServiceWorker resolvidos).
+   - 19 seções estruturais mapeadas com precisão geométrica.
+4. **Preview Local Ativo:**
+   - Visualizável em `http://localhost:4000/copias/likova-space/site/index.html`.
+
+### 3. Roadmap para a Futura Transmutação (Próximos Passos)
+Quando o usuário decidir avançar para a construção do portfólio:
+1. **Definição de Conteúdo e Identidade:**
+   - Coletar dados profissionais do desenvolvedor (nome/estúdio, bio de alto impacto, links de redes/GitHub).
+   - Mapear os serviços principais (ex: Engenharia Frontend de Alto Padrão, Animações Awwwards/GSAP, Aplicações Web Next.js/React, Arquitetura Full-Stack).
+   - Selecionar projetos e repositórios reais para preencher os blocos de showcase e modais de detalhe.
+2. **Setup do Cliente ICM:**
+   - Criar `clientes/webdev-portfolio/` com seu próprio `DNA.md` e `brand-spec.json`.
+   - Declarar invariantes P0/P1 via protocolo `dna-lock`.
+3. **Dual-Version Delivery (Padrão do Projeto):**
+   - **Versão 1 (HTML Estático):** Versão ultrarrápida, sem build overhead, pronta para deploy instantâneo ou CDN.
+   - **Versão 2 (Next.js App Router):** Versão modular com TypeScript, componentes React limpos, Tailwind e Framer Motion/GSAP para máxima manutenibilidade.
