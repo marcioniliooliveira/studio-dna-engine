@@ -39,7 +39,8 @@ const MIME_TYPES = {
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
   '.wasm': 'application/wasm',
-  '.md': 'text/markdown; charset=utf-8'
+  '.md': 'text/markdown; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8'
 };
 
 /**
@@ -730,6 +731,18 @@ function startPreviewServer(options = {}) {
       // Serve com suporte a Streaming HTTP 206 (Range) para mídias e assets estáticos
       streamFileWithRange(req, res, filePath, contentType);
     } else {
+      // Self-healing fallback para Service Worker ausente
+      if (pathname.endsWith('/sw.js') || pathname === '/sw.js') {
+        res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+        res.end('self.addEventListener("install", () => self.skipWaiting()); self.addEventListener("activate", () => self.clients.claim());');
+        return;
+      }
+      // Self-healing fallback para Webpack dynamic chunks que não puderam ser baixados
+      if (pathname.endsWith('.js') && (pathname.includes('chunk') || pathname.includes('achunk'))) {
+        res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+        res.end('(self.webpackChunk=self.webpackChunk||[]).push([[],{}]);');
+        return;
+      }
       res.writeHead(404, {
         'Content-Type': 'text/plain; charset=utf-8'
       });

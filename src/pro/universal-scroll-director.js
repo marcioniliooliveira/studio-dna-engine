@@ -60,8 +60,22 @@ class UniversalScrollDirector {
   onReady(function() {
     // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
     document.querySelectorAll('.opacity-0').forEach(function(el) {
-      // Ignora elementos que devem ser alternados por sliders, carrosséis ou abas
-      if (el.closest('#intro-logo-spinner') || el.closest('.amenities-slide-box') || el.closest('.splide') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis, abas ou timelines GSAP ativas
+      if (
+        el.closest('#intro-logo-spinner') ||
+        el.closest('.amenities-slide-box') ||
+        el.closest('.splide') ||
+        el.closest('[data-anim]') ||
+        el.closest('[data-scribble]') ||
+        el.closest('.dynamic_section') ||
+        el.closest('.apartments') ||
+        el.classList.contains('project-slider-progress-line') ||
+        el.classList.contains('scale-[1.05]') ||
+        el.classList.contains('line') ||
+        el.classList.contains('word') ||
+        el.classList.contains('char') ||
+        (el.className && typeof el.className === 'string' && el.className.includes('photo--'))
+      ) {
         return;
       }
       const cs = window.getComputedStyle(el);
