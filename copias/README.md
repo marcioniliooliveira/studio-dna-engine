@@ -20,6 +20,8 @@ Este diretório contém os esqueletos e clones de alta fidelidade brutos extraí
 | `artisan-burger-23-aura-build` | Aura Build | Tailwind / HTML | ✅ Extraído | Referência Gastronômica / Food Commerce |
 | `jumpflex-com` | https://jumpflex.com/ | Shopify / Liquid | ✅ Extraído | Referência de E-commerce D2C com Motion |
 | `acilav-webflow-io` | https://acilav.webflow.io/ | Webflow | ✅ Extraído | Animações Webflow IX2/IX3 |
+| `aircenter-space` | https://aircenter.space/ | HTML/CSS Puro + WebGL / Custom UI | ✅ 95% Extraído | **Referência Imobiliária High-End / Business Center / Plantas Interativas** |
+| `21oaks-org` | https://21oaks.org/ | Webflow + GSAP ScrollTrigger + Lenis | ✅ 95% Extraído | **Referência Multi-Family / Hotspots SVG / Dimerização de Luz / Scribble Underline** |
 
 ---
 

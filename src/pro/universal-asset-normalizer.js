@@ -194,15 +194,138 @@ class UniversalAssetNormalizer {
   window.umami = window.umami || { track: function() {} };
   window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
 
-  // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
+  // 1.1 ServiceWorker Safe Stub (evita 404 em ambiente de preview/offline)
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      navigator.serviceWorker.register = function() {
+        return Promise.resolve({ scope: '/' });
+      };
+    } catch(e) {}
+  }
+
+  // 2. Functional Native SplitText Engine & Polyfills de GSAP
+  function createSplitTextClass() {
+    function SplitText(target, vars) {
+      if (!(this instanceof SplitText)) return new SplitText(target, vars);
+      vars = vars || {};
+      this.elements = [];
+      if (typeof target === 'string') {
+        this.elements = Array.from(document.querySelectorAll(target));
+      } else if (target instanceof Element) {
+        this.elements = [target];
+      } else if (target && target.length) {
+        this.elements = Array.from(target);
+      }
+
+      this.lines = [];
+      this.words = [];
+      this.chars = [];
+      this._originals = [];
+
+      var type = vars.type || 'chars,words,lines';
+      var wantLines = type.indexOf('lines') !== -1;
+      var wantWords = type.indexOf('words') !== -1;
+      var wantChars = type.indexOf('chars') !== -1;
+      var linesClass = vars.linesClass || 'line';
+      var wordsClass = vars.wordsClass || 'word';
+      var charsClass = vars.charsClass || 'char';
+
+      var self = this;
+      this.elements.forEach(function(el) {
+        self._originals.push({ el: el, html: el.innerHTML });
+        var text = el.innerText || el.textContent || '';
+        if (!text.trim()) return;
+
+        el.innerHTML = '';
+        var rawWords = text.trim().split(/\s+/);
+        var createdWords = [];
+
+        rawWords.forEach(function(wText, wIdx) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = wordsClass;
+          wordSpan.style.display = 'inline-block';
+          wordSpan.style.position = 'relative';
+
+          if (wantChars) {
+            for (var c = 0; c < wText.length; c++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = charsClass;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.position = 'relative';
+              charSpan.textContent = wText[c];
+              wordSpan.appendChild(charSpan);
+              self.chars.push(charSpan);
+            }
+          } else {
+            wordSpan.textContent = wText;
+          }
+
+          el.appendChild(wordSpan);
+          createdWords.push(wordSpan);
+          self.words.push(wordSpan);
+
+          if (wIdx < rawWords.length - 1) {
+            el.appendChild(document.createTextNode(' '));
+          }
+        });
+
+        if (wantLines && createdWords.length > 0) {
+          var lineGroups = [];
+          var currentLine = [];
+          var lastTop = -9999;
+
+          createdWords.forEach(function(w) {
+            var top = w.offsetTop;
+            if (top > lastTop + 5 && currentLine.length > 0) {
+              lineGroups.push(currentLine);
+              currentLine = [];
+            }
+            currentLine.push(w);
+            lastTop = top;
+          });
+          if (currentLine.length > 0) lineGroups.push(currentLine);
+
+          el.innerHTML = '';
+          lineGroups.forEach(function(group) {
+            var lineDiv = document.createElement('div');
+            lineDiv.className = linesClass;
+            lineDiv.style.display = 'block';
+            lineDiv.style.overflow = 'hidden';
+            lineDiv.style.position = 'relative';
+
+            var lineInner = document.createElement('span');
+            lineInner.style.display = 'inline-block';
+            lineInner.style.width = '100%';
+
+            group.forEach(function(w, idx) {
+              lineInner.appendChild(w);
+              if (idx < group.length - 1) lineInner.appendChild(document.createTextNode(' '));
+            });
+
+            lineDiv.appendChild(lineInner);
+            el.appendChild(lineDiv);
+            self.lines.push(lineDiv);
+          });
+        }
+      });
+
+      this.revert = function() {
+        this._originals.forEach(function(item) {
+          item.el.innerHTML = item.html;
+        });
+      };
+    }
+    return SplitText;
+  }
+
+  window.SplitText = window.SplitText || createSplitTextClass();
+
   window.addEventListener('DOMContentLoaded', function() {
     if (typeof window.CustomEase === 'undefined') {
       window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
     }
     if (typeof window.SplitText === 'undefined') {
-      window.SplitText = function(target) {
-        return { lines: [], words: [], chars: [], revert: function() {} };
-      };
+      window.SplitText = createSplitTextClass();
     }
   });
 
@@ -238,28 +361,29 @@ class UniversalAssetNormalizer {
     };
   }
 
-  // 5. Imediato e Multinível Unhide Failsafe
+  // 5. Imediato e Multinível Unhide Failsafe (Resiliente, Não-Destrutivo)
   function forceUnhide() {
     document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
     document.documentElement.classList.remove('is-loading', 'lenis-stopped');
     if (document.body) {
       document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
     }
-    
-    // Limpeza de textos mascarados e nós do SplitText
-    var maskedNodes = document.querySelectorAll('[style*="visibility: hidden"], [style*="opacity: 0"], .gsap-reveal');
-    maskedNodes.forEach(function(el) {
-        if(el.classList.contains('child') || el.classList.contains('line')) {
-            el.style.visibility = 'visible';
-            el.style.opacity = '1';
-        }
-    });
 
+    // Apenas bloqueios reais de tela preta e cortinas estáticas de preload são destruídos
     var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
     blocked.forEach(function(el) {
       el.style.setProperty('display', 'none', 'important');
       el.style.setProperty('opacity', '0', 'important');
       el.style.setProperty('pointer-events', 'none', 'important');
+    });
+
+    // Se houver elementos presos com opacity 0 que NÃO pertencem a animações ativas, libera com suavidade
+    var stuckNodes = document.querySelectorAll('.gsap-reveal:not([data-anim]):not([data-scribble])');
+    stuckNodes.forEach(function(el) {
+      if (el.classList.contains('child') || el.classList.contains('line')) {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+      }
     });
   }
 
