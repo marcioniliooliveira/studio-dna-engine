@@ -8,9 +8,9 @@
     <title>Integrii — encontre o seu imóvel ideal</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-client="integrii-imoveis">
+  <body data-client="integrii-imoveis"><a class="skip-link" href="#main-content">Pular para o conteúdo</a>
     <header class="site-header" data-site-header>
-      <a class="wordmark" href="#top" aria-label="Integrii, voltar ao início">integrii<span>.</span></a>
+      <a class="wordmark" href="#main-content" aria-label="Integrii, voltar ao início">integrii<span>.</span></a>
       <nav class="top-nav" aria-label="Navegação principal">
         <a href="#explore">Explorar</a>
         <a href="#regional">A região</a>
@@ -20,7 +20,7 @@
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle><span></span><span></span></button>
     </header>
 
-    <main id="top">
+    <main id="main-content" tabindex="-1">
       <section class="hero" id="explore" data-hero>
         <div class="hero__media" aria-hidden="true">
           <img class="hero__image hero__image--current" data-hero-current src="assets/integri-casa-01.svg" alt="" />
@@ -39,10 +39,12 @@
             <button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="1">Alugar</button>
             <button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="2">Investir</button>
           </div>
+          <div class="hero__thumbs" role="tablist" aria-label="Imagens demonstrativas da apresentação"><button type="button" class="hero__thumb is-active" data-hero-thumbnail data-intent-button="0" aria-label="Mostrar imagem de comprar"><img src="assets/integri-casa-01.svg" alt="" /></button><button type="button" class="hero__thumb" data-hero-thumbnail data-intent-button="1" aria-label="Mostrar imagem de alugar"><img src="assets/integri-casa-02.svg" alt="" /></button><button type="button" class="hero__thumb" data-hero-thumbnail data-intent-button="2" aria-label="Mostrar imagem de investir"><img src="assets/integri-casa-03.svg" alt="" /></button></div>
           <div class="hero__progress" aria-label="Progresso da apresentação">
             <span class="hero__progress-label"><strong data-progress-current>01</strong> / 03</span>
             <span class="hero__progress-track"><span data-progress-fill></span></span>
           </div>
+          <button class="autoplay-toggle" type="button" aria-label="Pausar apresentação automática" data-autoplay-toggle>pausar</button>
         </div>
         <div class="hero__hint" aria-hidden="true"><span class="hero__hint-line"></span><span>deslize para explorar</span></div>
       </section>
@@ -94,7 +96,7 @@
       </section>
     </main>
 
-    <footer class="site-footer"><div class="page-shell site-footer__inner"><a class="wordmark wordmark--footer" href="#top">integrii<span>.</span></a><p>Paiçandu, Paraná · Av. Ivaí, 299 Centro · CEP 87140-000</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Agendar conversa <span aria-hidden="true">↗</span></a></div></footer>
+    <footer class="site-footer"><div class="page-shell site-footer__inner"><a class="wordmark wordmark--footer" href="#main-content">integrii<span>.</span></a><p>Paiçandu, Paraná · Av. Ivaí, 299 Centro · CEP 87140-000</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Agendar conversa <span aria-hidden="true">↗</span></a></div></footer>
     <script src="interaction.js"></script>
   </body>
 </html>

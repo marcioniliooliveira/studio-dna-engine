@@ -8,8 +8,8 @@
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   function initIntegriHero(root){
     const current=root.querySelector('[data-hero-current]'); const next=root.querySelector('[data-hero-next]');
-    const eyebrow=root.querySelector('[data-hero-eyebrow]'); const title=root.querySelector('[data-hero-title]'); const description=root.querySelector('[data-hero-description]'); const cta=root.querySelector('[data-hero-cta]'); const fill=root.querySelector('[data-progress-fill]'); const currentLabel=root.querySelector('[data-progress-current]'); const buttons=[...root.querySelectorAll('[data-intent-button]')];
-    let index=0; let timer=0; let paused=false; let transitioning=false;
+    const eyebrow=root.querySelector('[data-hero-eyebrow]'); const title=root.querySelector('[data-hero-title]'); const description=root.querySelector('[data-hero-description]'); const cta=root.querySelector('[data-hero-cta]'); const fill=root.querySelector('[data-progress-fill]'); const currentLabel=root.querySelector('[data-progress-current]'); const autoplayToggle=root.querySelector('[data-autoplay-toggle]'); const buttons=[...root.querySelectorAll('[data-intent-button]')];
+    let index=0; let timer=0; let paused=false; let userPaused=false; let transitioning=false;
     function setIntent(nextIndex,reason){
       if(transitioning||nextIndex===index&&!reason)return;
       const item=INTENTS[nextIndex]; if(!item)return;
@@ -22,11 +22,13 @@
     }
     function nextIntent(){setIntent((index+1)%INTENTS.length,'autoplay');}
     function stop(){if(timer){window.clearInterval(timer);timer=0;}}
-    function start(){stop();if(reduced.matches||paused||document.hidden)return;timer=window.setInterval(nextIntent,6200);}
+    function start(){stop();if(reduced.matches||paused||userPaused||document.hidden)return;timer=window.setInterval(nextIntent,6200);}
+    function syncAutoplayControl(){if(!autoplayToggle)return;autoplayToggle.disabled=reduced.matches;autoplayToggle.textContent=userPaused?'retomar':'pausar';autoplayToggle.setAttribute('aria-label',userPaused?'Retomar apresentação automática':'Pausar apresentação automática');autoplayToggle.setAttribute('aria-pressed',String(userPaused));}
+    autoplayToggle?.addEventListener('click',()=>{userPaused=!userPaused;if(userPaused)stop();else start();syncAutoplayControl();});
     buttons.forEach((button,buttonIndex)=>button.addEventListener('click',()=>{setIntent(buttonIndex,'manual');start();}));
-    root.addEventListener('mouseenter',()=>{paused=true;stop();}); root.addEventListener('mouseleave',()=>{paused=false;start();}); root.addEventListener('focusin',()=>{paused=true;stop();}); root.addEventListener('focusout',event=>{if(!root.contains(event.relatedTarget)){paused=false;start();}});
+    root.addEventListener('mouseenter',()=>{if(autoplayToggle?.matches(':hover'))return;paused=true;stop();}); root.addEventListener('mouseleave',()=>{paused=false;start();}); root.addEventListener('focusin',event=>{if(event.target===autoplayToggle)return;paused=true;stop();}); root.addEventListener('focusout',event=>{if(!root.contains(event.relatedTarget)){paused=false;start();}});
     document.addEventListener('visibilitychange',()=>document.hidden?stop():start()); reduced.addEventListener?.('change',()=>reduced.matches?stop():start());
-    const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting)start();else stop();},{threshold:.2}); observer.observe(root); start();
+    const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting)start();else stop();},{threshold:.2}); observer.observe(root); start(); syncAutoplayControl();
     return {setIntent};
   }
   function initIntentLinks(){

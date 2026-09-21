@@ -60,12 +60,16 @@ test('Integri keeps intent, hero CTA, progress, and intermediary panel synchroni
   await withPage({ viewport: { width: 1440, height: 977 } }, async (page, requests) => {
     await page.goto(`${baseUrl}/integri/`);
     await assertPageBasics(page, 'integrii-imoveis');
-    await page.locator('[data-intent-button="2"]').click();
+    assert.equal(await page.locator('[data-hero-thumbnail]').count(), 3);
+    await page.locator('.intent-tab[data-intent-button="2"]').click();
     await page.waitForTimeout(80);
     assert.equal(await page.locator('[data-progress-current]').innerText(), '03');
     assert.equal(await page.locator('[data-hero-cta]').getAttribute('href'), '#intermediary-investir');
     assert.match(await page.locator('[data-hero-title]').innerText(), /Leia a região/);
     assert.equal(await page.locator('[data-progress-fill]').evaluate((node) => node.style.width), '100%');
+    await page.locator('[data-autoplay-toggle]').click();
+    assert.equal((await page.locator('[data-autoplay-toggle]').innerText()).toLowerCase(), 'retomar');
+    assert.equal(await page.locator('[data-autoplay-toggle]').getAttribute('aria-pressed'), 'true');
     await page.locator('[data-hero-cta]').click();
     assert.equal(await page.locator('[data-intermediary-panel="investir"]').isVisible(), true);
     for (const intent of ['comprar', 'alugar', 'investir']) {
@@ -92,6 +96,7 @@ test('Silvio preserves scroll sections, local map, intent routing, and property 
   await withPage({ viewport: { width: 1024, height: 900 } }, async (page, requests) => {
     await page.goto(`${baseUrl}/silvio/`);
     await assertPageBasics(page, 'silvio-iwata-imobiliaria');
+    assert.equal(await page.locator('[data-scroll-rail]').count(), 1);
     await page.locator('[data-intent-button="2"]').first().click();
     assert.equal(await page.locator('[data-hero-cta]').getAttribute('href'), '#intermediary-investir');
     assert.match(await page.locator('[data-hero-title]').innerText(), /consistência/);
@@ -106,6 +111,7 @@ test('Silvio preserves scroll sections, local map, intent routing, and property 
     }
     await page.locator('#region').scrollIntoViewIfNeeded();
     assert.equal(await page.locator('[data-scroll-section="map"] img').isVisible(), true);
+    assert.notEqual(await page.locator('[data-scroll-active]').innerText(), '01');
     await page.locator('[data-scroll-section="reveal"]').scrollIntoViewIfNeeded();
     const revealTransform = await page.locator('[data-scroll-section="reveal"] img').evaluate((node) => getComputedStyle(node).transform);
     assert.notEqual(revealTransform, 'none');
@@ -118,6 +124,8 @@ test('Silvio preserves scroll sections, local map, intent routing, and property 
 async function assertPageBasics(page, client) {
   assert.equal(await page.locator(`body[data-client="${client}"]`).count(), 1);
   assert.equal(await page.locator('.wordmark').count() > 0, true);
+  assert.equal(await page.locator('.skip-link[href="#main-content"]').count(), 1);
+  assert.equal(await page.locator('#main-content').count(), 1);
   assert.equal(await page.locator('img').count() > 0, true);
   assert.equal(await page.locator('a[data-intent-link]').count() > 0, true);
   assert.equal(await page.locator('text=imagem demonstrativa').count() > 0, true);
