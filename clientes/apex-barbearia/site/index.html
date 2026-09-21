@@ -1,0 +1,2229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Barbearia — Maringá | 2 Unidades: Zona 01 e Zona 02</title>
+  <meta name="description" content="Barbearia de excelência em Maringá com 2 unidades. Especialistas em visagismo, corte clássico e contemporâneo, barboterapia e clube de assinatura exclusivo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&amp;family=Inter:wght@300;400;500;600;700&amp;family=Bebas+Neue&amp;display=swap">
+  
+  <style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --gold: #C8A97E;
+  --gold-light: #D4BC96;
+  --gold-dark: #A8885E;
+  --black: #0A0A0A;
+  --black-light: #141414;
+  --black-medium: #1A1A1A;
+  --white: #FAFAF9;
+  --white-dim: #E8E6E1;
+  --gray: #6B6B6B;
+  --gray-light: #999999;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --display: 'Bebas Neue', Impact, sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) var(--black);
+}
+body {
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+/* ========== NAVIGATION ========== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 1.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s var(--ease-out-quart);
+}
+.nav.scrolled {
+  padding: 1rem 3rem;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(200, 169, 126, 0.15);
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav-logo .logo-gold {
+  color: var(--gold);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  transition: color 0.3s ease;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s var(--ease-out-expo);
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  transition: all 0.4s ease;
+}
+.nav-cta:hover {
+  background: var(--gold);
+  color: var(--black);
+}
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 1001;
+}
+.nav-hamburger span {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--white);
+  transition: all 0.3s ease;
+}
+.nav-hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.nav-hamburger.active span:nth-child(2) { opacity: 0; }
+.nav-hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile nav overlay */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s var(--ease-out-expo);
+}
+.mobile-nav.active {
+  opacity: 1;
+  visibility: visible;
+}
+.mobile-nav a {
+  font-family: var(--display);
+  font-size: 2.2rem;
+  letter-spacing: 0.15em;
+  color: var(--white-dim);
+  transition: color 0.3s ease;
+}
+.mobile-nav a:hover { color: var(--gold); }
+
+/* ========== HERO SECTION ========== */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  position: relative;
+  overflow: hidden;
+}
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 4.5rem 5rem 5rem;
+  position: relative;
+  z-index: 2;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 0.5s forwards;
+}
+.hero-tag-line {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+}
+.hero-tag-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(3.2rem, 6.2vw, 6.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: var(--white);
+  margin-bottom: 2rem;
+}
+.hero-title span {
+  display: block;
+  opacity: 0;
+  transform: translateY(50px);
+}
+.hero-title span:nth-child(1) { animation: fadeUp 1s var(--ease-out-expo) 0.7s forwards; }
+.hero-title span:nth-child(2) { animation: fadeUp 1s var(--ease-out-expo) 0.85s forwards; }
+.hero-title span:nth-child(3) { animation: fadeUp 1s var(--ease-out-expo) 1.0s forwards; }
+.hero-title .title-stroke {
+  -webkit-text-stroke: 1.5px var(--white);
+  color: transparent;
+}
+.hero-desc {
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: var(--gray-light);
+  max-width: 460px;
+  margin-bottom: 2.8rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 1.2s forwards;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 1.4s forwards;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--gold);
+  color: var(--black);
+  padding: 1.1rem 2.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: all 0.4s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold-dark);
+  transform: translateX(-101%);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary span, .btn-primary svg { position: relative; z-index: 1; }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white-dim);
+  transition: color 0.3s ease;
+}
+.btn-outline:hover { color: var(--gold); }
+.btn-outline svg {
+  transition: transform 0.3s ease;
+}
+.btn-outline:hover svg { transform: translateX(4px); }
+.hero-image {
+  position: relative;
+  overflow: hidden;
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scale: 1.1;
+  animation: heroImgReveal 1.8s var(--ease-out-expo) 0.4s forwards;
+  opacity: 0;
+}
+@keyframes heroImgReveal {
+  from { opacity: 0; scale: 1.2; }
+  to { opacity: 1; scale: 1.05; }
+}
+.hero-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--black) 0%, transparent 25%),
+              linear-gradient(to top, var(--black) 0%, transparent 15%);
+  pointer-events: none;
+}
+
+/* ========== MARQUEE ========== */
+.marquee-section {
+  padding: 1.8rem 0;
+  border-top: 1px solid rgba(200, 169, 126, 0.15);
+  border-bottom: 1px solid rgba(200, 169, 126, 0.15);
+  overflow: hidden;
+  background: var(--black-light);
+}
+.marquee-track {
+  display: flex;
+  animation: marqueeScroll 28s linear infinite;
+  width: max-content;
+}
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 0 2.5rem;
+  white-space: nowrap;
+}
+.marquee-item span {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  letter-spacing: 0.18em;
+  color: var(--gray);
+  text-transform: uppercase;
+}
+.marquee-item .dot {
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ========== ABOUT / STORY SECTION ========== */
+.about {
+  padding: 9rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.about-images {
+  position: relative;
+  height: 580px;
+}
+.about-img-main {
+  width: 72%;
+  height: 85%;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+  filter: grayscale(35%);
+  transition: filter 0.6s ease;
+}
+.about-img-main:hover { filter: grayscale(0%); }
+.about-img-secondary {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  height: 55%;
+  object-fit: cover;
+  z-index: 3;
+  border: 5px solid var(--black);
+  filter: grayscale(35%);
+  transition: filter 0.6s ease;
+}
+.about-img-secondary:hover { filter: grayscale(0%); }
+.about-accent {
+  position: absolute;
+  top: -2rem;
+  right: 2rem;
+  font-family: var(--display);
+  font-size: 9rem;
+  line-height: 1;
+  color: rgba(200, 169, 126, 0.05);
+  z-index: 1;
+  user-select: none;
+}
+.about-content { padding-left: 1.5rem; }
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-tag-line {
+  width: 30px;
+  height: 1px;
+  background: var(--gold);
+}
+.section-tag-text {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  margin-bottom: 1.8rem;
+}
+.section-title .italic {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+.about-text {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: var(--gray-light);
+  margin-bottom: 1.8rem;
+}
+.about-stats {
+  display: flex;
+  gap: 3rem;
+  padding-top: 2.2rem;
+  border-top: 1px solid rgba(200, 169, 126, 0.15);
+}
+.stat-number {
+  font-family: var(--display);
+  font-size: 2.8rem;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+.stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-top: 0.25rem;
+}
+
+/* ========== SERVICES SECTION ========== */
+.services {
+  padding: 8rem 5rem 9rem;
+  position: relative;
+  background: var(--black-light);
+}
+.services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4.5rem;
+}
+.services-header-right {
+  text-align: right;
+  max-width: 380px;
+}
+.services-header-right p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--gray-light);
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(200, 169, 126, 0.15);
+}
+.service-card {
+  background: var(--black);
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-out-expo);
+  cursor: pointer;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200, 169, 126, 0.08) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.service-card:hover::before { opacity: 1; }
+.service-card:hover { transform: translateY(-4px); }
+.service-icon-box {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200, 169, 126, 0.3);
+  color: var(--gold);
+  margin-bottom: 1.8rem;
+  font-size: 1.1rem;
+  font-family: var(--display);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.service-card:hover .service-icon-box { transform: scale(1.1); border-color: var(--gold); }
+.service-name {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+.service-desc {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--gray);
+  margin-bottom: 2rem;
+}
+.service-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(200, 169, 126, 0.12);
+}
+.service-price {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  color: var(--gold);
+}
+.service-duration {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.service-arrow {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0;
+  transform: translate(-10px, 10px);
+  transition: all 0.4s var(--ease-out-expo);
+}
+.service-card:hover .service-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ========== MEMBERSHIP (APEX CLUB) SECTION ========== */
+.membership {
+  padding: 9rem 5rem;
+  position: relative;
+  background: var(--black);
+  border-top: 1px solid rgba(200, 169, 126, 0.15);
+  border-bottom: 1px solid rgba(200, 169, 126, 0.15);
+}
+.membership-header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+.membership-header p {
+  max-width: 540px;
+  margin: 1.2rem auto 0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--gray-light);
+}
+.membership-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.membership-card {
+  background: var(--black-light);
+  border: 1px solid var(--black-medium);
+  padding: 3.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.5s var(--ease-out-expo);
+}
+.membership-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(200, 169, 126, 0.4);
+}
+.membership-card.featured {
+  background: linear-gradient(180deg, #181512 0%, var(--black-light) 100%);
+  border: 1px solid var(--gold);
+  box-shadow: 0 10px 40px rgba(200, 169, 126, 0.08);
+}
+.membership-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  color: var(--black);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.35rem 1.2rem;
+}
+.membership-plan-name {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+  color: var(--white);
+}
+.membership-plan-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+.membership-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 2.2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(200, 169, 126, 0.15);
+}
+.membership-price {
+  font-family: var(--display);
+  font-size: 3.2rem;
+  color: var(--white);
+  line-height: 1;
+}
+.membership-period {
+  font-size: 0.82rem;
+  color: var(--gray);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.membership-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 3rem;
+  flex-grow: 1;
+}
+.membership-features li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--gray-light);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.membership-features li::before {
+  content: "+";
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.btn-membership {
+  width: 100%;
+  padding: 1.1rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: all 0.4s ease;
+}
+.btn-membership:hover {
+  background: var(--gold);
+  color: var(--black);
+}
+.membership-card.featured .btn-membership {
+  background: var(--gold);
+  color: var(--black);
+}
+.membership-card.featured .btn-membership:hover {
+  background: var(--gold-dark);
+}
+
+/* ========== GALLERY SECTION ========== */
+.gallery {
+  padding: 8rem 5rem;
+}
+.gallery-header {
+  text-align: center;
+  margin-bottom: 4.5rem;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+}
+.gallery-item {
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.gallery-item:nth-child(1) { grid-column: 1 / 5; grid-row: 1; }
+.gallery-item:nth-child(2) { grid-column: 5 / 9; grid-row: 1; }
+.gallery-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1; }
+.gallery-item:nth-child(4) { grid-column: 1 / 7; grid-row: 2; }
+.gallery-item:nth-child(5) { grid-column: 7 / 13; grid-row: 2; }
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 4/3;
+  filter: grayscale(40%);
+  transition: all 0.6s var(--ease-out-expo);
+}
+.gallery-item:hover img {
+  filter: grayscale(0%);
+  scale: 1.05;
+}
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.85) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay-text {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+}
+
+/* ========== TEAM SECTION ========== */
+.team {
+  padding: 8rem 5rem 9rem;
+  background: var(--black-light);
+}
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4.5rem;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+}
+.team-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.team-card-img {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+}
+.team-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(45%);
+  transition: all 0.6s var(--ease-out-expo);
+}
+.team-card:hover .team-card-img img {
+  filter: grayscale(0%);
+  scale: 1.05;
+}
+.team-card-info {
+  padding: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.team-card-name {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+}
+.team-card-role {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.3rem;
+}
+
+/* ========== TESTIMONIALS (GOOGLE 5.0 REVIEWS) ========== */
+.testimonials {
+  padding: 9rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  font-size: 18vw;
+  color: rgba(200, 169, 126, 0.03);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 4.5rem;
+  position: relative;
+  z-index: 2;
+}
+.google-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(200, 169, 126, 0.1);
+  border: 1px solid rgba(200, 169, 126, 0.25);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.testimonial-slider {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.testimonial-item {
+  display: none;
+  animation: fadeIn 0.6s ease;
+}
+.testimonial-item.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.testimonial-stars {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-bottom: 1.8rem;
+}
+.testimonial-stars svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: var(--gold);
+}
+.testimonial-quote {
+  font-family: var(--serif);
+  font-size: 1.45rem;
+  line-height: 1.8;
+  color: var(--white-dim);
+  font-style: italic;
+  margin-bottom: 2.2rem;
+}
+.testimonial-author-name {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.15em;
+}
+.testimonial-author-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.3rem;
+}
+.testimonial-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2.8rem;
+}
+.testimonial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+.testimonial-dot.active {
+  background: var(--gold);
+  transform: scale(1.25);
+}
+
+/* ========== BOOKING CTA & FORM ========== */
+.booking {
+  padding: 9rem 5rem;
+  position: relative;
+  background: var(--black-light);
+}
+.booking-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4.5rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.booking-image {
+  position: relative;
+  height: 560px;
+  overflow: hidden;
+}
+.booking-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(20%);
+}
+.booking-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--gold);
+  transform: translate(20px, 20px);
+  pointer-events: none;
+}
+.booking-form-wrapper { padding-left: 1.5rem; }
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin-top: 2.2rem;
+}
+.form-group { position: relative; }
+.form-group label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  margin-bottom: 0.4rem;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.9rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(200, 169, 126, 0.25);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.form-group input:focus,
+.form-group select:focus {
+  border-bottom-color: var(--gold);
+}
+.form-group input::placeholder { color: var(--gray); }
+.form-group select {
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.form-group select option {
+  background: var(--black);
+  color: var(--white);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.btn-submit {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 1.15rem;
+  background: var(--gold);
+  color: var(--black);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.btn-submit:hover { background: var(--gold-dark); }
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.88);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  padding: 1.5rem;
+}
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.modal-card {
+  background: var(--black-light);
+  border: 1px solid var(--gold);
+  padding: 3rem;
+  max-width: 540px;
+  width: 100%;
+  position: relative;
+  transform: scale(0.92);
+  transition: transform 0.4s var(--ease-out-expo);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-overlay.active .modal-card {
+  transform: scale(1);
+}
+.modal-title {
+  font-family: var(--display);
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  color: var(--white);
+  text-align: center;
+}
+.modal-subtitle {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 1.8rem;
+}
+.modal-text {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--gray-light);
+  margin-bottom: 2rem;
+}
+.modal-plan-box {
+  background: rgba(200, 169, 126, 0.06);
+  border: 1px solid rgba(200, 169, 126, 0.2);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+.modal-plan-box strong { color: var(--gold); }
+.modal-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.modal-tab-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid rgba(200, 169, 126, 0.2);
+  color: var(--gray-light);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+.modal-tab-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(200, 169, 126, 0.08);
+}
+.btn-modal-action {
+  width: 100%;
+  background: var(--gold);
+  color: var(--black);
+  padding: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.btn-modal-action:hover { background: var(--gold-dark); }
+.btn-modal-close {
+  width: 100%;
+  padding: 0.75rem;
+  color: var(--gray);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.btn-modal-close:hover { color: var(--white); }
+
+/* ========== INSTAGRAM SECTION ========== */
+.instagram {
+  padding: 6rem 0 3rem;
+}
+.instagram-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.instagram-handle {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+}
+.instagram-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.instagram-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+  filter: grayscale(30%);
+}
+.instagram-item:hover img {
+  scale: 1.08;
+  filter: grayscale(0%);
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  padding: 6rem 5rem 2.5rem;
+  border-top: 1px solid rgba(200, 169, 126, 0.15);
+  background: var(--black);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr 1.8fr;
+  gap: 3.5rem;
+  margin-bottom: 4rem;
+}
+.footer-brand-name {
+  font-family: var(--display);
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+}
+.footer-brand-name .gold { color: var(--gold); }
+.footer-brand-desc {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--gray);
+  max-width: 320px;
+  margin-bottom: 2rem;
+}
+.footer-col-title {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.4rem;
+  color: var(--white);
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.footer-col ul a {
+  font-size: 0.85rem;
+  color: var(--gray);
+  transition: color 0.3s ease;
+}
+.footer-col ul a:hover { color: var(--gold); }
+.footer-unit-box {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(200, 169, 126, 0.1);
+}
+.footer-unit-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.footer-unit-desc {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(200, 169, 126, 0.1);
+}
+.footer-bottom p {
+  font-size: 0.75rem;
+  color: var(--gray);
+  letter-spacing: 0.1em;
+}
+.footer-bottom-links {
+  display: flex;
+  gap: 1.8rem;
+}
+.footer-bottom-links a {
+  font-size: 0.75rem;
+  color: var(--gray);
+  letter-spacing: 0.08em;
+  transition: color 0.3s ease;
+}
+.footer-bottom-links a:hover { color: var(--gold); }
+
+/* ========== SCROLL REVEAL ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s var(--ease-out-expo);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .membership-grid { grid-template-columns: 1fr; max-width: 550px; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 3rem; }
+}
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-content { padding: 8rem 3rem 4rem; }
+  .hero-image { height: 55vh; }
+  .about { grid-template-columns: 1fr; padding: 6rem 3rem; }
+  .about-images { height: 450px; }
+  .services { padding: 6rem 3rem; }
+  .membership { padding: 6rem 3rem; }
+  .team { padding: 6rem 3rem; }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+  .booking { padding: 6rem 3rem; }
+  .booking-inner { grid-template-columns: 1fr; }
+  .booking-image { height: 400px; }
+  .footer { padding: 4rem 3rem 2rem; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .hero-content { padding: 7rem 1.5rem 3rem; }
+  .about { padding: 4rem 1.5rem; }
+  .about-images { height: auto; display: flex; flex-direction: column; gap: 1rem; }
+  .about-img-main { width: 100%; height: 280px; }
+  .about-img-secondary { position: relative; width: 100%; height: 200px; border: none; }
+  .about-accent { display: none; }
+  .services { padding: 4rem 1.5rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .membership { padding: 4rem 1.5rem; }
+  .gallery { padding: 4rem 1.5rem; }
+  .gallery-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .gallery-item:nth-child(n) { grid-column: 1; grid-row: auto; }
+  .team { padding: 4rem 1.5rem; }
+  .team-grid { grid-template-columns: 1fr; }
+  .testimonials { padding: 4rem 1.5rem; }
+  .booking { padding: 4rem 1.5rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer { padding: 3rem 1.5rem 1.5rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">
+      APEX <span class="logo-gold">BARBEARIA</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#about">Sobre</a></li>
+      <li><a href="#services">Serviços</a></li>
+      <li><a href="#membership">Clube</a></li>
+      <li><a href="#gallery">Galeria</a></li>
+      <li><a href="#team">Especialistas</a></li>
+      <li><a href="#testimonials">Avaliações</a></li>
+    </ul>
+
+    <a href="#booking" class="nav-cta">Agendar Horário</a>
+
+    <div class="nav-hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#about" onclick="closeMobileNav()">Sobre</a>
+    <a href="#services" onclick="closeMobileNav()">Serviços</a>
+    <a href="#membership" onclick="closeMobileNav()">Clube</a>
+    <a href="#gallery" onclick="closeMobileNav()">Galeria</a>
+    <a href="#team" onclick="closeMobileNav()">Especialistas</a>
+    <a href="#testimonials" onclick="closeMobileNav()">Avaliações</a>
+    <a href="#booking" onclick="closeMobileNav()">Agendar Horário</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="hero-tag-line"></span>
+        <span class="hero-tag-text">Est. 2021 — 2 Unidades em Maringá</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span>A ARTE DO</span>
+        <span>VISAGISMO &amp;</span>
+        <span class="title-stroke">CUIDADO PRECISO</span>
+      </h1>
+
+      <p class="hero-desc">
+        Uma experiência completa de corte, barba e visagismo. Unimos técnicas clássicas e estilo contemporâneo para valorizar a sua melhor versão nas nossas 2 unidades em Maringá.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#booking" class="btn-primary">
+          <span>Agendar Horário</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#services" class="btn-outline">
+          <span>Nossos Serviços</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&amp;q=85&amp;auto=format&amp;fit=crop" alt="Mestre barbeiro trabalhando na Apex Barbearia">
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <span>Cortes Clássicos</span><div class="dot"></div>
+        <span>Barboterapia</span><div class="dot"></div>
+        <span>Navalha Tradicional</span><div class="dot"></div>
+        <span>Fade de Precisão</span><div class="dot"></div>
+        <span>Visagismo Masculino</span><div class="dot"></div>
+        <span>Toalha Quente</span><div class="dot"></div>
+        <span>Terapia Capilar</span><div class="dot"></div>
+        <span>2 Unidades em Maringá</span><div class="dot"></div>
+      </div>
+      <div class="marquee-item">
+        <span>Cortes Clássicos</span><div class="dot"></div>
+        <span>Barboterapia</span><div class="dot"></div>
+        <span>Navalha Tradicional</span><div class="dot"></div>
+        <span>Fade de Precisão</span><div class="dot"></div>
+        <span>Visagismo Masculino</span><div class="dot"></div>
+        <span>Toalha Quente</span><div class="dot"></div>
+        <span>Terapia Capilar</span><div class="dot"></div>
+        <span>2 Unidades em Maringá</span><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="about-images reveal">
+      <img class="about-img-main" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&amp;q=85&amp;auto=format&amp;fit=crop" alt="Interior da Apex Barbearia em Maringá">
+      <img class="about-img-secondary" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&amp;q=85&amp;auto=format&amp;fit=crop" alt="Equipamentos profissionais">
+      <div class="about-accent">APEX</div>
+    </div>
+
+    <div class="about-content">
+      <div class="section-tag reveal">
+        <span class="section-tag-line"></span>
+        <span class="section-tag-text">Nossa História</span>
+      </div>
+
+      <h2 class="section-title reveal reveal-delay-1">
+        MAIS QUE UMA BARBEARIA.<br>Uma <span class="italic">Experiência.</span>
+      </h2>
+
+      <p class="about-text reveal reveal-delay-2">
+        Fundada no coração de Maringá, a Apex Barbearia nasceu da paixão pelo trabalho artesanal e da convicção de que todo homem merece um momento de cuidado que vai além do comum. Nosso espaço foi projetado para ser o seu refúgio — onde a tradição é honrada e cada detalhe importa.
+      </p>
+
+      <p class="about-text reveal reveal-delay-3">
+        Do aroma das toalhas quentes ao alinhamento final da lâmina, cada atendimento é conduzido com calma e maestria. Hoje, com duas unidades na cidade, continuamos firmes no propósito de elevar sua autoestima e confiança.
+      </p>
+
+      <div class="about-stats reveal reveal-delay-4">
+        <div>
+          <div class="stat-number">5+</div>
+          <div class="stat-label">Anos em Maringá</div>
+        </div>
+        <div>
+          <div class="stat-number">12K+</div>
+          <div class="stat-label">Clientes Atendidos</div>
+        </div>
+        <div>
+          <div class="stat-number">2</div>
+          <div class="stat-label">Unidades na Cidade</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services" id="services">
+    <div class="services-header">
+      <div>
+        <div class="section-tag reveal">
+          <span class="section-tag-line"></span>
+          <span class="section-tag-text">O Que Oferecemos</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1">
+          NOSSOS <span class="italic">Serviços</span><br>EXCLUSIVOS
+        </h2>
+      </div>
+      <div class="services-header-right reveal reveal-delay-2">
+        <p>Cada procedimento é executado com precisão milimétrica, produtos de alta linha e consultoria de estilo.</p>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      <!-- 01 -->
+      <div class="service-card reveal">
+        <div class="service-icon-box">01</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">CORTE ASSINATURA</h3>
+        <p class="service-desc">Corte personalizado com consultoria de visagismo, lavagem relaxante e finalização com pomada premium.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 55</span>
+          <span class="service-duration">40 Min</span>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon-box">02</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">BARBOTERAPIA QUENTE</h3>
+        <p class="service-desc">Barbear clássico com toalha quente aromatizada, espuma aquecida, navalha e bálsamo hidratante.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 45</span>
+          <span class="service-duration">35 Min</span>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon-box">03</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">ALINHAMENTO DE BARBA</h3>
+        <p class="service-desc">Desenho e simetria das linhas da barba, aparo de volume e finalização com óleo de tratamento.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 35</span>
+          <span class="service-duration">25 Min</span>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon-box">04</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">O PACOTE REAL</h3>
+        <p class="service-desc">Nosso combo completo: corte assinatura, barboterapia relaxante, esfoliação facial e massagem capilar.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 120</span>
+          <span class="service-duration">75 Min</span>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="service-card reveal">
+        <div class="service-icon-box">05</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">DESIGN &amp; FADE</h3>
+        <p class="service-desc">Degradês refinados (low, mid, high fade), riscas geométricas e acabamento de alta definição.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 65</span>
+          <span class="service-duration">45 Min</span>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon-box">06</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">TERAPIA CAPILAR</h3>
+        <p class="service-desc">Higienização profunda do couro cabeludo, esfoliação suave e tônico fortificante antiqueda.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 50</span>
+          <span class="service-duration">30 Min</span>
+        </div>
+      </div>
+
+      <!-- 07 -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon-box">07</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">CAMUFLAGEM GRISALHA</h3>
+        <p class="service-desc">Tonalização natural e discreta dos fios brancos da barba ou cabelo com resultado rejuvenescido.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 55</span>
+          <span class="service-duration">35 Min</span>
+        </div>
+      </div>
+
+      <!-- 08 -->
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon-box">08</div>
+        <div class="service-arrow">↗</div>
+        <h3 class="service-name">LIMPEZA FACIAL</h3>
+        <p class="service-desc">Esfoliação facial profunda, máscara de hidratação e massagem relaxante com creme refrescante.</p>
+        <div class="service-price-row">
+          <span class="service-price">R$ 45</span>
+          <span class="service-duration">30 Min</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Membership Section (Apex Club) -->
+  <section class="membership" id="membership">
+    <div class="membership-header">
+      <div class="section-tag reveal" style="justify-content: center;">
+        <span class="section-tag-line"></span>
+        <span class="section-tag-text">Clube de Assinatura Exclusivo</span>
+        <span class="section-tag-line"></span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1">APEX <span class="italic">Club</span> &bull; PLANOS MENSAIS</h2>
+      <p class="reveal reveal-delay-2">
+        Mantenha seu visual impecável o mês inteiro com economia substancial, atendimento prioritário e benefícios exclusivos em nossas 2 unidades de Maringá.
+      </p>
+    </div>
+
+    <div class="membership-grid">
+      <!-- Tier 1: Silver -->
+      <div class="membership-card reveal">
+        <div class="membership-plan-name">SILVER CLUB</div>
+        <div class="membership-plan-tag">Cortes Ilimitados</div>
+        <div class="membership-price-wrap">
+          <span class="membership-price">R$ 99</span>
+          <span class="membership-period">/ mês</span>
+        </div>
+        <ul class="membership-features">
+          <li>Cortes de cabelo ilimitados durante o mês</li>
+          <li>Válido na Unidade 01 (Centro) e Unidade 02 (Cerro Azul)</li>
+          <li>10% de desconto em pomadas e produtos</li>
+          <li>Lavagem e finalização premium inclusas</li>
+        </ul>
+        <button class="btn-membership" onclick="openMembershipModal('SILVER CLUB', 'R$ 99 / mês', 'Cortes Ilimitados nas 2 unidades')">Assinar Silver</button>
+      </div>
+
+      <!-- Tier 2: Gold (Featured) -->
+      <div class="membership-card featured reveal reveal-delay-1">
+        <div class="membership-badge">Mais Escolhido</div>
+        <div class="membership-plan-name">GOLD CLUB</div>
+        <div class="membership-plan-tag">Corte + Barba Ilimitados</div>
+        <div class="membership-price-wrap">
+          <span class="membership-price">R$ 159</span>
+          <span class="membership-period">/ mês</span>
+        </div>
+        <ul class="membership-features">
+          <li>Cortes e Barboterapias ilimitadas no mês</li>
+          <li>Acesso total às 2 unidades de Maringá</li>
+          <li>15% de desconto em toda a linha de cosméticos</li>
+          <li>Bebida cortesia do lounge em todas as visitas</li>
+          <li>Canal de agendamento prioritário sem fila</li>
+        </ul>
+        <button class="btn-membership" onclick="openMembershipModal('GOLD CLUB', 'R$ 159 / mês', 'Cortes e Barboterapias Ilimitadas + Lounge VIP')">Assinar Gold</button>
+      </div>
+
+      <!-- Tier 3: Black VIP -->
+      <div class="membership-card reveal reveal-delay-2">
+        <div class="membership-plan-name">BLACK VIP</div>
+        <div class="membership-plan-tag">Experiência Total &amp; Tratamentos</div>
+        <div class="membership-price-wrap">
+          <span class="membership-price">R$ 229</span>
+          <span class="membership-period">/ mês</span>
+        </div>
+        <ul class="membership-features">
+          <li>Acesso livre: Corte, Barba, Terapia Capilar e Facial</li>
+          <li>1 Convidado mensal com 50% de desconto</li>
+          <li>Atendimento exclusivo sem fila de espera</li>
+          <li>20% de desconto em produtos da barbearia</li>
+          <li>Acesso ao concierge VIP de agendamento</li>
+        </ul>
+        <button class="btn-membership" onclick="openMembershipModal('BLACK VIP', 'R$ 229 / mês', 'Acesso Total Irrestrito + 1 Convidado com 50% de desconto')">Assinar Black VIP</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="gallery" id="gallery">
+    <div class="gallery-header">
+      <div class="section-tag reveal" style="justify-content: center;">
+        <span class="section-tag-line"></span>
+        <span class="section-tag-text">Nosso Portfólio</span>
+        <span class="section-tag-line"></span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1">A <span class="italic">Arte</span> NOS DETALHES</h2>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=700&amp;q=85&amp;auto=format&amp;fit=crop" alt="Fade clássico e alinhamento">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-text">FADE DE ALTA PRECISÃO</span>
+        </div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=700&amp;q=85&amp;auto=format&amp;fit=crop" alt="Arte na barba">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-text">ARTE NA NAVALHA</span>
+        </div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=700&amp;q=85&amp;auto=format&amp;fit=crop" alt="Toalha quente">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-text">RITUAL DA TOALHA QUENTE</span>
+        </div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=900&amp;q=85&amp;auto=format&amp;fit=crop" alt="Ambiente da barbearia em Maringá">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-text">NOSSA ESTRUTURA</span>
+        </div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?w=900&amp;q=85&amp;auto=format&amp;fit=crop" alt="Detalhes finais do penteado">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-text">FINALIZAÇÃO IMPECÁVEL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team" id="team">
+    <div class="team-header">
+      <div>
+        <div class="section-tag reveal">
+          <span class="section-tag-line"></span>
+          <span class="section-tag-text">O Time</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1">CONHEÇA NOSSOS <span class="italic">Mestres</span><br>BARBEIROS</h2>
+      </div>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-card-img">
+          <img src="https://images.unsplash.com/photo-1557862921-37829c790f19?w=800&amp;q=80" alt="Alexandre Silveira">
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">ALEXANDRE SILVEIRA</div>
+            <div class="team-card-role">Fundador &amp; Head Barber</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-card-img">
+          <img src="https://images.unsplash.com/photo-1597116648852-75764ecaf6f5?w=800&amp;q=80" alt="Rodrigo Ramos">
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">RODRIGO RAMOS</div>
+            <div class="team-card-role">Especialista em Fade &amp; Freestyle</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-card-img">
+          <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?w=800&amp;q=80" alt="Carlos Eduardo">
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">CARLOS EDUARDO</div>
+            <div class="team-card-role">Mestre em Barboterapia &amp; Visagismo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section (Google Reviews 5.0) -->
+  <section class="testimonials" id="testimonials">
+    <div class="testimonial-bg-text">AVALIAÇÕES</div>
+
+    <div class="testimonials-header">
+      <div class="google-badge reveal">
+        ★ ★ ★ ★ ★ &nbsp; 5.0 no Google Maps Maringá
+      </div>
+      <div class="section-tag reveal" style="justify-content: center;">
+        <span class="section-tag-line"></span>
+        <span class="section-tag-text">Depoimentos Reais</span>
+        <span class="section-tag-line"></span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1">O QUE NOSSOS <span class="italic">Clientes</span> DIZEM</h2>
+    </div>
+
+    <div class="testimonial-slider">
+      <div class="testimonial-item active">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <p class="testimonial-quote">"A Apex é a melhor barbearia de Maringá sem sombra de dúvidas. O atendimento na Unidade Tiradentes é impecável, café de primeira e o corte do Alexandre é perfeito."</p>
+        <div class="testimonial-author-name">MARCOS VINÍCIUS</div>
+        <div class="testimonial-author-title">Cliente Unidade Zona 01</div>
+      </div>
+
+      <div class="testimonial-item">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <p class="testimonial-quote">"Frequento a Unidade Cerro Azul desde a abertura. A pontualidade é britânica e o pacote de corte com barboterapia faz toda a diferença para recarregar as energias."</p>
+        <div class="testimonial-author-name">GABRIEL FONTES</div>
+        <div class="testimonial-author-title">Cliente Unidade Zona 02</div>
+      </div>
+
+      <div class="testimonial-item">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <p class="testimonial-quote">"Ambiente nota 10, profissionais qualificados e preço justo pelo nível de entrega. Recomendo para qualquer homem em Maringá que valoriza a própria imagem."</p>
+        <div class="testimonial-author-name">BRUNO CASTRO</div>
+        <div class="testimonial-author-title">Cliente desde 2021</div>
+      </div>
+    </div>
+
+    <div class="testimonial-nav" id="testimonialNav">
+      <button class="testimonial-dot active" data-index="0"></button>
+      <button class="testimonial-dot" data-index="1"></button>
+      <button class="testimonial-dot" data-index="2"></button>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section class="booking" id="booking">
+    <div class="booking-inner">
+      <div class="booking-image reveal">
+        <img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&amp;q=85&amp;auto=format&amp;fit=crop" alt="Cadeira de barbearia Apex">
+      </div>
+
+      <div class="booking-form-wrapper">
+        <div class="section-tag reveal">
+          <span class="section-tag-line"></span>
+          <span class="section-tag-text">Agendamento Online</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1">RESERVE SEU <span class="italic">Horário</span></h2>
+
+        <form class="booking-form reveal reveal-delay-2" id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome</label>
+              <input type="text" id="bName" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp / Telefone</label>
+              <input type="tel" id="bPhone" placeholder="(44) 99999-9999" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Selecione a Unidade</label>
+            <select id="bUnit" required>
+              <option value="">Escolha a unidade em Maringá...</option>
+              <option value="Unidade 01 — Zona 01 (Av. Tiradentes)">Unidade 01 — Zona 01 (Av. Tiradentes)</option>
+              <option value="Unidade 02 — Zona 02 (Av. Cerro Azul)">Unidade 02 — Zona 02 (Av. Cerro Azul)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Serviço Desejado</label>
+            <select id="bService" required>
+              <option value="">Escolha um serviço...</option>
+              <option value="Corte Assinatura — R$ 55">Corte Assinatura — R$ 55</option>
+              <option value="Barboterapia Quente — R$ 45">Barboterapia Quente — R$ 45</option>
+              <option value="Alinhamento de Barba — R$ 35">Alinhamento de Barba — R$ 35</option>
+              <option value="O Pacote Real (Corte + Barba + Detox) — R$ 120">O Pacote Real (Corte + Barba + Detox) — R$ 120</option>
+              <option value="Design &amp; Fade Artístico — R$ 65">Design &amp; Fade Artístico — R$ 65</option>
+              <option value="Terapia Capilar Detox — R$ 50">Terapia Capilar Detox — R$ 50</option>
+              <option value="Camuflagem Grisalha — R$ 55">Camuflagem Grisalha — R$ 55</option>
+              <option value="Limpeza Facial Express — R$ 45">Limpeza Facial Express — R$ 45</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Barbeiro Preferido</label>
+            <select id="bBarber">
+              <option value="Sem preferência">Sem preferência (Primeiro disponível)</option>
+              <option value="Alexandre Silveira">Alexandre Silveira</option>
+              <option value="Rodrigo Ramos">Rodrigo Ramos</option>
+              <option value="Carlos Eduardo">Carlos Eduardo</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="bDate" required>
+            </div>
+            <div class="form-group">
+              <label>Horário</label>
+              <input type="time" id="bTime" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <span>Confirmar Agendamento</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de Confirmação Agendamento -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-card">
+      <div style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem; text-align: center;">✓</div>
+      <h3 class="modal-title">AGENDAMENTO REGISTRADO</h3>
+      <p class="modal-subtitle">Apex Barbearia &bull; Maringá</p>
+      <div class="modal-text" id="bookingModalText">
+        Seu horário foi pré-reservado com sucesso.
+      </div>
+      <button class="btn-modal-action" onclick="closeModal('bookingModal')">Entendido</button>
+    </div>
+  </div>
+
+  <!-- Modal de Adesão ao Apex Club (Decisão C3) -->
+  <div class="modal-overlay" id="membershipModal">
+    <div class="modal-card">
+      <div style="font-size: 1.5rem; color: var(--gold); margin-bottom: 0.5rem; text-align: center;">✦</div>
+      <h3 class="modal-title" id="mModalTitle">ADESÃO AO APEX CLUB</h3>
+      <p class="modal-subtitle" id="mModalSubtitle">Plano Mensal Recorrente</p>
+      
+      <div class="modal-plan-box" id="mModalPlanBox">
+        <!-- Preenchido via JS -->
+      </div>
+
+      <div class="modal-tabs">
+        <button class="modal-tab-btn active" id="tabPix" onclick="setPaymentMethod('pix')">Pix Instantâneo</button>
+        <button class="modal-tab-btn" id="tabCard" onclick="setPaymentMethod('card')">Cartão de Crédito</button>
+      </div>
+
+      <div id="paymentContentPix" style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--gray-light); line-height: 1.6;">
+        A chave Pix será gerada na confirmação. Sua assinatura entra em vigor imediatamente após a validação.
+      </div>
+
+      <div id="paymentContentCard" style="display: none; margin-bottom: 1.5rem;">
+        <input type="text" placeholder="Nome no Cartão" style="width: 100%; padding: 0.75rem; background: var(--black); border: 1px solid rgba(200,169,126,0.3); color: var(--white); margin-bottom: 0.5rem; font-size: 0.85rem;">
+        <input type="text" placeholder="Número do Cartão (0000 0000 0000 0000)" style="width: 100%; padding: 0.75rem; background: var(--black); border: 1px solid rgba(200,169,126,0.3); color: var(--white); font-size: 0.85rem;">
+      </div>
+
+      <button class="btn-modal-action" onclick="confirmMembership()">Confirmar Adesão</button>
+      <button class="btn-modal-close" onclick="closeModal('membershipModal')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal Legal (Termos / Privacidade / Regulamento) -->
+  <div class="modal-overlay" id="legalModal">
+    <div class="modal-card" style="max-width: 650px;">
+      <h3 class="modal-title" id="legalModalTitle">DOCUMENTO LEGAL</h3>
+      <p class="modal-subtitle">Apex Barbearia &bull; Termos &amp; Condições</p>
+      <div class="modal-text" id="legalModalText" style="text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
+        <!-- Preenchido via JS -->
+      </div>
+      <button class="btn-modal-action" onclick="closeModal('legalModal')">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Instagram Section -->
+  <section class="instagram">
+    <div class="instagram-header">
+      <div class="section-tag reveal" style="justify-content: center;">
+        <span class="section-tag-line"></span>
+        <span class="section-tag-text">Siga a Apex</span>
+        <span class="section-tag-line"></span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1">NO <span class="italic">Instagram</span></h2>
+      <a href="https://instagram.com" target="_blank" class="instagram-handle reveal reveal-delay-2">
+        @apexbarbeariamga
+      </a>
+    </div>
+
+    <div class="instagram-grid">
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Apex Barbearia Maringá" loading="lazy">
+      </div>
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Fade Maringá" loading="lazy">
+      </div>
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Ferramentas" loading="lazy">
+      </div>
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Espaço Apex" loading="lazy">
+      </div>
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Barba alinhada" loading="lazy">
+      </div>
+      <div class="instagram-item">
+        <img src="https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?w=400&amp;q=80&amp;auto=format&amp;fit=crop" alt="Finalização" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">APEX <span class="gold">BARBEARIA</span></div>
+        <p class="footer-brand-desc">Onde a tradição encontra o visagismo contemporâneo. Atendimento exclusivo e pontual nas nossas 2 unidades em Maringá.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">NAVEGAÇÃO</div>
+        <ul>
+          <li><a href="#about">Nossa História</a></li>
+          <li><a href="#services">Menu de Serviços</a></li>
+          <li><a href="#membership">Clube de Assinatura</a></li>
+          <li><a href="#gallery">Galeria de Cortes</a></li>
+          <li><a href="#team">Nossos Barbeiros</a></li>
+          <li><a href="#booking">Agendamento</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">SERVIÇOS</div>
+        <ul>
+          <li><a href="#services">Corte Assinatura</a></li>
+          <li><a href="#services">Barboterapia Quente</a></li>
+          <li><a href="#services">Alinhamento de Barba</a></li>
+          <li><a href="#services">O Pacote Real</a></li>
+          <li><a href="#membership">Planos Apex Club</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">NOSSAS UNIDADES</div>
+        <div class="footer-unit-box">
+          <div class="footer-unit-title">Unidade 01 — Zona 01</div>
+          <div class="footer-unit-desc">Av. Tiradentes, 1020 - Centro, Maringá - PR<br>Tel: (44) 3025-8800</div>
+        </div>
+        <div class="footer-unit-box">
+          <div class="footer-unit-title">Unidade 02 — Zona 02</div>
+          <div class="footer-unit-desc">Av. Cerro Azul, 840 - Zona 02, Maringá - PR<br>Tel: (44) 3028-4422</div>
+        </div>
+        <div class="footer-unit-desc" style="color: var(--gold); font-size: 0.78rem; margin-top: 0.5rem;">
+          Seg a Sex: 09h às 20h | Sáb: 08h30 às 18h30
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Apex Barbearia. Todos os direitos reservados. Maringá - PR.</p>
+      <div class="footer-bottom-links">
+        <a href="#termos" onclick="openLegalModal('termos')">Termos de Uso</a>
+        <a href="#privacidade" onclick="openLegalModal('privacidade')">Política de Privacidade</a>
+        <a href="#regulamento" onclick="openLegalModal('regulamento')">Regulamento do Clube</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ========== NAVIGATION SCROLL ==========
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // ========== MOBILE NAVIGATION ==========
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileNav.classList.toggle('active');
+      document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+    });
+
+    function closeMobileNav() {
+      hamburger.classList.remove('active');
+      mobileNav.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ========== SCROLL REVEAL ==========
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ========== TESTIMONIAL SLIDER ==========
+    const testimonialItems = document.querySelectorAll('.testimonial-item');
+    const testimonialDots = document.querySelectorAll('.testimonial-dot');
+    let currentTestimonial = 0;
+    let testimonialInterval;
+
+    function showTestimonial(index) {
+      testimonialItems.forEach(item => item.classList.remove('active'));
+      testimonialDots.forEach(dot => dot.classList.remove('active'));
+      testimonialItems[index].classList.add('active');
+      testimonialDots[index].classList.add('active');
+      currentTestimonial = index;
+    }
+
+    testimonialDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        showTestimonial(parseInt(dot.dataset.index));
+        clearInterval(testimonialInterval);
+        startTestimonialAutoplay();
+      });
+    });
+
+    function startTestimonialAutoplay() {
+      testimonialInterval = setInterval(() => {
+        showTestimonial((currentTestimonial + 1) % testimonialItems.length);
+      }, 5000);
+    }
+    startTestimonialAutoplay();
+
+    // ========== SMOOTH SCROLL ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId && targetId !== '#') {
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // ========== COUNTER ANIMATION ==========
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const text = el.textContent;
+          const match = text.match(/(\d+)/);
+          if (match) {
+            const target = parseInt(match[0]);
+            const suffix = text.replace(match[0], '');
+            let current = 0;
+            const increment = target / 40;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                current = target;
+                clearInterval(timer);
+              }
+              el.textContent = Math.floor(current) + suffix;
+            }, 30);
+          }
+          statsObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    statNumbers.forEach(el => statsObserver.observe(el));
+
+    // ========== STANDALONE BOOKING SUBMISSION ==========
+    const bookingForm = document.getElementById('bookingForm');
+    const bookingModal = document.getElementById('bookingModal');
+    const bookingModalText = document.getElementById('bookingModalText');
+
+    if (bookingForm) {
+      bookingForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('bName').value;
+        const unit = document.getElementById('bUnit').value;
+        const service = document.getElementById('bService').value;
+        const barber = document.getElementById('bBarber').value;
+        const date = document.getElementById('bDate').value;
+        const time = document.getElementById('bTime').value;
+
+        bookingModalText.innerHTML = `
+          Obrigado, <strong>${name}</strong>!<br><br>
+          Seu agendamento para <strong>${service}</strong> na <strong>${unit}</strong> com <strong>${barber}</strong> no dia <strong>${date}</strong> às <strong>${time}</strong> foi registrado com sucesso.<br><br>
+          Aguardamos sua visita!
+        `;
+        bookingModal.classList.add('active');
+        bookingForm.reset();
+      });
+    }
+
+    // ========== MEMBERSHIP MODAL LOGIC ==========
+    let selectedPlan = '';
+    function openMembershipModal(name, price, desc) {
+      selectedPlan = name;
+      document.getElementById('mModalTitle').innerText = 'ADESÃO AO ' + name;
+      document.getElementById('mModalPlanBox').innerHTML = `
+        <strong>Plano:</strong> ${name}<br>
+        <strong>Mensalidade:</strong> ${price}<br>
+        <strong>Benefício Principal:</strong> ${desc}<br>
+        <strong>Unidades:</strong> Válido em Maringá (Zona 01 e Zona 02)
+      `;
+      document.getElementById('membershipModal').classList.add('active');
+    }
+
+    function setPaymentMethod(type) {
+      document.getElementById('tabPix').classList.toggle('active', type === 'pix');
+      document.getElementById('tabCard').classList.toggle('active', type === 'card');
+      document.getElementById('paymentContentPix').style.display = type === 'pix' ? 'block' : 'none';
+      document.getElementById('paymentContentCard').style.display = type === 'card' ? 'block' : 'none';
+    }
+
+    function confirmMembership() {
+      alert('Assinatura do ' + selectedPlan + ' registrada com sucesso! Bem-vindo ao Apex Club.');
+      closeModal('membershipModal');
+    }
+
+    // ========== LEGAL MODAL LOGIC ==========
+    function openLegalModal(type) {
+      const modal = document.getElementById('legalModal');
+      const title = document.getElementById('legalModalTitle');
+      const text = document.getElementById('legalModalText');
+
+      if (type === 'termos') {
+        title.innerText = 'TERMOS DE USO';
+        text.innerHTML = `
+          <strong>1. Aceitação dos Termos:</strong> Ao utilizar este website e os serviços da Apex Barbearia em Maringá - PR, você concorda com estes termos de prestação de serviços.<br><br>
+          <strong>2. Agendamentos e Pontualidade:</strong> As reservas possuem tolerância de 10 minutos para garantir o fluxo de atendimento em nossas unidades.<br><br>
+          <strong>3. Cancelamentos:</strong> Solicitamos aviso prévio de no mínimo 2 horas para reagendamentos.
+        `;
+      } else if (type === 'privacidade') {
+        title.innerText = 'POLÍTICA DE PRIVACIDADE';
+        text.innerHTML = `
+          <strong>1. Coleta de Dados:</strong> Coletamos apenas informações estritamente necessárias para confirmação de agendamentos e contato sobre o Apex Club.<br><br>
+          <strong>2. Proteção:</strong> Seus dados telefônicos e cadastrais não são compartilhados com terceiros e estão protegidos em conformidade com as normas vigentes.<br><br>
+          <strong>3. Comunicação:</strong> Enviamos lembretes de horários e avisos de benefícios apenas aos clientes cadastrados.
+        `;
+      } else if (type === 'regulamento') {
+        title.innerText = 'REGULAMENTO DO APEX CLUB';
+        text.innerHTML = `
+          <strong>1. Vigência e Renovação:</strong> A assinatura é mensal e recorrente, sem taxa de cancelamento ou período de fidelidade obrigatória.<br><br>
+          <strong>2. Utilização dos Cortes:</strong> Os planos Silver, Gold e Black VIP oferecem atendimentos válidos nas duas unidades de Maringá (Zona 01 e Zona 02).<br><br>
+          <strong>3. Pessoal e Intransferível:</strong> A titularidade da assinatura é individual, exceto pelo benefício de 50% de desconto para 1 convidado no plano Black VIP.
+        `;
+      }
+      modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>

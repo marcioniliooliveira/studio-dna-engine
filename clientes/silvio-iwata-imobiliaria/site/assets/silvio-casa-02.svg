@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Imagem demonstrativa de um apartamento com vista</title>
+  <desc id="desc">Ilustração de um interior amplo com varanda e horizonte verde abstrato.</desc>
+  <defs><linearGradient id="interior" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#e8edf4"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="#0d0f14"/>
+  <rect width="1600" height="650" fill="url(#interior)"/>
+  <rect x="900" y="120" width="520" height="500" fill="#b9d8c1" stroke="#055227" stroke-width="18"/>
+  <path d="M1065 120v500M1240 120v500M900 375h520" stroke="#055227" stroke-width="13"/>
+  <path d="M900 470 1020 390l110 66 120-155 170 113v206H900Z" fill="#055227" opacity=".7"/>
+  <path d="M0 710 500 540l430 150 670-180v490H0Z" fill="#ffffff"/>
+  <path d="M275 750h460v180H275Z" fill="#e8edf4" stroke="#055227" stroke-width="16"/>
+  <path d="M220 750h570" stroke="#8dbc2a" stroke-width="32" stroke-linecap="round"/>
+  <circle cx="1120" cy="790" r="128" fill="#8dbc2a" opacity=".3"/>
+  <path d="M1120 918V650M1040 790l80-120 80 120" fill="none" stroke="#055227" stroke-width="20" stroke-linecap="round"/>
+</svg>

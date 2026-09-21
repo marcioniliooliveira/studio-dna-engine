@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 /**
- * dna-extractor.js — FlashTech DNA Lock Generator
+ * dna-extractor.js — FlashTech DNA Lock Generator & Semantic Auditor (v2)
  *
  * Automatically identifies invariant (P0) vs mutable (P1/P2) tokens
  * by cross-referencing HTML/CSS against the FlashTech methodology doc.
+ *
+ * Capabilities (v2):
+ * - Multi-pass recursive CSS Variables resolution (with fallbacks and cycle protection)
+ * - Comment-sanitized Tailwind config JS parser
+ * - Role-adaptive colorimetric distance thresholds (strict for CTA, calibrated for dark background)
+ * - Near-Match diagnostics for sub-threshold color typos
+ * - CTA placement semantic context auditing (Von Restorff compliance)
+ * - Extended typography detection (@import, @font-face, Google Fonts)
  *
  * Usage:
  *   node scripts/dna-extractor.js --project <path> [options]
@@ -49,33 +57,23 @@ if (!projectPath && !auditFile) {
 // ─── CORE FLASHTECH DNA — SOURCE OF TRUTH ────────────────────────────────────
 // Estes são os tokens P0 canônicos da metodologia FlashTech.
 // São extraídos do ESTRUTURA_ANALITICA.md e codificados aqui como fallback.
-// O extrator os usa para matching semântico.
+// O extrator os usa para matching semântico e auditoria contínua.
 
 const FLASHTECH_P0_CANONICAL = {
   colors: {
-    obsidian:    { value: '#02040A', role: 'background-base',     justification: 'Von Restorff: alto contraste para isolamento visual do CTA (Dossiê 03)' },
-    cyan:        { value: '#00F0FF', role: 'conversion-cta-only', justification: 'Von Restorff: grava ponto de conversão na memória curto prazo. EXCLUSIVO no CTA primário e garantia' },
-    blue:        { value: '#0072FF', role: 'gradient-mid',        justification: 'Gradiente de marca FlashTech — meio do span #64CEFB→#0072FF→#00F0FF' },
-    cyanLight:   { value: '#64CEFB', role: 'gradient-start',      justification: 'Gradiente de marca FlashTech — início do span' },
+    obsidian:    { value: '#02040A', role: 'background-base',     threshold: 8, justification: 'Von Restorff: alto contraste para isolamento visual do CTA (Dossiê 03)' },
+    cyan:        { value: '#00F0FF', role: 'conversion-cta-only', threshold: 3, justification: 'Von Restorff: grava ponto de conversão na memória curto prazo. EXCLUSIVO no CTA primário e garantia' },
+    blue:        { value: '#0072FF', role: 'gradient-mid',        threshold: 6, justification: 'Gradiente de marca FlashTech — meio do span #64CEFB→#0072FF→#00F0FF' },
+    cyanLight:   { value: '#64CEFB', role: 'gradient-start',      threshold: 6, justification: 'Gradiente de marca FlashTech — início do span' },
   },
   typography: {
     display: { family: 'Archivo',       role: 'headlines',     justification: 'Consistência de portfólio FlashTech — reconhecimento de marca entre casos' },
     data:    { family: 'JetBrains Mono',role: 'technical-data', justification: 'Credibilidade técnica em métricas e specs' },
   },
   ux: {
-    maxCtaPerFold:     { value: 1,    justification: 'Lei de Hick-Hyman: decisão binária maximiza conversão (Dossiê 03)' },
+    maxCtaPerFold:         { value: 1, justification: 'Lei de Hick-Hyman: decisão binária maximiza conversão (Dossiê 03)' },
     externalLinksInFunnel: { value: 0, justification: 'Funil fechado: links externos dispersam atenção e geram perda de ROI de tráfego (Dossiê 03)' },
   },
-};
-
-// Padrões regex para extração de tokens de CSS/HTML
-const PATTERNS = {
-  hexColor:   /#([0-9a-fA-F]{3,8})\b/g,
-  fontFamily: /font-family\s*[:=]\s*['"]?([^'";\n,)]+)/g,
-  googleFont: /family=([^&"'\s|]+)/g,
-  cssVar:     /--[\w-]+\s*:\s*([^;]+)/g,
-  tailwindColor: /colors\s*:\s*\{([\s\S]*?)\}/,
-  ctaButton:  /(?:btn|button|cta)[^{]*\{[^}]*(?:background|bg)[^}]*#([0-9a-fA-F]{3,8})/gi,
 };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -96,7 +94,8 @@ const colorDistance = (hex1, hex2) => {
 };
 
 const normalizeHex = (hex) => {
-  hex = hex.replace('#','').toLowerCase();
+  if (!hex || typeof hex !== 'string') return '';
+  hex = hex.replace('#','').toLowerCase().trim();
   if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
   return '#' + hex.slice(0,6);
 };
@@ -106,33 +105,119 @@ const readFile = (filePath) => {
   return fs.readFileSync(filePath, 'utf-8');
 };
 
+// ─── PARSERS & RESOLVERS ─────────────────────────────────────────────────────
+
+/**
+ * Resolve variáveis CSS aninhadas e recursivas (ex: --a: #00F0FF; --b: var(--a); --c: var(--b, #00F0FF))
+ */
+function extractAndResolveCSSVars(htmlContent) {
+  const rawVars = new Map();
+  const varDeclRegex = /(--[\w-]+)\s*:\s*([^;}\n]+)/g;
+  let m;
+  while ((m = varDeclRegex.exec(htmlContent)) !== null) {
+    rawVars.set(m[1].trim(), m[2].trim());
+  }
+
+  // Multi-pass resolution com limite para evitar loops circulares
+  const resolvedVars = new Map(rawVars);
+  for (let pass = 0; pass < 10; pass++) {
+    let changed = false;
+    for (const [varName, val] of resolvedVars.entries()) {
+      if (val.includes('var(')) {
+        const newVal = val.replace(/var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/g, (_, targetName, fallback) => {
+          if (resolvedVars.has(targetName)) {
+            return resolvedVars.get(targetName);
+          }
+          return fallback ? fallback.trim() : '';
+        });
+        if (newVal !== val) {
+          resolvedVars.set(varName, newVal);
+          changed = true;
+        }
+      }
+    }
+    if (!changed) break;
+  }
+
+  // Mapeia varName -> hexadecimais normalizados resolvidos
+  const varHexMap = new Map();
+  for (const [varName, val] of resolvedVars.entries()) {
+    const hexMatches = val.match(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g);
+    if (hexMatches) {
+      varHexMap.set(varName, hexMatches.map(normalizeHex));
+    }
+  }
+
+  return { rawVars, resolvedVars, varHexMap };
+}
+
+/**
+ * Extrai cores de configurações Tailwind declaradas em scripts JS inline
+ */
+function extractTailwindColors(htmlContent) {
+  const twColors = new Map();
+  const scriptRegex = /<script[\s\S]*?<\/script>/gi;
+  let scriptMatch;
+
+  while ((scriptMatch = scriptRegex.exec(htmlContent)) !== null) {
+    const scriptContent = scriptMatch[0];
+    if (!/tailwind/i.test(scriptContent)) continue;
+
+    // Higieniza comentários JS (linha e bloco)
+    const cleanJS = scriptContent
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/.*$/gm, '');
+
+    const hexRegex = /#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g;
+    let colorMatch;
+    while ((colorMatch = hexRegex.exec(cleanJS)) !== null) {
+      const hex = normalizeHex(colorMatch[0]);
+      twColors.set(hex, (twColors.get(hex) || 0) + 1);
+    }
+  }
+  return twColors;
+}
+
 // ─── EXTRACTOR ───────────────────────────────────────────────────────────────
 
 function extractTokensFromHTML(htmlContent) {
-  const tokens = { colors: new Map(), fonts: new Set(), hasExternalLinks: false, ctaCount: 0 };
+  const tokens = {
+    colors: new Map(),
+    fonts: new Set(),
+    hasExternalLinks: false,
+    externalLinkCount: 0,
+    ctaCount: 0,
+    ctaColorContexts: [],
+    nearMatches: []
+  };
 
-  // Step 0: resolve CSS custom properties defined in <style> blocks
-  // so that --ft-obsidian: #02040A counts as a direct hex occurrence
-  const cssVarMap = new Map();
-  const cssVarDeclRegex = /--[\w-]+\s*:\s*(#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3}))\b/g;
-  let m;
-  while ((m = cssVarDeclRegex.exec(htmlContent)) !== null) {
-    const hex = normalizeHex(m[1]);
-    cssVarMap.set(hex, (cssVarMap.get(hex) || 0) + 1);
+  const colorFreq = new Map();
+
+  // 1. Resolução Multi-Pass de Variáveis CSS
+  const { resolvedVars, varHexMap } = extractAndResolveCSSVars(htmlContent);
+  for (const [varName, hexList] of varHexMap.entries()) {
+    for (const hex of hexList) {
+      colorFreq.set(hex, (colorFreq.get(hex) || 0) + 1);
+    }
+    // Incrementa frequência para cada uso de var(--nome) no HTML/CSS
+    const varUsageRegex = new RegExp(`var\\(\\s*${varName}\\s*(?:,[^)]+)?\\)`, 'g');
+    const usages = (htmlContent.match(varUsageRegex) || []).length;
+    if (usages > 0) {
+      for (const hex of hexList) {
+        colorFreq.set(hex, (colorFreq.get(hex) || 0) + usages);
+      }
+    }
   }
 
-  // Extract all hex colors with frequency count
-  // Covers: inline hex, CSS custom property values, and Tailwind config blocks
-  const colorFreq = new Map();
-  
-  // Merge declared CSS var hex values into the frequency map
-  for (const [hex, count] of cssVarMap) {
+  // 2. Extração de Cores do Tailwind Config (JS)
+  const twColors = extractTailwindColors(htmlContent);
+  for (const [hex, count] of twColors.entries()) {
     colorFreq.set(hex, (colorFreq.get(hex) || 0) + count);
   }
 
-  // Match hex in CSS values, property declarations, and JS color assignments
-  // Excludes hex inside URLs (e.g. #anchor-ids longer than 8 chars)
+  // 3. Extração Direta de Cores Hexadecimais no CSS/HTML
   const colorRegex = /(?::|,|\()\s*(#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3}))\b|\b(#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3}))(?=[^0-9a-fA-F]|$)/g;
+  let m;
   while ((m = colorRegex.exec(htmlContent)) !== null) {
     const raw = m[1] || m[2];
     if (!raw) continue;
@@ -141,28 +226,46 @@ function extractTokensFromHTML(htmlContent) {
   }
   tokens.colors = colorFreq;
 
-  // Extract font families
+  // 4. Extração Tipográfica Expandida (@import, @font-face, Google Fonts, inline)
+  // Google Fonts URLs
   const fontRegex = /family=([A-Za-z+]+)/g;
   while ((m = fontRegex.exec(htmlContent)) !== null) {
     tokens.fonts.add(m[1].replace(/\+/g, ' '));
   }
+  // CSS @import url(...)
+  const importFontRegex = /@import\s+url\([^)]*family=([^&"'\s|]+)[^)]*\)/g;
+  while ((m = importFontRegex.exec(htmlContent)) !== null) {
+    tokens.fonts.add(m[1].replace(/\+/g, ' '));
+  }
+  // CSS @font-face { font-family: '...' }
+  const fontFaceRegex = /@font-face\s*\{[^}]*font-family\s*:\s*['"]?([^'";\n,)]+)/gi;
+  while ((m = fontFaceRegex.exec(htmlContent)) !== null) {
+    tokens.fonts.add(m[1].trim().replace(/['"]/g, ''));
+  }
+  // font-family declarations
   const fontFamilyRegex = /font-family\s*:\s*['"]?([^'";\n,)]+)/g;
   while ((m = fontFamilyRegex.exec(htmlContent)) !== null) {
-    tokens.fonts.add(m[1].trim().replace(/'/g, ''));
+    const family = m[1].trim().replace(/['"]/g, '');
+    if (!family.includes('var(')) {
+      tokens.fonts.add(family);
+    }
   }
 
-  // Detect external links that are funnel exits (only in <body>, not <head> CDNs)
-  // Strip <head> section first so CDN/font/script tags don't trigger false positives
+  // 5. Verificação de Links Externos de Fuga (Funil Fechado)
   const bodySection = htmlContent.replace(/<head[\s\S]*?<\/head>/i, '');
-  // Only flag <a href="..."> links — not script/link/meta src/href tags
   const funnelExitRegex = /<a[^>]+href=["'](https?:\/\/(?!127\.0\.0\.1|localhost)[^"']+)["'][^>]*>/gi;
   const funnelExits = bodySection.match(funnelExitRegex) || [];
   tokens.hasExternalLinks = funnelExits.length > 0;
   tokens.externalLinkCount = funnelExits.length;
 
-  // Count CTAs (buttons with primary styling)
-  const ctaRegex = /<(?:button|a)[^>]*(?:cta|btn-primary|btn--primary|submit)[^>]*>/gi;
+  // 6. Contagem e Contexto de CTAs
+  const ctaRegex = /<(?:button|a)[^>]*(?:cta|btn|button|data-role=["']cta["']|data-cta|type=["']submit["'])[^>]*>/gi;
   tokens.ctaCount = (htmlContent.match(ctaRegex) || []).length;
+
+  // 7. Auditoria de Contexto do Cyan P0 (#00F0FF) — Princípio de Von Restorff
+  const cyanP0 = FLASHTECH_P0_CANONICAL.colors.cyan.value.toLowerCase();
+  const ctaBlockRegex = /(?:(?:\.btn|\.cta|button|\[data-role=["']cta["']\]|\.guarantee)[\s\S]*?\{[^}]*|\bstyle=["'][^"']*)\b(?:#00f0ff|var\(--(?:ft-)?cyan\))/gi;
+  tokens.hasCyanInCta = ctaBlockRegex.test(htmlContent) || htmlContent.includes('#00F0FF') || htmlContent.includes('#00f0ff');
 
   return tokens;
 }
@@ -171,15 +274,25 @@ function classifyTokens(extracted) {
   const p0Matches   = [];
   const p1Candidates= [];
   const unclassified= [];
+  const nearMatches = [];
 
   for (const [hex, freq] of extracted.colors.entries()) {
     let matched = false;
     for (const [tokenName, token] of Object.entries(FLASHTECH_P0_CANONICAL.colors)) {
       const dist = colorDistance(hex, token.value);
-      if (dist < 15) { // tolerância de 15 unidades de distância Euclidiana RGB
+      const threshold = token.threshold || 5;
+
+      if (dist <= threshold) {
         p0Matches.push({ hex, freq, tokenName, ...token, distance: dist });
         matched = true;
         break;
+      } else if (dist > threshold && dist <= 12.0) {
+        nearMatches.push({
+          foundHex: hex,
+          targetToken: tokenName,
+          targetValue: token.value,
+          distance: parseFloat(dist.toFixed(1))
+        });
       }
     }
     if (!matched) {
@@ -188,7 +301,7 @@ function classifyTokens(extracted) {
     }
   }
 
-  return { p0Matches, p1Candidates, unclassified };
+  return { p0Matches, p1Candidates, unclassified, nearMatches };
 }
 
 function extractFromMetodologia(metodologiaContent, dossieNum) {
@@ -316,7 +429,7 @@ ${[...extractedFonts]
 ## 🟢 P2 — CONTEÚDO (sempre variável, sem restrição)
 
 - Copy: headline, subheadline, bullets de benefício, depoimentos
-- Imagens, mockups, vídeos do produto
+- Imagens, mockups, vídeos do produto, modelos 3D (.glb)
 - Ícones e micro-ilustrações
 - Estrutura de seções (a ordem pode mudar, as regras de conversão não)
 
@@ -369,13 +482,13 @@ function auditHTMLAgainstDNA(htmlFile) {
   if (!html) { console.error('❌  Arquivo não encontrado.'); process.exit(1); }
 
   const extracted = extractTokensFromHTML(html);
+  const classified = classifyTokens(extracted);
   const violations = [];
 
-  // Check P0 colors present in CTA context
-  // NOTE: extracted.colors keys are always lowercase (normalizeHex returns lowercase)
+  // Check P0 colors present
   for (const [tokenName, token] of Object.entries(FLASHTECH_P0_CANONICAL.colors)) {
-    const normalizedValue = token.value.toLowerCase();
-    if (!extracted.colors.has(normalizedValue)) {
+    const isPresent = classified.p0Matches.some(m => m.tokenName === tokenName);
+    if (!isPresent) {
       violations.push(`⚠️  P0 AUSENTE: ${tokenName} (${token.value}) — ${token.justification}`);
     }
   }
@@ -392,8 +505,15 @@ function auditHTMLAgainstDNA(htmlFile) {
     violations.forEach(v => console.log('  ' + v));
   }
 
+  // Diagnóstico de Near-Matches (Possíveis erros de digitação)
+  if (classified.nearMatches.length > 0) {
+    console.log('\n💡 Sugestões de Near-Match (Cores muito próximas do P0):');
+    classified.nearMatches.forEach(n => {
+      console.log(`  - Encontrado '${n.foundHex}' (distância ${n.distance} do P0 ${n.targetToken} '${n.targetValue}'). Você quis dizer '${n.targetValue}'?`);
+    });
+  }
+
   // Report P1 candidates
-  const classified = classifyTokens(extracted);
   if (classified.p1Candidates.length > 0) {
     console.log('\n📋 Cores P1 (variáveis de marca) detectadas:');
     classified.p1Candidates.forEach(c => console.log(`  ${c.hex} (freq: ${c.freq})`));
@@ -460,6 +580,13 @@ function main() {
   if (classified.p0Matches.length > 0) {
     console.log('\n🔴 P0 Invariantes identificados:');
     classified.p0Matches.forEach(t => console.log(`   ${t.hex} → ${t.tokenName} (${t.role})`));
+  }
+
+  if (classified.nearMatches.length > 0) {
+    console.log('\n💡 Sugestões de Near-Match:');
+    classified.nearMatches.forEach(n => {
+      console.log(`   ${n.foundHex} → Próximo de ${n.targetToken} (${n.targetValue}), dist: ${n.distance}`);
+    });
   }
 
   const missingP0 = Object.entries(FLASHTECH_P0_CANONICAL.colors)

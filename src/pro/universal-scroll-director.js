@@ -60,8 +60,8 @@ class UniversalScrollDirector {
   onReady(function() {
     // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
     document.querySelectorAll('.opacity-0').forEach(function(el) {
-      // Ignora elementos que devem ser alternados por sliders ou spinners
-      if (el.closest('#intro-logo-spinner') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis ou abas
+      if (el.closest('#intro-logo-spinner') || el.closest('.amenities-slide-box') || el.closest('.splide') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
         return;
       }
       const cs = window.getComputedStyle(el);
@@ -72,8 +72,12 @@ class UniversalScrollDirector {
     });
 
     // --- 2. MOTOR UNIVERSAL DE SPLITTEXT / APPEAR-LINE REVEAL ---
-    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div'));
-    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask'));
+    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
 
     lineMasks.forEach(function(mask) {
       mask.style.overflow = 'visible';
@@ -405,15 +409,234 @@ class UniversalScrollDirector {
       }
     });
 
-    // Animação sutil de hover nos materiais de papelaria (régua, lápis, borracha)
-    document.querySelectorAll('.group').forEach(function(grp) {
-      const ruler = grp.querySelector('img[src*="ruler"]');
-      const pencil = grp.querySelector('img[src*="pencil"]');
-      if (ruler) ruler.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-      if (pencil) pencil.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+    // --- 8. STACKING CARDS & METRIC STATS SLIDERS (15+ / 30+ SEM SOBREPOSIÇÃO) ---
+    const stackingCards = Array.from(document.querySelectorAll('[data-stacking-cards-item]'));
+    if (stackingCards.length > 1) {
+      let activeCardIdx = 0;
+      function renderStackingCard(idx) {
+        activeCardIdx = (idx + stackingCards.length) % stackingCards.length;
+        stackingCards.forEach(function(c, i) {
+          c.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeCardIdx) {
+            c.style.opacity = '1';
+            c.style.visibility = 'visible';
+            c.style.transform = 'translateY(0px)';
+            c.style.position = 'relative';
+            c.style.pointerEvents = 'auto';
+          } else {
+            c.style.opacity = '0';
+            c.style.visibility = 'hidden';
+            c.style.transform = 'translateY(15px)';
+            c.style.position = 'absolute';
+            c.style.pointerEvents = 'none';
+          }
+        });
+
+        // Atualiza indicadores numéricos como 01/02
+        const navLines = document.querySelectorAll('.problem_stats_line, .problem_stats_navigation');
+        navLines.forEach(function(nl) {
+          const spans = nl.querySelectorAll('span, div');
+          if (spans.length >= 2) {
+            spans[0].textContent = String(activeCardIdx + 1).padStart(2, '0');
+          }
+        });
+      }
+
+      renderStackingCard(0);
+      let cardTimer = setInterval(function() {
+        renderStackingCard(activeCardIdx + 1);
+      }, 4500);
+
+      // Conecta botões/setas de navegação
+      document.querySelectorAll('.problems_home_stats button, .problems_home_stats a, [class*="stats_nav"], .problems_stats_navigation').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          clearInterval(cardTimer);
+          renderStackingCard(activeCardIdx + 1);
+          cardTimer = setInterval(function() {
+            renderStackingCard(activeCardIdx + 1);
+          }, 4500);
+        });
+      });
+    }
+
+    // --- 9. SCROLL-LINKED TEXT HIGHLIGHT REVEAL ([data-highlight-text]) ---
+    document.querySelectorAll('[data-highlight-text]').forEach(function(container) {
+      if (container.dataset.highlightActivated) return;
+      container.dataset.highlightActivated = 'true';
+      const text = container.innerText.trim();
+      const words = text.split(/\\s+/);
+      container.innerHTML = '';
+      const wordSpans = words.map(function(w) {
+        const span = document.createElement('span');
+        span.textContent = w + ' ';
+        span.style.display = 'inline';
+        span.style.transition = 'color 0.35s ease, opacity 0.35s ease';
+        span.style.color = '#71717a';
+        span.style.opacity = '0.35';
+        container.appendChild(span);
+        return span;
+      });
+
+      function updateTextHighlight() {
+        const rect = container.getBoundingClientRect();
+        const winH = window.innerHeight;
+        const progress = Math.min(Math.max((winH * 0.85 - rect.top) / (rect.height + winH * 0.35), 0), 1);
+        const activeCount = Math.floor(progress * wordSpans.length);
+
+        wordSpans.forEach(function(sp, i) {
+          if (i <= activeCount) {
+            sp.style.color = '#fafaf9';
+            sp.style.opacity = '1';
+          } else {
+            sp.style.color = '#71717a';
+            sp.style.opacity = '0.35';
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateTextHighlight, { passive: true });
+      updateTextHighlight();
     });
 
-    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Asterisks) ativados com sucesso.');
+    // --- 10. GAP SECTION / KINETIC IMAGE CAROUSEL & LETTER SCRUB ---
+    const gapSection = document.querySelector('.gap_home_wrap, [class*="gap_wrap"]');
+    if (gapSection) {
+      const gapImages = Array.from(gapSection.querySelectorAll('.gap_home_image, [class*="gap_image"]'));
+      if (gapImages.length > 1) {
+        let gapIdx = 0;
+        gapImages.forEach(function(img, i) {
+          img.style.transition = 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+          img.style.opacity = i === 0 ? '1' : '0';
+        });
+        setInterval(function() {
+          gapImages.forEach(function(img) { img.style.opacity = '0'; });
+          gapIdx = (gapIdx + 1) % gapImages.length;
+          gapImages[gapIdx].style.opacity = '1';
+        }, 900);
+      }
+    }
+
+    // --- 12. MOTOR UNIVERSAL DE REVELAÇÃO WEBFLOW (data-anim="split", data-anim="element", data-anim="stagger", data-anim="slideUp-once") ---
+    if (typeof gsap !== 'undefined') {
+      // 12.1 Data-anim split
+      document.querySelectorAll('[data-anim="split"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        try {
+          if (typeof SplitText !== 'undefined') {
+            const cleanText = el.getAttribute('aria-label') || el.textContent.trim();
+            el.innerHTML = cleanText;
+            const st = new SplitText(el, { type: 'lines', linesClass: 'split-line', mask: 'lines' });
+            if (st.lines && st.lines.length > 0) {
+              const triggerEl = el.closest('section, .wrap') || el;
+              gsap.from(st.lines, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 90%',
+                  once: true
+                }
+              });
+            }
+          }
+        } catch(e) {}
+      });
+
+      // 12.2 Data-anim element e slideUp-once
+      document.querySelectorAll('[data-anim="element"], [data-anim="slideUp-once"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        const triggerEl = el.closest('section, .wrap') || el;
+        gsap.fromTo(el, 
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top 90%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // 12.3 Data-anim stagger
+      document.querySelectorAll('[data-anim="stagger"]').forEach(function(el) {
+        const children = Array.from(el.children).filter(function(child) {
+          return !child.hasAttribute('data-dropdown-list') && !child.classList.contains('faq-dropdown-list');
+        });
+        if (children.length > 0) {
+          const triggerEl = el.closest('section, .wrap') || el;
+          gsap.fromTo(children,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 90%',
+                once: true
+              }
+            }
+          );
+        }
+      });
+      // 12.4 Data-anim img-overlay
+      document.querySelectorAll('[data-anim="img-overlay"]').forEach(function(el) {
+        gsap.to(el, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      });
+
+      // 12.5 Data-anim img-paralax / img-parallax (Parallax de imagens Webflow)
+      document.querySelectorAll('[data-anim="img-paralax"], [data-anim="img-parallax"]').forEach(function(el) {
+        gsap.fromTo(el,
+          { yPercent: -10, scale: 1.1 },
+          {
+            yPercent: 10,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.closest('section, .wrap') || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      });
+
+      // 12.6 FAQ Dropdown Hover & Click Engine
+      document.querySelectorAll('.faq [data-dropdown]').forEach(function(dropdown) {
+        dropdown.addEventListener('mouseenter', function() {
+          dropdown.classList.add('is-active');
+        });
+        dropdown.addEventListener('mouseleave', function() {
+          dropdown.classList.remove('is-active');
+        });
+        dropdown.addEventListener('click', function() {
+          dropdown.classList.toggle('is-active');
+        });
+      });
+    }
+
+    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions, Webflow Reveals) ativados com sucesso.');
   });
 })();
 </script>`;

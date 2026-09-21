@@ -1,0 +1,78 @@
+{
+  "client": {
+    "id": "aurum-palace-residence",
+    "name": "Aurum Palace",
+    "tagline": "Arquitetura monumental e bem-estar supremo",
+    "niche": "RealEstate",
+    "language": "pt-BR"
+  },
+  "colors": {
+    "primary": "#d4af37",
+    "accent": "#f59e0b",
+    "background": "#080807",
+    "surface": "rgba(255, 255, 255, 0.03)",
+    "text": "#fafaf9"
+  },
+  "seo": {
+    "title": "Aurum Palace — Residências Exclusivas de Alto Padrão",
+    "description": "Uma nova era de sofisticação arquitetônica e refúgio privativo no coração da cidade.",
+    "ogImage": "./assets/693881a350b370d1b613ff09_about-img--d.avif",
+    "canonicalUrl": "https://aurumpalace.com.br"
+  },
+  "typography": {
+    "headings": "serif",
+    "body": "sans-serif"
+  },
+  "copyOverrides": {
+    "hero": {
+      "eyebrow": "ALTO PADRÃO · ARQUITETURA",
+      "title": "Aurum",
+      "titleMin": "Arquitetura monumental em harmonia perfeita",
+      "subtitle": "Bem-vindo ao Aurum Palace, onde design atemporal, bem-estar e sofisticação convergem para criar um santuário inigualável de serenidade.",
+      "primaryCta": "Agendar Visita"
+    },
+    "about": {
+      "caption": "(Sobre Nós)",
+      "heading": "Design atemporal e vivência de alto padrão",
+      "p1": "Cada detalhe do Aurum Palace reflete um compromisso intransigente com a excelência.",
+      "p2": "Seja para um refúgio privativo ou um espaço de conexão cultural, o Aurum oferece o ápice da exclusividade."
+    },
+    "metrics": [
+      {
+        "number": "65%",
+        "label": "Áreas verdes e jardins privativos para bem-estar"
+      },
+      {
+        "number": "28",
+        "label": "Residências exclusivas com design personalizado"
+      },
+      {
+        "number": "200k",
+        "label": "M² de lazer e estrutura de padrão internacional"
+      },
+      {
+        "number": "24/7",
+        "label": "Concierge e segurança patrimonial dedicada"
+      }
+    ],
+    "livings": [
+      {
+        "title": "Grand Duplex Palace",
+        "description": "Apartamentos de dois pavimentos com pé direito duplo e terraço privativo."
+      },
+      {
+        "title": "Imperial Sky Penthouse",
+        "description": "Com vista panorâmica de 360 graus e interiores assinados por designers premiados."
+      },
+      {
+        "title": "Royal Garden Suites",
+        "description": "Santuários térreos com piscina privativa e integração fluida com a natureza."
+      }
+    ],
+    "contact": {
+      "whatsapp": "5511999998888",
+      "email": "concierge@aurumpalace.com.br",
+      "address": "São Paulo, SP - Brasil"
+    }
+  }
+}

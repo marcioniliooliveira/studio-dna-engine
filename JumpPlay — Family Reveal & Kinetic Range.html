@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="kombai-design-canvas" content="true"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>JumpPlay / Jumpflex® — Family Reveal &amp; Kinetic Range</title>
+  
+  <!-- Fontes Oficiais do Design System & Suíte Boutique Asymmetric Bento -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Bebas+Neue&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#111614",
+            "surface-dim": "#0e1311",
+            "surface-bright": "#25302a",
+            "surface-dark": "#0c100e",
+            "surface-card": "#171f1b",
+            "surface-contrast": "#FAF7F2",
+            "surface-container-lowest": "#0a0d0c",
+            "surface-container-low": "#131a16",
+            "surface-container": "#18211c",
+            "surface-container-high": "#202a24",
+            "surface-container-highest": "#28342d",
+            "on-surface": "#FAF7F2",
+            "on-surface-variant": "#B4C0B9",
+            "volt-lime": "#A3E635",
+            "electric-blue": "#1E88E5",
+            "kinetic-red": "#E63946",
+            "safety-yellow": "#F59E0B",
+            "outline": "#7A8A80",
+            "outline-variant": "#2F3C34",
+            "primary": "#A3E635",
+            "primary-container": "#1E88E5",
+            "secondary": "#A3E635",
+            "secondary-fixed": "#BEF264"
+          },
+          fontFamily: {
+            "display": ["'Bebas Neue'", "Impact", "sans-serif"],
+            "headline-hero": ["'Barlow Condensed'", "Impact", "sans-serif"],
+            "headline-lg": ["'Barlow Condensed'", "sans-serif"],
+            "headline-md": ["'Barlow Condensed'", "sans-serif"],
+            "headline-sm": ["'Barlow Condensed'", "sans-serif"],
+            "body-lg": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
+            "body-md": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
+            "body-sm": ["'Manrope'", "sans-serif"],
+            "label-lg": ["'Manrope'", "sans-serif"],
+            "label-md": ["'Manrope'", "sans-serif"],
+            "label-mono": ["'Space Grotesk'", "monospace"],
+            "caption": ["'Manrope'", "sans-serif"],
+            "syne": ["'Syne'", "sans-serif"],
+            "jakarta": ["'Plus Jakarta Sans'", "sans-serif"],
+            "mono-code": ["'JetBrains Mono'", "monospace"]
+          },
+          spacing: {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-2xl": "4rem",
+            "margin": "2.5rem",
+            "margin-mobile": "1.25rem",
+            "gutter": "1.5rem"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --red: #E63946;
+      --navy: #111614;
+      --lime: #A3E635;
+      --blue: #1E88E5;
+      --white: #FAF7F2;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+    /* Shader Spotlight Tátil para Cartões Bento */
+    .spotlight-card {
+      position: relative;
+      isolation: isolate;
+    }
+    .spotlight-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(163, 230, 53, 0.12), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .spotlight-card:hover::before {
+      opacity: 1;
+    }
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #111614;
+        color: #FAF7F2;
+        scroll-behavior: smooth;
+      }
+      #root {
+        display: contents;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .jf-page {
+      font-family: 'Space Grotesk', 'Manrope', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 800px;
+      overflow-x: clip;
+    }
+    .jf-display {
+      font-family: 'Bebas Neue', 'Barlow Condensed', Impact, sans-serif;
+    }
+    .jf-hero {
+      position: relative;
+      height: calc(100vh - 42px);
+      height: calc(100dvh - 42px);
+      min-height: 640px;
+      isolation: isolate;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .jf-photo {
+      will-change: transform;
+      object-position: center 38%;
+      transform: scale(1.02);
+    }
+    html.lenis, html.lenis body {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+    .lenis.lenis-stopped {
+      overflow: hidden;
+    }
+    .lenis.lenis-scrolling iframe {
+      pointer-events: none;
+    }
+    .jf-word, .kinetic-word, .jf-intro, .jf-badge, .jf-tab {
+      will-change: transform, opacity;
+      transform-origin: 50% 100%;
+    }
+    .kinetic-word {
+      display: inline-block;
+    }
+    .jf-grain {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 0.6px, transparent 0.6px);
+      background-size: 5px 5px;
+      mix-blend-mode: soft-light;
+    }
+    .jf-tabs {
+      scrollbar-width: none;
+    }
+    .jf-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .jf-hero {
+        height: auto;
+        min-height: calc(100dvh - 42px);
+      }
+      .jf-photo {
+        object-position: center 30%;
+        transform: scale(1);
+      }
+      .jf-main {
+        padding: 24px 16px 20px;
+      }
+      .jf-title {
+        font-size: clamp(3.8rem, 16vw, 5.8rem) !important;
+      }
+      .jf-actions {
+        flex-direction: column;
+        width: min(100%, 360px);
+      }
+      .jf-action {
+        width: 100%;
+      }
+      .jf-tabs {
+        left: 0;
+        right: 0;
+        overflow-x: auto;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .jf-tab {
+        min-width: 235px;
+      }
+      .jf-countdown {
+        right: 16px;
+      }
+      .jf-progress {
+        left: 12px;
+      }
+      .jf-badge {
+        display: none !important;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .jf-photo {
+        transform: scale(1.04);
+      }
+      .jf-word, .jf-intro, .jf-badge, .jf-tab {
+        will-change: auto;
+      }
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-volt-lime selection:text-surface-dark">
+  <div id="root">
+    <div class="jf-page" id="family-reveal">
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 0: SALE BAR PROMOCIONAL COM COUNTDOWN EM TEMPO REAL         -->
+      <!-- ================================================================= -->
+      <div class="flex min-h-[42px] items-center justify-center gap-3 bg-[var(--red)] px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[.14em] text-white sm:gap-5 sm:text-[11px] z-50 relative" id="sale-bar">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-volt-lime animate-ping inline-block"></span>
+          <strong class="text-volt-lime">TABELA DIRETO DE FÁBRICA / ATACADO 2025</strong>
+        </div>
+        <span class="hidden h-3 w-px bg-white/50 sm:block"></span>
+        <span class="hidden font-medium tracking-[.07em] sm:inline">
+          Até R$ 500 OFF no Varejo · Condições Especiais no Atacado &amp; Faturamento Direto CNPJ
+        </span>
+        <span class="font-mono text-[10px] text-white/90 bg-black/20 px-2 py-0.5 rounded" id="countdown-container">
+          <b id="sale-days">04</b>D 
+          <b id="sale-hours">13</b>H 
+          <b id="sale-minutes">16</b>M 
+          <b id="sale-seconds">17</b>S
+        </span>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 1: KINETIC HERO COM PRESERVAÇÃO INTEGRAL DE ANIMAÇÃO GSAP   -->
+      <!-- ================================================================= -->
+      <section class="jf-hero" id="range">
+        <!-- Foto Parallax de Fundo: Família Feliz em Trampolim JumpPlay com Iluminação Cinematográfica -->
+        <img 
+          alt="Família saltando unida em trampolim JumpPlay no quintal com rede de proteção e pôr do sol dourado" 
+          class="jf-photo absolute inset-0 h-full w-full object-cover object-[center_38%] filter contrast-[1.05] saturate-[1.10] brightness-[0.92]" 
+          decoding="async" 
+          loading="eager" 
+          src="family-trampoline-hero.jpg"
+        />
+        
+        <!-- Gradientes de Profundidade Cinematográfica Orgânica (Proteção do Contraste Tipográfico) -->
+        <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,22,20,.92)_0%,rgba(17,22,20,.45)_30%,rgba(17,22,20,.20)_60%,rgba(17,22,20,.96)_100%)] pointer-events-none"></div>
+        
+        <!-- Vinheta Lateral Suave para Enquadramento do Texto -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(17,22,20,0.65)_100%)] pointer-events-none"></div>
+
+        <!-- Granulação Tátil de Proteção Óptica -->
+        <div class="jf-grain pointer-events-none absolute inset-0 opacity-20"></div>
+
+        <!-- Barra de Navegação Superior Integrada -->
+        <header class="relative z-20 flex h-[78px] items-center justify-between border-b border-white/15 bg-[#111614]/80 px-5 backdrop-blur-md md:px-10">
+          <a class="flex items-center gap-2.5 group" href="#range" onclick="trackEvent('nav_logo_clicked')">
+            <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+              <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">FLEX</span><sup class="text-[9px] text-volt-lime ml-0.5">®</sup></span>
+            </div>
+            <span class="hidden sm:inline font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest -ml-1">TRAMPOLINS DE ALTA RESISTÊNCIA</span>
+          </a>
+
+          <!-- Menu de Links -->
+          <nav class="hidden xl:flex items-center gap-7 text-[11px] font-bold uppercase tracking-[.14em]">
+            <a class="text-on-surface-variant hover:text-volt-lime transition-colors" href="#catalogo" onclick="trackEvent('nav_range_clicked')">Modelos</a>
+            <a class="text-on-surface-variant hover:text-volt-lime transition-colors" href="#especificacoes" onclick="trackEvent('nav_specs_clicked')">Engenharia</a>
+            <a class="text-on-surface-variant hover:text-volt-lime transition-colors" href="#dual-flow" onclick="trackEvent('nav_dual_clicked')">Varejo vs Atacado</a>
+            <a class="text-on-surface-variant hover:text-volt-lime transition-colors" href="#cotacao-b2b" onclick="trackEvent('nav_b2b_clicked')">Cotação Atacado</a>
+            <a class="text-on-surface-variant hover:text-volt-lime transition-colors" href="#depoimentos" onclick="trackEvent('nav_reviews_clicked')">Avaliações</a>
+          </nav>
+
+          <!-- Ações de Cabeçalho -->
+          <div class="flex items-center gap-3 sm:gap-4 text-white">
+            <a class="hidden lg:flex items-center gap-1.5 text-[11px] font-semibold text-on-surface-variant hover:text-volt-lime transition-colors" href="tel:+551140028922">
+              <span class="material-symbols-outlined text-[16px] text-volt-lime">call</span>
+              <span>(11) 4002-8922</span>
+            </a>
+            <a class="relative w-9 h-9 rounded bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" href="#catalogo" aria-label="Carrinho de Compras">
+              <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+              <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-kinetic-red text-white font-label-mono text-[9px] flex items-center justify-center font-bold">1</span>
+            </a>
+            <a class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-[3px_3px_0px_#1677FF] hover:bg-secondary-fixed transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="#cotacao-b2b" onclick="trackEvent('header_quote_clicked')">
+              <span class="hidden sm:inline">COMPRA NO ATACADO</span>
+              <span class="sm:hidden">ATACADO</span>
+              <span class="font-bold">↗</span>
+            </a>
+          </div>
+        </header>
+
+        <!-- Centro da Hero: Tipografia Cinética e Ações -->
+        <main class="jf-main relative z-10 flex flex-1 min-h-0 flex-col items-center justify-center px-5 pt-2 pb-24 md:pb-28 text-center">
+          
+          <!-- Eyebrow Tag -->
+          <div class="jf-intro mb-3 sm:mb-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.28em] text-volt-lime">
+            <span class="h-px w-8 bg-volt-lime"></span>
+            <span>LINHA FAMILIAR &amp; ATACADO DIRETO DA FÁBRICA</span>
+            <span class="h-px w-8 bg-volt-lime"></span>
+          </div>
+
+          <!-- Headline Cinética Split-Words com Animação GSAP Bounce -->
+          <h1 aria-label="Mais alegria. Mais altura." class="jf-display jf-title max-w-5xl text-[clamp(3.4rem,min(8.5vw,13.5vh),7.5rem)] leading-[.78] drop-shadow-[0_8px_0_rgba(8,20,33,.85)] tracking-tight">
+            <span class="jf-word inline-block">MAIS</span>
+            <span class="jf-word inline-block text-volt-lime">ALEGRIA.</span>
+            <br/>
+            <span class="jf-word inline-block">MAIS</span>
+            <span class="jf-word inline-block">ALTURA.</span>
+          </h1>
+
+          <!-- Copy de Apoio com Alto Contraste -->
+          <p class="jf-intro mt-4 sm:mt-5 max-w-[520px] text-xs sm:text-sm leading-5 sm:leading-6 text-white/90 md:text-base font-body-md">
+            Transforme qualquer espaço no ponto alto de diversão da família ou monte sua frota profissional com preços exclusivos de atacado para locação e buffets.
+          </p>
+
+          <!-- CTAs Primário e Secundário (Non-blocking) -->
+          <div class="jf-actions jf-intro mt-5 sm:mt-6 flex items-center justify-center gap-3">
+            <a class="jf-action inline-flex min-h-14 items-center justify-center gap-3 bg-volt-lime px-8 text-xs font-bold uppercase tracking-[.16em] text-surface-dark shadow-[6px_6px_0_var(--blue)] rounded hover:bg-secondary-fixed transition-all active:translate-x-0.5 active:translate-y-0.5" href="#catalogo" onclick="trackEvent('hero_view_range_clicked')">
+              <span>VER CATÁLOGO</span>
+              <span class="text-lg leading-none font-bold">↗</span>
+            </a>
+            <a class="jf-action inline-flex min-h-14 items-center justify-center border border-white/75 bg-[#081421]/60 px-7 text-[11px] font-bold uppercase tracking-[.11em] text-white backdrop-blur-sm rounded hover:bg-white/10 hover:border-volt-lime transition-colors" href="#cotacao-b2b" onclick="trackEvent('hero_bulk_quote_clicked')">
+              <span>COMPRA NO ATACADO</span>
+              <span class="mx-2 text-electric-blue">/</span>
+              <span>COTAÇÃO CNPJ</span>
+            </a>
+          </div>
+
+          <!-- Tags de Linhas Homologadas -->
+          <div class="jf-intro mt-7 flex flex-wrap justify-center gap-2 text-[10px] font-bold uppercase tracking-[.14em]">
+            <span class="border border-white/40 bg-[#081421]/60 px-3 py-1.5 rounded text-on-surface">
+              LINHA COMPLETA: FLEX™ · HERO™ · MEGA™
+            </span>
+            <span class="border border-volt-lime/40 bg-[#081421]/60 px-3 py-1.5 rounded text-volt-lime">
+              CARGA TESTADA ATÉ 450 KG
+            </span>
+            <span class="border border-white/25 bg-[#081421]/60 px-3 py-1.5 rounded text-white/80">
+              NORMA DE SEGURANÇA ABNT NBR 16071
+            </span>
+          </div>
+        </main>
+
+        <!-- Selo Flutuante Labor Day / Oferta Especial em Rotação Contínua -->
+        <div class="jf-badge absolute right-[8%] top-[110px] z-20 flex h-[116px] w-[116px] rotate-[12deg] flex-col items-center justify-center rounded-full bg-volt-lime text-center text-surface-dark shadow-[8px_8px_0_var(--red)] cursor-pointer" onclick="document.getElementById('cotacao-b2b').scrollIntoView({behavior:'smooth'})">
+          <b class="jf-display text-[20px] leading-[.88] tracking-wide">
+            DIRETO DE<br/>FÁBRICA
+          </b>
+          <small class="mt-1 text-[9px] font-bold uppercase tracking-[.1em] text-surface-dark/90">
+            Atacado &amp; Varejo
+          </small>
+        </div>
+
+        <!-- Indicador de Progresso da Jornada -->
+        <div class="jf-progress absolute bottom-[116px] left-[3.6%] z-20 flex flex-col items-center gap-3 text-[10px] uppercase tracking-[.1em] text-white/70">
+          <span>01 / 07</span>
+          <span class="relative h-[70px] w-px bg-white/35 after:absolute after:left-[-1px] after:top-0 after:h-6 after:w-[3px] after:bg-volt-lime"></span>
+          <span class="font-label-mono">EXPLORAR</span>
+        </div>
+
+        <!-- Cronômetro Flutuante de Oferta -->
+        <div class="jf-countdown absolute bottom-[114px] right-[6%] z-20 flex gap-4 text-[10px] uppercase tracking-[.12em] text-white/75 bg-surface-dark/80 px-3 py-1.5 rounded backdrop-blur border border-white/15">
+          <span><b class="text-[14px] text-white" id="timer-days">04</b> d</span>
+          <span><b class="text-[14px] text-white" id="timer-hrs">13</b> h</span>
+          <span><b class="text-[14px] text-white" id="timer-min">16</b> m</span>
+        </div>
+
+        <!-- Abas Inferiores de Produtos (FLEX™ · HERO™ · MEGA™) -->
+        <div class="jf-tabs absolute bottom-0 left-0 right-0 z-20 flex border-t border-white/25 bg-[#081421]/90 backdrop-blur-md px-[6%]" id="products-rail">
+          
+          <!-- Tab FLEX -->
+          <a class="jf-tab flex flex-1 items-end justify-between border-r border-white/15 bg-[linear-gradient(90deg,rgba(169,229,44,.12),transparent)] py-4 pr-5 hover:bg-white/5 transition-colors group" href="#flex" onclick="trackEvent('tab_flex_clicked')">
+            <div>
+              <h2 class="jf-display text-4xl sm:text-5xl leading-none text-volt-lime group-hover:translate-x-1 transition-transform">
+                FLEX™
+              </h2>
+              <p class="text-[10px] font-bold uppercase tracking-[.14em] text-on-surface-variant">
+                USO RESIDENCIAL &amp; DIÁRIO
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="block text-[10px] font-bold uppercase tracking-[.1em] text-on-surface group-hover:text-volt-lime">
+                Ver detalhes ↗
+              </span>
+              <span class="mt-1 block text-[9px] text-white/60">
+                Até 180 kg
+              </span>
+            </div>
+          </a>
+
+          <!-- Tab HERO -->
+          <a class="jf-tab flex flex-1 items-end justify-between border-r border-white/15 px-5 py-4 hover:bg-white/5 transition-colors group" href="#hero" onclick="trackEvent('tab_hero_clicked')">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h2 class="jf-display text-4xl sm:text-5xl leading-none text-white group-hover:text-volt-lime group-hover:translate-x-1 transition-all">
+                  HERO™
+                </h2>
+                <span class="px-1.5 py-0.5 rounded bg-volt-lime text-surface-dark text-[8px] font-bold uppercase">MAIS VENDIDO</span>
+              </div>
+              <p class="text-[10px] font-bold uppercase tracking-[.14em] text-on-surface-variant">
+                MÁXIMO SALTO &amp; LAZER
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="block text-[10px] font-bold uppercase tracking-[.1em] text-on-surface group-hover:text-volt-lime">
+                Ver detalhes ↗
+              </span>
+              <span class="mt-1 block text-[9px] text-white/60">
+                Campeão de Vendas · 3.05m
+              </span>
+            </div>
+          </a>
+
+          <!-- Tab MEGA -->
+          <a class="jf-tab flex flex-1 items-end justify-between px-5 py-4 hover:bg-white/5 transition-colors group" href="#mega" onclick="trackEvent('tab_mega_clicked')">
+            <div>
+              <h2 class="jf-display text-4xl sm:text-5xl leading-none text-white group-hover:text-electric-blue group-hover:translate-x-1 transition-all">
+                MEGA™
+              </h2>
+              <p class="text-[10px] font-bold uppercase tracking-[.14em] text-on-surface-variant">
+                LINHA PESADA ATACADO
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="block text-[10px] font-bold uppercase tracking-[.1em] text-on-surface group-hover:text-electric-blue">
+                Ver detalhes ↗
+              </span>
+              <span class="mt-1 block text-[9px] text-white/60">
+                Até 450 kg
+              </span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Indicador Vertical de Scroll -->
+        <span class="absolute bottom-6 right-[3%] z-20 hidden text-[9px] font-bold uppercase tracking-[.16em] text-white/55 [writing-mode:vertical-rl] lg:block">
+          Role para explorar ↓
+        </span>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 2: ASYMMETRIC BENTO GRID (65% RESIDENCIAL / 35% B2B FROTA)    -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="dual-flow">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+          
+          <div class="flex flex-col gap-space-xs text-center md:text-left">
+            <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+              ATENDIMENTO ESPECIALIZADO · VAREJO RESIDENCIAL &amp; ATACADO CORPORATIVO
+            </span>
+            <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface leading-none">
+              DUAS JORNADAS. <span class="text-volt-lime">ZERO CONFUSÃO.</span>
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+              Estrutura sob medida: compre o modelo ideal para o quintal da sua família ou adquira em lote no atacado com condições exclusivas para buffets, locadores e parques.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Card 1: Família Residencial (8 colunas = 66% de foco visual) -->
+            <div class="lg:col-span-8 spotlight-card bg-surface-card rounded-2xl border border-outline-variant/30 p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden shadow-[8px_8px_0px_#0a0d0c] group">
+              
+              <!-- Marca d'água sutil ao fundo -->
+              <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-15 transition-opacity pointer-events-none">
+                <span class="material-symbols-outlined text-[260px] text-volt-lime">family_restroom</span>
+              </div>
+
+              <div class="relative z-10">
+                <div class="flex items-center justify-between gap-4 mb-6">
+                  <span class="px-3 py-1 rounded bg-volt-lime/15 border border-volt-lime/40 text-volt-lime font-label-mono text-[10px] font-bold uppercase tracking-wider">
+                    ● 01 · USO RESIDENCIAL &amp; CHÁCARAS
+                  </span>
+                  <span class="text-xs font-label-mono text-on-surface-variant">Garantia 24M ABNT</span>
+                </div>
+
+                <h3 class="font-syne text-3xl lg:text-4xl uppercase tracking-tight text-on-surface mb-4">
+                  Alegria, Saúde &amp; Memórias de Quintal
+                </h3>
+                
+                <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl mb-8">
+                  Desenvolvido para crianças de todas as idades. Sistema sem molas rígidas, rede SafeSeal curvada com proteção de face e montagem intuitiva em menos de 35 minutos.
+                </p>
+
+                <!-- Grid de Métricas do Produto -->
+                <div class="grid grid-cols-3 gap-4 border-y border-outline-variant/30 py-6 mb-8">
+                  <div>
+                    <span class="font-syne text-3xl text-volt-lime block font-bold">380 KG</span>
+                    <span class="text-[10px] font-label-mono uppercase text-on-surface-variant">Carga Testada</span>
+                  </div>
+                  <div>
+                    <span class="font-syne text-3xl text-on-surface block font-bold">35 MIN</span>
+                    <span class="text-[10px] font-label-mono uppercase text-on-surface-variant">Montagem Rápida</span>
+                  </div>
+                  <div>
+                    <span class="font-syne text-3xl text-on-surface block font-bold">100%</span>
+                    <span class="text-[10px] font-label-mono uppercase text-on-surface-variant">Anti-Pinch Seguro</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ação Direta -->
+              <div class="relative z-10 flex flex-wrap items-center gap-4">
+                <a href="#catalogo" class="px-7 py-3.5 bg-volt-lime text-surface-dark font-jakarta font-bold text-xs uppercase tracking-wider rounded shadow-[4px_4px_0_#1E88E5] hover:bg-secondary-fixed transition-all active:translate-x-0.5 active:translate-y-0.5 inline-flex items-center gap-2">
+                  <span>EXPLORAR LINHA FAMÍLIA (FLEX &amp; HERO)</span>
+                  <span class="font-bold">↗</span>
+                </a>
+                <span class="text-xs font-label-mono text-on-surface-variant">A partir de 12x R$ 349</span>
+              </div>
+
+            </div>
+
+            <!-- Card 2: Frota Comercial B2B (4 colunas = 33% de densidade analítica) -->
+            <div class="lg:col-span-4 spotlight-card bg-[#131b16] rounded-2xl border border-outline-variant/30 p-8 flex flex-col justify-between relative overflow-hidden shadow-[8px_8px_0px_#0a0d0c] group">
+              
+              <div class="relative z-10">
+                <div class="flex items-center justify-between gap-4 mb-6">
+                  <span class="px-3 py-1 rounded bg-electric-blue/20 border border-electric-blue/40 text-electric-blue font-label-mono text-[10px] font-bold uppercase tracking-wider">
+                    ● 02 · ATACADO, LOCAÇÃO &amp; BUFFETS
+                  </span>
+                </div>
+
+                <h3 class="font-syne text-2xl lg:text-3xl uppercase tracking-tight text-on-surface mb-3">
+                  Atacado para Frotas &amp; Locação
+                </h3>
+
+                <p class="text-on-surface-variant text-xs leading-relaxed mb-6">
+                  Estrutura industrial para locação diária e eventos. Preços especiais no atacado com faturamento direto no CNPJ e retorno do investimento em até 4 eventos.
+                </p>
+
+                <ul class="space-y-2.5 font-label-mono text-xs text-on-surface mb-6">
+                  <li class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-electric-blue text-sm">verified</span>
+                    <span>Lona UV industrial 900D anti-desgaste</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-electric-blue text-sm">verified</span>
+                    <span>Descontos de atacado (até 25% OFF)</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-electric-blue text-sm">verified</span>
+                    <span>Faturamento direto de fábrica CNPJ</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="relative z-10 pt-4 border-t border-outline-variant/30">
+                <a href="#cotacao-b2b" class="w-full px-5 py-3.5 bg-transparent border border-electric-blue text-on-surface hover:bg-electric-blue/20 font-jakarta font-bold text-xs uppercase tracking-wider rounded transition-all inline-flex items-center justify-center gap-2">
+                  <span>SOLICITAR TABELA DE ATACADO</span>
+                  <span class="font-bold">↗</span>
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 3: ANATOMIA DA ZONA DE IMPACTO & 4 PILARES TÉCNICOS         -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl" id="especificacoes">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
+          
+          <!-- Cabeçalho de Engenharia -->
+          <div class="flex flex-col gap-space-xs text-center md:text-left">
+            <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+              ENGENHARIA ESTRUTURAL HOMOLOGADA
+            </span>
+            <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface leading-none">
+              ANATOMIA DA ZONA DE IMPACTO • CONSTRUÍDO PARA DURAR ANOS
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+              Conheça a física de distribuição de carga por molas cônicas em aço carbono temperado, eliminando o efeito chicote que machuca os joelhos das crianças e dos adultos.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+            
+            <!-- Vista Aérea / Top-Down Técnica -->
+            <div class="lg:col-span-6 relative">
+              <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-surface-card p-3 sm:p-4 shadow-[8px_8px_0px_#040f1c] border border-outline-variant/30">
+                <img 
+                  alt="Vista aérea top-down de trampolim JumpPlay em gramado com anel de proteção multicolor e lona central" 
+                  class="w-full h-full object-cover rounded-xl"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJtjWKewICnfOc6ur1kKuxA1Wpz916inY43lmNyqmiPk8Wjb5U0FZnbdPRktFHOCf7dNuTiqUuQ_AeDQzTmoWugJLWsCN4I55peMRwmynRpIFh03Z1HP8QVcHK2bjGL9LejACLdzDrfV0XQspNApdA70BK9TjiQc-4Cj7a2pcq5pnQFqiYDxbVL25n6bc2xtp-ehe1-hlEkLrCBFedAwDtQJwx0ezThyXvk7IdZ54hrAmlBeQqBzRxhw"
+                />
+                
+                <!-- Callouts Técnicos Sobre a Imagem -->
+                <div class="absolute top-6 left-6 bg-surface-dark/90 backdrop-blur px-3 py-1.5 rounded shadow border border-outline-variant/30 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-volt-lime">bolt</span>
+                  <span class="font-label-mono text-[10px] text-volt-lime uppercase font-bold">LONA POLIPROPILENO ANTI-UV 800D</span>
+                </div>
+                
+                <div class="absolute bottom-6 left-6 right-6 bg-surface-dark/90 backdrop-blur p-3.5 rounded-lg flex items-center justify-between text-caption font-label-mono uppercase border border-outline-variant/30">
+                  <span class="text-on-surface flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-volt-lime inline-block"></span>
+                    DISTRIBUIÇÃO RADIAL 360°
+                  </span>
+                  <span class="text-volt-lime font-bold">TESTADO 100.000 SALTOS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Pilares de Engenharia Industrial (Direção 5B: Blueprint Técnico de Luxo) -->
+            <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+              
+              <!-- Pilar 01 -->
+              <div class="bg-surface-card p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/30 shadow-[4px_4px_0px_#0a0d0c]">
+                <div class="w-10 h-10 rounded bg-volt-lime text-surface-dark flex items-center justify-center font-bold font-label-mono text-sm">01</div>
+                <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">Molas Cônicas Temperadas (ASTM A228)</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  De 48 a 84 molas bicônicas de 14cm a 16,5cm em liga de carbono temperada a 450°C. Curva de amortecimento progressivo que protege os joelhos e coluna das crianças.
+                </p>
+                <div class="mt-auto pt-2 flex items-center gap-2 font-label-mono text-xs text-volt-lime font-bold">
+                  <span class="material-symbols-outlined text-[16px]">verified</span> TÊMPERA INDUSTRIAL 450°C
+                </div>
+              </div>
+
+              <!-- Pilar 02 -->
+              <div class="bg-surface-card p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/30 shadow-[4px_4px_0px_#0a0d0c]">
+                <div class="w-10 h-10 rounded bg-electric-blue text-white flex items-center justify-center font-bold font-label-mono text-sm">02</div>
+                <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">Aço Tubular 38mm x 1.88mm</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  Estrutura com dupla galvanização a fogo interna e externa (ASTM B117). Pés em 'W' soldados roboticamente com tolerância zero à torção em terrenos irregulares.
+                </p>
+                <div class="mt-auto pt-2 flex items-center gap-2 font-label-mono text-xs text-electric-blue font-bold">
+                  <span class="material-symbols-outlined text-[16px]">shield</span> ANTI-CORROSÃO SALINA
+                </div>
+              </div>
+
+              <!-- Pilar 03 -->
+              <div class="bg-surface-card p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/30 shadow-[4px_4px_0px_#0a0d0c]">
+                <div class="w-10 h-10 rounded bg-kinetic-red text-white flex items-center justify-center font-bold font-label-mono text-sm">03</div>
+                <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">Colchão EPE 20mm &amp; SafeSeal</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  Espuma prensada de alta resiliência revestida em lona vinílica impermeável 500g com proteção UV total. Sobreposição hermética que anula qualquer acesso às molas.
+                </p>
+                <div class="mt-auto pt-2 flex items-center gap-2 font-label-mono text-xs text-kinetic-red font-bold">
+                  <span class="material-symbols-outlined text-[16px]">lock</span> BARREIRA ANTI-PINCH TOTAL
+                </div>
+              </div>
+
+              <!-- Pilar 04 -->
+              <div class="bg-surface-card p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/30 shadow-[4px_4px_0px_#0a0d0c]">
+                <div class="w-10 h-10 rounded bg-safety-yellow text-surface-dark flex items-center justify-center font-bold font-label-mono text-sm">04</div>
+                <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">Lona Perma-Tex 900D Costura 8X</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  Polipropileno de alta tenacidade micro-entrelaçado com 8 camadas de costura periférica e anéis triangulares em aço carbono forjado. Carga estática testada de até 450 kg.
+                </p>
+                <div class="mt-auto pt-2 flex items-center gap-2 font-label-mono text-xs text-safety-yellow font-bold">
+                  <span class="material-symbols-outlined text-[16px]">gavel</span> LAUDO ABNT NBR 16071
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 4: CATÁLOGO OFICIAL COMPARÁVEL (FLEX™ · HERO™ · MEGA™)      -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-space-2xl border-t border-b border-outline-variant/20" id="catalogo">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
+          
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+            <div class="flex flex-col gap-space-xs">
+              <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+                ESCOLHA SEU TAMANHO &amp; OBJETIVO
+              </span>
+              <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface leading-none">
+                LINHA OFICIAL JUMPPLAY™ / JUMPFLEX®
+              </h2>
+            </div>
+
+            <!-- Filtro Rápido Interativo -->
+            <div class="flex items-center gap-2 bg-surface-card p-1.5 rounded-lg border border-outline-variant/20">
+              <button class="filter-btn active-filter px-4 py-2 bg-volt-lime text-surface-dark font-label-mono text-xs uppercase rounded font-bold transition-all" data-category="todos">
+                Todos os Modelos
+              </button>
+              <button class="filter-btn px-4 py-2 text-on-surface-variant hover:text-on-surface font-label-mono text-xs uppercase rounded transition-colors" data-category="residencial">
+                Residencial (Varejo)
+              </button>
+              <button class="filter-btn px-4 py-2 text-on-surface-variant hover:text-on-surface font-label-mono text-xs uppercase rounded transition-colors" data-category="locacao">
+                Atacado &amp; Locação
+              </button>
+            </div>
+          </div>
+
+          <!-- Grid dos 3 Modelos Principais -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+            
+            <!-- CARD 1: FLEX 2.44m -->
+            <div class="product-card flex flex-col bg-surface-card rounded-xl overflow-hidden transition-all hover:-translate-y-1 shadow-[4px_4px_0px_#040f1c] border border-outline-variant/20" data-model="residencial" id="flex">
+              <div class="relative bg-surface-container-high p-4 flex items-center justify-center">
+                <div class="absolute top-3 left-3 bg-surface-dark/90 px-2.5 py-1 rounded text-caption font-label-mono uppercase text-volt-lime border border-outline-variant/30">
+                  2,44m Diâmetro
+                </div>
+                <img 
+                  alt="JumpPlay Flex 2.44m Trampolim Infantil e Residencial" 
+                  class="h-52 object-contain filter drop-shadow-md"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY0FG2pr7_blSXBVG-8dULju6gIVqD4tzoFzkf1yi_jFOEqlBzTU6ZM8I9sm9WQ72mR0QVHF3Sk2buJXbtp6gOIWJQS_e1WMXhQJjjXV_RXA1VXCeWZ-9mSHjfKPo2-_VmlAmSCnzUGdLMDEuTbfbJy7CnR4uiiFJAwcMTBQ6U0fE0Cy9YFEuIk4xQVhUp7-2DJcUGPKUVhI1W9OB-XXBO_ZhfHPW-kssl9tjfIcexG-aYM2QEJ83-ZQ"
+                />
+              </div>
+              <div class="p-space-lg flex flex-col flex-1 justify-between gap-space-md">
+                <div class="flex flex-col gap-space-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-mono text-label-mono text-on-surface-variant uppercase">COMPACT FIT • ATÉ 180 KG</span>
+                    <span class="text-volt-lime font-label-mono text-xs font-bold">EM ESTOQUE</span>
+                  </div>
+                  <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">JumpPlay Flex™ 2.44m</h3>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Ideal para quintais compactos, apartamentos com jardim ou garagens. Salto ágil e macio para crianças até 12 anos.</p>
+                </div>
+                
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                  <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">48 Molas Cônicas 13,5cm</strong></div>
+                  <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">3 Pés Duplos Galvanizados</strong></div>
+                  <div class="flex justify-between"><span>Altura chão à lona:</span> <strong class="text-on-surface">55 cm (Fácil acesso)</strong></div>
+                </div>
+
+                <div class="pt-space-xs flex flex-col gap-space-xs">
+                  <span class="font-label-mono text-[10px] text-on-surface-variant uppercase">A PARTIR DE</span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-headline-md text-headline-md text-on-surface">R$ 1.389</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">à vista (Pix)</span>
+                  </div>
+                  <span class="text-caption font-caption text-volt-lime">ou 10x de R$ 154,33 sem juros no cartão</span>
+                  <button class="mt-space-sm w-full py-space-sm bg-surface-container-highest hover:bg-volt-lime hover:text-surface-dark text-on-surface font-label-lg text-xs uppercase rounded transition-colors shadow-[2px_2px_0px_#1677FF] font-bold" onclick="selectModelAndScroll('2.44m')">
+                    SOLICITAR PROPOSTA DO 2.44M
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 2: HERO 3.05m (BEST SELLER) -->
+            <div class="product-card flex flex-col bg-surface-card rounded-xl overflow-hidden transition-all hover:-translate-y-1 shadow-[8px_8px_0px_#1677FF] relative ring-2 ring-volt-lime" data-model="residencial locacao" id="hero">
+              <div class="absolute top-0 right-0 bg-volt-lime text-surface-dark font-label-mono text-label-mono font-bold px-3 py-1 uppercase rounded-bl">
+                ★ MAIS VENDIDO BRASIL
+              </div>
+              <div class="relative bg-surface-container-high p-4 flex items-center justify-center">
+                <div class="absolute top-3 left-3 bg-surface-dark/90 px-2.5 py-1 rounded text-caption font-label-mono uppercase text-volt-lime border border-outline-variant/30">
+                  3,05m Diâmetro
+                </div>
+                <img 
+                  alt="JumpPlay Hero Master 3.05m Trampolim Profissional Mais Vendido" 
+                  class="h-52 object-contain filter drop-shadow-md"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY0FG2pr7_blSXBVG-8dULju6gIVqD4tzoFzkf1yi_jFOEqlBzTU6ZM8I9sm9WQ72mR0QVHF3Sk2buJXbtp6gOIWJQS_e1WMXhQJjjXV_RXA1VXCeWZ-9mSHjfKPo2-_VmlAmSCnzUGdLMDEuTbfbJy7CnR4uiiFJAwcMTBQ6U0fE0Cy9YFEuIk4xQVhUp7-2DJcUGPKUVhI1W9OB-XXBO_ZhfHPW-kssl9tjfIcexG-aYM2QEJ83-ZQ"
+                />
+              </div>
+              <div class="p-space-lg flex flex-col flex-1 justify-between gap-space-md">
+                <div class="flex flex-col gap-space-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-mono text-label-mono text-volt-lime uppercase font-bold">LINHA PROFISSIONAL • ATÉ 380 KG</span>
+                    <span class="text-volt-lime font-label-mono text-xs font-bold">DESPACHO 24H</span>
+                  </div>
+                  <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">JumpPlay Hero™ Master 3.05m</h3>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">O diâmetro perfeito. Permite que pais e filhos pulem juntos com total estabilidade. O favorito de 90% das locadoras de eventos.</p>
+                </div>
+                
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                  <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">64 Molas Cônicas 14cm</strong></div>
+                  <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">4 Pés Duplos Aço 1.5mm</strong></div>
+                  <div class="flex justify-between"><span>Acessório Incluso:</span> <strong class="text-volt-lime font-bold">Escada 2 Degraus Largos</strong></div>
+                </div>
+
+                <div class="pt-space-xs flex flex-col gap-space-xs">
+                  <span class="font-label-mono text-[10px] text-on-surface-variant uppercase">A PARTIR DE</span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-headline-md text-headline-md text-volt-lime font-bold">R$ 1.890</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">à vista (10% OFF no Pix)</span>
+                  </div>
+                  <span class="text-caption font-caption text-volt-lime">ou 10x de R$ 210,00 sem juros no cartão</span>
+                  <button class="mt-space-sm w-full py-space-sm bg-volt-lime text-surface-dark hover:bg-secondary-fixed font-label-lg text-xs uppercase rounded transition-colors shadow-[4px_4px_0px_#1677FF] font-bold" onclick="selectModelAndScroll('3.05m')">
+                    GARANTIR O MEU HERO 3.05M
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 3: MEGA ARENA 3.66m / 4.27m -->
+            <div class="product-card flex flex-col bg-surface-card rounded-xl overflow-hidden transition-all hover:-translate-y-1 shadow-[4px_4px_0px_#040f1c] border border-outline-variant/20" data-model="locacao" id="mega">
+              <div class="relative bg-surface-container-high p-4 flex items-center justify-center">
+                <div class="absolute top-3 left-3 bg-surface-dark/90 px-2.5 py-1 rounded text-caption font-label-mono uppercase text-electric-blue border border-outline-variant/30">
+                  3,66m a 4,27m Arena
+                </div>
+                <img 
+                  alt="JumpPlay Mega Arena 3.66m a 4.27m Trampolim Gigante para Buffets e Parques" 
+                  class="h-52 object-contain filter drop-shadow-md"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY0FG2pr7_blSXBVG-8dULju6gIVqD4tzoFzkf1yi_jFOEqlBzTU6ZM8I9sm9WQ72mR0QVHF3Sk2buJXbtp6gOIWJQS_e1WMXhQJjjXV_RXA1VXCeWZ-9mSHjfKPo2-_VmlAmSCnzUGdLMDEuTbfbJy7CnR4uiiFJAwcMTBQ6U0fE0Cy9YFEuIk4xQVhUp7-2DJcUGPKUVhI1W9OB-XXBO_ZhfHPW-kssl9tjfIcexG-aYM2QEJ83-ZQ"
+                />
+              </div>
+              <div class="p-space-lg flex flex-col flex-1 justify-between gap-space-md">
+                <div class="flex flex-col gap-space-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-mono text-label-mono text-primary uppercase font-bold">MÁXIMA CAPACIDADE • LINHA ATACADO</span>
+                    <span class="text-safety-yellow font-label-mono text-xs font-bold">LOTE DE ATACADO</span>
+                  </div>
+                  <h3 class="font-headline-sm text-headline-sm uppercase text-on-surface">JumpPlay Mega™ Arena 3.66m</h3>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Projetado para buffets infantis de alto fluxo, colégios, parques indoor e locadores de grandes eventos corporativos.</p>
+                </div>
+                
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                  <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">72 a 84 Molas Reforçadas</strong></div>
+                  <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">4 a 6 Pés Aço 1.88mm</strong></div>
+                  <div class="flex justify-between"><span>Tubo Estrutural:</span> <strong class="text-primary font-bold">Diâmetro 38mm x 1.88mm</strong></div>
+                </div>
+
+                <div class="pt-space-xs flex flex-col gap-space-xs">
+                  <span class="font-label-mono text-[10px] text-on-surface-variant uppercase">A PARTIR DE</span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-headline-md text-headline-md text-on-surface">R$ 2.490</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">à vista (Pix)</span>
+                  </div>
+                  <span class="text-caption font-caption text-volt-lime">ou 10x de R$ 276,66 sem juros no cartão</span>
+                  <button class="mt-space-sm w-full py-space-sm bg-electric-blue hover:bg-primary-container text-white font-label-lg text-xs uppercase rounded transition-colors shadow-[2px_2px_0px_#081421] font-bold" onclick="selectModelAndScroll('3.66m')">
+                    COTAÇÃO DE ATACADO / MEGA ↗
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 5: TABELA COMPARATIVA TÉCNICA INDUSTRIAL                    -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+          <div class="flex flex-col gap-space-xs text-center md:text-left">
+            <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+              FICHA TÉCNICA HOMOLOGADA (LAUDO ABNT)
+            </span>
+            <h2 class="font-headline-md text-headline-md uppercase text-on-surface leading-tight">
+              COMPARATIVO DE ENGENHARIA DE CARGA vs CONCORRÊNCIA
+            </h2>
+          </div>
+
+          <div class="w-full overflow-x-auto bg-surface-card rounded-xl p-4 shadow-[6px_6px_0px_#040f1c] border border-outline-variant/20">
+            <table class="w-full text-left font-body-sm text-body-sm">
+              <thead class="bg-surface-container-highest text-on-surface font-label-mono text-xs uppercase">
+                <tr>
+                  <th class="p-3.5">Parâmetro Técnico</th>
+                  <th class="p-3.5">JumpPlay 2.44m (Flex)</th>
+                  <th class="p-3.5 text-volt-lime">JumpPlay 3.05m (Hero)</th>
+                  <th class="p-3.5">JumpPlay 3.66m (Mega)</th>
+                  <th class="p-3.5 text-outline">Pula-Pula Convencional</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline-variant/20 text-on-surface-variant">
+                <tr>
+                  <td class="p-3.5 font-bold text-on-surface">Capacidade Dinâmica Real</td>
+                  <td class="p-3.5">180 kg</td>
+                  <td class="p-3.5 font-bold text-volt-lime">380 kg</td>
+                  <td class="p-3.5 font-bold text-primary">450 kg</td>
+                  <td class="p-3.5 text-outline">Apenas 90 a 100 kg</td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-bold text-on-surface">Espessura do Aço Tubular</td>
+                  <td class="p-3.5">1,2 mm galvanizado a fogo</td>
+                  <td class="p-3.5 font-bold text-on-surface">1,5 mm galvanizado a fogo</td>
+                  <td class="p-3.5 font-bold text-on-surface">1,88 mm reforço duplo</td>
+                  <td class="p-3.5 text-outline">0,8 a 0,9 mm (entorta fácil)</td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-bold text-on-surface">Molas Cônicas Temperadas</td>
+                  <td class="p-3.5">48 peças (13,5 cm)</td>
+                  <td class="p-3.5 font-bold text-volt-lime">64 peças (14,0 cm)</td>
+                  <td class="p-3.5 font-bold text-primary">72 a 84 peças (16,5 cm)</td>
+                  <td class="p-3.5 text-outline">36 molas retas finas</td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-bold text-on-surface">Densidade Espuma Protetora</td>
+                  <td class="p-3.5">15 mm EPE prensada</td>
+                  <td class="p-3.5 font-bold text-volt-lime">18 mm EPE Alta Densidade</td>
+                  <td class="p-3.5 font-bold text-primary">20 mm EPE Dupla Camada</td>
+                  <td class="p-3.5 text-outline">Espuma comum 6 mm</td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-bold text-on-surface">Escada Acessória Inclusa</td>
+                  <td class="p-3.5">Sim (2 degraus)</td>
+                  <td class="p-3.5 font-bold text-volt-lime">Sim (Degraus Largos)</td>
+                  <td class="p-3.5 font-bold text-primary">Sim (3 degraus reforçados)</td>
+                  <td class="p-3.5 text-outline">Cobrada à parte (+R$ 180)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 6: CENTRAL DE COTAÇÃO RÁPIDA B2B & SIMULADOR COM SLIDER    -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="cotacao-b2b">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+          
+          <!-- Coluna Esquerda: Texto Comercial & Vantagens -->
+          <div class="lg:col-span-6 flex flex-col gap-space-lg">
+            <div class="flex flex-col gap-space-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-volt-lime inline-block"></span>
+                <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+                  PORTAL CORPORATIVO &amp; ATACADO BRASIL
+                </span>
+              </div>
+              <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface leading-tight">
+                MONTE SUA FROTA DIRETO COM QUEM FABRICA NO BRASIL
+              </h2>
+              <p class="font-body-md text-body-md text-on-surface-variant">
+                Sem intermediários, sem royalties e sem esperar importações demoradas. Despachamos peças avulsas e lotes industriais paletizados em até 24h para todo o território nacional.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+              <div class="bg-surface-card p-space-sm rounded-lg border border-outline-variant/20">
+                <span class="font-label-mono text-label-mono uppercase text-volt-lime block font-bold">Faturamento Flexível</span>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Boleto a prazo para empresas e parcelamento facilitado no cartão PJ.</p>
+              </div>
+              <div class="bg-surface-card p-space-sm rounded-lg border border-outline-variant/20">
+                <span class="font-label-mono text-label-mono uppercase text-primary block font-bold">Frete Fracionado</span>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Parcerias com as maiores transportadoras rodoviárias do país.</p>
+              </div>
+            </div>
+
+            <div class="p-space-md bg-surface-card rounded-lg border border-outline-variant/30 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-volt-lime text-[32px]">support_agent</span>
+                <div>
+                  <span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Linha Direta Televendas B2B</span>
+                  <div class="font-headline-sm text-headline-sm text-on-surface">+55 11 4002-8922</div>
+                </div>
+              </div>
+              <span class="hidden sm:inline-block px-3 py-1 bg-volt-lime/20 text-volt-lime font-label-mono text-xs uppercase rounded font-bold">
+                08H - 18H
+              </span>
+            </div>
+          </div>
+
+          <!-- Coluna Direita: Simulador B2B com Sombra Neo-Brutalista (Card Contrast) -->
+          <div class="lg:col-span-6 w-full bg-surface-contrast text-slate-900 p-6 lg:p-8 rounded-xl shadow-[10px_10px_0px_#1677FF] border border-outline-variant/30" id="bulk">
+            
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <span class="font-label-mono text-xs uppercase tracking-widest text-electric-blue font-bold">
+                CENTRAL DE COTAÇÃO RÁPIDA
+              </span>
+              <span class="flex items-center gap-1.5 px-2.5 py-0.5 bg-volt-lime text-slate-900 font-label-mono text-[10px] rounded uppercase font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-900 animate-ping inline-block"></span>
+                VENDEDOR ONLINE
+              </span>
+            </div>
+
+            <h3 class="font-headline-md text-headline-md uppercase text-slate-900 leading-none mt-3 mb-1">
+              SIMULADOR B2B COM DESCONTO
+            </h3>
+            <p class="font-body-sm text-body-sm text-slate-600 mb-5">
+              Receba proposta formalizada em PDF, cálculo de frete negociado e condições de faturamento direto com a fábrica.
+            </p>
+
+            <form class="flex flex-col gap-space-md" id="b2bQuotationForm" onsubmit="event.preventDefault(); simulateQuotationSubmit();">
+              
+              <!-- Passo 1: Segmento -->
+              <div class="flex flex-col gap-1">
+                <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold" for="b2bSegment">
+                  Segmento de Atuação *
+                </label>
+                <select class="w-full h-11 px-3 bg-white text-slate-900 font-body-sm text-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="b2bSegment" required="">
+                  <option disabled="" selected="" value="">Selecione sua atividade empresarial</option>
+                  <option value="locacao">Locação de Brinquedos / Festas e Eventos</option>
+                  <option value="buffet">Buffet Infantil / Espaço de Recreação</option>
+                  <option value="clube">Condomínio Residencial / Clube / Hotel Fazenda</option>
+                  <option value="escola">Colégio / Escola de Educação Infantil</option>
+                  <option value="revenda">Revenda / Lojista Especializado</option>
+                </select>
+              </div>
+
+              <!-- Passo 2: Modelo de Interesse -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold">
+                  Modelo de Trampolim Principal *
+                </label>
+                <div class="grid grid-cols-2 gap-2" id="modelSelectorGroup">
+                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="2.44m" onclick="selectModel(this)" type="button">
+                    <span class="font-bold">REDONDO 2,44M</span>
+                    <span class="text-slate-500 text-[10px]">Até 180 kg • Buffets &amp; Apês</span>
+                  </button>
+                  <button class="model-opt px-3 py-2 text-left rounded bg-[#081421] text-white font-label-mono text-xs flex flex-col shadow-sm border border-slate-700" data-model="3.05m" onclick="selectModel(this)" type="button">
+                    <span class="font-bold text-volt-lime">MASTER 3,05M</span>
+                    <span class="text-slate-300 text-[10px]">Mais Vendido • 380 kg</span>
+                  </button>
+                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="3.66m" onclick="selectModel(this)" type="button">
+                    <span class="font-bold">PRO COMERCIAL 3,66M</span>
+                    <span class="text-slate-500 text-[10px]">Alta Rentabilidade • 450 kg</span>
+                  </button>
+                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="4.27m" onclick="selectModel(this)" type="button">
+                    <span class="font-bold">SUPER ARENA 4,27M</span>
+                    <span class="text-slate-500 text-[10px]">Uso Intenso Frotas • 450 kg</span>
+                  </button>
+                </div>
+                <input id="selectedModelInput" type="hidden" value="3.05m"/>
+              </div>
+
+              <!-- Passo 3: Quantidade e Badge de Desconto Progressivo -->
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                  <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold" for="quantityRange">
+                    Quantidade Prevista
+                  </label>
+                  <span class="font-label-mono text-xs px-2.5 py-0.5 rounded bg-volt-lime text-slate-900 uppercase font-bold" id="tierDiscountBadge">
+                    18% DE DESCONTO B2B
+                  </span>
+                </div>
+                <div class="flex items-center gap-space-sm bg-slate-100 p-2.5 rounded border border-slate-200">
+                  <button class="w-9 h-9 rounded bg-white text-slate-900 font-headline-sm flex items-center justify-center hover:bg-slate-200 active:scale-95 shadow-sm border border-slate-300" onclick="adjustQty(-1)" type="button">-</button>
+                  <div class="flex-1 text-center">
+                    <span class="font-headline-md text-headline-md text-slate-900 leading-none" id="qtyDisplay">8</span>
+                    <span class="font-label-mono text-[10px] uppercase text-slate-500 block">Unidades completas</span>
+                  </div>
+                  <button class="w-9 h-9 rounded bg-white text-slate-900 font-headline-sm flex items-center justify-center hover:bg-slate-200 active:scale-95 shadow-sm border border-slate-300" onclick="adjustQty(1)" type="button">+</button>
+                </div>
+                <input class="w-full accent-electric-blue cursor-pointer mt-1" id="quantityRange" max="50" min="1" oninput="syncQty(this.value)" type="range" value="8"/>
+                <div class="flex justify-between text-[10px] font-label-mono text-slate-500">
+                  <span>1 un (Tabela)</span>
+                  <span>3-5 un (10% OFF)</span>
+                  <span>6-15 un (18% OFF)</span>
+                  <span>16+ un (Lote Ind. 25%+ OFF)</span>
+                </div>
+              </div>
+
+              <!-- Passo 4: CEP e Cidade -->
+              <div class="grid grid-cols-2 gap-space-sm">
+                <div class="flex flex-col gap-1">
+                  <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold" for="cepInput">
+                    CEP de Entrega *
+                  </label>
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="cepInput" maxlength="9" onkeyup="maskCep(this)" placeholder="00000-000" required="" type="text"/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold" for="cityStateInput">
+                    Cidade / UF *
+                  </label>
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="cityStateInput" placeholder="Ex: Campinas / SP" required="" type="text"/>
+                </div>
+              </div>
+
+              <!-- Passo 5: Dados de Contato -->
+              <div class="flex flex-col gap-space-xs">
+                <label class="font-label-lg text-xs uppercase tracking-wider text-slate-900 font-bold">
+                  Dados da Empresa Solicitante
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="contactName" placeholder="Nome do Responsável" required="" type="text"/>
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="contactDoc" placeholder="CNPJ ou Razão Social" required="" type="text"/>
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="contactPhone" placeholder="WhatsApp Comercial" required="" type="tel"/>
+                  <input class="w-full h-10 px-3 bg-white text-slate-900 font-body-sm rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-electric-blue" id="contactEmail" placeholder="E-mail Corporativo" required="" type="email"/>
+                </div>
+              </div>
+
+              <!-- Botão de Envio de Cotação -->
+              <div class="pt-2">
+                <button class="w-full h-13 py-3 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-[5px_5px_0px_#1677FF] hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 font-extrabold tracking-wider active:translate-x-0.5 active:translate-y-0.5" type="submit">
+                  <span>SOLICITAR PROPOSTA B2B INSTANTÂNEA</span>
+                  <span class="text-lg">↗</span>
+                </button>
+              </div>
+
+              <!-- Garantia de Atendimento -->
+              <div class="flex items-center gap-2 bg-slate-100 p-2.5 rounded border border-slate-200">
+                <span class="material-symbols-outlined text-electric-blue text-[18px]">verified_user</span>
+                <p class="font-caption text-[11px] text-slate-600 leading-tight">
+                  <strong>Retorno em menos de 15 minutos:</strong> Enviaremos proposta com cálculo de frete negociado e catálogo técnico em PDF diretamente pelo WhatsApp.
+                </p>
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 7: DEPOIMENTOS REAIS DE QUEM TRABALHA E USA (PROVA SOCIAL)  -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="depoimentos">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
+          <div class="flex flex-col gap-space-xs text-center">
+            <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
+              AVALIAÇÕES REAIS DE QUEM USA E TRABALHA
+            </span>
+            <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface leading-none">
+              5 ESTRELAS EM DURABILIDADE &amp; RETORNO FINANCEIRO
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+            
+            <!-- Depoimento 1: Locador Profissional -->
+            <div class="bg-surface-card p-space-lg rounded-xl flex flex-col justify-between gap-space-md border border-outline-variant/20 shadow-[4px_4px_0px_#040f1c]">
+              <div class="flex flex-col gap-space-xs">
+                <div class="flex text-safety-yellow">
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface italic mt-1">
+                  "Tenho empresa de locação para festas há 8 anos em Curitiba. O modelo de 3,05m da JumpPlay é o mais resistente que já usei. Monto e desmonto todo fim de semana e os tubos de 1.5mm não entortam nunca."
+                </p>
+              </div>
+              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+                <div class="w-10 h-10 rounded-full bg-volt-lime text-surface-dark flex items-center justify-center font-bold font-label-mono">RM</div>
+                <div>
+                  <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Rodrigo Marcondes</div>
+                  <div class="font-caption text-caption text-on-surface-variant">Locador Profissional (Frota de 14 trampolins)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Depoimento 2: Mãe de Família / Residencial -->
+            <div class="bg-surface-card p-space-lg rounded-xl flex flex-col justify-between gap-space-md border border-outline-variant/20 shadow-[4px_4px_0px_#040f1c]">
+              <div class="flex flex-col gap-space-xs">
+                <div class="flex text-safety-yellow">
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface italic mt-1">
+                  "Comprei o Hero de 3,05m para a chácara da família. Meus sobrinhos usam com intensidade todo sábado e a rede de segurança não cede nada. A escadinha com degraus largos evita qualquer susto."
+                </p>
+              </div>
+              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+                <div class="w-10 h-10 rounded-full bg-electric-blue text-white flex items-center justify-center font-bold font-label-mono">PS</div>
+                <div>
+                  <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Patrícia Silveira</div>
+                  <div class="font-caption text-caption text-on-surface-variant">Mãe e Proprietária Residencial (Campinas/SP)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Depoimento 3: Buffet Infantil -->
+            <div class="bg-surface-card p-space-lg rounded-xl flex flex-col justify-between gap-space-md border border-outline-variant/20 shadow-[4px_4px_0px_#040f1c]">
+              <div class="flex flex-col gap-space-xs">
+                <div class="flex text-safety-yellow">
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface italic mt-1">
+                  "Para nosso Buffet Infantil, laudo técnico e segurança são inegociáveis. A capacidade certificada de 380 kg nos deu tranquilidade total para os monitores e crianças brincarem juntos."
+                </p>
+              </div>
+              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+                <div class="w-10 h-10 rounded-full bg-safety-yellow text-surface-dark flex items-center justify-center font-bold font-label-mono">BF</div>
+                <div>
+                  <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Buffet Folia Encantada</div>
+                  <div class="font-caption text-caption text-on-surface-variant">Belo Horizonte / MG</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 8: BANNER FINAL DE IMPACTO & WHATSAPP DIRETO                -->
+      <!-- ================================================================= -->
+      <section class="w-full bg-volt-lime text-surface-dark px-margin-mobile lg:px-margin py-space-xl">
+        <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-space-lg">
+          <div class="flex flex-col gap-1 text-center md:text-left">
+            <span class="font-label-mono text-xs uppercase text-surface-dark/80 tracking-widest font-bold">
+              DÚVIDA TÉCNICA OU PROJETO SOB MEDIDA?
+            </span>
+            <h2 class="font-headline-lg text-headline-lg uppercase text-surface-dark leading-tight">
+              FALE AGORA COM UM ENGENHEIRO DE PRODUTO
+            </h2>
+            <p class="font-body-md text-body-md text-surface-dark/90 max-w-xl">
+              Tire dúvidas sobre diâmetro ideal para seu espaço físico, resistência em solo irregular ou peças avulsas de reposição imediata.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-space-sm w-full md:w-auto">
+            <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-space-md bg-surface-dark text-on-surface font-label-lg text-xs uppercase rounded shadow-[5px_5px_0px_#1677FF] hover:bg-surface-container-high transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="https://wa.me/551140028922?text=Olá!%20Gostaria%20de%20falar%20com%20a%20engenharia%20da%20JumpPlay." target="_blank">
+              <span class="material-symbols-outlined text-[18px] text-volt-lime">chat</span>
+              <span>CONVERSAR NO WHATSAPP</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SEÇÃO 9: RODAPÉ INDUSTRIAL & SELOS DE CONFIANÇA                   -->
+      <!-- ================================================================= -->
+      <footer class="w-full bg-surface-container-lowest">
+        
+        <!-- Faixa de Selos de Confiança -->
+        <div class="w-full bg-surface-container-low py-space-lg px-margin-mobile lg:px-margin border-t border-outline-variant/20">
+          <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-space-md text-on-surface">
+            <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
+              <span class="material-symbols-outlined text-volt-lime text-[28px]">verified</span>
+              <div>
+                <div class="font-label-lg text-xs uppercase text-on-surface font-bold">Garantia de Fábrica</div>
+                <div class="font-caption text-caption text-on-surface-variant">12 a 24 meses estrutural</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
+              <span class="material-symbols-outlined text-electric-blue text-[28px]">shield</span>
+              <div>
+                <div class="font-label-lg text-xs uppercase text-on-surface font-bold">Aço Galvanizado</div>
+                <div class="font-caption text-caption text-on-surface-variant">Proteção contra corrosão</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
+              <span class="material-symbols-outlined text-volt-lime text-[28px]">sports_gymnastics</span>
+              <div>
+                <div class="font-label-lg text-xs uppercase text-on-surface font-bold">Lona Anti-UV 800D</div>
+                <div class="font-caption text-caption text-on-surface-variant">Costura quádrupla 4X</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
+              <span class="material-symbols-outlined text-safety-yellow text-[28px]">local_shipping</span>
+              <div>
+                <div class="font-label-lg text-xs uppercase text-on-surface font-bold">Frete Brasil</div>
+                <div class="font-caption text-caption text-on-surface-variant">Logística expressa para frotas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links do Rodapé -->
+        <div class="w-full px-margin-mobile lg:px-margin py-space-2xl">
+          <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl">
+            
+            <div class="lg:col-span-2 flex flex-col gap-space-md">
+              <div class="flex items-center gap-2.5">
+                <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+                  <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">PLAY</span></span>
+                </div>
+                <span class="font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest">TRAMPOLINS DE ALTA RESISTÊNCIA</span>
+              </div>
+              <p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">
+                Líder nacional em engenharia de trampolins, camas elásticas e pula-pula de alto rendimento. Desenvolvido para frotas de locação comercial, buffets infantis, parques indoor e famílias exigentes.
+              </p>
+              <div class="flex items-center gap-space-md text-on-surface-variant">
+                <div class="flex flex-col">
+                  <span class="font-label-mono text-label-mono uppercase text-volt-lime font-bold">Suporte Direto Fábrica</span>
+                  <span class="font-headline-sm text-headline-sm text-on-surface">+55 11 4002-8922</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-space-sm">
+              <span class="font-label-lg text-xs uppercase text-volt-lime tracking-widest font-bold">Linhas Oficiais</span>
+              <div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <a class="hover:text-on-surface transition-colors" href="#flex">JumpPlay Flex™ 2.44m</a>
+                <a class="hover:text-on-surface transition-colors" href="#hero">JumpPlay Hero™ 3.05m</a>
+                <a class="hover:text-on-surface transition-colors" href="#mega">JumpPlay Mega™ 3.66m</a>
+                <a class="hover:text-on-surface transition-colors" href="#mega">Super Arena 4.27m</a>
+                <a class="hover:text-on-surface transition-colors" href="#especificacoes">Molas &amp; Peças Avulsas</a>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-space-sm">
+              <span class="font-label-lg text-xs uppercase text-primary tracking-widest font-bold">Corporativo B2B</span>
+              <div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <a class="hover:text-on-surface transition-colors" href="#cotacao-b2b">Portal de Frotistas &amp; Locadores</a>
+                <a class="hover:text-on-surface transition-colors" href="#cotacao-b2b">Tabela Especial Atacado (CNPJ)</a>
+                <a class="hover:text-on-surface transition-colors" href="#especificacoes">Laudos Técnicos ABNT</a>
+                <a class="hover:text-on-surface transition-colors" href="#cotacao-b2b">Simulador de Pedido por Volume</a>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-space-md">
+              <span class="font-label-lg text-xs uppercase text-on-surface tracking-widest font-bold">Boletim de Fábrica</span>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Receba em primeira mão lotes industriais com desconto e avisos de reposição de peças.
+              </p>
+              <form class="flex flex-col gap-space-xs" onsubmit="event.preventDefault(); alert('Inscrição confirmada com sucesso!');">
+                <div class="flex">
+                  <input class="w-full bg-surface-container px-3 py-2 text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-volt-lime rounded-l border border-outline-variant/30" placeholder="Seu e-mail profissional" required="" type="email"/>
+                  <button class="bg-volt-lime text-surface-dark px-4 font-label-lg text-xs uppercase rounded-r hover:bg-secondary-fixed transition-colors font-bold" type="submit">
+                    OK
+                  </button>
+                </div>
+                <span class="font-label-mono text-[9px] text-outline">Sem spam. Política restrita de dados B2B.</span>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="w-full border-t border-outline-variant/20 py-space-md px-margin-mobile lg:px-margin">
+          <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-space-sm text-caption font-caption text-on-surface-variant">
+            <p>© 2025 JumpPlay / Jumpflex® Indústria e Comércio de Trampolins Ltda. CNPJ: 28.941.204/0001-83. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-space-md">
+              <a class="hover:text-on-surface transition-colors" href="#especificacoes">Termos Industriais</a>
+              <a class="hover:text-on-surface transition-colors" href="#range">Privacidade</a>
+              <a class="hover:text-on-surface transition-colors" href="#especificacoes">Certificação ABNT NBR 16071</a>
+            </div>
+          </div>
+        </div>
+
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SCRIPTS: LENIS INERTIAL SCROLL & GSAP MOTION ENGINE               -->
+  <!-- ================================================================= -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  
+  <script>
+    // 0. Motor de Scroll Inercial Awwwards (Lenis) sincronizado ao GSAP ScrollTrigger
+    let lenis;
+    if (typeof Lenis !== 'undefined') {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        smoothWheel: true,
+        smoothTouch: false,
+        touchMultiplier: 2
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
+
+      // Smooth scroll fluido em links de ancoragem
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId && targetId !== '#') {
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+              e.preventDefault();
+              lenis.scrollTo(targetEl, { offset: -20, duration: 1.2 });
+            }
+          }
+        });
+      });
+    }
+
+    // Microinterações Magnéticas nos Botões Primários
+    const magneticElements = document.querySelectorAll('.jf-action, .model-opt');
+    magneticElements.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        gsap.to(el, { x: x * 0.22, y: y * 0.22, duration: 0.3, ease: 'power2.out' });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1.2, 0.4)' });
+      });
+    });
+
+    // Spotlight Shader Dinâmico nos Cartões Bento
+    document.querySelectorAll('.spotlight-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // 1. Telemetria do Projeto (Handoff Compliance)
+    window.trackEvent = function(eventName, payload) {
+      if (window.console && window.console.log) {
+        console.log(`[TELEMETRY EVENT]: ${eventName}`, payload || {});
+      }
+    };
+
+    // 2. Animações GSAP da Hero Cinética (Preservação Absoluta)
+    gsap.registerPlugin(ScrollTrigger);
+    
+    (function initKineticHero() {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = {
+        words: '.jf-word',
+        intro: '.jf-intro',
+        badge: '.jf-badge',
+        tabs: '.jf-tab',
+        photo: '.jf-photo'
+      };
+
+      if (!reduce) {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        // 4A: Reveal text com animação de texto saltitante da hero (Kinetic Trampoline Elastic Bounce)
+        tl.fromTo(els.words, 
+          { 
+            y: 135, 
+            opacity: 0, 
+            scaleY: 1.45, 
+            scaleX: 0.82,
+            rotation: (i) => (i % 2 === 0 ? -5 : 5),
+            transformOrigin: '50% 100%'
+          }, 
+          { 
+            y: 0, 
+            opacity: 1, 
+            scaleY: 1, 
+            scaleX: 1,
+            rotation: 0, 
+            duration: 1.15, 
+            stagger: 0.12, 
+            ease: 'elastic.out(1.2, 0.42)' 
+          }
+        )
+        // Intro subtitle and CTAs
+        .fromTo('.jf-intro', 
+          { y: 24, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 0.48, stagger: 0.08 }, 
+          '-=.55'
+        )
+        // Floating badge scale & rotation entry
+        .fromTo(els.badge, 
+          { scale: 0.35, opacity: 0, rotation: -38 }, 
+          { scale: 1, opacity: 1, rotation: 12, duration: 0.68, ease: 'back.out(1.8)' }, 
+          '-=.4'
+        )
+        // Bottom tabs docking
+        .fromTo(els.tabs, 
+          { y: 34, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 0.45, stagger: 0.1 }, 
+          '-=.25'
+        );
+
+        // Parallax suave da foto ao rolar a página
+        gsap.to(els.photo, {
+          yPercent: 5,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.jf-hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.8
+          }
+        });
+
+        // Oscilação contínua em yoyo do badge
+        gsap.to(els.badge, {
+          rotation: '+=8',
+          repeat: -1,
+          yoyo: true,
+          duration: 2.8,
+          ease: 'sine.inOut'
+        });
+      }
+
+      // Pausa da animação em background se aba for minimizada
+      document.addEventListener('visibilitychange', () => {
+        if (reduce) return;
+        document.hidden ? gsap.globalTimeline.pause() : gsap.globalTimeline.resume();
+      });
+    })();
+
+    // 2.1 Sistema Global de Kinetic Elastic Text Reveal (ScrollTrigger Driven para todo o site)
+    (function initGlobalKineticTextReveal() {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      // Seletores de títulos e destaques editoriais de todas as seções abaixo da hero
+      const targetElements = document.querySelectorAll(
+        'section:not(.jf-hero) h2, #dual-flow h3, #especificacoes h3, #depoimentos h3, #faq h3, .kinetic-reveal-title'
+      );
+
+      function wrapTextNodes(element) {
+        const childNodes = Array.from(element.childNodes);
+        childNodes.forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent;
+            if (!text.trim()) return;
+
+            const fragment = document.createDocumentFragment();
+            const parts = text.split(/(\s+)/);
+            parts.forEach(part => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) {
+                fragment.appendChild(document.createTextNode(part));
+              } else {
+                const span = document.createElement('span');
+                span.className = 'kinetic-word inline-block will-change-transform';
+                span.style.transformOrigin = '50% 100%';
+                span.textContent = part;
+                fragment.appendChild(span);
+              }
+            });
+            element.replaceChild(fragment, node);
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            if (!node.classList.contains('jf-word') && !node.classList.contains('kinetic-word')) {
+              wrapTextNodes(node);
+            }
+          }
+        });
+      }
+
+      targetElements.forEach(heading => {
+        if (heading.dataset.kineticReady) return;
+        heading.dataset.kineticReady = 'true';
+        
+        wrapTextNodes(heading);
+
+        const words = heading.querySelectorAll('.kinetic-word');
+        if (!words.length) return;
+
+        // Animação GSAP ScrollTrigger com física elástica de cama elástica
+        gsap.fromTo(words, 
+          { 
+            y: 80, 
+            opacity: 0, 
+            scaleY: 1.38, 
+            scaleX: 0.84, 
+            rotation: (i) => (i % 2 === 0 ? -4 : 4),
+            transformOrigin: '50% 100%'
+          }, 
+          { 
+            y: 0, 
+            opacity: 1, 
+            scaleY: 1, 
+            scaleX: 1, 
+            rotation: 0, 
+            duration: 1.05, 
+            stagger: 0.05, 
+            ease: 'elastic.out(1.18, 0.44)',
+            scrollTrigger: {
+              trigger: heading,
+              start: 'top 88%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+
+      // Revelação sincronizada de eyebrows de seção
+      document.querySelectorAll('section:not(.jf-hero) .font-label-mono.tracking-widest').forEach(eyebrow => {
+        gsap.fromTo(eyebrow,
+          { y: 22, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.65,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: eyebrow,
+              start: 'top 90%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+    })();
+
+    // 3. Relógio de Contagem Regressiva em Tempo Real
+    (function initCountdownTimer() {
+      let totalSeconds = 4 * 86400 + 13 * 3600 + 16 * 60 + 17;
+      function tick() {
+        if (totalSeconds > 0) totalSeconds--;
+        const d = Math.floor(totalSeconds / 86400);
+        const h = Math.floor((totalSeconds % 86400) / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+
+        const pad = (n) => String(n).padStart(2, '0');
+
+        // Atualiza barra superior
+        const elDays = document.getElementById('sale-days');
+        const elHours = document.getElementById('sale-hours');
+        const elMins = document.getElementById('sale-minutes');
+        const elSecs = document.getElementById('sale-seconds');
+        if (elDays) elDays.innerText = pad(d);
+        if (elHours) elHours.innerText = pad(h);
+        if (elMins) elMins.innerText = pad(m);
+        if (elSecs) elSecs.innerText = pad(s);
+
+        // Atualiza badge da hero
+        const tDays = document.getElementById('timer-days');
+        const tHrs = document.getElementById('timer-hrs');
+        const tMin = document.getElementById('timer-min');
+        if (tDays) tDays.innerText = pad(d);
+        if (tHrs) tHrs.innerText = pad(h);
+        if (tMin) tMin.innerText = pad(m);
+      }
+      setInterval(tick, 1000);
+    })();
+
+    // 4. Lógica do Simulador B2B e Slider de Quantidade
+    function selectModel(btn) {
+      const buttons = document.querySelectorAll('.model-opt');
+      buttons.forEach(b => {
+        b.classList.remove('bg-[#081421]', 'text-white', 'border-slate-700');
+        b.classList.add('bg-slate-100', 'text-slate-900', 'border-slate-200');
+        const headline = b.querySelector('span.font-bold');
+        if (headline) headline.classList.remove('text-volt-lime');
+      });
+
+      btn.classList.remove('bg-slate-100', 'text-slate-900', 'border-slate-200');
+      btn.classList.add('bg-[#081421]', 'text-white', 'border-slate-700');
+      const activeHeadline = btn.querySelector('span.font-bold');
+      if (activeHeadline) activeHeadline.classList.add('text-volt-lime');
+
+      const modelVal = btn.getAttribute('data-model');
+      document.getElementById('selectedModelInput').value = modelVal;
+      trackEvent('b2b_model_selected', { model: modelVal });
+    }
+
+    function selectModelAndScroll(modelSize) {
+      const selector = `.model-opt[data-model="${modelSize}"]`;
+      const targetBtn = document.querySelector(selector);
+      if (targetBtn) {
+        selectModel(targetBtn);
+      }
+      document.getElementById('cotacao-b2b').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function adjustQty(delta) {
+      const range = document.getElementById('quantityRange');
+      let val = parseInt(range.value, 10) + delta;
+      if (val < 1) val = 1;
+      if (val > 50) val = 50;
+      range.value = val;
+      syncQty(val);
+    }
+
+    function syncQty(val) {
+      document.getElementById('qtyDisplay').innerText = val;
+      const badge = document.getElementById('tierDiscountBadge');
+      const num = parseInt(val, 10);
+
+      if (num <= 2) {
+        badge.innerText = 'PREÇO TABELA INDIVIDUAL';
+        badge.className = 'font-label-mono text-xs px-2.5 py-0.5 rounded bg-slate-300 text-slate-900 uppercase font-bold';
+      } else if (num >= 3 && num <= 5) {
+        badge.innerText = '10% DE DESCONTO B2B';
+        badge.className = 'font-label-mono text-xs px-2.5 py-0.5 rounded bg-electric-blue text-white uppercase font-bold';
+      } else if (num >= 6 && num <= 15) {
+        badge.innerText = '18% DE DESCONTO B2B';
+        badge.className = 'font-label-mono text-xs px-2.5 py-0.5 rounded bg-volt-lime text-slate-900 uppercase font-bold';
+      } else {
+        badge.innerText = 'LOTE INDUSTRIAL (25%+ OFF)';
+        badge.className = 'font-label-mono text-xs px-2.5 py-0.5 rounded bg-kinetic-red text-white uppercase font-bold';
+      }
+    }
+
+    function maskCep(el) {
+      let v = el.value.replace(/\D/g, '');
+      if (v.length > 5) {
+        v = v.replace(/^(\d{5})(\d)/, '$1-$2');
+      }
+      el.value = v.substring(0, 9);
+    }
+
+    function simulateQuotationSubmit() {
+      const model = document.getElementById('selectedModelInput').value;
+      const qty = document.getElementById('quantityRange').value;
+      const segment = document.getElementById('b2bSegment').value;
+      const name = document.getElementById('contactName').value;
+      const city = document.getElementById('cityStateInput').value;
+
+      trackEvent('bulk_form_submitted', { model, qty, segment, city });
+
+      const textMsg = encodeURIComponent(
+        `Olá JumpPlay! Meu nome é ${name}, represento o segmento "${segment}" em ${city}. ` +
+        `Simulei a cotação no site para ${qty} unidade(s) do modelo ${model}. Gostaria de receber a proposta em PDF e condições de faturamento.`
+      );
+
+      alert(`Cotação para ${qty} unidade(s) do modelo ${model} gerada com sucesso! Redirecionando para o canal de atendimento no WhatsApp...`);
+      window.open(`https://wa.me/551140028922?text=${textMsg}`, '_blank');
+    }
+
+    // 5. Filtro de Modelos do Catálogo
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-volt-lime', 'text-surface-dark', 'font-bold');
+          b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.add('bg-volt-lime', 'text-surface-dark', 'font-bold');
+        btn.classList.remove('text-on-surface-variant');
+
+        const cat = btn.getAttribute('data-category');
+        trackEvent('catalog_filter_changed', { category: cat });
+
+        productCards.forEach(card => {
+          if (cat === 'todos') {
+            card.style.display = 'flex';
+          } else {
+            const cardModel = card.getAttribute('data-model') || '';
+            if (cardModel.includes(cat)) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "2.0.0",
+  "updatedAt": "2026-08-28T15:45:00Z",
+  "vaultTiers": {
+    "evidence": "Imutável: scrapes brutos, assets e manifests originais em copias/",
+    "patterns": "Curado: fórmulas matemáticas de motion, componentes 3D, combinações tipográficas e shaders",
+    "production_templates": "Certificado: esqueletos parametrizados com slots, tokens, golden tests e card técnico"
+  },
+  "promotionWorkflow": [
+    "experimental",
+    "candidate",
+    "verified",
+    "production"
+  ],
+  "patterns": [
+    {
+      "id": "pattern-motion-easings",
+      "name": "Matriz de Curvas de Easing Awwwards",
+      "path": "design-vault/01-motion-physics/easings.json",
+      "type": "motion-physics",
+      "status": "verified",
+      "provenance": "Curadoria matemática de curvas de aceleração Bezier para GSAP/Lenis"
+    },
+    {
+      "id": "pattern-3d-cylindrical-spinner",
+      "name": "3D Cylindrical Spinner",
+      "path": "design-vault/02-3d-experiments/cylindrical-spinner.js",
+      "type": "webgl-experiment",
+      "status": "candidate",
+      "provenance": "Experimento 3D Three.js / Canvas para Hero visual"
+    },
+    {
+      "id": "pattern-curated-typography",
+      "name": "Pares Tipográficos Curados",
+      "path": "design-vault/04-typography/curated-pairings.json",
+      "type": "typography",
+      "status": "verified",
+      "provenance": "Matriz de contrastes tipográficos editoriais e display"
+    }
+  ],
+  "templates": [
+    {
+      "slug": "elyse-residence-dev-webflow-io",
+      "name": "Elyse Residence (Dark Luxe Architectural)",
+      "path": "design-vault/elyse-residence-dev-webflow-io",
+      "status": "candidate",
+      "provenance": "copias/elyse-residence-dev-webflow-io",
+      "archetype": "Luxury Real Estate / Editorial Architecture",
+      "palette": {
+        "bg": "#080807",
+        "card": "#121210",
+        "accent": "#C5A880",
+        "text": "#F5F5F0"
+      },
+      "stack": ["HTML5", "Tailwind CSS", "GSAP ScrollTrigger", "Splide.js"],
+      "artifacts": {
+        "skeleton": "skeleton.html",
+        "contentSlots": "content-slots.json",
+        "tokens": "tokens.json",
+        "tailwindConfig": "tailwind.config.js",
+        "brandSpecTemplate": "brand-spec.template.json",
+        "referenceCard": "REFERENCE_CARD.md"
+      }
+    },
+    {
+      "slug": "bymonolog-com",
+      "name": "By Monolog (Editorial Studio)",
+      "path": "design-vault/bymonolog-com",
+      "status": "experimental",
+      "provenance": "copias/bymonolog-com",
+      "archetype": "Creative Studio / Typography Heavy",
+      "artifacts": {
+        "tokens": "tokens.json",
+        "tailwindConfig": "tailwind.config.js",
+        "brandSpecTemplate": "brand-spec.template.json"
+      }
+    }
+  ]
+}

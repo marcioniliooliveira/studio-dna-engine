@@ -1,0 +1,95 @@
+{
+  "brand": {
+    "name": "NEGOCIA BEM",
+    "tagline": "CONSULTORIA IMOBILIÁRIA • PAIÇANDU & MARINGÁ",
+    "logoAlt": "Negocia Bem Consultoria Imobiliária - CRECI 9314-J",
+    "creci": "CRECI 9314-J",
+    "phone": "(44) 3801-6654",
+    "whatsappUrl": "https://wa.me/554438016654",
+    "address": "Av. Curitiba, 140 - Centro, Paiçandu / PR"
+  },
+  "nav": {
+    "link1": "Comprar Casas",
+    "link2": "Alugar Imóveis",
+    "link3": "Investir em Lotes",
+    "cta": "FALAR NO WHATSAPP"
+  },
+  "hero": {
+    "title": "NEGOCIABEM",
+    "titleMin": "A ESCOLHA CERTA PARA COMPRAR, ALUGAR OU INVESTIR",
+    "subtitle": "Seja para conquistar a casa própria a 15 minutos de Maringá, alugar com agilidade e sem fiador, ou investir em loteamentos de alta valorização, a Negocia Bem oferece a assessoria completa, transparente e próxima que você precisa.",
+    "scrollText": "CONHECER OPORTUNIDADES"
+  },
+  "about": {
+    "caption": "(Sobre Nós)",
+    "heading": "assessoria transparente proximidade e seguranca",
+    "p1": "Com sede no coração de Paiçandu e forte atuação em toda a Região Metropolitana de Maringá, a Negocia Bem Consultoria Imobiliária (CRECI 9314-J) nasceu para simplificar cada etapa das suas conquistas imobiliárias.",
+    "p2": "Oferecemos assessoria jurídica completa, aprovação ágil de financiamento habitacional pela Caixa e uma curadoria atenta dos melhores imóveis e loteamentos da região."
+  },
+  "stats": {
+    "stat1Val": "15",
+    "stat1Unit": "min",
+    "stat1Label": "de Maringá, com infraestrutura completa e qualidade de vida.",
+    "stat2Val": "100",
+    "stat2Unit": "%",
+    "stat2Label": "suporte no financiamento Minha Casa Minha Vida e bancos privados.",
+    "stat3Val": "9314",
+    "stat3Unit": "-J",
+    "stat3Label": "CRECI regularizado garantindo total segurança jurídica em cada contrato.",
+    "stat4Val": "+1.000",
+    "stat4Label": "famílias e investidores atendidos com excelência na nossa região."
+  },
+  "livings": {
+    "caption": "(Nossos 3 Funis)",
+    "living1Title": "Casas Prontas & Minha Casa Minha Vida",
+    "living1Desc": "Casas novas e prontas para morar em bairros planejados de Paiçandu, com subsídio facilitado e parcelas que cabem no seu orçamento.",
+    "living2Title": "Locação Ágil & Sem Burocracia",
+    "living2Desc": "Imóveis residenciais e comerciais selecionados para locação rápida, com processo digital transparente e sem complicações.",
+    "living3Title": "Loteamentos & Terrenos em Expansão",
+    "living3Desc": "Oportunidades em loteamentos abertos e fechados no vetor de maior crescimento e valorização da Região Metropolitana de Maringá."
+  },
+  "beliefs": {
+    "caption": "(Nossos Pilares)",
+    "heading": "Compromisso com a Sua Conquista",
+    "introP1": "Acreditamos que negociar um imóvel é construir o futuro da sua família. Por isso, aliamos conhecimento técnico de mercado a um atendimento humano, ético e caloroso.",
+    "card1Title": "Aprovação de Crédito Descomplicada",
+    "card1Desc": "Cuidamos de toda a documentação junto à Caixa Econômica Federal e instituições financeiras.",
+    "card2Title": "Segurança Jurídica Absoluta",
+    "card2Desc": "Análise minuciosa de matrículas, certidões e contratos para sua total tranquilidade.",
+    "card3Title": "Localização Estratégica",
+    "card3Desc": "Imóveis nos melhores pontos de Paiçandu, com acesso rápido e direto a Maringá.",
+    "card4Title": "Atendimento Próximo & Familiar",
+    "card4Desc": "Portas abertas na Av. Curitiba para receber você e tirar todas as suas dúvidas.",
+    "card5Title": "Valorização Garantida",
+    "card5Desc": "Investimentos sólidos em regiões com expansão urbana e alta demanda.",
+    "outroP1": "Na Negocia Bem, cada cliente é único. Não vendemos apenas metros quadrados — entregamos soluções sob medida para você morar bem ou investir com rentabilidade.",
+    "outroP2": "Nossa missão é ser a ponte segura entre os seus planos e a realização do seu novo patrimônio."
+  },
+  "amenities": {
+    "slide1Title": "Assessoria Completa de Financiamento",
+    "slide1Desc": "Simulamos as melhores taxas de juros, auxiliamos na utilização do FGTS e acompanhamos desde a assinatura do contrato até a entrega das chaves.",
+    "slide2Title": "Presença Física & Tradição Local",
+    "slide2Desc": "Nossa equipe está presente no Centro de Paiçandu, conhecendo cada bairro e oportunidade em detalhe para oferecer a melhor orientação.",
+    "slide3Title": "Paiçandu: O Vetor de Expansão da RMM",
+    "slide3Desc": "A apenas 15 minutos do centro de Maringá, a cidade combina tranquilidade de interior com valorização imobiliária expressiva e constante."
+  },
+  "faq": {
+    "caption": "(Dúvidas Frequentes)",
+    "heading": "Tudo o que Você Precisa Saber",
+    "q1": "Como funciona o financiamento pelo Minha Casa Minha Vida?",
+    "a1": "O programa oferece subsídios do governo e taxas de juros reduzidas para a compra da casa própria. Nossa equipe faz toda a simulação gratuita, analisa sua renda familiar e cuida do processo de aprovação junto à Caixa.",
+    "q2": "Quais são as vantagens de comprar um imóvel em Paiçandu?",
+    "a2": "Paiçandu fica a apenas 15 minutos de Maringá e oferece custo por metro quadrado muito mais acessível, bairros com infraestrutura completa, comércios locais consolidados e altíssimo potencial de valorização.",
+    "q3": "Como alugar um imóvel sem burocracia na Negocia Bem?",
+    "a3": "Temos opções de locação facilitada com análise de cadastro rápida, dispensando processos engessados e permitindo que você mude para seu novo imóvel em poucos dias.",
+    "q4": "É um bom momento para investir em terrenos e loteamentos?",
+    "a4": "Sim! A Região Metropolitana de Maringá está em plena expansão urbana em direção a Paiçandu. Investir em terrenos hoje garante rentabilidade sólida acima da inflação e excelente liquidez futura."
+  },
+  "cta": {
+    "heading": "Pronto para Conquistar seu Próximo Imóvel?",
+    "subtitle": "Converse diretamente com nossos consultores credenciados. Tire suas dúvidas, faça uma simulação de financiamento sem compromisso ou venha tomar um café conosco na Av. Curitiba.",
+    "formHeading": "Fale Conosco no WhatsApp",
+    "formSubtitle": "Selecione o seu objetivo e receba atendimento exclusivo em instantes:",
+    "formDisclaimer": "Seus dados estão protegidos. Atendimento ético e regularizado pelo CRECI 9314-J."
+  }
+}

@@ -1,25 +1,27 @@
 # Memory Index
 
-## Project
+## Project Conventions
 - [project] Always create a new dedicated branch for major code changes → project-conventions.md
 - [project] Playwright cloning conventions for high-fidelity layouts → project-conventions.md
 - [project] Always create dual versions (HTML static + Next.js) when copying websites → project-conventions.md
 
-## DNA Lock System (2026-08-25)
-- [dna-lock] System has 3 layers: dna-extractor.js (script) + DNA.md (per-project lock) + dna-lock skill (agent enforcement)
-- [dna-lock] P0 FlashTech canonical tokens: #02040A (obsidian/base), #00F0FF (CTA-only/Von Restorff), #0072FF (gradient-mid), #64CEFB (gradient-start)
-- [dna-lock] CTA rule: #00F0FF + gradient EXCLUSIVO para CTA primário e garantia. Nunca aplicar em outros elementos.
-- [dna-lock] Funil fechado (Dossiê 03): 0 links externos no body. CDNs no <head> são permitidos.
-- [dna-lock] Correções são CIRÚRGICAS: declarar qual token falhou, corrigir só aquele escopo.
-- [dna-lock] Override consciente: declare ⚠️ OVERRIDE DNA P0 [token]: [razão] e aguarde confirmação antes de aplicar.
+## Interpretable Context Methodology (ICM) & Client Isolation
+- [project] ICM significa Interpretable Context Methodology; não confundir com o pipeline de transmutação → strategic-alignment.md
+- [icm] **Scope Isolation:** Cada pasta em `clientes/` é um ambiente 100% isolado. NUNCA cruzar cores, tokens ou copy entre clientes.
+- [icm] **Esqueletos Read-Only:** A pasta `copias/` contém os clones brutos de alta fidelidade intocáveis. Nunca altere um arquivo em `copias/` diretamente.
+- [icm] **Transmutação Determinística:** Usar scripts de transmutação em `scripts/` orientados por `brand-spec.json` para evitar AI Slop ao adaptar esqueletos de 10MB.
+- [icm] **DNA Lock Per-Client:** As regras de P0/P1 devem ser lidas exclusivamente do `DNA.md` ou `brand-spec.json` da pasta do cliente ativo.
 
-## Caso 03 — D2C (2026-08-25)
-- [caso-03] Produto fictício: APEX (fone wireless premium para desenvolvedores e criadores)
-- [caso-03] Backup do clone Ciao Energy original em: clientes/flashtech-caso-03-d2c/site/index.html.bak
-- [caso-03] DNA.md gerado em: clientes/flashtech-caso-03-d2c/DNA.md
-- [caso-03] Auditoria: node scripts/dna-extractor.js --audit clientes/flashtech-caso-03-d2c/site/index.html → saída: ✅ 0 violações
-- [caso-03] Paleta P1 (marca APEX): --apex-silver #C0C8D4, --apex-graphite #1A1D26, --apex-surface #0D0F17
+## Strategic Direction
+- [project] Produto-alvo: infraestrutura reference-driven para sites premium, não um clonador genérico → strategic-alignment.md
+- [project] IA planeja em schemas; compiladores constroem; gates independentes comprovam o resultado → strategic-alignment.md
+- [project] Caminho comercial: uso interno → serviço produtizado → beta de agências → SaaS/API/marketplace → strategic-alignment.md
+- [project] Retomar esta visão após segurança, reprodutibilidade, ICM/Vault e piloto serem validados → strategic-alignment.md
 
-## Caso 02 — E-commerce (referência)
-- [caso-02] Tokens: trail.orange=#ea580c, sand.100=#f5f1e8 são P1 do NorthTrail — não são FlashTech P0
-- [caso-02] flashtech.cyan, flashtech.blue, flashtech.obsidian estão no Tailwind config mas como tokens de referência
+## Diretório de Clientes Ativos
+- [caso-01-healthtech] **PulseMed** (`clientes/caso-01-healthtech/`): Base `#120824`, CTA `#E8FF54`, ref `copias/urbi-ae`.
+- [caso-03-d2c] **APEX Wireless** (`clientes/flashtech-caso-03-d2c/`): Base `#02040A`, CTA `#00F0FF`, ref `copias/ciao-energy`.
+- [caso-02-ecommerce] **NorthTrail** (`clientes/flashtech-caso-02-ecommerce/`): Tokens `trail.orange=#ea580c`, `sand.100=#f5f1e8`.
+- [caso-apex-barbearia] **Apex Barbearia** (`clientes/apex-barbearia/`): Base `#0A0A0A`, CTA `#C8A97E`, Maringá - PR (2 Unidades), ref `copias/barbershop-landing-51-aura-build`.
+- [portfolio-webdev] **Web Developer Portfolio Reference** (ref `copias/likova-space/`): Referência pura clonada para futuro portfólio de web developer (Awwwards motion, Three.js, Obsidian Dark `#070B20`, TT Norms Pro, botões angulares). Clone mantido 100% intacto; transmutação será alinhada futuramente.
+

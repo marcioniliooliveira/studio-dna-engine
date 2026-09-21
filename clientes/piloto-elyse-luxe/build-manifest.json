@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "builtAt": "2026-08-28T19:02:42.095Z",
+  "refSlug": "elyse-residence-dev-webflow-io",
+  "brandName": "AURA Private Residences",
+  "inputHashes": {
+    "skeleton": "6286c066b6ee71d645d8ec7fc778212af69ee88152d33c2c475c23d2f3007b49",
+    "compositionSpec": "2a1d5c5a080b140efeca4029b03c9ec3f4ba82725d2f97e32373f2f2db832aa2"
+  },
+  "outputHash": "77a209b16d463ee9c845a32e5dd3b7910dda77cd3d6f59bae1d627ec637df21c",
+  "outputPath": "clientes/piloto-elyse-luxe/site/index.html",
+  "replacedSlotsCount": 50,
+  "outputSize": 176844
+}

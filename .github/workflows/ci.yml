@@ -20,11 +20,8 @@ jobs:
         node-version: 20
         cache: 'npm'
 
-    - name: Install Dependencies
-      run: npm install
+    - name: Install locked dependencies
+      run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium
-
-    - name: Run Test Verification
+    - name: Run unit and integration tests
       run: npm test

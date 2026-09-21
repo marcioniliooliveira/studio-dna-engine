@@ -1,10 +1,25 @@
 {
-  "brandName": "negocia bem",
+  "brandName": "Negocia Bem Consultoria Imobiliária",
   "clientSlug": "negocia-bem",
-  "createdAt": "2026-08-25T16:38:55.022Z",
-  "referenceUsed": "axisform-aura-build",
-  "niche": "imobiliaria",
-  "primaryColor": "#FFFFFF",
-  "secondaryColor": "#080A12",
-  "whatsapp": "4449999999999"
+  "creci": "9314-J",
+  "niche": "Consultoria Imobiliária & Correspondente Caixa",
+  "toneOfVoice": "Acolhedor, Especialista, Humano e Seguro",
+  "theme": {
+    "bgBase": "#0D1117",
+    "bgSurface": "#161B22",
+    "bgCard": "#21262D",
+    "accent": "#3E9B67",
+    "accentLight": "#4EBA7E",
+    "whatsapp": "#25D366",
+    "textMain": "#FFFFFF",
+    "textMuted": "#8B949E"
+  },
+  "typography": {
+    "fontHeading": "Plus Jakarta Sans",
+    "fontBody": "Inter"
+  },
+  "contact": {
+    "whatsapp": "554438016654",
+    "address": "Av. Curitiba, Paiçandu - PR"
+  }
 }

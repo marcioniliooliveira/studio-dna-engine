@@ -1,15 +1,15 @@
 ---
 name: dna-lock
-description: DNA Lock enforcement for FlashTech projects. Reads DNA.md before any code generation, declares invariants aloud, and enforces conscious override protocol. Use whenever a DNA.md exists in the project.
-when_to_use: "Whenever creating or modifying any project that has a DNA.md file. MANDATORY before writing any HTML, CSS, or component code."
+description: DNA Lock enforcement for client projects. Reads the project's DNA.md or brand-spec.json before any code generation, declares client invariants aloud, and enforces conscious override protocol. Use whenever a DNA.md or brand-spec.json exists in the project.
+when_to_use: "Whenever creating or modifying any client project that has a DNA.md or brand-spec.json file. MANDATORY before writing any HTML, CSS, or component code."
 allowed-tools: Read, Write, Edit, Glob, Bash
 ---
 
 # DNA Lock — Enforcement Protocol
 
-> **Core Rule:** A DNA.md file is the single source of truth for a project.
-> It overrides all agent preferences, design tendencies, and aesthetic choices.
-> **NO CODE before DNA is declared.**
+> **Core Rule:** A local `DNA.md` or `brand-spec.json` file is the single source of truth for a client project.
+> It overrides all agent preferences, general design tendencies, and cross-project biases.
+> **NO CODE before project DNA is declared.**
 
 ---
 
@@ -18,10 +18,10 @@ allowed-tools: Read, Write, Edit, Glob, Bash
 Before writing any code for a project, run this check:
 
 ```
-1. Does a DNA.md exist in the project root?
-   YES → Read it entirely, then proceed to PROTOCOL
-   NO  → Ask user: "Devo gerar o DNA.md primeiro?"
-         Run: node scripts/dna-extractor.js --project <path>
+1. Does a DNA.md or brand-spec.json exist in the project root (clientes/<projeto>/)?
+   YES → Read it entirely, extract the client-specific tokens/rules, and proceed to PROTOCOL
+   NO  → Check if the project is derived from a reference in copias/
+         Run: node scripts/dna-extractor.js --project <path> (or create brand-spec.json)
 ```
 
 ---
@@ -30,23 +30,22 @@ Before writing any code for a project, run this check:
 
 ### Step 1: DECLARE INVARIANTS (out loud, in your response)
 
-After reading DNA.md, you MUST declare before any code:
+After reading the project's local `DNA.md` or `brand-spec.json`, you MUST declare before any code:
 
 ```markdown
-🔒 **DNA Lock Ativo — [Project Name]**
+🔒 **DNA Lock Ativo — [Client / Project Name]**
 
-**P0 Invariantes confirmados:**
-- Background: #02040A (obsidiana)
-- CTA único: #00F0FF / gradiente #64CEFB→#0072FF→#00F0FF
-- Tipografia: Archivo (display) + JetBrains Mono (dados)
-- Max 1 CTA por fold (Lei de Hick)
-- 0 links externos no funil
+**P0 Invariantes do Projeto (extraídos do manifesto local):**
+- Background Base: [Token local, ex: #120824 ou #02040A]
+- CTA Primário: [Token local, ex: #E8FF54 ou gradiente específico]
+- Tipografia: [Headings font] + [Body/Data font]
+- Regra de Conversão / Funil: [Ex: 3 Chunks de Miller / Zero Links Externos]
 
 **P1 Variáveis deste projeto:**
-- [lista do DNA.md]
+- [Lista de cores secundárias e tokens específicos do brand-spec.json]
 
-**Checklist P0 completa: ✅**
-Iniciando implementação...
+**Checklist P0 confirmada: ✅**
+Iniciando implementação cirúrgica...
 ```
 
 If you skip this declaration → **PROTOCOL VIOLATION. Stop and declare first.**
@@ -55,22 +54,20 @@ If you skip this declaration → **PROTOCOL VIOLATION. Stop and declare first.**
 
 While implementing:
 
-- Every CSS color must map to a P0 or declared P1 token
-- Never introduce new primary colors without declaring them as P1 first
-- CTAs must use the exact P0 gradient — never approximate with "similar cyan"
-- Background sections must use `#02040A` — no "dark alternatives"
+- Every CSS color must map to the declared project P0 or P1 token.
+- Never import or inject tokens from OTHER clients (e.g., do not inject FlashTech tokens into HealthMed/PulseMed).
+- CTAs must strictly use the project's declared CTA token.
+- Background sections must match the declared project base token.
 
 ### Step 3: SELF-AUDIT BEFORE DELIVERY
 
-Before outputting the final code, do a mental P0 scan:
+Before outputting final code, do a mental scan against the project's local spec:
 
 ```
-✅ #02040A present as base background?
-✅ #00F0FF / gradient applied ONLY to CTA and guarantee?
-✅ Archivo loaded in <head>?
-✅ JetBrains Mono loaded in <head>?
-✅ Only 1 primary CTA per fold?
-✅ No external links in funnel body?
+✅ Base background matches project spec?
+✅ CTA color and typography match project spec?
+✅ No external/cross-client tokens or styles leaked?
+✅ Structure matches reference skeleton without AI Slop?
 ```
 
 If ANY check fails → fix before outputting.

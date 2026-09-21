@@ -5,14 +5,16 @@ const http = require('http');
 
 /**
  * UniversalAssetNormalizer
- * Normaliza e sana todos os assets de sites clonados:
- * - Resolve e baixa imagens otimizadas do Vercel / Next.js (/_vercel/image?url=... e /_next/image?url=...)
- * - Remove overlays bloqueantes (telas pretas de transição como #transition-overlay, [data-cover])
- * - Revela elementos ocultos por frameworks SSR (opacity-0, invisible em loaders)
- * - Cria espelhos no disco para arquivos com espaços e %20 (evitando 404)
- * - Gera fallbacks automáticos para variantes de densidade (@2x, -1.5x, etc.)
- * - Codifica URLs em atributos srcset para conformidade com HTML5
- * - Conecta blobs binários interceptados aos elementos correspondentes
+ * Normaliza e sana todos os assets e HTMLs de sites clonados:
+ * - Elimina telas pretas de transição e preloaders (Webflow, Barba, GSAP, Nuxt, Next.js, Framer)
+ * - Desbloqueia hero, navbars e elementos com inicialização opaca/invisível
+ * - Unmasking universal de SplitText e linhas de texto mascaradas
+ * - Fornece polyfills de resiliência (CustomEase, SplitText, Howl, barba, analytics)
+ * - Corrige URLs de CDN quebradas (GSAP 3.15, Howler jsdelivr, etc.)
+ * - Resolve e baixa imagens otimizadas do Vercel / Next.js (/_vercel/image e /_next/image)
+ * - Cria espelhos no disco para arquivos com espaços e %20
+ * - Gera fallbacks automáticos para variantes de densidade (@2x, -1.5x)
+ * - Conecta o motor de animações 60FPS UniversalScrollDirector
  */
 class UniversalAssetNormalizer {
   /**
@@ -29,10 +31,413 @@ class UniversalAssetNormalizer {
   }
 
   /**
-   * Executa a normalização completa
+   * Retorna o CSS mestre de desbloqueio e revelação universal (não destrutivo para GSAP/ScrollTrigger)
+   */
+  static getUniversalUnlockCss() {
+    return `<style id="universal-unlock-css">
+      /* 1. Supressão Completa de Cortinas de Transição e Preloaders (Anti-Blackscreen) */
+      #transition-overlay, 
+      [data-cover], 
+      .transition-curtain, 
+      .page-transition-overlay, 
+      .transition_screen, 
+      .preloader_wrap, 
+      .preloader, 
+      .loader, 
+      .site-loader, 
+      .loading-screen, 
+      .loading-overlay, 
+      #preloader, 
+      #loading-mask, 
+      [data-preloader], 
+      .splash-screen, 
+      .curtain, 
+      [data-curtain], 
+      [data-page-transition], 
+      .is-loading-overlay, 
+      .page-transition, 
+      .page_loader,
+      .w-preloader {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+      }
+
+      /* Desbloqueia position: sticky globalmente removendo overflow hostil dos ancestrais */
+      html, body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+      }
+      .page-wrapper, main, .main-wrapper, .container, .page-padding {
+        overflow: visible !important;
+      }
+
+      /* Desbloqueia sliders de marcas / logos para rotação infinita */
+      .brand-slider, .logo-slider, .partner-slider {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      /* Reparo de layout para seções empilhadas e eliminação de spacers fantasmas */
+      .faq-spacer {
+        display: none !important;
+      }
+      .faq-relative {
+        height: auto !important;
+      }
+      section.cta, .cta {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 10 !important;
+      }
+      section.faq, .faq {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 5 !important;
+      }
+
+      /* Interatividade de hover fluida na FAQ */
+      .faq [data-dropdown-list] {
+        opacity: 0 !important;
+        transform: translateX(24px) !important;
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none !important;
+      }
+      .faq [data-dropdown]:hover [data-dropdown-list],
+      .faq [data-dropdown].is-active [data-dropdown-list] {
+        opacity: 1 !important;
+        transform: translateX(0px) !important;
+        pointer-events: auto !important;
+      }
+      .faq [data-dropdown]:hover .faq-dropdown-toggle h3,
+      .faq [data-dropdown].is-active .faq-dropdown-toggle h3 {
+        color: #ffffff !important;
+        transition: color 0.3s ease;
+      }
+
+      /* Reseta máscaras para evitar listras estáticas em repouso */
+      [data-amenities-anim="big-image"].is-first {
+        position: relative !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        opacity: 1 !important;
+      }
+      [data-amenities-anim="big-image"]:not(.is-first) {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+        -webkit-mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+      }
+
+      /* 2. Overlays cosméticos não podem bloquear eventos de mouse */
+      .g_overlay, .g_grain_overlay {
+        pointer-events: none !important;
+      }
+
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis */
+      html, body {
+        overflow-x: hidden !important;
+      }
+      html.lenis-stopped, 
+      body.lenis-stopped, 
+      html.is-loading, 
+      body.is-loading,
+      body.no-scroll {
+        overflow: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+      }
+
+      /* 4. Controles, Navbar, CTAs fixos */
+      .fixed, header, [id*="cta"] {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* 5. Garante renderização nítida de imagens e mídias */
+      img, svg, canvas, video {
+        content-visibility: visible;
+      }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
+      }
+    </style>`;
+  }
+
+  /**
+   * Retorna os polyfills de resiliência para GSAP, áudio, Barba e analytics
+   */
+  static getUniversalResiliencePolyfills() {
+    return `<script id="universal-resilience-polyfills">
+(function() {
+  'use strict';
+  // 1. Mocks de Analytics, Rastreamento & WebFont
+  window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
+  window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
+  window.dataLayer = window.dataLayer || [];
+  window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
+
+  // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.CustomEase === 'undefined') {
+      window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
+    }
+    if (typeof window.SplitText === 'undefined') {
+      window.SplitText = function(target) {
+        return { lines: [], words: [], chars: [], revert: function() {} };
+      };
+    }
+  });
+
+  // 3. Stub de Audio (Howler.js)
+  if (typeof window.Howl === 'undefined') {
+    window.Howl = function() {
+      return {
+        play: function() { return 1; },
+        pause: function() {},
+        stop: function() {},
+        volume: function() {},
+        fade: function() {},
+        on: function() { return this; },
+        once: function() { return this; },
+        off: function() { return this; },
+        state: function() { return 'loaded'; }
+      };
+    };
+  }
+
+  // 4. Stub de Barba.js & Modais
+  if (typeof window.barba === 'undefined') {
+    window.barba = {
+      init: function() {},
+      use: function() {},
+      hooks: { before: function() {}, after: function() {}, enter: function() {}, leave: function() {} },
+      transitions: []
+    };
+  }
+  if (typeof window.ProjectModal === 'undefined') {
+    window.ProjectModal = function() {
+      return { open: function(){}, close: function(){} };
+    };
+  }
+
+  // 5. Imediato e Multinível Unhide Failsafe
+  function forceUnhide() {
+    document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
+    document.documentElement.classList.remove('is-loading', 'lenis-stopped');
+    if (document.body) {
+      document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
+    }
+    
+    // Limpeza de textos mascarados e nós do SplitText
+    var maskedNodes = document.querySelectorAll('[style*="visibility: hidden"], [style*="opacity: 0"], .gsap-reveal');
+    maskedNodes.forEach(function(el) {
+        if(el.classList.contains('child') || el.classList.contains('line')) {
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+        }
+    });
+
+    var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
+    blocked.forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+  }
+
+  // 6. Splide & Carousel Auto-Binder
+  function initSplides() {
+    if (typeof window.Splide !== 'undefined') {
+      var splides = document.querySelectorAll('.splide:not(.is-initialized)');
+      splides.forEach(function(s) {
+        try {
+          new window.Splide(s, {
+            type: 'loop',
+            perPage: 1,
+            autoplay: false,
+            pagination: true
+          }).mount();
+        } catch(e) {}
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      forceUnhide();
+      initSplides();
+    });
+  } else {
+    forceUnhide();
+    initSplides();
+  }
+  setTimeout(function() { forceUnhide(); initSplides(); }, 50);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 300);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 1000);
+})();
+</script>`;
+  }
+
+  /**
+   * Aplica correções completas em string HTML
+   */
+  static applyUniversalFixes(html, siteUrl = '') {
+    let result = html;
+
+    // A) Correção de URLs de CDN conhecidas como quebradas
+    result = result.replace(/https:\/\/cdn\.prod\.website-files\.com\/gsap\/3\.15\.0\/CustomEase\.min\.js/g, 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js');
+    result = result.replace(/https:\/\/cdn\.prod\.website-files\.com\/gsap\/3\.15\.0\/gsap\.min\.js/g, 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js');
+    result = result.replace(/https:\/\/cdn\.prod\.website-files\.com\/gsap\/3\.15\.0\/ScrollTrigger\.min\.js/g, 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js');
+    result = result.replace(/https:\/\/cdn\.prod\.website-files\.com\/gsap\/3\.15\.0\/Flip\.min\.js/g, 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js');
+    result = result.replace(/https:\/\/cdn\.jsdelivr\.net\/npm\/howler@2\.2\.4(?!\/dist)/g, 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js');
+
+    // B) Protege gsap.registerPlugin direto
+    result = result.replace(/gsap\.registerPlugin\(([^)]+)\);/g, (match, plugins) => {
+      return `if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
+        var _p = [${plugins}].filter(function(p) { return typeof p !== 'undefined'; });
+        if (_p.length > 0) gsap.registerPlugin.apply(gsap, _p);
+      }`;
+    });
+
+    // B.1) Remove regra destrutiva de Webflow w-mod-js
+    result = result.replace(/html\.w-mod-js:not\(\.w-mod-ix3\)[\s\S]*?\{visibility:\s*hidden\s*!important;\}/gi, '/* [Webflow w-mod-js unblocked] */');
+
+    // B.2) Desfragmenta DOM pré-dividido por SplitText
+    result = UniversalAssetNormalizer.cleanFragmentedDom(result);
+
+    // B.3) Remove estilos inline transientes gravados na extração
+    result = UniversalAssetNormalizer.cleanTransientStyles(result);
+
+    // C) Injeta universal-unlock-css no <head>
+    const unlockCss = UniversalAssetNormalizer.getUniversalUnlockCss();
+    if (!result.includes('id="universal-unlock-css"')) {
+      if (result.includes('</head>')) {
+        result = result.replace('</head>', `${unlockCss}\n</head>`);
+      } else {
+        result = `${unlockCss}\n${result}`;
+      }
+    } else {
+      result = result.replace(/<style id="universal-unlock-css">[\s\S]*?<\/style>/, unlockCss);
+    }
+
+    // D) Injeta polyfills de resiliência no <head>
+    const polyfills = UniversalAssetNormalizer.getUniversalResiliencePolyfills();
+    if (!result.includes('id="universal-resilience-polyfills"')) {
+      if (result.includes('</head>')) {
+        result = result.replace('</head>', `${polyfills}\n</head>`);
+      } else {
+        result = `${polyfills}\n${result}`;
+      }
+    } else {
+      result = result.replace(/<script id="universal-resilience-polyfills">[\s\S]*?<\/script>/, polyfills);
+    }
+
+    // E) Injeta UniversalScrollDirector antes do </body>
+    try {
+      const { UniversalScrollDirector } = require('./universal-scroll-director');
+      const directorScript = UniversalScrollDirector.generateScript();
+      if (!result.includes('id="universal-scroll-director"')) {
+        if (result.includes('</body>')) {
+          result = result.replace('</body>', `${directorScript}\n</body>`);
+        } else {
+          result = `${result}\n${directorScript}`;
+        }
+      } else {
+        result = result.replace(/<script id="universal-scroll-director">[\s\S]*?<\/script>/, directorScript);
+      }
+    } catch (e) {}
+
+    return result;
+  }
+
+  /**
+   * Limpa nós de texto fragmentados por SplitText no DOM original
+   */
+  static cleanFragmentedDom(html) {
+    if (!html || typeof html !== 'string') return html;
+    try {
+      const cheerio = require('cheerio');
+      const $ = cheerio.load(html, { decodeEntities: false });
+
+      // 1. Restaura textos originais e remove tags de fragmentação interna
+      $('p, h1, h2, h3, h4, h5, h6').each((i, el) => {
+        const ariaLabel = $(el).attr('aria-label');
+        if (ariaLabel && ariaLabel.trim()) {
+          $(el).text(ariaLabel.trim());
+        }
+        $(el).find('div[aria-hidden="true"]').remove();
+      });
+
+      // 2. Remove divs irmãs órfãs geradas por split de parágrafos
+      $('[class*="slide-text"], [class*="project-text"], [class*="heading"]').each((i, parent) => {
+        $(parent).find('> div[aria-hidden="true"]').remove();
+        $(parent).find('p:empty').remove();
+      });
+
+      return $.html();
+    } catch(e) {
+      return html;
+    }
+  }
+
+  /**
+   * Remove inline styles dinâmicos capturados durante a execução do Playwright
+   */
+  static cleanTransientStyles(html) {
+    if (!html || typeof html !== 'string') return html;
+    try {
+      const cheerio = require('cheerio');
+      const $ = cheerio.load(html, { decodeEntities: false });
+
+      // Remove mask-gradient transiente, clip-path e transforms de inicialização
+      $('[style*="--mask-gradient"], [style*="clip-path"], [style*="translate"], [style*="opacity"]').each((i, el) => {
+        const style = $(el).attr('style');
+        if (style) {
+          let cleanStyle = style
+            .replace(/--mask-gradient:[^;]+;?/gi, '')
+            .replace(/clip-path:[^;]+;?/gi, '')
+            .replace(/translate:[^;]+;?/gi, '')
+            .replace(/rotate:[^;]+;?/gi, '')
+            .replace(/scale:[^;]+;?/gi, '')
+            .trim();
+          
+          if (cleanStyle && cleanStyle !== ';') {
+            $(el).attr('style', cleanStyle);
+          } else {
+            $(el).removeAttr('style');
+          }
+        }
+      });
+
+      return $.html();
+    } catch(e) {
+      return html;
+    }
+  }
+
+  /**
+   * Executa a normalização completa de uma pasta de site
    */
   async normalizeAll() {
-    console.log('🧹 [UniversalAssetNormalizer] Iniciando saneamento global de assets e desbloqueio de visualização...');
+    console.log(`🧹 [UniversalAssetNormalizer] Iniciando saneamento global de assets e desbloqueio para: ${path.basename(this.siteDir)}`);
     
     // 1. Sincronizar arquivos no disco (espaços ⇄ %20)
     if (fs.existsSync(this.assetsDir)) {
@@ -45,13 +450,22 @@ class UniversalAssetNormalizer {
       this.linkExtractedBlobs();
     }
 
-    // 3. Sanitizar index.html e baixar assets remotos / Vercel images
+    // 3. Sanitizar index.html e todos os arquivos .html em sections/
+    const htmlFiles = [];
     const indexPath = path.join(this.siteDir, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      await this.sanitizeAndResolveHtml(indexPath);
+    if (fs.existsSync(indexPath)) htmlFiles.push(indexPath);
+
+    const sectionsDir = path.join(this.siteDir, 'sections');
+    if (fs.existsSync(sectionsDir)) {
+      const secEntries = fs.readdirSync(sectionsDir).filter(f => f.endsWith('.html'));
+      secEntries.forEach(f => htmlFiles.push(path.join(sectionsDir, f)));
     }
 
-    console.log('✅ [UniversalAssetNormalizer] Saneamento e desbloqueio concluídos com 100% de sucesso.');
+    for (const hFile of htmlFiles) {
+      await this.sanitizeAndResolveHtml(hFile);
+    }
+
+    console.log(`✅ [UniversalAssetNormalizer] Saneamento e desbloqueio concluídos para ${htmlFiles.length} arquivo(s) HTML.`);
   }
 
   /**
@@ -83,7 +497,7 @@ class UniversalAssetNormalizer {
   }
 
   /**
-   * Gera fallbacks para variantes de resolução (@2x, -1.5x) copiando o asset 1x se a variante não existir
+   * Gera fallbacks para variantes de resolução (@2x, -1.5x)
    */
   generateDensityFallbacks(dir) {
     if (!fs.existsSync(dir)) return;
@@ -94,7 +508,7 @@ class UniversalAssetNormalizer {
         this.generateDensityFallbacks(fullPath);
       } else {
         const ext = path.extname(entry.name);
-        if (['.webp', '.png', '.jpg', '.jpeg', '.gif'].includes(ext.toLowerCase())) {
+        if (['.webp', '.png', '.jpg', '.jpeg', '.gif', '.avif'].includes(ext.toLowerCase())) {
           const baseName = entry.name.slice(0, -ext.length);
           if (!baseName.includes('-1.5x') && !baseName.includes('@2x') && !baseName.includes('-2x')) {
             const f15 = path.join(dir, `${baseName}-1.5x${ext}`);
@@ -112,7 +526,7 @@ class UniversalAssetNormalizer {
   }
 
   /**
-   * Mapeia blobs binários da extração e salva cópias locais legíveis
+   * Mapeia blobs binários da extração
    */
   linkExtractedBlobs() {
     const manifestPath = path.join(this.extractionDir, 'extraction_manifest.json');
@@ -132,7 +546,7 @@ class UniversalAssetNormalizer {
   }
 
   /**
-   * Baixa um arquivo via HTTP/HTTPS de forma assíncrona
+   * Baixa um arquivo via HTTP/HTTPS
    */
   downloadFileAsync(url, destPath) {
     return new Promise((resolve) => {
@@ -142,7 +556,7 @@ class UniversalAssetNormalizer {
       fs.mkdirSync(path.dirname(destPath), { recursive: true });
       const client = url.startsWith('https') ? https : http;
       const file = fs.createWriteStream(destPath);
-      const req = client.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, res => {
+      const req = client.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0' } }, res => {
         if (res.statusCode !== 200) {
           file.close();
           if (fs.existsSync(destPath)) fs.unlinkSync(destPath);
@@ -159,7 +573,7 @@ class UniversalAssetNormalizer {
         if (fs.existsSync(destPath)) fs.unlinkSync(destPath);
         resolve(null);
       });
-      req.setTimeout(8000, () => {
+      req.setTimeout(12000, () => {
         req.destroy();
         file.close();
         if (fs.existsSync(destPath)) fs.unlinkSync(destPath);
@@ -169,74 +583,23 @@ class UniversalAssetNormalizer {
   }
 
   /**
-   * Sanitiza o HTML, baixa imagens do Vercel/Next e remove telas pretas
+   * Sanitiza o HTML, baixa imagens do Vercel/Next e Webflow CDN, e aplica correções universais
    */
   async sanitizeAndResolveHtml(filePath) {
     let html = fs.readFileSync(filePath, 'utf8');
 
-    // 1. DESBLOQUEIO DE TELA PRETA & OVERLAYS DE TRANSIÇÃO (ex: Storey, Nuxt, GSAP)
-    // Desativa #transition-overlay e cortinas pretas em z-index alto
-    html = html.replace(/<div[^>]*id="transition-overlay"[^>]*>/g, '<div id="transition-overlay" style="display:none !important; opacity:0 !important; pointer-events:none !important;">');
-    html = html.replace(/<div[^>]*data-cover[^>]*class="[^"]*bg-black[^"]*"[^>]*>/g, (m) => m.replace('opacity-100', 'opacity-0').replace('class="', 'style="display:none !important;" class="'));
+    // 1. Aplica correções estruturais universais (CSS, polyfills, scripts)
+    html = UniversalAssetNormalizer.applyUniversalFixes(html, this.siteUrl);
 
-    // 2. DESBLOQUEIO DE ELEMENTOS COM opacity-0 E SPLITTEXT INJETADOS POR SSR
-    // Injeta CSS universal de revelação e estabilização
-    const unlockCss = `<style id="universal-unlock-css">
-      #transition-overlay, [data-cover], .transition-curtain, .page-transition-overlay {
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        visibility: hidden !important;
-      }
-      /* Desbloqueia hero, navbar e containers principais */
-      body > div, #__nuxt, #__next, main, section, header, nav, .layout-grid {
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      /* Unmasking universal de SplitText e linhas de texto */
-      .appear-line-mask, [data-v-30d30ebe] .appear-line-mask {
-        overflow: visible !important;
-      }
-      .appear-line, [data-v-30d30ebe] .appear-line {
-        transform: translateY(0px) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      /* Navbar, CTAs e controles */
-      .fixed, header, button, [id*="cta"], .project-slider-progress-line {
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      /* Previne sobreposição fantasma de múltiplos slides em carrosséis absolutos */
-      .will-change-transform .relative > div:not(:first-child) {
-        display: none !important;
-      }
-      .will-change-transform .relative > div:first-child {
-        display: block !important;
-        opacity: 1 !important;
-      }
-      /* Garante que imagens e SVGs tenham renderização nítida */
-      img {
-        max-width: 100%;
-        content-visibility: visible;
-      }
-    </style>`;
+    const imagesToDownload = new Map();
 
-    if (!html.includes('id="universal-unlock-css"')) {
-      html = html.replace('</head>', `${unlockCss}\n</head>`);
-    } else {
-      html = html.replace(/<style id="universal-unlock-css">[\s\S]*?<\/style>/, unlockCss);
-    }
-
-    // 3. RESOLVER E BAIXAR IMAGENS VERCEL / NEXT.JS (/_vercel/image?url=... e /_next/image?url=...)
+    // 2. Resolver e baixar imagens Vercel / Next.js (/_vercel/image?url=... e /_next/image?url=...)
     const vercelImgRegex = /\/(?:_vercel|_next)\/image\?url=([^&"'\s]+)(?:&amp;|&)w=(\d+)(?:&amp;|&)q=(\d+)/g;
     let match;
-    const imagesToDownload = new Map();
 
     while ((match = vercelImgRegex.exec(html)) !== null) {
       const fullMatched = match[0];
       const encodedInnerUrl = match[1];
-      const width = match[2];
       const decodedInnerUrl = decodeURIComponent(encodedInnerUrl);
 
       let targetDownloadUrl = '';
@@ -247,11 +610,12 @@ class UniversalAssetNormalizer {
         const u = new URL(decodedInnerUrl);
         localRelativePath = `./assets/${u.hostname}${u.pathname}`;
       } else {
-        // Caminho relativo ao site original
         const cleanInner = decodedInnerUrl.startsWith('/') ? decodedInnerUrl : '/' + decodedInnerUrl;
         if (this.siteUrl) {
-          const origin = new URL(this.siteUrl).origin;
-          targetDownloadUrl = `${origin}${cleanInner}`;
+          try {
+            const origin = new URL(this.siteUrl).origin;
+            targetDownloadUrl = `${origin}${cleanInner}`;
+          } catch (e) {}
         }
         localRelativePath = `./assets${cleanInner}`;
       }
@@ -263,30 +627,47 @@ class UniversalAssetNormalizer {
       });
     }
 
-    console.log(`📥 [UniversalAssetNormalizer] Encontradas ${imagesToDownload.size} imagens Vercel/Next para download local...`);
+    // 2.1 Resolver e baixar assets de CDN do Webflow (cdn.prod.website-files.com)
+    const webflowCdnRegex = /https:\/\/cdn\.prod\.website-files\.com\/[^\s"'`()<>{}\\]+/g;
+    const webflowMatches = Array.from(new Set(html.match(webflowCdnRegex) || []));
 
-    // Baixa as imagens em paralelo com controle de concorrência
-    const downloadPromises = [];
-    for (const [matchedString, info] of imagesToDownload.entries()) {
-      if (info.remoteUrl) {
-        downloadPromises.push(
-          this.downloadFileAsync(info.remoteUrl, info.localDisk).then(saved => {
-            if (saved) {
-              console.log(`✅ [Asset Salvo] ${path.basename(info.localDisk)}`);
-            }
-          })
-        );
+    for (const rawUrl of webflowMatches) {
+      const cleanUrl = rawUrl.replace(/&amp;/g, '&');
+      try {
+        const u = new URL(cleanUrl);
+        let rawFileName = path.basename(u.pathname);
+        if (!rawFileName) rawFileName = 'asset';
+        const decodedFileName = decodeURIComponent(rawFileName);
+        const localRelPath = `./assets/${decodedFileName}`;
+        const localDiskPath = path.resolve(this.siteDir, 'assets', decodedFileName);
+
+        imagesToDownload.set(rawUrl, {
+          remoteUrl: cleanUrl,
+          localRel: localRelPath,
+          localDisk: localDiskPath
+        });
+      } catch (e) {}
+    }
+
+    if (imagesToDownload.size > 0) {
+      console.log(`📥 [UniversalAssetNormalizer] Baixando ${imagesToDownload.size} assets remotos em paralelo para ${path.basename(this.siteDir)}...`);
+      const downloadPromises = [];
+      for (const [matchedString, info] of imagesToDownload.entries()) {
+        if (info.remoteUrl) {
+          downloadPromises.push(
+            this.downloadFileAsync(info.remoteUrl, info.localDisk)
+          );
+        }
+      }
+      await Promise.all(downloadPromises);
+
+      for (const [matchedString, info] of imagesToDownload.entries()) {
+        const safeRel = info.localRel.replace(/\\/g, '/');
+        html = html.split(matchedString).join(safeRel);
       }
     }
-    await Promise.all(downloadPromises);
 
-    // Substitui as URLs no HTML
-    for (const [matchedString, info] of imagesToDownload.entries()) {
-      const safeRel = info.localRel.replace(/\\/g, '/');
-      html = html.split(matchedString).join(safeRel);
-    }
-
-    // 4. Converte placeholders data:image/png;base64 em src real se houver
+    // 3. Converte placeholders data:image/png;base64 em src real se houver
     html = html.replace(/<img([^>]*?)data-src="([^"]+)"([^>]*?)>/g, (m, p1, dataSrc, p2) => {
       if (m.includes('src="data:image/')) {
         let cleanDataSrc = dataSrc;
@@ -303,7 +684,7 @@ class UniversalAssetNormalizer {
       return m;
     });
 
-    // 5. Normaliza caminhos em atributos srcset
+    // 4. Normaliza caminhos em atributos srcset
     html = html.replace(/srcset="([^"]+)"/g, (m, srcsetVal) => {
       const parts = srcsetVal.split(',').map(item => {
         let trimmed = item.trim();
@@ -322,17 +703,6 @@ class UniversalAssetNormalizer {
       });
       return `srcset="${parts.join(', ')}"`;
     });
-
-    // 6. INJEÇÃO DO MOTOR UNIVERSAL DE ANIMAÇÃO & REVELAÇÃO (UniversalScrollDirector)
-    try {
-      const { UniversalScrollDirector } = require('./universal-scroll-director');
-      const directorScript = UniversalScrollDirector.generateScript();
-      if (!html.includes('id="universal-scroll-director"')) {
-        html = html.replace('</body>', `${directorScript}\n</body>`);
-      } else {
-        html = html.replace(/<script id="universal-scroll-director">[\s\S]*?<\/script>/, directorScript);
-      }
-    } catch (e) {}
 
     fs.writeFileSync(filePath, html, 'utf8');
   }

@@ -204,15 +204,24 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const box = await iframeEl.boundingBox();
       const src = await iframeEl.getAttribute('src') || '';
       const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
-      const hasNoSrc = !src || src === 'about:blank' || src.startsWith('javascript:');
-      if (box && box.width > 500 && box.height > 300 && !isVideo && !hasNoSrc) {
+      if (box && box.width > 500 && box.height > 300 && !isVideo) {
         const frame = await iframeEl.contentFrame();
         if (frame) {
           target = frame;
-          await frame.waitForLoadState('networkidle');
+          console.log(`ℹ️ [Site Cloner] Iframe de conteúdo detectado (${Math.round(box.width)}x${Math.round(box.height)}). Entrando no frame...`);
+          await frame.waitForLoadState('networkidle').catch(() => {});
+          await page.waitForTimeout(2000);
           break;
         }
       }
+    }
+
+    if (target !== page && !isIncremental) {
+      try {
+        const { autoScroll } = require('../utils/auto-scroll');
+        await autoScroll(target);
+        await page.waitForTimeout(1000);
+      } catch (e) {}
     }
 
     // Re-injetar templates se existirem
@@ -279,7 +288,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const scriptSrcs = Array.from(document.querySelectorAll('script[src]'))
         .filter(s => {
           const src = s.src || '';
-          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit');
+          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit') && !src.includes('_next/static/chunks/main') && !src.includes('_next/static/chunks/webpack') && !src.includes('_next/static/chunks/app/');
         })
         .map(s => ({
           src: s.src,
@@ -291,7 +300,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const inlineScripts = Array.from(document.querySelectorAll('script:not([src])'))
         .filter(s => {
           const t = s.textContent || '';
-          return t.length > 50 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__');
+          return t.length > 50 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__') && !t.includes('self.__next_f');
         })
         .map(s => ({
           content: s.textContent,
@@ -373,6 +382,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
         scriptSrcs,
         inlineScripts,
         sectionData,
+        htmlClasses: document.documentElement.className || '',
         bodyClasses: document.body.className,
         htmlLang: document.documentElement.lang || 'en',
         bodyHtml: bodyClone.innerHTML
@@ -476,46 +486,29 @@ async function cloneSite(rawUrl, customOptions = {}) {
       return `  <script${typeAttr}>${s.content}<\/script>`;
     }).join('\n');
 
-    const globalMocksHtml = `  <script>
-    window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
-    window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
-    window.dataLayer = window.dataLayer || [];
-    window.umami = window.umami || { track: () => {} };
-  <\/script>`;
-
-    const preloaderFailsafeHtml = `  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      setTimeout(function() {
-        document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded');
-        const invisibleElements = document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"], [style*="visibility: hidden"], [style*="visibility:hidden"], [style*="pointer-events: none"], [style*="pointer-events:none"]');
-        invisibleElements.forEach(el => {
-          if (el.style.opacity === "0") el.style.opacity = "";
-          if (el.style.visibility === "hidden") el.style.visibility = "";
-          if (el.style.pointerEvents === "none") el.style.pointerEvents = "";
-        });
-      }, 3000);
-    });
-  <\/script>`;
+    const { UniversalAssetNormalizer } = require('../pro/universal-asset-normalizer');
+    const universalUnlockCss = UniversalAssetNormalizer.getUniversalUnlockCss();
+    const universalPolyfills = UniversalAssetNormalizer.getUniversalResiliencePolyfills();
 
     // Salva cada seção
     result.sectionData.forEach((sec, i) => {
       const filename = `${String(i).padStart(2, '0')}_${sec.id}.html`;
       const sectionHtmlDoc = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Section - ${sec.id}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
-${globalMocksHtml}
+${universalUnlockCss}
+${universalPolyfills}
 </head>
 <body class="${result.bodyClasses}">
 ${sec.html}
 ${originalTemplatesHtml}
 ${scriptTagsHtml}
 ${inlineScriptsHtml}
-${preloaderFailsafeHtml}
 </body>
 </html>`;
       fs.writeFileSync(path.join(sectionsDir, filename), sectionHtmlDoc);
@@ -526,28 +519,39 @@ ${preloaderFailsafeHtml}
     }
 
     const cloneHtml = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clone - ${siteName}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
-${globalMocksHtml}
+${universalUnlockCss}
+${universalPolyfills}
 </head>
 <body class="${result.bodyClasses}">
 ${result.bodyHtml}
 ${originalTemplatesHtml}
 ${scriptTagsHtml}
 ${inlineScriptsHtml}
-${preloaderFailsafeHtml}
 </body>
 </html>`;
 
     const outputPath = path.join(siteFolder, 'index.html');
     fs.writeFileSync(outputPath, cloneHtml);
 
-    console.log(`✅ [Site Cloner] Clone salvo em: ${outputPath}`);
+    // Auto-executa a normalização profunda e o saneamento de assets/HTML
+    try {
+      const normalizer = new UniversalAssetNormalizer({
+        siteDir: siteFolder,
+        siteUrl: targetUrl
+      });
+      await normalizer.normalizeAll();
+    } catch (normErr) {
+      console.warn('⚠️ [Site Cloner] Alerta na pós-normalização automática:', normErr.message);
+    }
+
+    console.log(`✅ [Site Cloner] Clone salvo e desbloqueado em: ${outputPath}`);
     return {
       siteFolder,
       sectionsCount: result.sectionData.length,

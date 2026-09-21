@@ -105,10 +105,18 @@ export interface UIUXFeatures {
 }
 
 export interface PipelineResult {
+  status: 'completed';
+  statusPath: string;
+  stages: Array<{
+    name: string;
+    status: 'passed';
+    startedAt: string;
+    completedAt: string;
+  }>;
   masterFolder: string;
   siteInfo: SiteInfo;
-  dna?: DesignDNA;
-  uiUxData?: UIUXFeatures;
+  dna: DesignDNA | null;
+  uiUxData: UIUXFeatures | null;
 }
 
 /**
@@ -144,4 +152,14 @@ export function generateTailwindConfig(dna: DesignDNA, outputPath?: string | nul
 /**
  * Inicia o servidor HTTP de preview local para navegar pelas cópias e Studio Dashboard
  */
-export function startPreviewServer(options?: { port?: number; outputDir?: string }): any;
+export function startPreviewServer(options?: {
+  port?: number;
+  host?: string;
+  rootDir?: string;
+  outputDir?: string;
+  clientesDir?: string;
+  silent?: boolean;
+  enableMutations?: boolean;
+  mutationToken?: string;
+  maxBodyBytes?: number;
+}): any;

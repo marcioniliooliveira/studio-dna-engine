@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "PulseMed HealthTech — Telemedicina de Alta Precisão & Agendamento Digital",
+    "description": "Plataforma integrada de telemedicina, agendamento de consultas e prontuário digital com atendimento médico 24/7.",
+    "lang": "pt-BR"
+  },
+  "theme": {
+    "bgBase": "#030508",
+    "bgSurface": "#080c14",
+    "bgCard": "#0f172a",
+    "accent": "#38bdf8",
+    "textMain": "#f8fafc",
+    "textMuted": "#94a3b8"
+  },
+  "domReplacements": [
+    {
+      "selector": ".urbi-logo-header span, .logo-text",
+      "text": "PulseMed"
+    },
+    {
+      "selector": ".tag-text",
+      "text": "Telemedicina & Saúde Digital",
+      "budgetCheck": false
+    },
+    {
+      "selector": "#customers .text-15-caps",
+      "text": "CONFIADO POR LÍDERES DO SETOR DE SAÚDE",
+      "budgetCheck": false
+    },
+    {
+      "selector": "#text-1 .h1.info-txt",
+      "text": "45K+"
+    },
+    {
+      "selector": "#text-1 .text-18-regular",
+      "text": "atendimentos realizados com 98% de satisfação"
+    },
+    {
+      "selector": "#text-2 .h1.info-txt",
+      "text": "1.200+"
+    },
+    {
+      "selector": "#text-2 .text-18-regular",
+      "text": "médicos especialistas em mais de 30 áreas"
+    },
+    {
+      "selector": "#text-3 .h1.info-txt",
+      "text": "15 min"
+    },
+    {
+      "selector": "#text-3 .text-18-regular",
+      "text": "tempo médio para pronto atendimento digital"
+    }
+  ],
+  "lists": {
+    "navLinks": {
+      "parentSelector": ".nav-items",
+      "itemSelector": "a",
+      "items": [
+        {
+          "text": "Especialidades"
+        },
+        {
+          "text": "Corpo Clínico"
+        },
+        {
+          "text": "Telemedicina"
+        },
+        {
+          "text": "Planos & Convênios"
+        },
+        {
+          "text": "Agendar Consulta"
+        }
+      ]
+    }
+  }
+}

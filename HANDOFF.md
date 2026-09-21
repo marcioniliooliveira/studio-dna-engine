@@ -1,491 +1,229 @@
-# HANDOFF.md — DNA Lock System
-> **Studio DNA Engine · Session 2026-08-25**
-> Autor: FlashTech via Antigravity IDE
-> Commit: `feat: implementa sistema DNA Lock v1 — extrator automático, skill de enforcement e caso 03 D2C`
+# Handoff de Auditoria — `refactor/verified-production-pipeline`
+
+> Data da auditoria: 2026-08-28
+> Base revisada: `origin/main...5dbcfcb` (cinco commits)
+> Estado sustentado por evidência atual: `experimental`
+> Promoção para `verified` ou `production`: bloqueada pelos itens abaixo.
+
+## Escopo e preservação do checkout
+
+- O diff da branch contém 93 arquivos, com 31.679 inserções e 1.612 remoções.
+- Havia 132 exclusões locais pré-existentes, concentradas em três clientes. Elas não foram revisadas como parte dos commits da branch, não foram encenadas e não devem entrar neste commit.
+- A auditoria foi somente leitura no repositório. As reproduções que escrevem arquivos foram executadas em um checkout temporário criado a partir de `HEAD`.
+
+## Evidências executadas
+
+| Comando/cenário | Resultado observado |
+|---|---|
+| `npm ci && npm test` em checkout limpo de `HEAD` | 42/43 testes passaram; `test/vault-integrity.test.js` falhou. |
+| `node scripts/audit-syntax.js` | 58/58 arquivos no escopo do script sem erro de sintaxe. O script não cobre todo o runtime e não falha o processo se encontrar erros. |
+| `npm audit --omit=dev` | Nenhuma vulnerabilidade conhecida reportada na execução. |
+| `node scripts/build-and-certify-pilot.js` em checkout limpo | Quality Gate falhou: 21 respostas 404 e 24 imagens quebradas. O processo terminou com código 0. |
+| Fixture do `UnifiedQualityGate` com `console.error` e CSS 404 | Retornou `status: "verified"`, embora o gate de rede estivesse reprovado. |
+| Preview de fixture HTML de 84 bytes | O servidor respondeu 38.738 bytes por injetar normalizador e Dev HUD; preview não avalia o mesmo artefato que o QA estático. |
+
+## Bloqueadores de promoção
+
+### 1. Checkout limpo não passa a suíte declarada
+
+`design-vault/INDEX.json` declara `tokens.json`, `tailwind.config.js` e `brand-spec.template.json` para os templates, mas os arquivos não existem em `HEAD`. Os mesmos tipos de artefato são ignorados em `.gitignore`.
+
+- Evidência de código: `design-vault/INDEX.json`, `.gitignore`, `test/vault-integrity.test.js`.
+- Impacto: contradiz o claim de 43/43 e invalida a reprodutibilidade do CI.
+- Próxima ação: versionar os inputs obrigatórios ou removê-los do índice e do contrato; incluir teste de checkout limpo na CI.
+
+### 2. A CI não instala o browser exigido por Playwright
+
+`.github/workflows/ci.yml` executa `npm ci` e `npm test`, mas não instala Chromium. Com `PLAYWRIGHT_BROWSERS_PATH` apontando para um diretório inexistente, os dois testes de `UnifiedQualityGate` falham antes das asserções.
+
+- Impacto: o workflow não reproduz a suíte num runner limpo.
+- Próxima ação: instalar explicitamente o browser no workflow ou usar imagem imutável que já o contenha e registrar essa condição.
+
+### 3. O piloto não é reproduzível e o certificador não falha o processo
+
+O build do piloto depende de mídias locais que não estão versionadas. Em checkout limpo, o `UnifiedQualityGate` encontrou 21 falhas de rede e 24 imagens quebradas. Mesmo assim, `scripts/build-and-certify-pilot.js` apenas imprime o resultado e retorna exit code 0.
+
+- Impacto: um job pode aparentar sucesso com artefato reprovado.
+- Próxima ação: versionar ou fornecer por artifact store todos os assets do bundle; hashear o bundle inteiro; lançar erro e definir exit code não zero se qualquer gate falhar.
+
+### 4. O Quality Gate emite falso `verified`
+
+`src/qa/unified-quality-gate.js` registra `networkFailures`, mas não as inclui na expressão de `passed`. Ele também escuta `pageerror`, não `console`, e não captura `requestfailed`.
+
+- Impacto: 404, erros de console e falhas de transporte podem coexistir com `status: "verified"`.
+- Próxima ação: tornar todos os gates obrigatórios na decisão final; adicionar regressões negativas isoladas para rede, console, navegação e imagens.
+
+### 5. Preview, QA e produção não usam o mesmo artefato imutável
+
+O preview altera o HTML no momento da resposta ao aplicar `UniversalAssetNormalizer` e `injectDevHud`; o QA serve o arquivo estático bruto. O manifesto hasheia apenas HTML, não assets, screenshot ou configuração de execução. Em Windows, o HTML materializado também diverge do blob por EOL, sem `.gitattributes` que fixe a política.
+
+- Impacto: o relatório de QA não prova o conteúdo servido no preview nem um bundle promocionável.
+- Próxima ação: construir bundle content-addressed com hash de todos os arquivos; verificar o hash antes do QA; desligar mutações de preview no caminho de certificação.
+
+### 6. ICM e Anti-Slop não garantem o isolamento alegado
+
+`ContextRouter` permite acesso quando `activeClientSlug` ou `selectedRefSlug` não são fornecidos e o contrato do estágio 04 rejeita até o caminho do próprio cliente por esperar literalmente `clientes/active-client/`. O certificador não chama `ContextRouter` nem `STAGE_CONTRACTS`.
+
+O Anti-Slop Gate não usa `brandSpec` e o piloto aprovado mantém resíduos da referência, incluindo e-mail, endereço, telefone e crédito externo. A página também contém SEO genérico e dados fictícios por incompatibilidade entre `compositionSpec` e `SeoInjector`.
+
+- Impacto: isolamento de contexto, DNA Lock, SEO e ausência de resíduos não estão demonstrados pelo fluxo real.
+- Próxima ação: exigir slugs/ref válidos e contenção de paths, integrar contratos no orquestrador, derivar inventário de resíduos da referência e validar o HTML/metadata final.
+
+## Riscos de segurança e integridade a corrigir antes de exposição
+
+1. `UniversalAssetNormalizer` aceita URLs presentes no HTML sem passar pela validação central e resolve alguns destinos sem contenção dentro de `assets/`.
+2. O fallback de assets do preview escolhe cliente pelo header `Referer`; a reprodução retornou asset do cliente B para uma requisição do cliente A.
+3. O preview executa scripts clonados no mesmo origin das APIs e do dashboard, sem CSP/sandbox.
+4. O preview permite `host: "0.0.0.0"`, apesar do claim de bind estritamente local.
+5. O Self-Healing Proxy grava assets em GETs sem autorização explícita e o `UniversalScrollDirector` transforma falhas de `fetch` em respostas 200 fabricadas.
+
+## Controles positivos observados
+
+- `package-lock.json` está versionado.
+- `npm audit --omit=dev` não reportou vulnerabilidades conhecidas nesta execução.
+- Os testes focados de path traversal, CORS, corpo de requisição e autenticação de mutações passaram.
+- O preview usa `127.0.0.1` por padrão e as APIs mutáveis requerem token quando habilitadas.
+
+Esses controles não compensam os bloqueadores de certificação, isolamento e artefato acima.
+
+## Ordem recomendada de recuperação
+
+1. Suspender os claims `verified` do piloto e atualizar `PROJECT_STATUS.md` para refletir a evidência atual.
+2. Fazer `npm test` passar em checkout limpo e restaurar instalação verificável do Chromium na CI.
+3. Corrigir o certificador para falhar o processo e incluir todos os gates no resultado.
+4. Versionar ou publicar bundle completo de assets e gerar manifesto de bundle imutável.
+5. Integrar ICM/DNA/Anti-Slop ao orquestrador real, com schemas únicos e testes de integração do piloto.
+6. Separar origens de conteúdo clonado e APIs, remover mocks globais e restringir os fluxos de download.
+
+## Verificações mínimas antes de nova promoção
+
+```powershell
+npm ci
+npx playwright install --with-deps chromium
+npm test
+node scripts/build-and-certify-pilot.js
+```
+
+O último comando deve encerrar com código diferente de zero para qualquer reprovação e produzir um relatório cujo manifesto corresponda ao bundle efetivamente auditado.
+
+## Revisão externa
+
+CodeRabbit não foi incluído como evidência: o CLI instalado no WSL retornou `not_authenticated`. Uma revisão externa exige autenticação explícita antes de rodar o comando de review.
 
 ---
 
-## 📋 Sumário Executivo
+## 🚀 Handoff: Cópia e Extração Likova Space (`copias/likova-space/`)
 
-Nesta sessão foi diagnosticado e resolvido um problema estrutural de **ambiguidade semântica** que causava o ciclo:
+> **Data do Handoff:** 18/09/2026  
+> **Branch de Trabalho:** `feature/clone-likova-portfolio`  
+> **URL de Origem:** [https://likova.space/](https://likova.space/)  
+> **Status:** Concluído, auditado e catalogado como evidência imutável.
 
-```
-Prompt com referência → AI Slop → Correção → Cópia Quebrada → Loop
-```
+### 1. Intenções e Propósito Estratégico do Scrape
+- **Objetivo Principal:** O site [https://likova.space/](https://likova.space/) foi clonado e processado pelo **Studio DNA PRO** para servir como **esqueleto de referência arquitetural, visual e cinemático de alto padrão (Awwwards)** para o futuro **Portfólio Profissional de Desenvolvedor Web** do usuário.
+- **Diretriz de Imutabilidade (MANDATÓRIA):** Nenhuma alteração de texto, cor ou branding foi (ou deve ser) aplicada sobre a referência em `copias/likova-space/`. O clone deve ser rigorosamente mantido como evidência pura e intocada (`read-only`), conforme o protocolo ICM (*Interpretable Context Methodology*).
+- **Alinhamento Futuro:** A personalização do portfólio (nome, bio, cases reais, especialidades e serviços) será alinhada e transmutada futuramente em uma pasta de cliente isolada (`clientes/webdev-portfolio/`), sem contaminar o esqueleto original.
 
-A solução não foi melhorar o prompting manual — foi **eliminar a ambiguidade antes do prompt chegar à IA**, via um sistema de 3 camadas chamado **DNA Lock**.
+### 2. O que foi Extraído e Validado
+1. **Pipeline Completo do Engine:**
+   - 9 estágios executados com sucesso (`PIPELINE_STATUS.json`): detecção de tipo, download de assets e mídias em alta resolução, saneamento de paths locais, extração de tokens de design, styleguide visual, mapeamento de particularidades de UI/UX, master spec, manifesto de assets e catálogo de prompts de IA.
+2. **Tokens Compilados no Design Vault:**
+   - Pasta: `design-vault/likova-space/`
+   - `tokens.json`: 49 variáveis de cores e 9 famílias de fontes.
+   - `tailwind.config.js`: Preset utilitário completo com a identidade do site.
+   - `brand-spec.template.json`: Template base pronto para orquestrar a futura transmutação determinística.
+3. **Quality Gate & Linter Headless:**
+   - Auditoria via `scripts/box-diff-linter.js` aprovada com **0 erros de runtime em JavaScript** (Barba.js wrapper e ServiceWorker resolvidos).
+   - 19 seções estruturais mapeadas com precisão geométrica.
+4. **Preview Local Ativo:**
+   - Visualizável em `http://localhost:4000/copias/likova-space/site/index.html`.
 
----
-
-## 🔍 Diagnóstico — Root Cause Analysis
-
-### O Problema
-
-Ao tentar criar projetos usando tokens e estrutura de referência, a IA alternava entre dois falhas:
-
-1. **AI Slop**: ignora a referência e gera output genérico
-2. **Cópia Quebrada**: após correção, replica mecanicamente a estrutura sem adaptar lógica
-
-### As 4 Falhas Estruturais Identificadas
-
-| Camada | Falha | Efeito Observado |
-|--------|-------|-----------------|
-| **Semântica** | Token sem justificativa vinculada | IA substitui `#00F0FF` por "qualquer cyan bonito" |
-| **Hierarquia** | Múltiplas fontes sem P0/P1/P2 | Agente usa suas próprias regras sobre as do projeto |
-| **Memória** | MEMORY.md sem decisões por projeto | Cada sessão recomeça do zero |
-| **Prompt** | Domínio + implementação num único passo | IA colapsa constraints sob pressão de coerência |
-
-### O Ciclo de Corrective Overfitting
-
-Sem saber *o que especificamente* estava errado, a IA corrige tudo simultaneamente ao receber feedback — domínio, estilo, estrutura — quebrando o que já estava correto.
-
-**Solução**: tornar o domínio de invariância **explícito e verificável** em vez de implícito no contexto.
-
----
-
-## 🏗️ O Sistema DNA Lock — Arquitetura
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  CAMADA 1: dna-extractor.js (scripts/)                  │
-│  Lê HTML/CSS → classifica tokens P0/P1/P2               │
-│  Cruza com ESTRUTURA_ANALITICA.md                       │
-│  Gera DNA.md automaticamente                            │
-├─────────────────────────────────────────────────────────┤
-│  CAMADA 2: DNA.md (por projeto)                         │
-│  Declara invariantes e variáveis explicitamente         │
-│  Vincula cada token à sua justificativa de negócio      │
-│  Define hierarquia P0 > P1 > P2 > P3                    │
-├─────────────────────────────────────────────────────────┤
-│  CAMADA 3: dna-lock skill (.agents/skills/dna-lock/)    │
-│  Enforcement no agente                                  │
-│  Força declaração de invariantes antes de qualquer código│
-│  Protocolo de override consciente com confirmação       │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Hierarquia de Decisão
-
-```
-P0 (DNA.md do projeto)     → INEGOCIÁVEL
-P1 (ESTRUTURA_ANALITICA)   → Metodologia de conversão FlashTech
-P2 (frontend-specialist)   → Preferências do agente
-P3 (preferência estética)  → Mais baixa prioridade
-```
-
-**Conflito entre camadas → camada MAIS ALTA sempre vence.**
+### 3. Roadmap para a Futura Transmutação (Próximos Passos)
+Quando o usuário decidir avançar para a construção do portfólio:
+1. **Definição de Conteúdo e Identidade:**
+   - Coletar dados profissionais do desenvolvedor (nome/estúdio, bio de alto impacto, links de redes/GitHub).
+   - Mapear os serviços principais (ex: Engenharia Frontend de Alto Padrão, Animações Awwwards/GSAP, Aplicações Web Next.js/React, Arquitetura Full-Stack).
+   - Selecionar projetos e repositórios reais para preencher os blocos de showcase e modais de detalhe.
+2. **Setup do Cliente ICM:**
+   - Criar `clientes/webdev-portfolio/` com seu próprio `DNA.md` e `brand-spec.json`.
+   - Declarar invariantes P0/P1 via protocolo `dna-lock`.
+3. **Dual-Version Delivery (Padrão do Projeto):**
+   - **Versão 1 (HTML Estático):** Versão ultrarrápida, sem build overhead, pronta para deploy instantâneo ou CDN.
+   - **Versão 2 (Next.js App Router):** Versão modular com TypeScript, componentes React limpos, Tailwind e Framer Motion/GSAP para máxima manutenibilidade.
 
 ---
 
-## 📦 Arquivos Criados/Modificados
+## Handoff: apresentações imobiliárias Integrii e Silvio Iwata
 
-### Novos Arquivos
+> Atualizado em: 2026-09-21
+> Branch: `feature/clone-likova-portfolio`
+> Estado do escopo: entregue como demonstração estática offline; não representa inventário, envio de leads, mapa ao vivo ou integração de atendimento.
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `scripts/dna-extractor.js` | CLI para extração e auditoria de tokens |
-| `clientes/flashtech-caso-03-d2c/DNA.md` | Lock do caso 03 D2C |
-| `.agents/skills/dna-lock/SKILL.md` | Skill de enforcement para agentes |
-| `clientes/flashtech-caso-03-d2c/site/index.html` | Rebuild D2C — APEX product page |
-| `clientes/flashtech-caso-03-d2c/site/index.html.bak` | Backup do clone Ciao Energy original |
-| `HANDOFF.md` | Este documento |
+### Objetivo aprovado
 
-### Arquivos Modificados
+Foram construídas duas apresentações independentes para conversa com leads imobiliários:
 
-| Arquivo | Mudança |
-|---------|---------|
-| `.agents/agent/frontend-specialist.md` | `+dna-lock` no frontmatter `skills:` |
-| `.agents/memory/MEMORY.md` | Decisões do DNA Lock e caso 03 persistidas |
+- `clientes/integrii-imoveis/site/`: adaptação consciente da hero de 21 Oaks, com comprar/alugar/investir, troca de imagem, reveal circular desktop, fallback leve no mobile, thumbnails, progresso, autoplay pausável e rota intermediária de atendimento.
+- `clientes/silvio-iwata-imobiliaria/site/`: adaptação 50/50 de Aircenter e 21 Oaks, com hero sticky, parallax nativo, reveals por seção, rail de progresso, contador, mapa estático de Maringá/região, slider e rota intermediária de atendimento.
 
----
+Cada cliente possui `content-slots.json` e `composition-spec.json` isolados. As imagens são SVGs locais demonstrativos porque não foi autorizada fotografia de imóvel. Todos os cards, propriedades e condições deixam claro o caráter demonstrativo; não há backend, coleta, envio ou confirmação fictícia de lead.
 
-## 🛠️ Como Usar o DNA Extractor
+### Decisões de identidade e isolamento
 
-### Gerar DNA.md para um novo projeto
+- A solicitação do usuário substitui explicitamente os blocos FlashTech adicionados pelos manifestos de DNA gerados. Os runtimes usam somente a identidade observada de cada lead: azul naval da Integrii e verde/lima da Silvio Iwata.
+- Nenhum runtime de cliente possui URL externa, CDN, `fetch`, analíticos, SDK de mapa ou token/termo FlashTech. A conferência final por `rg` encontrou zero ocorrências proibidas.
+- As famílias tipográficas permanecem como preferência CSS com fallback de sistema; nenhuma fonte remota foi importada. Isso preserva o requisito offline e evita uma dependência de licença não fornecida.
+- `copias/21oaks-org` e `copias/aircenter-space` foram usados apenas como evidência de referência e não foram modificados.
 
-```bash
-node scripts/dna-extractor.js \
-  --project clientes/<projeto> \
-  --ref clientes/flashtech-caso-02-ecommerce \
-  --metodologia "path/to/ESTRUTURA_ANALITICA.md" \
-  --dossie 3
-```
+### Processo de comparação com as referências
 
-**Output**: `clientes/<projeto>/DNA.md` gerado automaticamente.
+1. **Mapeamento de fonte.** Foram lidos os trechos funcionais, não apenas o visual: 21 Oaks usa hero com `bg-current`/`bg-next`, três thumbnails, estado `data-hero-slide`, timeline GSAP, `clipPath` circular, preload e autoplay em `copias/21oaks-org/site/index.html` nas faixas 1445, 2838–3160 e 3564–3618. Aircenter usa 11 seções de scroll, camadas sticky/parallax, reveal, contadores, mapa e slider em `copias/aircenter-space/site/index.html` nas faixas 306–641, 903–975 e 1242–1326.
+2. **Mapeamento de comportamento.** A Integrii implementa o mesmo eixo de estado para imagem, copy, CTA, thumbnail e progresso em `site/interaction.js`; a CSS aplica `clip-path: circle(...)` no desktop e opacidade/translação no mobile. A Silvio usa `IntersectionObserver` para ativação de seções e `requestAnimationFrame` para atualizar as variáveis de parallax, sem copiar runtimes remotos.
+3. **Execução empírica.** As referências foram abertas por um servidor local temporário. 21 Oaks expôs três thumbnails e as camadas `bg-current`/`bg-next`, mas falhou o carregamento de `webflow.achunk.22b66e874d42861f.js`; o clique de thumbnail não completou a troca nesse ambiente. Aircenter expôs 11 seções e parallax/reveal com transform observado, mas emitiu 48 requests externos. Portanto, a equivalência foi julgada pela estrutura e comportamento observável, não por dependências externas quebradas.
+4. **Testes de paridade.** Os testes de navegador verificam: troca sincronizada de imagem/copy/CTA/progresso, thumbnails, pausa explícita do autoplay, `prefers-reduced-motion`, rota dos três intents, rota dos três cards, rail de seção da Silvio, slider, mapa visível, overflow horizontal e bloqueio de requests não locais.
+5. **Inspeção visual.** Foram capturadas e avaliadas as primeiras dobras nos viewports 1440×977 e 390×844 de ambos os sites. A hierarquia, CTA, imagem demonstrativa, navegação e controles permaneceram visíveis; o suite também cobre 1024×900.
 
-### Auditar HTML contra tokens P0
+### Matriz de fidelidade e desvios conscientes
 
-```bash
-node scripts/dna-extractor.js --audit clientes/<projeto>/site/index.html
-```
+| Referência | Mantido e testado | Não reproduzido intencionalmente | Razão |
+|---|---|---|---|
+| 21 Oaks → Integrii | Hero em camadas, reveal circular, três escolhas, thumbnails, progresso, autoplay pausável, troca por CTA e mobile simplificado | Zonas de ambiente em SVG, slider de brilho, conteúdo/arte de moradia estudantil | As zonas e controles descrevem ambientes da referência e não agregam ao funil imobiliário aprovado; os SVGs locais passam a cumprir a função visual sem reutilizar assets de terceiros. |
+| Aircenter → Silvio | Hero sticky, narrativa por scroll, parallax, reveal, contador, rail, mapa e slider | Vimeo de fundo, WebGL carousel, mapa interativo, formulário/POST e SDKs externos | A apresentação deve operar offline, com mapa estático e sem backend. Esses recursos exigiriam mídia, licenças, APIs ou integração ainda não autorizados. |
 
-**Output esperado**: `✅ 0 violações de P0 tokens detectadas.`
+O custo conhecido desses desvios é uma experiência menos cinematográfica/fotorealista que as referências. A compensação é fidelidade de fluxo, isolamento de marca, transparência de demo e operação offline verificável.
 
-### Validar projeto existente (DNA.md já existe)
+### Arquivos e commits relevantes
 
-```bash
-node scripts/dna-extractor.js --validate --project clientes/<projeto>
-```
+- Especificação: `docs/superpowers/specs/2026-09-21-real-estate-lead-presentations-design.md` (`4098d09`).
+- Plano executável: `docs/superpowers/plans/2026-09-21-real-estate-lead-presentations.md` (`59872d1`).
+- Contratos, placas locais e duas experiências: `cc0a53a`, `2909325`, `4e4b140`, `7e902ea`.
+- QA de browser e rotas: `d081430`, `b428ed8`.
+- Ajustes de acessibilidade e affordances da referência: `62cb405`.
+- Testes adicionados: `test/real-estate-demos.test.js` e `test/real-estate-demos.browser.test.js`.
 
-### Override consciente (alterar P0 com razão explícita)
+### Evidência de validação atual
 
-```bash
-node scripts/dna-extractor.js --project clientes/<projeto> --override-dna
-# Permite regenerar DNA.md sobrescrevendo o existente
-```
+| Verificação | Resultado observado |
+|---|---|
+| `node --test test/real-estate-demos.test.js test/real-estate-demos.browser.test.js` | 8/8 passaram. |
+| Navegador local | Fluxos verificados em 1440×977, 1024×900 e 390×844; reduced-motion e requests locais cobertos. |
+| `git diff --check 4098d09..HEAD` | Sem erro de whitespace. |
+| Scan de resíduos externos/FlashTech | Zero ocorrências nos diretórios dos dois clientes. |
+| `npm.cmd test` | 58/59 passaram; falha fora deste escopo em `test/vault-integrity.test.js:27`, pois falta `design-vault/elyse-residence-dev-webflow-io/tokens.json`. |
 
----
+Os auditores heurísticos de UX devem ser interpretados com cautela aqui: um deles classificou o atributo `data-autoplay-toggle` como mídia autoplay sem mudo, embora não exista elemento de mídia; outro reportou scroll sem throttling apesar do uso de `requestAnimationFrame`. Os testes de browser e a inspeção visual são a evidência dominante para estes pontos.
 
-## 🧬 Tokens P0 Canônicos FlashTech
+### Próximos passos de execução
 
-Estes são os invariantes de identidade da marca. **Nunca alterar sem DNA Override aprovado.**
+1. Receber autorização e ativos imobiliários reais do lead; substituir apenas os SVGs demonstrativos pelos assets aprovados, adicionando dimensões, `loading="lazy"` abaixo da dobra e descrições finais.
+2. Validar a copy e os dados públicos de cada lead antes de remover qualquer rótulo de demonstração. Não publicar preços, disponibilidade, depoimentos, rentabilidade ou métricas sem fonte aprovada.
+3. Se uma integração de atendimento for aprovada, definir destino, consentimento, backend e mensagem de sucesso real; só então substituir a rota intermediária estática.
+4. Se mapa vivo, vídeo ou WebGL forem desejados, obter permissão de asset/licença e revisar o requisito offline antes de incluí-los.
+5. Resolver separadamente a falha global do Design Vault; ela não deve ser mascarada como falha dos demos.
 
-| Token | Hex | Papel | Justificativa |
-|-------|-----|-------|---------------|
-| `obsidian` | `#02040A` | Background base | Von Restorff: alto contraste para isolamento do CTA |
-| `cyan` | `#00F0FF` | CTA exclusivo | Von Restorff: grava conversão na memória curto prazo |
-| `blue` | `#0072FF` | Gradiente mid | Identidade do span `#64CEFB→#0072FF→#00F0FF` |
-| `cyanLight` | `#64CEFB` | Gradiente start | Identidade FlashTech — início do gradiente de marca |
+### Retomada segura
 
-**Regra crítica**: o gradiente FlashTech aparece **SOMENTE** no CTA primário e na seção de garantia. Em nenhum outro elemento.
-
----
-
-## 🧪 TESTES PARA EXECUTAR — Backlog de Otimização
-
-> Este é o backlog de testes e melhorias identificados durante o desenvolvimento.
-> Execute em ordem de prioridade.
-
----
-
-### 🔴 PRIORIDADE ALTA — Detecção de Tokens
-
-#### TESTE-D01: Detecção de CSS Variables Aninhadas
-
-**Problema**: o extrator resolve `--ft-cyan: #00F0FF` mas **não resolve** variáveis que referenciam outras variáveis:
-
-```css
-/* Caso problemático — não detectado atualmente */
-:root {
-  --color-primary: #00F0FF;
-  --cta-color: var(--color-primary); /* ← não resolvido */
-}
-```
-
-**Teste**:
-1. Criar HTML com `--cta-color: var(--color-primary)` onde `--color-primary: #00F0FF`
-2. Rodar: `node scripts/dna-extractor.js --audit <arquivo>`
-3. **Esperado atual**: reporta `#00F0FF` como ausente (falso negativo)
-4. **Esperado após fix**: resolve a cadeia de variáveis e detecta `#00F0FF`
-
-**Fix sugerido**: implementar multi-pass resolution no `extractTokensFromHTML` — percorrer o `cssVarMap` e resolver referências `var(--x)` recursivamente.
-
----
-
-#### TESTE-D02: Detecção em Tailwind Config (JavaScript)
-
-**Problema**: tokens definidos no bloco `tailwind.config = { theme: { colors: { flashtech: { cyan: '#00F0FF' } } } }` não são capturados pelo regex atual de CSS vars.
-
-**Teste**:
-```html
-<script>
-  tailwind.config = {
-    theme: { extend: { colors: { flashtech: { cyan: '#00F0FF', obsidian: '#02040A' } } } }
-  }
-</script>
-```
-1. Rodar: `node scripts/dna-extractor.js --audit <arquivo>`
-2. **Esperado atual**: pode não detectar (depende do regex de colorFreq)
-3. **Verificar**: se hits include `#00F0FF` e `#02040A`
-
-**Fix sugerido**: adicionar extração específica de blocos `tailwind.config` via regex `colors:\s*\{([\s\S]*?)\}` com busca de hex dentro.
-
----
-
-#### TESTE-D03: Tolerância de Distância de Cor (Threshold 15)
-
-**Problema**: threshold de distância Euclidiana RGB de 15 pode causar falsos positivos com cores próximas mas semanticamente diferentes.
-
-**Teste de limiar**:
-```
-#00F0FF (P0 cyan)     vs   #00E8FF → distância ~8  → deve ser P0 match? Talvez falso positivo.
-#00F0FF               vs   #00D0FF → distância ~20  → deve ser P1 (diferente intencional)
-#02040A (P0 obsidian) vs   #030610 → distância ~5   → deve ser P0 match ✓
-```
-
-**Como executar**:
-```bash
-node -e "
-const d = (h1,h2) => {
-  const t = h => { const c=h.replace('#',''); return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)]; };
-  const [r1,g1,b1]=t(h1); const [r2,g2,b2]=t(h2);
-  return Math.sqrt((r1-r2)**2+(g1-g2)**2+(b1-b2)**2).toFixed(2);
-};
-console.log('#00F0FF vs #00E8FF:', d('#00F0FF','#00E8FF'));
-console.log('#00F0FF vs #00D0FF:', d('#00F0FF','#00D0FF'));
-console.log('#00F0FF vs #00CCFF:', d('#00F0FF','#00CCFF'));
-console.log('#02040A vs #030610:', d('#02040A','#030610'));
-"
-```
-
-**Decisão a tomar**: ajustar threshold por token (cores escuras toleram mais, cores de conversão toleram menos).
-
----
-
-#### TESTE-D04: Detecção de CTA Count por Fold
-
-**Problema**: a contagem de CTAs no extrator usa regex simplificado e pode não detectar CTAs implícitos (elementos `<a>` sem classe explícita que funcionam como CTA primário).
-
-**Teste**:
-```html
-<!-- CTA via classe explícita — detectado -->
-<a class="btn-cta" href="#">Comprar</a>
-
-<!-- CTA via atributo data — não detectado atualmente -->
-<a data-role="cta" href="#">Comprar</a>
-
-<!-- CTA via botão submit — parcialmente detectado -->
-<button type="submit">Comprar</button>
-```
-
-**Como testar**: criar HTML com os 3 padrões, auditar, verificar `ctaCount` reportado.
-
----
-
-#### TESTE-D05: Fontes via `@import` e CSS externo
-
-**Problema**: fontes carregadas via `@import url(...)` no CSS não são detectadas pela regex `family=([A-Za-z+]+)` que busca apenas no Google Fonts URL format.
-
-**Teste**:
-```html
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@900');
-</style>
-```
-
-**Verificar**: se `Archivo` aparece no set de fontes detectadas.
-
----
-
-### 🟡 PRIORIDADE MÉDIA — Qualidade do DNA.md Gerado
-
-#### TESTE-G01: DNA.md com Projeto Sem HTML
-
-**Cenário**: novo projeto sem index.html ainda criado.
-
-```bash
-mkdir -p clientes/test-vazio/site
-node scripts/dna-extractor.js --project clientes/test-vazio --dossie 3
-```
-
-**Esperado**: DNA.md gerado com apenas P0 canônicos marcados como `⚠️ AUSENTE`, sem crash.
-**Verificar**: o aviso "Nenhum index.html encontrado" é exibido corretamente.
-
----
-
-#### TESTE-G02: Regeneração com `--override-dna` Preserva Backup
-
-```bash
-# Gerar initial
-node scripts/dna-extractor.js --project clientes/flashtech-caso-03-d2c --dossie 3
-# Regenerar com override
-node scripts/dna-extractor.js --project clientes/flashtech-caso-03-d2c --dossie 3 --override-dna
-```
-
-**Verificar**: `DNA.md.bak` foi criado antes da sobrescrita.
-
----
-
-#### TESTE-G03: Compatibilidade com Caso 02 (E-commerce)
-
-```bash
-node scripts/dna-extractor.js \
-  --project clientes/flashtech-caso-02-ecommerce \
-  --dossie 2
-
-node scripts/dna-extractor.js --audit clientes/flashtech-caso-02-ecommerce/site/index.html
-```
-
-**Esperado**: 
-- P0 matches: `#02040A`, `#00F0FF` (presentes como tokens FlashTech no Tailwind config)
-- P1 candidates: `#ea580c` (trail.orange — variável de marca NorthTrail)
-- 0 violações ou lista de violações válidas e explicadas
-
-**Atenção**: o caso 02 tem dois sistemas de cor coexistindo (FlashTech + NorthTrail). O extrator deve classificar corretamente sem falsos P0 violations.
-
----
-
-#### TESTE-G04: Detecção de Metodologia por Dossiê
-
-```bash
-# Testar extração correta do dossiê certo
-node scripts/dna-extractor.js \
-  --project clientes/flashtech-caso-03-d2c \
-  --metodologia "C:/Users/USER/Documents/flashtech/portifolio flashtech/ESTRUTURA_ANALITICA_METODOLOGIAS_CONVERSAO.md" \
-  --dossie 3
-```
-
-**Verificar no DNA.md gerado**: a seção de metodologia contém apenas o Dossiê 03, não informações dos outros dossiês.
-
----
-
-### 🟢 PRIORIDADE BAIXA — Expansão de Funcionalidades
-
-#### TESTE-E01: Modo Watch (Auditoria Contínua)
-
-**Feature não implementada**: modo `--watch` que audita automaticamente ao salvar o arquivo.
-
-```bash
-# Feature proposta (não existe ainda)
-node scripts/dna-extractor.js --watch clientes/flashtech-caso-03-d2c/site/index.html
-```
-
-**Implementação sugerida**: usar `fs.watch()` ou `chokidar` para detectar mudanças e re-auditar automaticamente.
-
----
-
-#### TESTE-E02: Relatório de CTA Placement
-
-**Feature não implementada**: o auditor verifica *se* os tokens P0 existem, mas não verifica *onde* estão aplicados.
-
-**Caso problemático que passa na auditoria atual**:
-```css
-/* #00F0FF no background de um hero — VIOLA A SEMÂNTICA mas passa no audit */
-.hero { background: #00F0FF; }
-/* #00F0FF no CTA — correto */
-.btn-cta { background: #00F0FF; }
-```
-
-**Melhoria**: auditar se `#00F0FF` aparece em contexto de CTA (seletores `.btn`, `.cta`, `button`) e reportar se for encontrado em outros contextos.
-
----
-
-#### TESTE-E03: Integração com Preview Server
-
-**Feature**: ao abrir o preview no browser, exibir overlay de auditoria DNA ao vivo.
-
-**Implementação sugerida**: 
-1. O `preview-server.js` injeta um script de auditoria no HTML servido
-2. O script coleta cores computadas via `getComputedStyle()` (resolve CSS vars no browser)
-3. Compara com P0 canônicos e exibe badge de status
-
-**Vantagem sobre o extrator atual**: resolve `var(--ft-cyan)` no contexto real do browser, eliminando o problema de detecção de CSS vars aninhadas (TESTE-D01).
-
----
-
-#### TESTE-E04: Multi-Projeto Batch Audit
-
-```bash
-# Feature proposta
-node scripts/dna-extractor.js --audit-all clientes/
-```
-
-**Output esperado**:
-```
-📊 Relatório Multi-Projeto
-├── flashtech-caso-02-ecommerce: ⚠️ 2 violações
-├── flashtech-caso-03-d2c: ✅ 0 violações
-└── negocia-bem: ❌ DNA.md não encontrado
-```
-
----
-
-## 🎯 Prompt de Handoff — Para Usar em Nova Sessão
-
-> **Copie e cole este prompt no início de qualquer nova sessão de trabalho no Studio DNA Engine para restaurar o contexto completo.**
-
-```
-Contexto de sessão — Studio DNA Engine (2026-08-25)
-
-Projeto: studio-dna-engine — motor de análise e recriação de websites para portfólio FlashTech.
-
-## Sistema DNA Lock (implementado hoje)
-
-Criamos um sistema de 3 camadas para resolver o problema de ambiguidade semântica
-que causava o ciclo: AI Slop → Correção → Cópia Quebrada.
-
-### Camada 1: scripts/dna-extractor.js
-CLI que extrai tokens de HTML/CSS, cruza com ESTRUTURA_ANALITICA.md e gera DNA.md.
-
-Comandos principais:
-- Gerar: node scripts/dna-extractor.js --project <path> --dossie 3
-- Auditar: node scripts/dna-extractor.js --audit <path/index.html>
-- Validar: node scripts/dna-extractor.js --validate --project <path>
-
-### Camada 2: DNA.md (por projeto em clientes/<nome>/DNA.md)
-Arquivo de lock que declara:
-- P0 INVARIANTES: tokens imutáveis sem override explícito aprovado
-- P1 VARIÁVEIS: adaptáveis por projeto sem sobrepor P0
-- P2 CONTEÚDO: sempre variável
-- Hierarquia: P0 > P1 > frontend-specialist > preferência estética
-
-### Camada 3: .agents/skills/dna-lock/SKILL.md
-Skill ativa no frontend-specialist. Antes de qualquer código:
-1. Lê o DNA.md do projeto
-2. Declara os invariantes P0 em voz alta na resposta
-3. Executa checklist antes de gerar código
-4. Override P0 = declare "⚠️ OVERRIDE DNA P0 [token]: [razão]" + aguarda confirmação
-
-## Tokens P0 FlashTech Canônicos (nunca mudar sem DNA Override)
-- #02040A → obsidian (background base)
-- #00F0FF → cyan (Von Restorff — EXCLUSIVO no CTA e garantia)
-- #0072FF → blue (gradiente mid)
-- #64CEFB → cyanLight (gradiente start)
-- Tipografia: Archivo (display) + JetBrains Mono (dados)
-- Max 1 CTA por fold (Lei de Hick)
-- 0 links externos no funil (Dossiê 03)
-
-## Caso 03 D2C — Status
-- Produto: APEX (fone wireless premium para desenvolvedores)
-- Auditoria: ✅ 0 violações P0
-- Backup original: site/index.html.bak (clone Ciao Energy)
-- Paleta P1: --apex-silver #C0C8D4, --apex-graphite #1A1D26
-
-## Backlog de Testes Pendentes
-Ver HANDOFF.md — seção "Testes para Executar".
-Prioritários: TESTE-D01 (CSS vars aninhadas) e TESTE-D03 (threshold de distância).
-
-## Como Continuar
-1. Ler .agents/memory/MEMORY.md
-2. Verificar DNA.md do projeto antes de qualquer código
-3. Rodar audit antes de qualquer entrega: node scripts/dna-extractor.js --audit <html>
-4. Consultar HANDOFF.md para backlog de melhorias
-```
-
----
-
-## 📊 Estado Final da Auditoria
-
-```
-Projeto: clientes/flashtech-caso-03-d2c/site/index.html
-
-🔍 Auditando...
-
-✅  0 violações de P0 tokens detectadas.
-
-📋 Cores P1 detectadas:
-  #c0c8d4 (freq: 1) — apex-silver
-  #1a1d26 (freq: 1) — apex-graphite
-  #0d0f17 (freq: 1) — apex-surface
-
-Tokens P0 confirmados:
-  ✅ #02040a → obsidian (background base)
-  ✅ #00f0ff → cyan (Von Restorff CTA)
-  ✅ #0072ff → blue (gradiente mid)
-  ✅ #64cefb → cyanLight (gradiente start)
-  ✅ 0 links externos no funil
-```
-
----
-
-## 🔗 Referências
-
-- [`ESTRUTURA_ANALITICA_METODOLOGIAS_CONVERSAO.md`](../../../flashtech/portifolio%20flashtech/ESTRUTURA_ANALITICA_METODOLOGIAS_CONVERSAO.md) — Metodologia FlashTech
-- [`scripts/dna-extractor.js`](scripts/dna-extractor.js) — Extrator de tokens
-- [`.agents/skills/dna-lock/SKILL.md`](.agents/skills/dna-lock/SKILL.md) — Skill de enforcement
-- [`clientes/flashtech-caso-03-d2c/DNA.md`](clientes/flashtech-caso-03-d2c/DNA.md) — Lock do caso 03
-- [`.agents/memory/MEMORY.md`](.agents/memory/MEMORY.md) — Memória persistente
-
----
-
-*Gerado em 2026-08-25 · Studio DNA Engine · FlashTech*
+1. Preservar os arquivos sujos e não rastreados fora das pastas dos dois clientes e dos testes de demo; eles pertencem a outras frentes.
+2. Rodar primeiro o suite focado acima; em seguida, rodar `npm.cmd test` e reportar a falha do Vault de forma separada se ela persistir.
+3. Antes de alterar qualquer cliente, reler seu `DNA.md` e `brand-spec.json`, mantendo a exceção aprovada: nenhuma identidade FlashTech nesta apresentação.
+4. Manter `copias/` somente leitura e repetir a comparação por comportamento, não por cópia de assets ou dependências remotas.
