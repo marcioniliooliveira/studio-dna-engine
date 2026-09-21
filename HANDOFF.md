@@ -150,3 +150,80 @@ Quando o usuário decidir avançar para a construção do portfólio:
 3. **Dual-Version Delivery (Padrão do Projeto):**
    - **Versão 1 (HTML Estático):** Versão ultrarrápida, sem build overhead, pronta para deploy instantâneo ou CDN.
    - **Versão 2 (Next.js App Router):** Versão modular com TypeScript, componentes React limpos, Tailwind e Framer Motion/GSAP para máxima manutenibilidade.
+
+---
+
+## Handoff: apresentações imobiliárias Integrii e Silvio Iwata
+
+> Atualizado em: 2026-09-21
+> Branch: `feature/clone-likova-portfolio`
+> Estado do escopo: entregue como demonstração estática offline; não representa inventário, envio de leads, mapa ao vivo ou integração de atendimento.
+
+### Objetivo aprovado
+
+Foram construídas duas apresentações independentes para conversa com leads imobiliários:
+
+- `clientes/integrii-imoveis/site/`: adaptação consciente da hero de 21 Oaks, com comprar/alugar/investir, troca de imagem, reveal circular desktop, fallback leve no mobile, thumbnails, progresso, autoplay pausável e rota intermediária de atendimento.
+- `clientes/silvio-iwata-imobiliaria/site/`: adaptação 50/50 de Aircenter e 21 Oaks, com hero sticky, parallax nativo, reveals por seção, rail de progresso, contador, mapa estático de Maringá/região, slider e rota intermediária de atendimento.
+
+Cada cliente possui `content-slots.json` e `composition-spec.json` isolados. As imagens são SVGs locais demonstrativos porque não foi autorizada fotografia de imóvel. Todos os cards, propriedades e condições deixam claro o caráter demonstrativo; não há backend, coleta, envio ou confirmação fictícia de lead.
+
+### Decisões de identidade e isolamento
+
+- A solicitação do usuário substitui explicitamente os blocos FlashTech adicionados pelos manifestos de DNA gerados. Os runtimes usam somente a identidade observada de cada lead: azul naval da Integrii e verde/lima da Silvio Iwata.
+- Nenhum runtime de cliente possui URL externa, CDN, `fetch`, analíticos, SDK de mapa ou token/termo FlashTech. A conferência final por `rg` encontrou zero ocorrências proibidas.
+- As famílias tipográficas permanecem como preferência CSS com fallback de sistema; nenhuma fonte remota foi importada. Isso preserva o requisito offline e evita uma dependência de licença não fornecida.
+- `copias/21oaks-org` e `copias/aircenter-space` foram usados apenas como evidência de referência e não foram modificados.
+
+### Processo de comparação com as referências
+
+1. **Mapeamento de fonte.** Foram lidos os trechos funcionais, não apenas o visual: 21 Oaks usa hero com `bg-current`/`bg-next`, três thumbnails, estado `data-hero-slide`, timeline GSAP, `clipPath` circular, preload e autoplay em `copias/21oaks-org/site/index.html` nas faixas 1445, 2838–3160 e 3564–3618. Aircenter usa 11 seções de scroll, camadas sticky/parallax, reveal, contadores, mapa e slider em `copias/aircenter-space/site/index.html` nas faixas 306–641, 903–975 e 1242–1326.
+2. **Mapeamento de comportamento.** A Integrii implementa o mesmo eixo de estado para imagem, copy, CTA, thumbnail e progresso em `site/interaction.js`; a CSS aplica `clip-path: circle(...)` no desktop e opacidade/translação no mobile. A Silvio usa `IntersectionObserver` para ativação de seções e `requestAnimationFrame` para atualizar as variáveis de parallax, sem copiar runtimes remotos.
+3. **Execução empírica.** As referências foram abertas por um servidor local temporário. 21 Oaks expôs três thumbnails e as camadas `bg-current`/`bg-next`, mas falhou o carregamento de `webflow.achunk.22b66e874d42861f.js`; o clique de thumbnail não completou a troca nesse ambiente. Aircenter expôs 11 seções e parallax/reveal com transform observado, mas emitiu 48 requests externos. Portanto, a equivalência foi julgada pela estrutura e comportamento observável, não por dependências externas quebradas.
+4. **Testes de paridade.** Os testes de navegador verificam: troca sincronizada de imagem/copy/CTA/progresso, thumbnails, pausa explícita do autoplay, `prefers-reduced-motion`, rota dos três intents, rota dos três cards, rail de seção da Silvio, slider, mapa visível, overflow horizontal e bloqueio de requests não locais.
+5. **Inspeção visual.** Foram capturadas e avaliadas as primeiras dobras nos viewports 1440×977 e 390×844 de ambos os sites. A hierarquia, CTA, imagem demonstrativa, navegação e controles permaneceram visíveis; o suite também cobre 1024×900.
+
+### Matriz de fidelidade e desvios conscientes
+
+| Referência | Mantido e testado | Não reproduzido intencionalmente | Razão |
+|---|---|---|---|
+| 21 Oaks → Integrii | Hero em camadas, reveal circular, três escolhas, thumbnails, progresso, autoplay pausável, troca por CTA e mobile simplificado | Zonas de ambiente em SVG, slider de brilho, conteúdo/arte de moradia estudantil | As zonas e controles descrevem ambientes da referência e não agregam ao funil imobiliário aprovado; os SVGs locais passam a cumprir a função visual sem reutilizar assets de terceiros. |
+| Aircenter → Silvio | Hero sticky, narrativa por scroll, parallax, reveal, contador, rail, mapa e slider | Vimeo de fundo, WebGL carousel, mapa interativo, formulário/POST e SDKs externos | A apresentação deve operar offline, com mapa estático e sem backend. Esses recursos exigiriam mídia, licenças, APIs ou integração ainda não autorizados. |
+
+O custo conhecido desses desvios é uma experiência menos cinematográfica/fotorealista que as referências. A compensação é fidelidade de fluxo, isolamento de marca, transparência de demo e operação offline verificável.
+
+### Arquivos e commits relevantes
+
+- Especificação: `docs/superpowers/specs/2026-09-21-real-estate-lead-presentations-design.md` (`4098d09`).
+- Plano executável: `docs/superpowers/plans/2026-09-21-real-estate-lead-presentations.md` (`59872d1`).
+- Contratos, placas locais e duas experiências: `cc0a53a`, `2909325`, `4e4b140`, `7e902ea`.
+- QA de browser e rotas: `d081430`, `b428ed8`.
+- Ajustes de acessibilidade e affordances da referência: `62cb405`.
+- Testes adicionados: `test/real-estate-demos.test.js` e `test/real-estate-demos.browser.test.js`.
+
+### Evidência de validação atual
+
+| Verificação | Resultado observado |
+|---|---|
+| `node --test test/real-estate-demos.test.js test/real-estate-demos.browser.test.js` | 8/8 passaram. |
+| Navegador local | Fluxos verificados em 1440×977, 1024×900 e 390×844; reduced-motion e requests locais cobertos. |
+| `git diff --check 4098d09..HEAD` | Sem erro de whitespace. |
+| Scan de resíduos externos/FlashTech | Zero ocorrências nos diretórios dos dois clientes. |
+| `npm.cmd test` | 58/59 passaram; falha fora deste escopo em `test/vault-integrity.test.js:27`, pois falta `design-vault/elyse-residence-dev-webflow-io/tokens.json`. |
+
+Os auditores heurísticos de UX devem ser interpretados com cautela aqui: um deles classificou o atributo `data-autoplay-toggle` como mídia autoplay sem mudo, embora não exista elemento de mídia; outro reportou scroll sem throttling apesar do uso de `requestAnimationFrame`. Os testes de browser e a inspeção visual são a evidência dominante para estes pontos.
+
+### Próximos passos de execução
+
+1. Receber autorização e ativos imobiliários reais do lead; substituir apenas os SVGs demonstrativos pelos assets aprovados, adicionando dimensões, `loading="lazy"` abaixo da dobra e descrições finais.
+2. Validar a copy e os dados públicos de cada lead antes de remover qualquer rótulo de demonstração. Não publicar preços, disponibilidade, depoimentos, rentabilidade ou métricas sem fonte aprovada.
+3. Se uma integração de atendimento for aprovada, definir destino, consentimento, backend e mensagem de sucesso real; só então substituir a rota intermediária estática.
+4. Se mapa vivo, vídeo ou WebGL forem desejados, obter permissão de asset/licença e revisar o requisito offline antes de incluí-los.
+5. Resolver separadamente a falha global do Design Vault; ela não deve ser mascarada como falha dos demos.
+
+### Retomada segura
+
+1. Preservar os arquivos sujos e não rastreados fora das pastas dos dois clientes e dos testes de demo; eles pertencem a outras frentes.
+2. Rodar primeiro o suite focado acima; em seguida, rodar `npm.cmd test` e reportar a falha do Vault de forma separada se ela persistir.
+3. Antes de alterar qualquer cliente, reler seu `DNA.md` e `brand-spec.json`, mantendo a exceção aprovada: nenhuma identidade FlashTech nesta apresentação.
+4. Manter `copias/` somente leitura e repetir a comparação por comportamento, não por cópia de assets ou dependências remotas.
