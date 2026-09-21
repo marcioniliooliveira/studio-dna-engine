@@ -68,6 +68,10 @@ test('Integri keeps intent, hero CTA, progress, and intermediary panel synchroni
     assert.equal(await page.locator('[data-progress-fill]').evaluate((node) => node.style.width), '100%');
     await page.locator('[data-hero-cta]').click();
     assert.equal(await page.locator('[data-intermediary-panel="investir"]').isVisible(), true);
+    for (const intent of ['comprar', 'alugar', 'investir']) {
+      await page.locator(`[data-intent-link="${intent}"]`).first().click();
+      assert.equal(await page.locator(`[data-intermediary-panel="${intent}"]`).isVisible(), true);
+    }
     assertLocalRequests(requests);
   });
 });
@@ -95,6 +99,11 @@ test('Silvio preserves scroll sections, local map, intent routing, and property 
     assert.equal(await page.locator('[data-property-slide="1"]').isVisible(), true);
     await page.locator('[data-property-slide="1"] .text-link').click();
     assert.equal(await page.locator('[data-intermediary-panel="alugar"]').isVisible(), true);
+    for (const [index, intent] of [['0', 'comprar'], ['1', 'alugar'], ['2', 'investir']]) {
+      await page.locator(`[data-slide-button="${index}"]`).click();
+      await page.locator(`[data-property-slide="${index}"] .text-link`).click();
+      assert.equal(await page.locator(`[data-intermediary-panel="${intent}"]`).isVisible(), true);
+    }
     await page.locator('#region').scrollIntoViewIfNeeded();
     assert.equal(await page.locator('[data-scroll-section="map"] img').isVisible(), true);
     await page.locator('[data-scroll-section="reveal"]').scrollIntoViewIfNeeded();
