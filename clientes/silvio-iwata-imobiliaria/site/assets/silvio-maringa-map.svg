@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Mapa demonstrativo de Maringá e região</title>
+  <desc id="desc">Diagrama abstrato de ruas e áreas verdes com Maringá destacado.</desc>
+  <rect width="1200" height="700" rx="36" fill="#e8edf4"/>
+  <path d="M70 160 300 60l220 90 220-70 320 150-140 220-240 70-250 100-220-140Z" fill="#ffffff"/>
+  <path d="M80 510 260 350l210 90 210-210 180 90 200-160" fill="none" stroke="#f7faf8" stroke-width="42" stroke-linecap="round"/>
+  <path d="M120 170 350 290l180-50 170 160 350-160M270 75l40 510M550 90 480 630M800 100 720 610M1040 150 890 620" fill="none" stroke="#b9d8c1" stroke-width="8"/>
+  <path d="M700 185 870 125l130 104-66 136-188 28-74-128Z" fill="#055227"/>
+  <circle cx="835" cy="235" r="24" fill="#8dbc2a"/>
+  <text x="890" y="220" fill="#055227" font-family="Arial, sans-serif" font-size="34" font-weight="700">Maringá</text>
+  <circle cx="350" cy="395" r="15" fill="#8dbc2a"/>
+  <text x="280" y="450" fill="#055227" font-family="Arial, sans-serif" font-size="30" font-weight="700">entorno</text>
+</svg>
