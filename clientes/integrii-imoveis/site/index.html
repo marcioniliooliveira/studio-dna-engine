@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#00233a" />
+    <meta name="description" content="Apresentação demonstrativa da Integrii Imóveis para Paiçandu e região." />
+    <title>Integrii — encontre o seu imóvel ideal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-client="integrii-imoveis">
+    <header class="site-header" data-site-header>
+      <a class="wordmark" href="#top" aria-label="Integrii, voltar ao início">integrii<span>.</span></a>
+      <nav class="top-nav" aria-label="Navegação principal">
+        <a href="#explore">Explorar</a>
+        <a href="#regional">A região</a>
+        <a href="#intermediary-comprar" data-intent-link="comprar">Conversar</a>
+      </nav>
+      <a class="header-cta" href="#intermediary-comprar" data-intent-link="comprar">Agendar conversa <span aria-hidden="true">↗</span></a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle><span></span><span></span></button>
+    </header>
+
+    <main id="top">
+      <section class="hero" id="explore" data-hero>
+        <div class="hero__media" aria-hidden="true">
+          <img class="hero__image hero__image--current" data-hero-current src="assets/integri-casa-01.svg" alt="" />
+          <img class="hero__image hero__image--next" data-hero-next src="assets/integri-casa-02.svg" alt="" />
+          <div class="hero__scrim"></div>
+        </div>
+        <div class="hero__content page-shell">
+          <p class="kicker" data-hero-eyebrow>PARA CHAMAR DE SEU</p>
+          <h1 data-hero-title>Um endereço que acompanha a sua próxima fase.</h1>
+          <p class="hero__description" data-hero-description>Explore uma curadoria demonstrativa de casas e apartamentos para encontrar o ponto de partida da sua busca.</p>
+          <a class="button button--light" data-hero-cta href="#intermediary-comprar" data-intent-link="comprar">Ver opções para comprar <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero__tools page-shell">
+          <div class="intent-tabs" role="tablist" aria-label="Escolha o que você procura">
+            <button class="intent-tab is-active" type="button" role="tab" aria-selected="true" data-intent-button="0">Comprar</button>
+            <button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="1">Alugar</button>
+            <button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="2">Investir</button>
+          </div>
+          <div class="hero__progress" aria-label="Progresso da apresentação">
+            <span class="hero__progress-label"><strong data-progress-current>01</strong> / 03</span>
+            <span class="hero__progress-track"><span data-progress-fill></span></span>
+          </div>
+        </div>
+        <div class="hero__hint" aria-hidden="true"><span class="hero__hint-line"></span><span>deslize para explorar</span></div>
+      </section>
+
+      <section class="property-rail section-pad" aria-labelledby="property-title">
+        <div class="page-shell">
+          <div class="section-heading">
+            <p class="kicker">UMA PRIMEIRA LEITURA</p>
+            <h2 id="property-title">Escolhas que começam pelo jeito de viver.</h2>
+            <p>As cenas abaixo são demonstrativas: servem para apresentar a direção da experiência e abrir uma conversa mais precisa.</p>
+          </div>
+          <div class="property-grid">
+            <article class="property-card">
+              <div class="property-card__image"><img src="assets/integri-casa-01.svg" alt="Imagem demonstrativa de uma casa com jardim" /><span>imagem demonstrativa</span></div>
+              <div class="property-card__body"><p class="card-meta">COMPRAR · PAIÇANDU</p><h3>Casa Horizonte</h3><p>03 dormitórios · 120 m²</p><a href="#intermediary-comprar" data-intent-link="comprar">Quero conhecer <span aria-hidden="true">↗</span></a></div>
+            </article>
+            <article class="property-card">
+              <div class="property-card__image"><img src="assets/integri-casa-02.svg" alt="Imagem demonstrativa de um apartamento iluminado" /><span>imagem demonstrativa</span></div>
+              <div class="property-card__body"><p class="card-meta">ALUGAR · PAIÇANDU</p><h3>Apartamento Janela Aberta</h3><p>02 dormitórios · 78 m²</p><a href="#intermediary-alugar" data-intent-link="alugar">Quero explorar <span aria-hidden="true">↗</span></a></div>
+            </article>
+            <article class="property-card">
+              <div class="property-card__image"><img src="assets/integri-casa-03.svg" alt="Imagem demonstrativa de patrimônio e arquitetura" /><span>imagem demonstrativa</span></div>
+              <div class="property-card__body"><p class="card-meta">INVESTIR · REGIÃO</p><h3>Ponto de Encontro</h3><p>Patrimônio · conversa inicial</p><a href="#intermediary-investir" data-intent-link="investir">Abrir conversa <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="authority section-pad" id="regional" aria-labelledby="authority-title">
+        <div class="page-shell authority__grid">
+          <p class="kicker">PRESENÇA REGIONAL</p>
+          <div><h2 id="authority-title">Quando propósito e profissionalismo encontram o lugar certo.</h2><p>Uma apresentação inspirada na presença da Integrii e desenhada para transformar intenção em contexto: o que você busca, onde faz sentido e qual é o próximo passo.</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Conhecer a abordagem <span aria-hidden="true">↗</span></a></div>
+        </div>
+      </section>
+
+      <section class="map-section section-pad" aria-labelledby="map-title">
+        <div class="page-shell map-section__grid">
+          <div class="map-section__copy"><p class="kicker">ONDE A BUSCA GANHA CONTEXTO</p><h2 id="map-title">Paiçandu e região, vistos de perto.</h2><p>Uma leitura visual para situar a conversa. O mapa é demonstrativo e não representa navegação ao vivo.</p><span class="map-label">Paiçandu e entorno</span></div>
+          <figure class="map-frame"><img src="assets/integri-maringa-map.svg" alt="Mapa demonstrativo de Maringá e região com Paiçandu destacado" /><figcaption>Mapa demonstrativo de Maringá e região</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="process section-pad" aria-labelledby="process-title">
+        <div class="page-shell"><div class="section-heading"><p class="kicker">UMA CONVERSA MAIS CLARA</p><h2 id="process-title">Da intenção ao endereço, sem atalhos confusos.</h2></div><div class="process-grid"><div><span>01</span><h3>Escolha o movimento</h3><p>Comprar, alugar ou investir: cada intenção abre uma conversa diferente.</p></div><div><span>02</span><h3>Leia o contexto</h3><p>Localização, rotina e espaço entram antes de qualquer promessa.</p></div><div><span>03</span><h3>Continue para atendimento</h3><p>A próxima etapa fica preparada para uma conversa humana e objetiva.</p></div></div></div>
+      </section>
+
+      <section class="intermediary section-pad" id="intermediary" aria-labelledby="intermediary-title">
+        <div class="page-shell intermediary__inner"><div><p class="kicker">PRÓXIMO PASSO</p><h2 id="intermediary-title">Vamos dar nome ao próximo endereço?</h2><p>Escolha uma intenção para preparar uma conversa mais objetiva com a Integrii.</p></div><div class="intermediary__panel-wrap"><div class="intermediary__panel is-active" id="intermediary-comprar" data-intermediary-panel="comprar"><span class="panel-index">01 / COMPRAR</span><h3>Encontrar algo para chamar de seu.</h3><p>Uma conversa sobre localização, espaço e o que precisa acontecer para a escolha fazer sentido.</p><a class="button button--light" href="#intermediary-comprar" data-prepared-link="comprar">Continuar para atendimento <span aria-hidden="true">↗</span></a></div><div class="intermediary__panel" id="intermediary-alugar" data-intermediary-panel="alugar" hidden><span class="panel-index">02 / ALUGAR</span><h3>Encontrar o lugar da sua rotina.</h3><p>Organize a busca por região, tipo de imóvel e o ritmo certo para mudar.</p><a class="button button--light" href="#intermediary-alugar" data-prepared-link="alugar">Continuar para atendimento <span aria-hidden="true">↗</span></a></div><div class="intermediary__panel" id="intermediary-investir" data-intermediary-panel="investir" hidden><span class="panel-index">03 / INVESTIR</span><h3>Conversar sobre patrimônio com contexto.</h3><p>Uma primeira conversa sobre região e possibilidades, sem promessa de rentabilidade.</p><a class="button button--light" href="#intermediary-investir" data-prepared-link="investir">Continuar para atendimento <span aria-hidden="true">↗</span></a></div></div><p class="intermediary__disclosure">Esta é uma apresentação demonstrativa. Nenhuma mensagem é enviada por esta tela.</p></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="page-shell site-footer__inner"><a class="wordmark wordmark--footer" href="#top">integrii<span>.</span></a><p>Paiçandu, Paraná · Av. Ivaí, 299 Centro · CEP 87140-000</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Agendar conversa <span aria-hidden="true">↗</span></a></div></footer>
+    <script src="interaction.js"></script>
+  </body>
+</html>

@@ -100,8 +100,9 @@ test('client runtime is local and does not contain cross-client or network resid
     for (const { relative, file } of runtimeFiles(client)) {
       const source = fs.readFileSync(file, 'utf8');
       assert.equal(forbiddenRuntime.test(source), false, `${client}/${relative} contains forbidden runtime residue`);
-      assert.equal(/(?:^|["'(])https?:\/\//i.test(source), false, `${client}/${relative} contains an external URL`);
-      assert.equal(/(?:src|href)=["']\/\//i.test(source), false, `${client}/${relative} contains a protocol-relative URL`);
+      const withoutSvgNamespace = source.replace(/\s+xmlns=["']https?:\/\/[^"']+["']/gi, '');
+      assert.equal(/(?:^|["'(])https?:\/\//i.test(withoutSvgNamespace), false, `${client}/${relative} contains an external URL`);
+      assert.equal(/(?:src|href)=["']\/\//i.test(withoutSvgNamespace), false, `${client}/${relative} contains a protocol-relative URL`);
     }
   }
 });
