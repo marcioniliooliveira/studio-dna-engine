@@ -1,0 +1,46 @@
+{
+  "client": "silvio-iwata-imobiliaria",
+  "reference": "aircenter-21-oaks-balanced-adaptation",
+  "designIntent": "Uma narrativa cinematográfica de Maringá que transforma confiança e contexto em um próximo passo simples.",
+  "tokens": {
+    "background": "#ffffff",
+    "surface": "#f7faf8",
+    "ink": "#0d0f14",
+    "brand": "#055227",
+    "brandDeep": "#005023",
+    "accent": "#8dbc2a",
+    "muted": "#8a95a8",
+    "line": "#e8edf4"
+  },
+  "type": {
+    "display": "Plus Jakarta Sans",
+    "body": "Inter",
+    "scale": "cinematic-fluid",
+    "fallbacks": ["Arial", "sans-serif"]
+  },
+  "sections": [
+    "hero-scroll-story",
+    "reveal-context",
+    "property-format",
+    "regional-authority",
+    "maringa-region-map",
+    "property-slider",
+    "intermediary-contact",
+    "footer"
+  ],
+  "scrollStory": {
+    "activation": "intersection-observer",
+    "motion": "requestAnimationFrame-css-variables",
+    "progress": "section-synchronized",
+    "mobileMode": "stacked-readable-flow",
+    "reducedMotion": "static-sections-manual-navigation"
+  },
+  "constraints": {
+    "remoteRuntime": false,
+    "backend": false,
+    "flashtechTokens": false,
+    "referenceAssets": false,
+    "demoDisclosure": true,
+    "externalFunnelLinks": false
+  }
+}
