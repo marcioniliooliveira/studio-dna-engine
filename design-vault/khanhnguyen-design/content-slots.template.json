@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "2.0.0",
+  "description": "Content Slots Template para o esqueleto khanhnguyen-design (Horizontal Editorial Portfolio)",
+  "slots": {
+    "header": {
+      "edition": "Folio — Edition",
+      "copyrightYear": "© 2026"
+    },
+    "intro": {
+      "startYear": "2013",
+      "endYear": "2026",
+      "nameFirst": "Khanh",
+      "nameLast": "Nguyen",
+      "tagline": "Independent designer based in Vietnam — focused on thoughtful, considered digital work.",
+      "location": "HCMC, Vietnam",
+      "timezonePrefix": "(GMT+7)",
+      "journeyLine": "A journey through years of design",
+      "collabLine": "Open for collaborations",
+      "scrollPrompt": "SCROLL"
+    },
+    "about": {
+      "chapterLabel": "Chapter I",
+      "chapterSub": "Quick intro",
+      "leadParagraph": "Hi, I’m Khanh — a designer with 10+ years of experience in digital products, websites, and visual systems, creating clear and thoughtful experiences.",
+      "detailParagraph": "Focused on creating modern digital brands and user-centric interfaces with obsessive attention to typographic detail and fluid motion."
+    },
+    "moreWork": {
+      "textMore": "MORE",
+      "textWork": "WORK",
+      "videoDesktop": "./assets/_astro/thework-desktop.BOEUPLXP.mp4",
+      "videoMobile": "./assets/_astro/thework-mobile.DFnsCk-1.mp4"
+    },
+    "selectedWork": {
+      "chapterLabel": "Chapter II",
+      "chapterSub": "Related work",
+      "projects": [
+        {
+          "id": "0",
+          "title": "EVO Money",
+          "category": "Fintech Platform",
+          "year": "2024",
+          "href": "/works/evo-money",
+          "thumbnail": "./assets/_astro/evo-money-thumbnail-16-9.B00Lym5-_qy4LO.webp"
+        },
+        {
+          "id": "1",
+          "title": "Plant Tag",
+          "category": "E-Commerce",
+          "year": "2023",
+          "href": "/works/plant-tag",
+          "thumbnail": "./assets/_astro/plant-tag-thumbnail-16-9.CEaBMfaz_Z64N3z.webp"
+        },
+        {
+          "id": "2",
+          "title": "Swiss Haus",
+          "category": "Architectural Identity",
+          "year": "2023",
+          "href": "/works/swisshaus",
+          "thumbnail": "./assets/_astro/swisshaus-thumbnail-16-9.Dl-P9oLP_Z1jbLrY.webp"
+        },
+        {
+          "id": "3",
+          "title": "Betahaus",
+          "category": "Coworking Space",
+          "year": "2022",
+          "href": "/works/betahaus",
+          "thumbnail": "./assets/_astro/betahaus-thumbnail-16-9.ZH-WOOsP_GLeLu.webp"
+        }
+      ],
+      "viewAllLabel": "View All Work",
+      "disclaimer": "❋ Live site unavailable for some inactive or incomplete projects"
+    },
+    "services": {
+      "chapterLabel": "Chapter III",
+      "chapterSub": "What I do?",
+      "headline": "Designing digital experiences with clarity, structure, and intention.",
+      "items": [
+        {
+          "number": "01",
+          "title": "Product Design",
+          "description": "Digital products designed with intuitive flow, structure, and usability in mind."
+        },
+        {
+          "number": "02",
+          "title": "Digital Experiences",
+          "description": "Web experiences shaped through clarity, rhythm, and thoughtful interaction."
+        },
+        {
+          "number": "03",
+          "title": "Art direction",
+          "description": "Visual direction focused on mood, identity, and cohesive digital storytelling."
+        },
+        {
+          "number": "04",
+          "title": "Development",
+          "description": "Built in Webflow or Framer, with custom development when the project calls for it."
+        }
+      ]
+    },
+    "clients": {
+      "chapterLabel": "Chapter IV",
+      "chapterSub": "Selected experiences",
+      "list": [
+        "Trusting Social",
+        "Vietnamwork",
+        "Autonomous",
+        "VEN Agency",
+        "Glass Egg",
+        "And more"
+      ],
+      "footerNote": "Work spanning brands, products, and digital teams."
+    },
+    "contact": {
+      "pretitle": "Where stories find their form",
+      "chapterSub": "Next chapter",
+      "email": "kennguyen02587@gmail.com",
+      "socials": [
+        {
+          "name": "Instagram",
+          "url": "https://www.instagram.com/khanh_nguyen_des/"
+        },
+        {
+          "name": "Behance",
+          "url": "https://www.behance.net/kennguyen034b8/"
+        },
+        {
+          "name": "Linkedin",
+          "url": "https://www.linkedin.com/in/khanh-nguyen-6b47a3177/"
+        }
+      ],
+      "copyright": "© 2026 — khanh nguyen folio — edition"
+    }
+  }
+}

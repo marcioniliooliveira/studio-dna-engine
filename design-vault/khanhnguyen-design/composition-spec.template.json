@@ -1,0 +1,85 @@
+{
+  "version": "2.0.0",
+  "refSlug": "khanhnguyen-design",
+  "brandName": "Khanh Nguyen Portfolio",
+  "archetype": "Horizontal Editorial Portfolio",
+  "theme": {
+    "bgBase": "#262220",
+    "bgSurface": "#3A3632",
+    "bgCard": "#2e2b28",
+    "bgLight": "#faf9f6",
+    "bgWarm": "#edeae6",
+    "bgDeep": "#1f1d1b",
+    "accent": "#C5A880",
+    "textMain": "#faf9f6",
+    "textDark": "#2e2b28",
+    "textMuted": "#8A8178",
+    "borderDark": "#5a524d",
+    "borderLight": "#e2ded9"
+  },
+  "typography": {
+    "display": "PP Editorial Old",
+    "body": "PP Neue Montreal",
+    "features": ["dlig", "tabular-nums"]
+  },
+  "motion": {
+    "engine": "GSAP ScrollTrigger + Lenis",
+    "pinDistance": 14124,
+    "easings": {
+      "cinematic": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "snappy": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "smooth": "power3.out"
+    }
+  },
+  "sections": [
+    {
+      "id": "loading-intro",
+      "type": "hero-intro",
+      "bg": "#262220",
+      "text": "#f3eee8",
+      "headerBg": "#3A3632"
+    },
+    {
+      "id": "about-chapter-1",
+      "type": "editorial-narrative",
+      "bg": "#faf9f6",
+      "text": "#2e2b28",
+      "headerBg": "#faf9f6"
+    },
+    {
+      "id": "services-chapter-3",
+      "type": "capabilities-grid",
+      "bg": "#faf9f6",
+      "text": "#2e2b28",
+      "headerBg": "#faf9f6"
+    },
+    {
+      "id": "more-work-interlude",
+      "type": "kinetic-video-pause",
+      "bg": "#edeae6",
+      "text": "#2e2b28",
+      "headerBg": "#edeae6"
+    },
+    {
+      "id": "selected-work-chapter-2",
+      "type": "horizontal-interactive-gallery",
+      "bg": "#2e2b28",
+      "text": "#faf9f6",
+      "headerBg": "#2e2b28"
+    },
+    {
+      "id": "clients-chapter-4",
+      "type": "collaborations-list",
+      "bg": "#edeae6",
+      "text": "#2e2b28",
+      "headerBg": "#edeae6"
+    },
+    {
+      "id": "contact-colophon",
+      "type": "closing-chapter",
+      "bg": "#1f1d1b",
+      "text": "#cccccc",
+      "headerBg": "#1f1d1b"
+    }
+  ]
+}

@@ -580,7 +580,7 @@ function startPreviewServer(options = {}) {
       try {
         const refUrl = new URL(referer);
         const refParts = refUrl.pathname.split('/').filter(Boolean);
-        if ((refParts[0] === 'clientes' || refParts[0] === 'projetos' || refParts[0] === 'copias') && refParts[1]) {
+        if ((refParts[0] === 'clientes' || refParts[0] === 'projetos') && refParts[1]) {
           refererSiteSlug = path.join(refParts[0], refParts[1]);
         } else if (refParts[0]) {
           refererSiteSlug = refParts[0];

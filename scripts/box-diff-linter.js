@@ -87,11 +87,14 @@ async function runBoxDiffLinter(siteSlug = 'negocia-bem-imobiliaria', port = 400
     }
     await page.waitForTimeout(500);
 
-    // Scroll progressivo para disparar lazy loading de imagens offscreen
+    // Scroll progressivo e decodificação para disparar lazy loading de imagens offscreen
     await page.evaluate(async () => {
-      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+      document.querySelectorAll('img').forEach(img => {
         img.loading = 'eager';
       });
+      await Promise.all(
+        Array.from(document.querySelectorAll('img')).map(img => (img.decode ? img.decode().catch(() => {}) : null))
+      );
       const distance = 400;
       const totalHeight = document.body.scrollHeight;
       let currentScroll = 0;
