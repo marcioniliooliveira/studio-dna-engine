@@ -1,0 +1,1176 @@
+<!DOCTYPE html><html lang="en" class="lenis"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clone - khanhnguyen-design</title>
+  <link rel="stylesheet" href="./assets/_astro/global.BvueZpQ-.css">
+  <style>@media(min-width:768px){[data-astro-cid-p35cuy7o][data-work-image]{will-change:transform,opacity}[data-astro-cid-p35cuy7o][data-work-item-arrow]{transform:translate(calc(-1 * var(--scale)),calc(1 * var(--scale))) scale(.6);transform-origin:left bottom;transition:opacity .3s ease-out,transform .45s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}[data-astro-cid-p35cuy7o][data-work-item-index]:is(:hover,:focus-within) [data-astro-cid-p35cuy7o][data-work-item-arrow]{opacity:1!important;transform:translate(0) scale(1)}}[data-section=loading] [data-name-line-text]>.word:first-child{margin:-.18em -.24em -.24em -.18em;padding:.18em .24em .24em .18em}
+
+@media(min-width:768px)and (max-width:1024px)and (orientation:portrait){.tablet-orientation-notice[data-astro-cid-ggzamrjs]{display:flex}}
+</style>
+<style id="universal-unlock-css">
+      /* 1. Supressão Completa de Cortinas de Transição e Preloaders (Anti-Blackscreen) */
+      #transition-overlay, 
+      [data-cover], 
+      .transition-curtain, 
+      .page-transition-overlay, 
+      .transition_screen, 
+      .preloader_wrap, 
+      .preloader, 
+      .loader, 
+      .site-loader, 
+      .loading-screen, 
+      .loading-overlay, 
+      #preloader, 
+      #loading-mask, 
+      [data-preloader], 
+      .splash-screen, 
+      .curtain, 
+      [data-curtain], 
+      [data-page-transition], 
+      .is-loading-overlay, 
+      .page-transition, 
+      .page_loader,
+      .w-preloader {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+      }
+
+      /* Desbloqueia position: sticky globalmente removendo overflow hostil dos ancestrais */
+      html, body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+      }
+      .page-wrapper, main, .main-wrapper, .container, .page-padding {
+        overflow: visible !important;
+      }
+
+      /* Desbloqueia sliders de marcas / logos para rotação infinita */
+      .brand-slider, .logo-slider, .partner-slider {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      /* Reparo de layout para seções empilhadas e eliminação de spacers fantasmas */
+      .faq-spacer {
+        display: none !important;
+      }
+      .faq-relative {
+        height: auto !important;
+      }
+      section.cta, .cta {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 10 !important;
+      }
+      section.faq, .faq {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 5 !important;
+      }
+
+      /* Interatividade de hover fluida na FAQ */
+      .faq [data-dropdown-list] {
+        opacity: 0 !important;
+        transform: translateX(24px) !important;
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none !important;
+      }
+      .faq [data-dropdown]:hover [data-dropdown-list],
+      .faq [data-dropdown].is-active [data-dropdown-list] {
+        opacity: 1 !important;
+        transform: translateX(0px) !important;
+        pointer-events: auto !important;
+      }
+      .faq [data-dropdown]:hover .faq-dropdown-toggle h3,
+      .faq [data-dropdown].is-active .faq-dropdown-toggle h3 {
+        color: #ffffff !important;
+        transition: color 0.3s ease;
+      }
+
+      /* Reseta máscaras para evitar listras estáticas em repouso */
+      [data-amenities-anim="big-image"].is-first {
+        position: relative !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        opacity: 1 !important;
+      }
+      [data-amenities-anim="big-image"]:not(.is-first) {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+        -webkit-mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+      }
+
+      /* 2. Overlays cosméticos não podem bloquear eventos de mouse */
+      .g_overlay, .g_grain_overlay {
+        pointer-events: none !important;
+      }
+
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis */
+      html, body {
+        overflow-x: hidden !important;
+      }
+      html.lenis-stopped, 
+      body.lenis-stopped, 
+      html.is-loading, 
+      body.is-loading,
+      body.no-scroll {
+        overflow: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+      }
+
+      /* 4. Controles, Navbar, CTAs fixos */
+      .fixed, header, [id*="cta"] {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* 5. Garante renderização nítida de imagens e mídias */
+      img, svg, canvas, video {
+        content-visibility: visible;
+      }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
+      }
+    </style>
+<script id="universal-resilience-polyfills">
+(function() {
+  'use strict';
+  // 1. Mocks de Analytics, Rastreamento & WebFont
+  window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
+  window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
+  window.dataLayer = window.dataLayer || [];
+  window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
+
+  // 1.1 ServiceWorker Safe Stub (evita 404 em ambiente de preview/offline)
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      navigator.serviceWorker.register = function() {
+        return Promise.resolve({ scope: '/' });
+      };
+    } catch(e) {}
+  }
+
+  // 2. Functional Native SplitText Engine & Polyfills de GSAP
+  function createSplitTextClass() {
+    function SplitText(target, vars) {
+      if (!(this instanceof SplitText)) return new SplitText(target, vars);
+      vars = vars || {};
+      this.elements = [];
+      if (typeof target === 'string') {
+        this.elements = Array.from(document.querySelectorAll(target));
+      } else if (target instanceof Element) {
+        this.elements = [target];
+      } else if (target && target.length) {
+        this.elements = Array.from(target);
+      }
+
+      this.lines = [];
+      this.words = [];
+      this.chars = [];
+      this._originals = [];
+
+      var type = vars.type || 'chars,words,lines';
+      var wantLines = type.indexOf('lines') !== -1;
+      var wantWords = type.indexOf('words') !== -1;
+      var wantChars = type.indexOf('chars') !== -1;
+      var linesClass = vars.linesClass || 'line';
+      var wordsClass = vars.wordsClass || 'word';
+      var charsClass = vars.charsClass || 'char';
+
+      var self = this;
+      this.elements.forEach(function(el) {
+        self._originals.push({ el: el, html: el.innerHTML });
+        var text = el.innerText || el.textContent || '';
+        if (!text.trim()) return;
+
+        el.innerHTML = '';
+        var rawWords = text.trim().split(/s+/);
+        var createdWords = [];
+
+        rawWords.forEach(function(wText, wIdx) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = wordsClass;
+          wordSpan.style.display = 'inline-block';
+          wordSpan.style.position = 'relative';
+
+          if (wantChars) {
+            for (var c = 0; c < wText.length; c++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = charsClass;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.position = 'relative';
+              charSpan.textContent = wText[c];
+              wordSpan.appendChild(charSpan);
+              self.chars.push(charSpan);
+            }
+          } else {
+            wordSpan.textContent = wText;
+          }
+
+          el.appendChild(wordSpan);
+          createdWords.push(wordSpan);
+          self.words.push(wordSpan);
+
+          if (wIdx < rawWords.length - 1) {
+            el.appendChild(document.createTextNode(' '));
+          }
+        });
+
+        if (wantLines && createdWords.length > 0) {
+          var lineGroups = [];
+          var currentLine = [];
+          var lastTop = -9999;
+
+          createdWords.forEach(function(w) {
+            var top = w.offsetTop;
+            if (top > lastTop + 5 && currentLine.length > 0) {
+              lineGroups.push(currentLine);
+              currentLine = [];
+            }
+            currentLine.push(w);
+            lastTop = top;
+          });
+          if (currentLine.length > 0) lineGroups.push(currentLine);
+
+          el.innerHTML = '';
+          lineGroups.forEach(function(group) {
+            var lineDiv = document.createElement('div');
+            lineDiv.className = linesClass;
+            lineDiv.style.display = 'block';
+            lineDiv.style.overflow = 'hidden';
+            lineDiv.style.position = 'relative';
+
+            var lineInner = document.createElement('span');
+            lineInner.style.display = 'inline-block';
+            lineInner.style.width = '100%';
+
+            group.forEach(function(w, idx) {
+              lineInner.appendChild(w);
+              if (idx < group.length - 1) lineInner.appendChild(document.createTextNode(' '));
+            });
+
+            lineDiv.appendChild(lineInner);
+            el.appendChild(lineDiv);
+            self.lines.push(lineDiv);
+          });
+        }
+      });
+
+      this.revert = function() {
+        this._originals.forEach(function(item) {
+          item.el.innerHTML = item.html;
+        });
+      };
+    }
+    return SplitText;
+  }
+
+  window.SplitText = window.SplitText || createSplitTextClass();
+
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.CustomEase === 'undefined') {
+      window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
+    }
+    if (typeof window.SplitText === 'undefined') {
+      window.SplitText = createSplitTextClass();
+    }
+  });
+
+  // 3. Stub de Audio (Howler.js)
+  if (typeof window.Howl === 'undefined') {
+    window.Howl = function() {
+      return {
+        play: function() { return 1; },
+        pause: function() {},
+        stop: function() {},
+        volume: function() {},
+        fade: function() {},
+        on: function() { return this; },
+        once: function() { return this; },
+        off: function() { return this; },
+        state: function() { return 'loaded'; }
+      };
+    };
+  }
+
+  // 4. Stub de Barba.js & Modais
+  if (typeof window.barba === 'undefined') {
+    window.barba = {
+      init: function() {},
+      use: function() {},
+      hooks: { before: function() {}, after: function() {}, enter: function() {}, leave: function() {} },
+      transitions: []
+    };
+  }
+  if (typeof window.ProjectModal === 'undefined') {
+    window.ProjectModal = function() {
+      return { open: function(){}, close: function(){} };
+    };
+  }
+
+  // 5. Imediato e Multinível Unhide Failsafe (Resiliente, Não-Destrutivo)
+  function forceUnhide() {
+    document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
+    document.documentElement.classList.remove('is-loading', 'lenis-stopped');
+    if (document.body) {
+      document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
+    }
+
+    // Apenas bloqueios reais de tela preta e cortinas estáticas de preload são destruídos
+    var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
+    blocked.forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+
+    // Se houver elementos presos com opacity 0 que NÃO pertencem a animações ativas, libera com suavidade
+    var stuckNodes = document.querySelectorAll('.gsap-reveal:not([data-anim]):not([data-scribble])');
+    stuckNodes.forEach(function(el) {
+      if (el.classList.contains('child') || el.classList.contains('line')) {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+      }
+    });
+  }
+
+  // 6. Splide & Carousel Auto-Binder
+  function initSplides() {
+    if (typeof window.Splide !== 'undefined') {
+      var splides = document.querySelectorAll('.splide:not(.is-initialized)');
+      splides.forEach(function(s) {
+        try {
+          new window.Splide(s, {
+            type: 'loop',
+            perPage: 1,
+            autoplay: false,
+            pagination: true
+          }).mount();
+        } catch(e) {}
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      forceUnhide();
+      initSplides();
+    });
+  } else {
+    forceUnhide();
+    initSplides();
+  }
+  setTimeout(function() { forceUnhide(); initSplides(); }, 50);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 300);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 1000);
+})();
+</script>
+</head>
+<body class="overflow-x-hidden antialiased">
+ <!-- Figma Header - Mobile 390×64 (node 1366:1935); desktop rail unchanged at md: --><header class="fixed z-[110] opacity-0 inset-x-0 top-0 flex w-full flex-row items-center justify-between border-b border-(--header-border) bg-(--header-bg) text-(--header-text) px-5 py-4 md:inset-x-auto md:inset-y-0 md:left-0 md:right-auto md:bottom-0 md:w-16 md:flex-col md:items-center md:justify-start md:px-0 md:py-0 md:border-b-0 md:border-r transition-[background-color,color,border-color] duration-500 ease-out" style="--header-bg: #3A3632; --header-text: #f3eee8; --header-border: #5a524d;" data-intro-header="" aria-label="Global site header"> <div class="pointer-events-none absolute -bottom-px left-0 z-10 h-px w-full origin-left bg-[#8A8178] will-change-transform md:top-0 md:bottom-auto md:h-dvh md:w-[calc(0.3_*_var(--scale))] md:origin-top" data-header-scroll-progress="" aria-hidden="true"></div> <a href="/" class="block w-15 shrink-0 text-(--header-text) md:hidden" aria-label="Back to home"> <svg class="block w-full" viewBox="0 0 60 27" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M55.0061 1.0515C54.9777 0.987125 54.9386 0.954936 54.889 0.954936C54.8464 0.954936 54.8251 0.987125 54.8251 1.0515V3.62661C54.8251 4.03434 54.8854 4.30973 55.0061 4.45279C55.1339 4.5887 55.3255 4.65665 55.5811 4.65665C55.645 4.65665 55.6769 4.68169 55.6769 4.73176C55.6769 4.79614 55.645 4.82833 55.5811 4.82833C55.4178 4.82833 55.2439 4.8176 55.0593 4.79614C54.9032 4.78183 54.7931 4.77468 54.7292 4.77468C54.6653 4.77468 54.5482 4.78183 54.3779 4.79614C54.2004 4.8176 54.03 4.82833 53.8667 4.82833C53.8029 4.82833 53.7709 4.79614 53.7709 4.73176C53.7709 4.67454 53.8029 4.64592 53.8667 4.64592C54.1294 4.64592 54.3211 4.57797 54.4417 4.44206C54.5695 4.30615 54.6334 4.03434 54.6334 3.62661V0.997854C54.6334 0.718884 54.5908 0.522175 54.5056 0.407726C54.4275 0.293276 54.2891 0.236051 54.0904 0.236051L52.8445 0.236051C52.6813 0.236051 52.5996 0.346925 52.5996 0.56867V3.61588C52.5925 4.0236 52.6635 4.299 52.8126 4.44206C52.9688 4.57797 53.203 4.64592 53.5154 4.64592C53.5934 4.64592 53.6325 4.67454 53.6325 4.73176C53.6325 4.79614 53.5934 4.82833 53.5154 4.82833C53.3166 4.82833 53.1036 4.8176 52.8765 4.79614C52.6067 4.78183 52.4293 4.77468 52.3441 4.77468H52.2483C52.1418 4.77468 51.9324 4.78183 51.62 4.79614C51.2793 4.81044 51.0308 4.8176 50.8747 4.8176C50.7824 4.8176 50.7362 4.78898 50.7362 4.73176C50.7362 4.67454 50.7788 4.64592 50.864 4.64592C51.2402 4.64592 51.5171 4.57797 51.6946 4.44206C51.872 4.299 51.9608 4.0236 51.9608 3.61588V0.56867C51.9608 0.461374 51.9395 0.379114 51.8969 0.321889C51.8543 0.264664 51.7904 0.236051 51.7052 0.236051L50.9385 0.236051C50.7256 0.236051 50.5659 0.343348 50.4594 0.55794C50.36 0.772532 50.2606 1.13376 50.1612 1.64163C50.1541 1.71316 50.1187 1.74893 50.0548 1.74893C50.0122 1.74893 49.9944 1.70243 50.0015 1.60944L50.0228 1.38412C50.037 1.26967 50.0512 1.10873 50.0654 0.901288L50.0548 0.504292C50.0477 0.439914 50.0441 0.350501 50.0441 0.236051C50.0441 0.178827 50.0583 0.128755 50.0867 0.0858367C50.1151 0.0357653 50.1541 0.0107297 50.2038 0.0107297C50.2535 0.0107297 50.3423 0.0178831 50.47 0.0321891C50.6262 0.0464955 50.7753 0.0536484 50.9173 0.0536484L54.9954 0.0536484C55.1019 0.0536484 55.1871 0.0751082 55.251 0.118027C55.322 0.153792 55.3788 0.232476 55.4214 0.354078L56.795 3.92704C56.8021 3.96281 56.8304 3.98069 56.8801 3.98069C56.9156 3.98069 56.944 3.96638 56.9653 3.93777L58.4454 0.332619C58.4951 0.21817 58.5377 0.143062 58.5732 0.107297C58.6158 0.0715315 58.6832 0.0536484 58.7755 0.0536484L58.9458 0.0536484C59.0168 0.0536484 59.1659 0.0464955 59.3931 0.0321891C59.5634 0.0107297 59.7338 0 59.9042 0C59.9397 0 59.9645 0.00715298 59.9787 0.0214594C59.9929 0.0286124 60 0.0500713 60 0.0858367C60 0.143061 59.9716 0.171674 59.9148 0.171674C59.6522 0.171674 59.457 0.243205 59.3292 0.386266C59.2085 0.522175 59.1482 0.793992 59.1482 1.20172V3.62661C59.1482 4.03434 59.2085 4.30973 59.3292 4.45279C59.457 4.5887 59.6522 4.65665 59.9148 4.65665C59.9716 4.65665 60 4.68169 60 4.73176C60 4.76753 59.9929 4.79256 59.9787 4.80687C59.9645 4.82117 59.9397 4.82833 59.9042 4.82833C59.7409 4.82833 59.567 4.8176 59.3824 4.79614C59.1553 4.78183 59.0097 4.77468 58.9458 4.77468H58.7009C58.63 4.77468 58.4809 4.78183 58.2537 4.79614C58.0834 4.8176 57.913 4.82833 57.7426 4.82833C57.7071 4.82833 57.6823 4.82117 57.6681 4.80687C57.6539 4.79256 57.6468 4.76753 57.6468 4.73176C57.6468 4.67454 57.6752 4.64592 57.732 4.64592C57.9946 4.64592 58.1863 4.57797 58.307 4.44206C58.4347 4.30615 58.4986 4.03434 58.4986 3.62661V1.0515C58.4986 0.994278 58.4809 0.965666 58.4454 0.965666C58.4099 0.965666 58.378 0.994278 58.3496 1.0515L56.7311 4.91416C56.7098 4.97139 56.6707 5 56.6139 5C56.5642 5 56.5287 4.97139 56.5075 4.91416L55.0061 1.0515Z" fill="currentColor"></path> <path d="M40.8376 26.272C40.7096 26.272 40.5816 26.208 40.4536 26.08L28.1336 5.888C27.9842 5.58933 27.8349 5.44 27.6856 5.44C27.5149 5.44 27.4296 5.65333 27.4296 6.08L27.4296 22.336C27.4296 23.552 27.7816 24.3733 28.4856 24.8C29.1896 25.2053 30.2882 25.408 31.7816 25.408C32.1229 25.408 32.2936 25.4933 32.2936 25.664C32.2936 25.8347 32.1122 25.92 31.7496 25.92C30.9602 25.92 30.1282 25.888 29.2536 25.824C28.3149 25.7813 27.6216 25.76 27.1736 25.76C26.8109 25.76 26.2242 25.7813 25.4136 25.824C24.6242 25.888 23.8456 25.92 23.0776 25.92C22.9069 25.92 22.7896 25.8987 22.7256 25.856C22.6402 25.8133 22.5976 25.7387 22.5976 25.632C22.5976 25.4613 22.7469 25.376 23.0456 25.376C24.3682 25.376 25.3389 25.1733 25.9576 24.768C26.5976 24.3627 26.9176 23.552 26.9176 22.336L26.9176 5.376C26.9176 4.992 26.8429 4.56533 26.6936 4.096C26.5656 3.62667 26.3949 3.22133 26.1816 2.88L25.7656 2.176C25.4456 1.664 25.0082 1.25867 24.4536 0.960001C23.8989 0.661334 23.3229 0.512001 22.7256 0.512001C22.5762 0.512001 22.4802 0.501334 22.4376 0.480001C22.3736 0.437334 22.3416 0.373334 22.3416 0.288C22.3416 0.096 22.4802 0 22.7576 0C23.3976 0 24.1869 0.0213337 25.1256 0.0640011C25.8082 0.106667 26.3522 0.128 26.7576 0.128C27.2269 0.170668 27.6002 0.277335 27.8776 0.448002C28.1549 0.618668 28.4216 0.917334 28.6776 1.344L40.6136 20.928C40.7842 21.2267 40.9336 21.376 41.0616 21.376C41.2322 21.376 41.3176 21.152 41.3176 20.704V3.584C41.3176 2.368 40.9656 1.55733 40.2616 1.152C39.5576 0.725334 38.4589 0.512001 36.9656 0.512001C36.6242 0.512001 36.4536 0.426668 36.4536 0.256001C36.4536 0.0853335 36.6349 0 36.9976 0C37.4456 0 38.1816 0.0213337 39.2056 0.0640011C40.0162 0.128002 40.8162 0.160002 41.6056 0.160002C42.2029 0.160002 42.8002 0.128002 43.3976 0.0640011C44.2082 0.0213337 44.7736 0 45.0936 0C45.3709 0 45.5096 0.0853335 45.5096 0.256001C45.5096 0.426668 45.3816 0.512001 45.1256 0.512001C44.0162 0.512001 43.1842 0.725334 42.6296 1.152C42.0962 1.55733 41.8296 2.368 41.8296 3.584V26.048C41.8296 26.1973 41.7549 26.272 41.6056 26.272H40.8376Z" fill="currentColor"></path> <path d="M18.528 23.008C19.232 23.9467 19.9573 24.576 20.704 24.896C21.4507 25.216 22.2827 25.376 23.2 25.376C23.328 25.376 23.4133 25.3973 23.456 25.44C23.4987 25.4613 23.52 25.5253 23.52 25.632C23.52 25.7387 23.488 25.8133 23.424 25.856C23.3813 25.8987 23.296 25.92 23.168 25.92C22.8907 25.92 22.4107 25.8987 21.728 25.856C21.152 25.792 20.5973 25.76 20.064 25.76H18.112C17.7707 25.76 17.1307 25.7813 16.192 25.824C15.424 25.888 14.6773 25.92 13.952 25.92C13.8027 25.92 13.696 25.8987 13.632 25.856C13.5893 25.8133 13.568 25.7387 13.568 25.632C13.568 25.4613 13.696 25.376 13.952 25.376C14.656 25.376 15.168 25.3227 15.488 25.216C15.8293 25.1093 16 24.9173 16 24.64C16 24.2987 15.7227 23.7547 15.168 23.008L8.352 13.76C7.88267 13.0347 7.488 12.672 7.168 12.672C6.89067 12.672 6.69867 12.8213 6.592 13.12C6.48533 13.3973 6.432 13.8667 6.432 14.528L6.432 22.336C6.432 23.552 6.67733 24.3733 7.168 24.8C7.68 25.2053 8.46933 25.408 9.536 25.408C9.792 25.408 9.92 25.4827 9.92 25.632C9.92 25.7387 9.888 25.8133 9.824 25.856C9.78133 25.8987 9.68533 25.92 9.536 25.92C8.85333 25.92 8.13867 25.888 7.392 25.824C6.496 25.7813 5.89867 25.76 5.6 25.76H4.544C4.224 25.76 3.59467 25.7813 2.656 25.824C1.888 25.888 1.14133 25.92 0.416 25.92C0.245333 25.92 0.138667 25.8987 0.096 25.856C0.032 25.8133 0 25.7387 0 25.632C0 25.4613 0.128 25.376 0.384 25.376C1.49333 25.376 2.31467 25.1733 2.848 24.768C3.38133 24.3627 3.648 23.552 3.648 22.336L3.648 3.584C3.648 2.368 3.38133 1.55733 2.848 1.152C2.31467 0.725334 1.49333 0.512001 0.384 0.512001C0.234667 0.512001 0.138667 0.490668 0.096 0.448002C0.032 0.405334 0 0.341334 0 0.256001C0 0.149334 0.032 0.0853341 0.096 0.0640011C0.16 0.0213337 0.266667 0 0.416 0C1.14133 0 1.888 0.0320002 2.656 0.0960007C3.59467 0.138668 4.224 0.160002 4.544 0.160002L5.568 0.160002C5.888 0.160002 6.51733 0.138668 7.456 0.0960007C8.224 0.0320002 8.97067 0 9.696 0C9.97333 0 10.112 0.0853335 10.112 0.256001C10.112 0.426668 9.984 0.512001 9.728 0.512001C8.61867 0.512001 7.78667 0.725334 7.232 1.152C6.69867 1.55733 6.432 2.368 6.432 3.584L6.432 10.144C6.432 10.848 6.51733 11.3707 6.688 11.712C6.85867 12.0533 7.08267 12.224 7.36 12.224C7.53067 12.224 7.73333 12.128 7.968 11.936C8.20267 11.7227 8.49067 11.424 8.832 11.04L15.392 3.712C15.9893 3.072 16.288 2.47467 16.288 1.92C16.288 1.49333 15.9467 1.152 15.264 0.896002C14.6027 0.640001 13.7067 0.512001 12.576 0.512001C12.4693 0.512001 12.3733 0.490668 12.288 0.448002C12.224 0.405334 12.192 0.352001 12.192 0.288C12.192 0.096 12.3307 0 12.608 0C12.992 0 13.7387 0.0213337 14.848 0.0640011C15.7867 0.128002 16.7893 0.160002 17.856 0.160002L18.592 0.160002C18.9973 0.160002 19.6693 0.138668 20.608 0.0960007C21.3547 0.0320002 22.1013 0 22.848 0C23.04 0 23.168 0.0213337 23.232 0.0640011C23.3173 0.0853341 23.36 0.149334 23.36 0.256001C23.36 0.341334 23.3173 0.405334 23.232 0.448002C23.168 0.490668 23.0507 0.512001 22.88 0.512001C21.536 0.512001 20.416 0.661334 19.52 0.960001C18.6453 1.25867 17.8027 1.856 16.992 2.752L10.56 10.048C10.2613 10.368 10.112 10.7093 10.112 11.072C10.112 11.392 10.24 11.7333 10.496 12.096L18.528 23.008Z" fill="currentColor"></path> </svg> </a> <button id="menu-toggle" type="button" class="flex shrink-0 cursor-pointer items-center justify-center outline-none enabled:hover:opacity-80 md:h-16 md:w-full md:border-b md:border-(--header-border)" aria-expanded="false" aria-controls="fullscreen-menu" aria-label="Open menu"> <svg class="size-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <rect y="15" width="32" height="2" fill="#f3eee8"></rect> <rect data-menu-icon-bar="lower" x="0" y="22" width="32" height="2" fill="#f3eee8"></rect> <rect data-menu-icon-bar="upper" x="0" y="8" width="32" height="2" fill="#f3eee8"></rect> </svg> </button> <div class="hidden flex-1 flex-col items-center justify-between py-6 md:flex md:py-8"> <p class="vt-rl vt-reading-up text-[calc(1_*_var(--scale))] uppercase tracking-wide md:text-[calc(1.1_*_var(--scale))]">
+Folio — Edition
+</p> <a href="/" class="block w-[calc(1.33_*_var(--scale))] shrink-0 text-(--header-text)" aria-label="Back to home"> <svg class="block w-full" viewBox="0 0 14 134" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M1.1866 2.9957C1.11582 3.02764 1.10295 3.10428 1.1866 3.10428L2.73084 3.10428C3.25201 3.10428 3.34853 2.93182 3.34853 2.65078C3.34853 2.61245 3.3614 2.5933 3.39357 2.5933C3.43861 2.5933 3.45148 2.61245 3.45148 2.65078C3.45148 2.80408 3.42574 3.01486 3.41931 3.16177C3.42574 3.31507 3.45148 3.52585 3.45148 3.67915C3.45148 3.71747 3.43861 3.73664 3.39357 3.73664C3.3614 3.73664 3.3421 3.71747 3.3421 3.67915C3.3421 3.3981 3.25201 3.21926 2.73084 3.21926L1.15443 3.21926C0.819843 3.21926 0.697591 3.30229 0.697591 3.54501L0.697591 4.29234C0.697591 4.39454 0.774803 4.43925 0.897055 4.43925L2.7244 4.43925C3.24558 4.44564 3.3421 4.22846 3.3421 3.88993C3.3421 3.83883 3.35496 3.81968 3.39357 3.81968C3.43218 3.81968 3.45148 3.83883 3.45148 3.88993C3.45148 4.1071 3.41931 4.4137 3.41931 4.59255L3.41931 4.65003C3.41931 4.86081 3.44504 5.21851 3.44504 5.47401C3.44504 5.53149 3.43218 5.55704 3.39357 5.55704C3.35496 5.55704 3.3421 5.53149 3.3421 5.48039C3.3421 5.0716 3.24558 4.82249 2.7244 4.82249L0.897055 4.82249C0.774803 4.82249 0.697591 4.8736 0.697591 4.97579L0.697591 5.43568C0.697591 5.71673 1.00644 5.79977 1.54049 5.90197C1.58553 5.90835 1.60483 5.92751 1.60483 5.96584C1.60483 5.99777 1.57909 6.00416 1.52118 5.99778C1.37963 5.985 1.25738 5.96584 1.09652 5.95945C0.942095 5.95945 0.80054 5.97223 0.697591 5.97223C0.633248 5.97223 0.562471 5.94029 0.562471 5.87641C0.562471 5.75505 0.588208 5.65286 0.588208 5.44846L0.588208 3.00209C0.588208 2.88711 0.613945 2.80407 0.768369 2.74659L2.911 1.92261C2.95604 1.90984 2.95604 1.84596 2.91743 1.82042L0.7555 0.932569C0.626814 0.875082 0.588208 0.849527 0.588208 0.734554L0.588208 0.632359C0.588208 0.485449 0.556036 0.229953 0.556036 0.0574938C0.556036 0.0127817 0.568905 5.81325e-07 0.607511 5.79637e-07C0.646117 5.7795e-07 0.658985 0.0127832 0.658985 0.051108C0.658985 0.338541 0.7555 0.510996 1.27668 0.510996L2.73084 0.510996C3.25201 0.510996 3.34853 0.338541 3.34853 0.0511079C3.34853 0.012783 3.3614 4.59261e-07 3.39357 4.57855e-07C3.43861 4.55886e-07 3.45148 0.0127816 3.45148 0.0574937C3.45148 0.236341 3.41931 0.485449 3.41931 0.632359L3.41931 0.779266C3.41931 0.926176 3.45148 1.18167 3.45148 1.35413C3.45148 1.39884 3.43861 1.41162 3.39357 1.41162C3.3614 1.41162 3.3421 1.39884 3.3421 1.36052C3.3421 1.07947 3.25201 0.900629 2.73084 0.900629L1.1866 0.900629C1.12226 0.900629 1.10939 0.951728 1.1866 0.990052L3.50295 1.96094C3.57373 1.99287 3.57373 2.06952 3.50295 2.09507L1.1866 2.9957Z" fill="currentColor"></path> <path d="M13.312 11.3148C13.312 11.3948 13.264 11.4588 13.216 11.5068L3.20003 17.6508C2.86403 17.8588 2.89603 18.0188 3.29603 18.0188L11.344 18.0188C12.64 18.0188 12.88 17.1868 12.88 15.8428C12.88 15.6668 12.912 15.5868 13.008 15.5868C13.104 15.5868 13.136 15.6668 13.136 15.8588C13.136 16.5948 13.056 17.4748 13.056 18.2908L13.056 27.1228C13.056 27.6508 13.136 28.5628 13.136 29.1868C13.136 29.3468 13.104 29.3948 12.992 29.3948C12.912 29.3948 12.864 29.3468 12.864 29.2028C12.864 28.1948 12.64 27.5708 11.344 27.5708L1.96803 27.5708C0.672031 27.5708 0.432032 28.1948 0.432032 29.2028C0.432032 29.3468 0.400032 29.3948 0.304031 29.3948C0.208032 29.3948 0.176031 29.3468 0.176031 29.1868C0.176031 28.5628 0.256032 27.6508 0.256032 27.1228L0.256032 18.3548C0.256032 17.8908 0.416031 17.6668 0.848032 17.3948L10.528 11.4428C10.864 11.2348 10.816 11.0748 10.432 11.0748L1.96803 11.0748C0.672031 11.0748 0.432031 11.9068 0.432031 13.2508C0.432031 13.4268 0.400031 13.5068 0.304031 13.5068C0.208031 13.5068 0.176031 13.4268 0.176031 13.2348C0.17603 12.5308 0.256031 11.6988 0.256031 10.9308C0.256031 10.3868 0.17603 9.69878 0.17603 9.18678C0.17603 9.04278 0.208031 8.97877 0.304031 8.97877C0.400031 8.97877 0.432031 9.04277 0.432031 9.17077C0.432031 10.1788 0.672031 10.8188 1.96803 10.8188L13.2 10.8188C13.264 10.8188 13.312 10.8668 13.312 10.9308L13.312 11.3148ZM11.84 26.1788C12.592 26.1788 12.816 26.0188 12.816 25.3148L12.816 21.6188C12.816 19.4428 12.016 18.2748 9.10403 18.2748L2.86403 18.2748C2.48003 18.2748 1.95203 18.4348 1.61603 18.6428L1.26403 18.8508C0.736031 19.1868 0.464031 19.7308 0.464031 20.2268C0.464031 20.9148 1.12003 21.1548 2.16003 21.1548C2.68803 21.1548 3.15203 21.0268 3.77603 20.9148C3.95203 20.8828 4.03203 20.9308 4.03203 21.0268C4.03203 21.1228 3.95203 21.1708 3.79203 21.2028C1.21603 21.7628 0.480032 22.2108 0.480032 23.7308L0.480032 25.4108C0.480032 25.9548 0.816031 26.1788 1.28003 26.1788L5.56803 26.1788C5.96803 26.1788 6.25603 25.9068 6.25603 25.5388L6.25603 23.8748C6.25603 22.7068 5.63203 22.4988 4.62403 22.4988C4.48003 22.4988 4.43203 22.4668 4.43203 22.3868C4.43203 22.2908 4.48003 22.2588 4.64003 22.2588C5.15203 22.2588 5.77603 22.3228 6.36803 22.3388C6.92803 22.3228 7.58403 22.2588 8.11203 22.2588C8.25603 22.2588 8.30403 22.2908 8.30403 22.3868C8.30403 22.4668 8.25603 22.4988 8.11203 22.4988C7.10403 22.4988 6.48003 22.7068 6.48003 23.8748L6.48003 25.4908C6.48003 25.8908 6.75203 26.1788 7.10403 26.1788L11.84 26.1788Z" fill="currentColor"></path> <path d="M11.344 33.7622C12.64 33.7622 12.88 33.0102 12.88 31.7942C12.88 31.6342 12.912 31.5702 13.008 31.5702C13.104 31.5702 13.136 31.6342 13.136 31.8102C13.136 32.5782 13.056 33.6502 13.056 34.2902L13.056 34.6262C13.056 35.2662 13.136 36.3542 13.136 37.1062C13.136 37.2822 13.104 37.3462 12.992 37.3462C12.912 37.3462 12.864 37.2822 12.864 37.1222C12.864 35.9062 12.64 35.1542 11.344 35.1542L8.09603 35.1542C7.71203 35.1542 7.16803 35.2822 6.81603 35.4582L1.79203 37.9702C0.624032 38.5462 0.432032 39.2182 0.432032 39.8742C0.432032 39.9862 0.400032 40.0342 0.320031 40.0342C0.208032 40.0342 0.176031 39.9862 0.176031 39.8742C0.176031 39.5062 0.256032 38.9302 0.256032 38.5142L0.256032 37.7462C0.256032 37.0742 0.176031 35.9222 0.176031 35.1222C0.176031 34.9302 0.208032 34.8502 0.304031 34.8502C0.400032 34.8502 0.432032 34.9302 0.432032 35.1062C0.432032 36.3862 0.624032 36.9942 1.79203 36.4182L6.25603 34.1782C6.60803 34.0022 6.60803 33.7622 6.25603 33.6022L1.82403 31.5702C0.640032 31.0262 0.432031 31.5702 0.432031 32.7382C0.432031 32.8982 0.400032 32.9622 0.320031 32.9622C0.208031 32.9622 0.176031 32.8982 0.176031 32.7222C0.176031 32.0982 0.256032 31.3782 0.256032 30.6902C0.256032 30.2422 0.176031 29.6982 0.176031 29.2662C0.176031 29.1542 0.208031 29.1062 0.304031 29.1062C0.400032 29.1062 0.432031 29.1542 0.432031 29.2662C0.432031 30.0662 0.640032 30.7542 1.80803 31.2822L6.59203 33.4742C6.94403 33.6342 7.48803 33.7622 7.88803 33.7622L11.344 33.7622Z" fill="currentColor"></path> <path d="M13.312 45.3478C13.312 48.4358 11.28 49.4438 8.92803 49.4438L1.96803 49.4438C0.672031 49.4438 0.432032 50.0678 0.432032 51.0758C0.432032 51.2198 0.400032 51.2678 0.304031 51.2678C0.208032 51.2678 0.176031 51.2198 0.176031 51.0598C0.176031 50.4358 0.256032 49.5238 0.256032 48.9958L0.256032 48.4838C0.256032 47.9558 0.176031 47.0438 0.176031 46.4198C0.176031 46.2758 0.208032 46.2118 0.304031 46.2118C0.400032 46.2118 0.432032 46.2758 0.432032 46.4038C0.432032 47.4118 0.672031 48.0518 1.96803 48.0518L8.92803 48.0518C11.488 48.0518 12.608 46.9798 12.608 44.9478C12.608 43.2198 11.536 41.9078 8.89603 41.9078L1.96803 41.9078C0.672031 41.9078 0.432031 42.5318 0.432031 43.5398C0.432031 43.6838 0.400032 43.7318 0.304031 43.7318C0.208031 43.7318 0.176031 43.6838 0.176031 43.5238C0.176031 43.0118 0.224031 42.2918 0.256032 41.7638C0.224031 41.2358 0.176031 40.5318 0.176031 40.0038C0.176031 39.8598 0.208031 39.8118 0.304031 39.8118C0.400032 39.8118 0.432031 39.8598 0.432031 40.0038C0.432031 41.0118 0.672031 41.6358 1.96803 41.6358L8.89603 41.6358C11.104 41.6358 13.312 42.3238 13.312 45.3478Z" fill="currentColor"></path> <path d="M13.312 56.0043C13.312 59.9403 10.384 61.8923 6.84801 61.8923C2.94401 61.8923 5.72899e-06 59.7803 5.57023e-06 56.1483C5.52127e-06 55.0283 0.176005 54.4363 0.176005 53.9883C0.176005 53.4763 0.0640056 53.4123 0.0640056 53.2523C0.0640056 53.1723 0.0960052 53.1083 0.272006 53.1083C1.85601 53.1243 3.52001 52.9323 4.38401 52.8683C4.54401 52.8523 4.62401 52.9003 4.62401 52.9803C4.62401 53.0763 4.56001 53.1083 4.40001 53.1403C1.44001 53.6203 0.288006 54.2763 0.288006 56.3243C0.288006 59.0123 3.28001 60.4043 6.20801 60.4043C9.42401 60.4043 13.056 59.3003 13.056 55.7803C13.056 54.5483 12.368 53.7483 11.44 53.7483L8.20801 53.7643C6.91201 53.7483 6.67201 54.7723 6.67201 56.4363C6.67201 56.6603 6.64001 56.7563 6.54401 56.7563C6.44801 56.7563 6.41601 56.6603 6.41601 56.4203C6.41601 55.3803 6.48001 53.9083 6.48001 53.0283L6.48001 52.7083C6.48001 52.2123 6.41601 51.6363 6.41601 51.0923C6.41601 50.9643 6.44801 50.9003 6.54401 50.9003C6.64001 50.9003 6.67201 50.9643 6.67201 51.0763C6.67201 51.9883 6.91201 52.4523 8.20801 52.4523L10.432 52.4523C11.312 52.4523 11.552 52.3083 11.776 52.2603C12.448 52.0363 13.312 54.1163 13.312 56.0043Z" fill="currentColor"></path> <path d="M13.312 64.3666C13.312 64.4466 13.264 64.5106 13.216 64.5586L3.12003 70.7186C2.78403 70.9106 2.81603 71.0706 3.21603 71.0706L11.344 71.0706C12.64 71.0706 12.88 70.2386 12.88 68.8946C12.88 68.7186 12.912 68.6386 13.008 68.6386C13.104 68.6386 13.136 68.7186 13.136 68.9106C13.136 69.5986 13.072 70.4306 13.056 71.1986C13.072 71.8546 13.136 72.6226 13.136 73.2466C13.136 73.4226 13.104 73.4866 12.992 73.4866C12.912 73.4866 12.864 73.4226 12.864 73.2626C12.864 72.0626 12.64 71.3266 11.344 71.3266L2.86403 71.3266C2.48003 71.3266 1.95203 71.4866 1.61603 71.6946L1.26403 71.9026C0.736032 72.2386 0.432032 72.8466 0.432032 73.4226C0.432032 73.5666 0.416032 73.6146 0.320031 73.6146C0.224032 73.6146 0.176031 73.5666 0.176031 73.4066C0.176031 72.5746 0.224031 72.1586 0.240031 71.4066C0.288032 70.9426 0.400032 70.7186 0.848032 70.4466L10.64 64.4786C10.976 64.2866 10.928 64.1266 10.528 64.1266L1.96803 64.1266C0.672031 64.1266 0.432031 64.9586 0.432031 66.3026C0.432031 66.4786 0.400032 66.5586 0.304031 66.5586C0.208031 66.5586 0.176031 66.4786 0.176031 66.2866C0.176031 65.5826 0.256032 64.7506 0.256032 63.9826C0.256032 63.4386 0.176031 62.7506 0.176031 62.2386C0.176031 62.0946 0.208031 62.0306 0.304031 62.0306C0.400032 62.0306 0.432031 62.0946 0.432031 62.2226C0.432031 63.2306 0.672031 63.8706 1.96803 63.8706L13.2 63.8706C13.264 63.8706 13.312 63.9186 13.312 63.9826L13.312 64.3666Z" fill="currentColor"></path> <path d="M1.96803 79.7124C0.672031 79.7124 0.432031 80.2884 0.432031 81.2324C0.432031 81.3604 0.400032 81.4084 0.320031 81.4084C0.208031 81.4084 0.176031 81.3604 0.176031 81.2164C0.176031 80.6404 0.256032 79.7924 0.256032 79.3124L0.256032 78.7684C0.256032 78.2244 0.176031 77.3284 0.176031 76.6884C0.176031 76.5444 0.208031 76.4964 0.304031 76.4964C0.400032 76.4964 0.432031 76.5444 0.432031 76.6884C0.432031 77.6964 0.672031 78.3204 1.96803 78.3204L11.344 78.3204C12.64 78.3204 12.88 77.6964 12.88 76.6884C12.88 76.5444 12.912 76.4964 13.008 76.4964C13.104 76.4964 13.136 76.5444 13.136 76.7044C13.136 77.3284 13.056 78.2404 13.056 78.7684L13.056 79.3124C13.056 79.8084 13.136 80.6404 13.136 81.2164C13.136 81.3604 13.104 81.4084 12.992 81.4084C12.912 81.4084 12.864 81.3604 12.864 81.2324C12.864 80.3044 12.64 79.7124 11.344 79.7124L7.00803 79.7124C6.62403 79.7124 6.33603 80.0004 6.33603 80.4004L6.33603 84.2564C6.33603 84.6564 6.62403 84.9444 7.00803 84.9444L11.344 84.9444C12.64 84.9444 12.88 84.3684 12.88 83.4244C12.88 83.2964 12.912 83.2484 12.992 83.2484C13.104 83.2484 13.136 83.2964 13.136 83.4404C13.136 84.0164 13.056 84.8644 13.056 85.3444L13.056 85.8884C13.056 86.4164 13.136 87.3284 13.136 87.9524C13.136 88.1124 13.104 88.1604 12.992 88.1604C12.912 88.1604 12.864 88.1124 12.864 87.9684C12.864 86.9604 12.64 86.3364 11.344 86.3364L1.96803 86.3364C0.672031 86.3364 0.432032 86.9604 0.432032 87.9684C0.432032 88.1124 0.400032 88.1604 0.304031 88.1604C0.208032 88.1604 0.176031 88.1124 0.176031 87.9524C0.176031 87.3284 0.256032 86.4164 0.256032 85.8884L0.256032 85.3444C0.256032 84.8484 0.176031 84.0164 0.176031 83.4404C0.176031 83.2964 0.208032 83.2484 0.304031 83.2484C0.400032 83.2484 0.432032 83.2964 0.432032 83.4244C0.432032 84.3524 0.672031 84.9444 1.96803 84.9444L5.40803 84.9444C5.80803 84.9444 6.09603 84.6564 6.09603 84.2564L6.09603 80.4004C6.09603 80.0004 5.80803 79.7124 5.40803 79.7124L1.96803 79.7124Z" fill="currentColor"></path> <path d="M13.312 90.1791C13.312 90.2591 13.264 90.3231 13.216 90.3711L3.12003 96.5311C2.78403 96.7231 2.81603 96.8831 3.21603 96.8831L11.344 96.8831C12.64 96.8831 12.88 96.0511 12.88 94.7071C12.88 94.5311 12.912 94.4511 13.008 94.4511C13.104 94.4511 13.136 94.5311 13.136 94.7231C13.136 95.4111 13.072 96.2431 13.056 97.0111C13.072 97.6671 13.136 98.4351 13.136 99.0591C13.136 99.2351 13.104 99.2991 12.992 99.2991C12.912 99.2991 12.864 99.2351 12.864 99.0751C12.864 97.8751 12.64 97.1391 11.344 97.1391L2.86403 97.1391C2.48003 97.1391 1.95203 97.2991 1.61603 97.5071L1.26403 97.7151C0.736032 98.0511 0.432032 98.6591 0.432032 99.2351C0.432032 99.3791 0.416032 99.4271 0.320031 99.4271C0.224032 99.4271 0.176031 99.3791 0.176031 99.2191C0.176031 98.3871 0.224031 97.9711 0.240031 97.2191C0.288032 96.7551 0.400032 96.5311 0.848032 96.2591L10.64 90.2911C10.976 90.0991 10.928 89.9391 10.528 89.9391L1.96803 89.9391C0.672031 89.9391 0.432031 90.7711 0.432031 92.1151C0.432031 92.2911 0.400032 92.3711 0.304031 92.3711C0.208031 92.3711 0.176031 92.2911 0.176031 92.0991C0.176031 91.3951 0.256032 90.5631 0.256032 89.7951C0.256032 89.2511 0.176031 88.5631 0.176031 88.0511C0.176031 87.9071 0.208031 87.8431 0.304031 87.8431C0.400032 87.8431 0.432031 87.9071 0.432031 88.0351C0.432031 89.0431 0.672031 89.6831 1.96803 89.6831L13.2 89.6831C13.264 89.6831 13.312 89.7311 13.312 89.7951L13.312 90.1791Z" fill="currentColor"></path> <path d="M12.992 110.691C12.912 110.691 12.864 110.643 12.864 110.531C12.864 109.667 12.656 109.011 11.424 108.611L0.112006 104.979C0.0480059 104.947 5.56743e-06 104.883 5.56464e-06 104.819L5.55484e-06 104.595C5.55135e-06 104.515 0.0480059 104.451 0.112006 104.435L11.424 100.771C12.656 100.371 12.864 99.7629 12.864 98.9789C12.864 98.8669 12.896 98.8349 12.992 98.8349C13.088 98.8349 13.136 98.8669 13.136 98.9949C13.136 99.4749 13.056 100.179 13.056 100.595L13.056 101.251C13.056 101.827 13.136 102.803 13.136 103.475C13.136 103.635 13.104 103.699 12.992 103.699C12.912 103.699 12.864 103.635 12.864 103.491C12.864 102.403 12.656 101.859 11.424 102.243L9.36001 102.883C8.97601 102.995 8.70401 103.379 8.70401 103.763L8.70401 106.803C8.70401 107.203 8.97601 107.571 9.36001 107.699L11.424 108.355C12.656 108.739 12.864 108.211 12.864 107.123C12.864 106.979 12.896 106.931 12.992 106.931C13.088 106.931 13.136 106.979 13.136 107.139C13.136 107.715 13.056 108.387 13.056 109.011C13.056 109.507 13.136 110.067 13.136 110.515C13.136 110.643 13.104 110.691 12.992 110.691ZM7.82401 107.187C8.19201 107.299 8.46401 107.107 8.46401 106.707L8.46401 103.843C8.46401 103.459 8.19201 103.251 7.82401 103.363L2.43201 105.059C2.04801 105.171 2.04801 105.347 2.43201 105.475L7.82401 107.187Z" fill="currentColor"></path> <path d="M1.96803 113.509C0.672031 113.509 0.432031 114.085 0.432031 115.029C0.432031 115.157 0.400032 115.205 0.320031 115.205C0.208031 115.205 0.176031 115.157 0.176031 115.013C0.176031 114.437 0.256032 113.589 0.256032 113.109L0.256032 112.565C0.256032 112.021 0.176031 111.125 0.176031 110.485C0.176031 110.341 0.208031 110.293 0.304031 110.293C0.400032 110.293 0.432031 110.341 0.432031 110.485C0.432031 111.493 0.672031 112.117 1.96803 112.117L11.344 112.117C12.64 112.117 12.88 111.493 12.88 110.485C12.88 110.341 12.912 110.293 13.008 110.293C13.104 110.293 13.136 110.341 13.136 110.501C13.136 111.125 13.056 112.037 13.056 112.565L13.056 113.109C13.056 113.605 13.136 114.437 13.136 115.013C13.136 115.157 13.104 115.205 12.992 115.205C12.912 115.205 12.864 115.157 12.864 115.029C12.864 114.101 12.64 113.509 11.344 113.509L7.00803 113.509C6.62403 113.509 6.33603 113.797 6.33603 114.197L6.33603 118.053C6.33603 118.453 6.62403 118.741 7.00803 118.741L11.344 118.741C12.64 118.741 12.88 118.165 12.88 117.221C12.88 117.093 12.912 117.045 12.992 117.045C13.104 117.045 13.136 117.093 13.136 117.237C13.136 117.813 13.056 118.661 13.056 119.141L13.056 119.685C13.056 120.213 13.136 121.125 13.136 121.749C13.136 121.909 13.104 121.957 12.992 121.957C12.912 121.957 12.864 121.909 12.864 121.765C12.864 120.757 12.64 120.133 11.344 120.133L1.96803 120.133C0.672031 120.133 0.432032 120.757 0.432032 121.765C0.432032 121.909 0.400032 121.957 0.304031 121.957C0.208032 121.957 0.176031 121.909 0.176031 121.749C0.176031 121.125 0.256032 120.213 0.256032 119.685L0.256032 119.141C0.256032 118.645 0.176031 117.813 0.176031 117.237C0.176031 117.093 0.208032 117.045 0.304031 117.045C0.400032 117.045 0.432032 117.093 0.432032 117.221C0.432032 118.149 0.672031 118.741 1.96803 118.741L5.40803 118.741C5.80803 118.741 6.09603 118.453 6.09603 118.053L6.09603 114.197C6.09603 113.797 5.80803 113.509 5.40803 113.509L1.96803 113.509Z" fill="currentColor"></path> <path d="M11.68 123.912C12.72 123.144 12.864 122.328 12.864 121.576C12.864 121.448 12.896 121.416 12.992 121.416C13.088 121.416 13.136 121.448 13.136 121.592C13.136 122.008 13.056 122.664 13.056 123.144L13.056 124.12C13.056 124.664 13.136 125.56 13.136 126.2C13.136 126.344 13.104 126.392 12.992 126.392C12.912 126.392 12.864 126.344 12.864 126.2C12.864 125.192 12.72 124.824 11.68 125.592L7.05603 129C6.78403 129.176 6.51203 129.384 6.51203 129.592C6.51203 129.864 6.80003 129.96 7.44003 129.96L11.344 129.96C12.64 129.96 12.88 129.368 12.88 128.408C12.88 128.264 12.912 128.216 12.992 128.216C13.104 128.216 13.136 128.264 13.136 128.408C13.136 129.016 13.056 129.88 13.056 130.376L13.056 130.904C13.056 131.432 13.136 132.344 13.136 132.968C13.136 133.128 13.104 133.176 12.992 133.176C12.912 133.176 12.864 133.128 12.864 132.984C12.864 131.976 12.64 131.352 11.344 131.352L1.96803 131.352C0.672031 131.352 0.432032 131.976 0.432032 132.984C0.432032 133.128 0.400032 133.176 0.304031 133.176C0.208032 133.176 0.176031 133.128 0.176031 132.968C0.176031 132.344 0.256032 131.432 0.256032 130.904L0.256032 130.392C0.256032 129.864 0.176031 128.952 0.176031 128.328C0.176031 128.184 0.208032 128.12 0.304031 128.12C0.400032 128.12 0.432032 128.184 0.432032 128.312C0.432032 129.32 0.672031 129.96 1.96803 129.96L5.24803 129.96C5.96803 129.96 6.28803 129.768 6.28803 129.496C6.28803 129.304 6.00003 129.032 5.69603 128.76L2.03203 125.48C1.63203 125.112 1.36003 125.032 1.13603 125.032C0.720031 125.032 0.432031 125.736 0.432031 126.888C0.432031 127 0.384031 127.08 0.320031 127.08C0.224031 127.08 0.176031 127 0.176031 126.872C0.176031 126.168 0.256032 125.208 0.256032 124.248L0.256032 123.88C0.256032 123.24 0.176031 122.472 0.176031 121.752C0.176031 121.56 0.208031 121.496 0.304031 121.496C0.400032 121.496 0.432031 121.56 0.432031 121.736C0.432031 122.92 0.576031 123.816 1.55203 124.68L5.20003 127.896C5.55203 128.2 5.87203 128.184 6.22403 127.928L11.68 123.912Z" fill="currentColor"></path> </svg> </a> <p class="vt-rl vt-reading-up text-[calc(1_*_var(--scale))] uppercase tracking-wide md:text-[calc(1.1_*_var(--scale))]">
+© 2026 </p> </div> </header>  <dialog id="fullscreen-menu" class="fixed inset-0 z-[90] m-0 h-dvh max-h-none w-full max-w-none border-0 bg-transparent p-0 backdrop:bg-transparent open:flex open:flex-col" aria-label="Site navigation" aria-modal="true"> <div data-menu-reveal="" class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-[#2e2b28] text-[#faf9f6]"> <!-- Figma Menu mobile (1334:1531): close lives in fixed Header; desktop keeps text control --> <button type="button" class="absolute right-4 top-8 hidden font-serif-2 text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-none opacity-0 outline-none hover:opacity-80 md:block md:right-16 md:top-(--vg) md:text-[3.6vh] cursor-pointer" data-menu-close="" data-reveal-line="" aria-label="Close menu">
+Close
+</button> <!-- Mobile band: px-5, pt below 64px header + 32px (Figma Section 1334:1538); desktop uses absolute rails --> <div class="flex min-h-0 flex-1 flex-col px-5 pt-24 pb-5 md:contents md:p-0"> <div class="flex min-h-0 flex-1 flex-col justify-between md:contents"> <nav class="flex flex-col gap-6 md:absolute md:left-32 md:top-(--vg) xl:gap-[3.6vh]" aria-label="Primary"> <a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/" data-nav-item="" aria-current="page" data-nav-active="true"> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 01. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Home </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/about" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 02. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> About </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/works" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 03. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Works </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="mailto:kennguyen02587@gmail.com" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 04. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Contact </span>  </span> </a> </nav> <div class="flex flex-wrap gap-6 border-t border-[#5f5a54] pt-5 text-sm font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:right-16 md:border-0 md:pt-0 md:text-[1.8vh]"> <a class="to-link-underline opacity-0 outline-none" href="https://www.instagram.com/khanh_nguyen_des/" aria-label="Instagram" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Instagram </a><a class="to-link-underline opacity-0 outline-none" href="https://www.behance.net/kennguyen034b8/" aria-label="Behance" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Behance </a><a class="to-link-underline opacity-0 outline-none" href="https://www.linkedin.com/in/khanh-nguyen-6b47a3177/" aria-label="Linkedin" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Linkedin </a> </div> </div> </div> </div> </dialog>  <div id="dissolve-mount" aria-hidden="true"></div> <div class="tablet-orientation-notice fixed inset-0 z-[120] hidden items-center justify-center bg-[#2e2b28] px-8 text-center text-[#faf9f6]" role="status" aria-live="polite" data-astro-cid-ggzamrjs=""> <div class="max-w-[32rem]" data-astro-cid-ggzamrjs=""> <div class="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-[#8a8178]" aria-hidden="true" data-astro-cid-ggzamrjs=""> <svg class="h-12 w-12" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" data-astro-cid-ggzamrjs=""> <path d="M13 12H35C36.6569 12 38 13.3431 38 15V33C38 34.6569 36.6569 36 35 36H13C11.3431 36 10 34.6569 10 33V15C10 13.3431 11.3431 12 13 12Z" stroke="currentColor" stroke-width="2" data-astro-cid-ggzamrjs=""></path> <path d="M17 8L13 12L17 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ggzamrjs=""></path> <path d="M31 40L35 36L31 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ggzamrjs=""></path> </svg> </div> <p class="font-serif text-[calc(3.2_*_var(--scale))] leading-none tracking-[-0.04em]" data-astro-cid-ggzamrjs="">
+Rotate your screen
+</p> <p class="mt-5 text-base font-medium leading-[1.25] text-[#c8c0b8]" data-astro-cid-ggzamrjs="">
+Please turn your tablet to landscape for the best viewing experience.
+</p> </div> </div>   <main> <div data-horizontal-story="" class="bg-[#edeae6]" id="site-top"> <div data-horizontal-pin="" class="relative w-full md:h-dvh" style="margin: 0px; max-width: 1920px; width: 1920px; max-height: 1080px; height: 1080px; padding: 0px; box-sizing: border-box;"> <div data-horizontal-track="" class="flex w-full flex-col md:h-dvh md:flex-row md:flex-nowrap"> <!-- Layout insets: Figma Home 1440×900 — https://www.figma.com/design/O7C1iWKOJ0y9FMHvDgUW6I/Personal-Site?node-id=1284-1355 --><section class="relative flex w-full flex-col shrink-0 h-dvh overflow-hidden bg-[#262220] text-[#f3eee8]" data-section="loading" data-header-bg="#3A3632" data-header-text="#f3eee8" data-header-border="#5a524d" data-horizontal-panel="" data-start-year="2013" data-end-year="2026" aria-label="Loading introduction"> <div class="pointer-events-none absolute bottom-0 left-0 z-0 w-full origin-bottom-left bg-[#3A3632]" aria-hidden="true" data-loading-base-overlay="" style="transform-origin: 0% 100%; height: 100vh;"></div> <!-- [data-hero-year] = clip shell; [data-year-row] = opacity + slide + --year-slot; suffix strip only animates last two digits. --> <div data-hero-year="" class="absolute inset-x-5 bottom-8 md:inset-x-auto md:left-32 md:top-(--vg) md:bottom-auto z-[2] overflow-hidden"> <div class="opacity-0 font-serif tabular-nums translate-z-0 [--year-slot:calc(8.4_*_var(--scale))] md:[--year-slot:calc(18.1_*_var(--scale))]" data-year-row="" aria-hidden="true" style="visibility: hidden;"> <div class="flex h-[1em] w-max text-(length:--year-slot) leading-none"> <span class="flex h-full items-center overflow-hidden [&amp;_.char]:inline-block" data-year-start-line=""> <span class="block whitespace-nowrap leading-none" data-year-start-text=""><div class="char" style="display: inline-block;">2</div><div class="char" style="display: inline-block;">0</div></span> </span> <div class="h-[1em] overflow-hidden"> <div data-year-strip="" class="translate-z-0"> <span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums"> <span class="flex h-full min-w-0 max-w-full items-center overflow-hidden [&amp;_.char]:inline-block" data-year-start-line=""> <span class="block whitespace-nowrap leading-none" data-year-start-text=""> <div class="char" style="display: inline-block;">1</div><div class="char" style="display: inline-block;">3</div> </span> </span> </span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">14</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">15</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">16</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">17</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">18</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">19</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">20</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">21</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">22</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">23</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">24</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">25</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">26</span> </div> </div> </div> </div> </div> <!-- Name hero: same inset; shell has no translateY (opacity + char motion only) --> <div data-hero-name="" class="absolute inset-x-5 bottom-8 md:inset-x-auto md:left-32 md:top-(--vg) md:bottom-auto z-[1]" style=""> <div data-name-row="" class="w-full text-(length:--name-fs) leading-none [--name-fs:calc(9_*_var(--scale))] md:[--name-fs:calc(18.1_*_var(--scale))] tracking-[-0.04em] font-editorial-dlig"> <h1 class="font-serif-2 leading-none uppercase [&amp;_.word]:inline-block" data-name-heading=""> <span class="block w-max overflow-hidden pl-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block;">Khanh</div></span> </span> <span class="block w-max overflow-hidden pl-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block;">Nguyen</div></span> </span> </h1> </div> </div>  <p class="absolute inset-x-5 z-[1] font-normal leading-[1.3] text-[calc(1.8_*_var(--scale))] text-[#f3eee8] opacity-0 top-[calc(8.4_*_var(--scale))] md:inset-x-auto md:top-[calc(5.8_*_var(--scale))] md:right-16 md:w-[calc(40_*_var(--scale))] md:text-(length:--cta-fs) md:text-[#faf9f6]/90" data-reveal-line="" data-loading-tagline="">
+Independent designer based in Vietnam — focused on thoughtful, considered
+    digital work.
+</p><p class="absolute bottom-12 left-4 z-[1] hidden text-base font-normal leading-[1.4] text-[#faf9f6]/85 opacity-0 md:block md:left-32 md:bottom-(--vg)" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0" data-line="">HCMC, Vietnam</span> </span> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 tabular-nums" data-line="">
+(GMT+7) <span data-clock="">19:43</span> </span> </span> </p>  <p class="absolute inset-x-5 z-[1] text-left font-normal leading-[1.2] text-[calc(1.8_*_var(--scale))] text-[#f3eee8] opacity-0 top-[calc(8.4_*_var(--scale))] md:inset-x-auto md:top-auto md:bottom-(--vg) md:right-16 md:text-right md:text-(length:--cta-fs) md:whitespace-nowrap" data-loading-journey-line="">
+A journey through years of design
+</p><p class="absolute bottom-12 left-1/2 z-[1] hidden w-full max-w-[calc(40_*_var(--scale))] -translate-x-1/2 px-4 text-left text-base font-normal leading-[1.4] text-[#faf9f6]/90 opacity-0 md:block md:left-[calc(50%_-_calc(16.8_*_var(--scale)))] md:w-[calc(40_*_var(--scale))] md:max-w-[calc(40_*_var(--scale))] md:translate-x-0 md:px-0 md:bottom-(--vg)" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 w-full" data-line="">Open for</span> </span> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 w-full" data-line="">collaborations</span> </span> </p> <p class="absolute bottom-12 right-4 z-[1] hidden text-right font-serif text-xl font-normal uppercase leading-none text-[#faf9f6]/80 opacity-0 md:block md:right-16 md:text-(length:--display-fs) md:bottom-(--vg)" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0" data-line="">SCROLL</span> </span> </p> </section>   <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#faf9f6] text-[#2e2b28]" data-section="home-about" aria-label="About" data-header-bg="#faf9f6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <div class="relative flex min-h-0 flex-1 flex-col gap-12 px-5 py-14 md:gap-0 md:px-0 md:py-0"> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl">
+Chapter I
+</p> <div class="flex w-full flex-col gap-5 md:absolute md:top-(--vg) md:right-16 md:z-10 md:w-[calc(61.4_*_var(--scale))] md:min-w-0" data-about-reveal-group-trigger="">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.2] opacity-0" data-about-reveal-label="">
+Quick intro
+</p> <p class="text-2xl leading-[1.3] opacity-0 md:text-(length:--display-fs) font-medium" data-about-reveal-intro="">
+Hi, I’m Khanh — a designer with 10+ years of experience in digital
+        products, websites, and visual systems, creating clear and thoughtful
+        experiences.
+</p></div> <a class="to-link-underline inline-flex items-center gap-2 text-lg font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:text-(length:--cta-fs) md:z-10 md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.4_*_var(--scale)))]" href="/about" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle">
+More about me
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" class="size-5 shrink-0 md:size-6" aria-hidden="true">
+<g id="arrow_forward">
+<mask id="mask0_0_22" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" fill="var(--fill-0, #D9D9D9)"></rect>
+</mask>
+<g mask="url(#mask0_0_22)">
+<path id="arrow_forward_2" d="M16.175 13H4V11H16.175L10.575 5.4L12 4L20 12L12 20L10.575 18.6L16.175 13Z" fill="currentColor"></path>
+</g>
+</g>
+</svg> </a> <div class="flex w-full flex-col items-center gap-2 md:contents"> <div class="relative aspect-[300/400] w-full overflow-hidden md:absolute md:bottom-(--vg) md:right-16 md:z-0 md:aspect-auto md:h-(--portrait-h) md:w-(--portrait-w)" data-about-reveal-group-image-shell=""> <div class="pointer-events-none absolute inset-0 z-[5] bg-[#d8d1c8] opacity-0" data-reveal-image-overlay="" aria-hidden="true" style="visibility: hidden;"></div> <div class="relative z-10 size-full overflow-hidden" data-reveal-image=""> <img src="/_astro/home-portrait.beOnDaN4_Z2jhemt.webp" alt="Portrait of Khanh Nguyen." loading="lazy" decoding="async" width="882" height="1176" class="size-full object-cover object-bottom"> </div> </div> <blockquote class="w-full border-0 p-0 text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] not-italic md:absolute md:z-10 md:w-[calc(14.3_*_var(--scale))] md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.4_*_var(--scale)))] md:top-(--portrait-top)">  <p class="mb-0 opacity-0" data-about-reveal-quote="">
+“Work for money.<br class="hidden md:block"> Design for love.”
+</p></blockquote> </div>  <p class="hidden text-base font-normal leading-[1.4] opacity-0 md:absolute md:bottom-(--vg) md:left-32 md:block md:max-w-[calc(29.4_*_var(--scale))]" data-reveal-line="">
+Beyond design: football, watches, aquariums, and martial arts.
+</p></div> </section>  <!--
+  "More Work" cinematic expand panel.
+  Layout layers (stacking order within the section):
+    z-10  — expanding dark rect (absolute, centered; starts at scale 0 via JS)
+    z-20  — text row (More / Work), visible above the rect while it grows
+  The section's overflow-hidden clips both layers, giving a clean cinematic exit
+  as the text flies apart and the rect fills the section bounds.
+
+  Animation is driven entirely by initHorizontalScroll.ts — no script block
+  needed here. On desktop, the master horizontal timeline inserts a "pause
+  phase" at the point where this panel is centred in the viewport:
+    Phase 1  — track slides to the panel's centred x position.
+    Phase 2  — rect scales 0 → cover; More flies left; Work flies right.
+    Phase 3  — track resumes to its final x position.
+
+  On mobile, the native vertical story pins this 100svh panel for the same
+  expand phase: the vertical rect scales to cover; More flies up; Work flies
+  down.
+--><section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh h-[100svh] items-center justify-center bg-[#faf9f6] px-5 py-14 text-[#2e2b28] md:px-0 md:py-0" aria-label="More work" data-more-work-section="" data-header-bg="#faf9f6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <!-- Desktop expanding rect: absolute-centered, z-10. --> <!-- JS sets scale(0) on init; scales to viewport-cover as the panel scrolls to center. --> <div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center md:flex" aria-hidden="true"> <div data-more-work-rect="" class="h-[calc(14_*_var(--scale))] w-[calc(24.9_*_var(--scale))] overflow-hidden bg-[#d9d9d9]" style="transform-origin: 50% 50%;"> <video class="h-full w-full object-cover" src="/_astro/thework-desktop.BOEUPLXP.mp4" autoplay="" muted="" loop="" playsinline="" preload="metadata"></video> </div> </div> <!-- Text and mobile rect: centred layers, with a constant 16px visual gap. --> <div class="relative z-20 flex flex-1 items-center justify-center md:flex-initial md:flex-row md:gap-16 md:px-4"> <p data-more-work-more="" class="absolute bottom-[calc(50%_+_calc(1.6_*_var(--scale)))] left-1/2 z-20 -translate-x-1/2 font-serif text-[calc(7_*_var(--scale))] font-normal uppercase leading-none md:relative md:bottom-auto md:left-auto md:translate-x-[calc(1.6_*_var(--scale))] md:text-[calc(12.8_*_var(--scale))]">
+The
+</p> <div class="pointer-events-none absolute left-1/2 top-1/2 z-10 flex h-[calc(15.2_*_var(--scale))] w-[calc(8.5_*_var(--scale))] -translate-x-1/2 -translate-y-1/2 items-center justify-center md:hidden" aria-hidden="true"> <div data-more-work-mobile-rect="" class="h-full w-full overflow-hidden bg-[#d9d9d9]"> <video class="h-full w-full object-cover" src="/_astro/thework-mobile.DFnsCk-1.mp4" autoplay="" muted="" loop="" playsinline="" preload="metadata"></video> </div> </div> <p data-more-work-work="" class="absolute left-1/2 top-[calc(50%_+_calc(1.6_*_var(--scale)))] z-20 -translate-x-1/2 font-serif text-[calc(7_*_var(--scale))] font-normal uppercase leading-none md:relative md:left-auto md:top-auto md:-translate-x-[calc(1.6_*_var(--scale))] md:text-[calc(12.8_*_var(--scale))]">
+Work
+</p> </div> </section> <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#edeae6] text-[#2e2b28]" aria-label="Selected work" data-section="home-work" data-header-bg="#edeae6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel="" data-astro-cid-p35cuy7o=""> <div class="relative flex min-h-0 flex-1 flex-col gap-12 px-5 py-14 md:gap-0 md:px-0 md:py-0" data-astro-cid-p35cuy7o=""> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl" data-astro-cid-p35cuy7o="">
+Chapter II
+</p> <div class="flex flex-col gap-2.5 md:absolute md:right-16 md:top-(--vg) md:w-full md:max-w-[calc(61.2_*_var(--scale))]" data-astro-cid-p35cuy7o="">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] opacity-0" data-reveal-line="" data-work-label="" data-astro-cid-p35cuy7o="">
+Related work
+</p><ul class="w-full text-[calc(4.1_*_var(--scale))] font-medium leading-[1.2] opacity-0 md:text-(length:--list-fs)" data-work-list="" data-astro-cid-p35cuy7o=""> <li class="relative" data-work-item-index="0" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/evo-money?from=home" aria-label="View EVO Money project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> EVO Money </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="1" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/plant-tag?from=home" aria-label="View Plant Tag project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Plant Tag </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="2" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/swisshaus?from=home" aria-label="View Swiss Haus project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Swiss Haus </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="3" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/betahaus?from=home" aria-label="View Betahaus project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Betahaus </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  </li> </ul> </div> <a class="to-link-underline inline-flex items-center gap-2 text-lg font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:right-16 md:text-(length:--cta-fs)" href="/works" data-to-link-underline="" data-astro-cid-p35cuy7o="" data-underline-filled="false" data-underline-phase="idle">
+View All Work
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" class="size-5 shrink-0 md:size-6" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<g id="arrow_forward">
+<mask id="mask0_0_22" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" fill="var(--fill-0, #D9D9D9)"></rect>
+</mask>
+<g mask="url(#mask0_0_22)">
+<path id="arrow_forward_2" d="M16.175 13H4V11H16.175L10.575 5.4L12 4L20 12L12 20L10.575 18.6L16.175 13Z" fill="currentColor"></path>
+</g>
+</g>
+</svg> </a> <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.3] text-[#1a1a1a] md:absolute md:bottom-(--vg) md:max-w-[calc(29.4_*_var(--scale))] md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.2_*_var(--scale)))]" data-astro-cid-p35cuy7o="">
+❋ Live site unavailable for some inactive or incomplete projects
+</p> <div class="relative isolate hidden w-full max-w-[calc(40.1_*_var(--scale))] shrink-0 overflow-hidden md:absolute md:bottom-(--vg) md:left-32 md:block md:max-w-[min(calc(40.1_*_var(--scale)),calc(100%_-_calc(8_*_var(--scale))))]" data-work-preview="" aria-hidden="true" data-astro-cid-p35cuy7o=""> <svg width="401" height="225" viewBox="0 0 401 225" fill="none" class="h-auto w-full transition-opacity duration-300 ease-out" data-work-placeholder="true" data-astro-cid-p35cuy7o="true">
+<rect x="0.743164" y="0.5" width="399.563" height="224" stroke="#B8B3AC"></rect>
+<path d="M0.243164 1L400.243 224" stroke="#B8B3AC"></path>
+</svg> <img src="/_astro/evo-money-thumbnail-16-9.B00Lym5-_qy4LO.webp" alt="" loading="lazy" decoding="async" data-work-image="0" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="/_astro/plant-tag-thumbnail-16-9.CEaBMfaz_Z64N3z.webp" alt="" loading="lazy" decoding="async" data-work-image="1" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="/_astro/swisshaus-thumbnail-16-9.Dl-P9oLP_Z1jbLrY.webp" alt="" loading="lazy" decoding="async" data-work-image="2" data-astro-cid-p35cuy7o="true" width="1440" height="804" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="/_astro/betahaus-thumbnail-16-9.ZH-WOOsP_GLeLu.webp" alt="" loading="lazy" decoding="async" data-work-image="3" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"> </div> </div> </section>  <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#2e2b28] pt-14 text-[#faf9f6] md:pt-0 md:pl-16 md:w-max relative z-1" aria-label="Services" data-header-bg="#2e2b28" data-header-text="#faf9f6" data-header-border="#5a524d" data-horizontal-panel="" data-services-section=""> <div class="flex w-full flex-col md:min-h-0 md:w-max md:flex-1 md:flex-row md:items-stretch md:pl-16"> <div class="mb-12 flex flex-col gap-10 px-5 md:mb-0 md:w-[calc(63.6_*_var(--scale))] md:min-h-0 md:shrink-0 md:justify-between md:gap-0 md:px-0 md:py-(--vg) md:pr-6"> <p class="font-serif text-lg font-normal uppercase leading-none md:text-2xl">
+Chapter III
+</p> <div class="flex flex-col gap-5">   <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.2] opacity-0" data-reveal-line="">
+What I do?
+</p><p class="text-2xl font-normal leading-[1.3] opacity-0 md:text-(length:--display-fs)" data-reveal-line="">
+Designing digital experiences with clarity, structure, and intention.
+</p></div> </div> <article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden border-t"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="/_astro/product-design.DfgsIgHZ_2ep3iR.webp" alt="Product Design" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 01 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]"> Product Design </p> <p class="text-sm leading-[1.3] md:text-base">Digital products designed with intuitive flow, structure, and usability in mind.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="/_astro/digital-experiences.DDLaUBVQ_Z19kMkW.webp" alt="Digital Experiences" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 02 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]"> Digital Experiences </p> <p class="text-sm leading-[1.3] md:text-base">Web experiences shaped through clarity, rhythm, and thoughtful interaction.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="/_astro/art-direction.DvxnZOBk_UzEGf.webp" alt="Art direction" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 03 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]"> Art direction </p> <p class="text-sm leading-[1.3] md:text-base">Visual direction focused on mood, identity, and cohesive digital storytelling.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="/_astro/development.DAJZlvuy_ZLxwRa.webp" alt="Development" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 04 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]"> Development </p> <p class="text-sm leading-[1.3] md:text-base">Built in Webflow or Framer, with custom development when the project calls for it.</p> </article> </div> </section>  <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh !overflow-clip bg-[#edeae6] text-[#2e2b28] md:!overflow-hidden" aria-label="Clients" data-section="home-clients" data-header-bg="#edeae6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <div class="relative flex min-h-0 flex-1 flex-col gap-10 px-5 py-14 md:gap-0 md:px-0 md:py-0"> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl">
+Chapter IV
+</p> <div class="w-full md:absolute md:right-32 md:top-(--vg) md:max-w-[calc(61.2_*_var(--scale))]">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] mb-5 opacity-0" data-reveal-line="" data-clients-label="">
+Selected experiences
+</p><div class="grid grid-cols-[minmax(0,1fr)_calc(5.6_*_var(--scale))] items-stretch gap-4 [--client-row-height:calc(5.04_*_var(--scale))] md:block" data-clients-mobile-grid=""> <ul class="flex min-w-0 flex-col gap-1 overflow-visible text-[calc(4.2_*_var(--scale))] font-medium leading-[1.2] opacity-0 md:text-(length:--list-fs) [&amp;:not([data-clients-list-interactive])_li]:pointer-events-none [&amp;:not([data-clients-list-interactive])_li]:cursor-default [&amp;[data-clients-list-interactive]_li]:cursor-pointer" data-clients-list="" data-clients-list-interactive=""> <li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line=""> Trusting Social </span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="/_astro/vietnamwork.3okzrBEw_Zwcg8r.svg" alt="" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line=""> Vietnamwork </span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="/_astro/autonomous.CjY4rwNV_Zwcg8r.svg" alt="" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line=""> Autonomous </span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="/_astro/ven.B2Y4CFaB_Zwcg8r.svg" alt="" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line=""> VEN Agency </span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="/_astro/glass-egg.BEyyPGun_Zwcg8r.svg" alt="" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line=""> Glass Egg </span> </span> </li> </ul> <div class="relative md:hidden"> <div class="sticky top-[calc(50vh-var(--client-row-height)/2)] flex h-(--client-row-height) items-center justify-end" data-clients-mobile-logos=""> <div class="grid size-[calc(6.4_*_var(--scale))]"> <div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="/_astro/trusting-social.DpmGxmAc_Z2iV97Y.svg" alt="Trusting Social logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="/_astro/vietnamwork.3okzrBEw_Z2iV97Y.svg" alt="Vietnamwork logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="/_astro/autonomous.CjY4rwNV_Z2iV97Y.svg" alt="Autonomous logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="/_astro/ven.B2Y4CFaB_Z2iV97Y.svg" alt="VEN Agency logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="/_astro/glass-egg.BEyyPGun_Z2iV97Y.svg" alt="Glass Egg logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div> </div> </div> </div> </div> <p class="relative opacity-0 text-[calc(4.2_*_var(--scale))] font-medium leading-[1.2] md:text-(length:--list-fs) block overflow-hidden transition-opacity duration-500 ease-out" data-client-row="" data-client-more="" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">And more</span> </p> </div> <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] md:absolute md:bottom-(--vg) md:left-32 md:max-w-[calc(29.4_*_var(--scale))]">
+Work spanning brands, products,
+<br>
+and digital teams.
+</p> </div> </section>  <section id="contact" class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#1f1d1b] text-[#ccc]" data-section="home-footer" aria-label="Contact" data-header-bg="#1f1d1b" data-header-text="#ccc" data-header-border="#5a524d" data-horizontal-panel=""> <div class="relative flex min-h-[calc(100dvh_-_calc(6_*_var(--scale)))] flex-1 flex-col justify-between gap-10 px-5 pt-14 pb-5 md:min-h-0 md:px-0 md:py-0"> <div class="flex flex-col gap-5 md:contents"> <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] md:absolute md:bottom-(--vg) md:right-16 md:whitespace-nowrap md:text-right">
+Where stories find their form
+</p> <div class="w-full leading-none md:absolute md:left-32 md:top-(--vg) md:max-w-[calc(80.2_*_var(--scale))]"> <h2 class="font-serif-2 text-[calc(7_*_var(--scale))] leading-none tracking-[-0.04em] opacity-0 md:text-[calc(18.1_*_var(--scale))] [&amp;_.word]:inline-block uppercase font-editorial-dlig" data-char-line-heading=""> <span class="block w-max overflow-hidden pl-[0.2em] pr-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block; transform-origin: 50% 100%;">Next</div></span> </span> <span class="block w-max overflow-hidden pl-[0.2em] pr-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block; transform-origin: 50% 100%;">chapter</div></span> </span> </h2> </div> </div> <div class="flex flex-col gap-10 md:contents"> <div class="flex flex-col gap-10 md:contents"> <div class="flex flex-col gap-5 md:absolute md:bottom-(--vg) md:left-32 md:gap-4 opacity-0" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block translate-z-0" data-line=""> <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4]">
+Contact to
+</p> </span> </span> <span class="block overflow-hidden"> <span class="block translate-z-0 w-fit" data-line=""> <a class="from-link-underline text-2xl font-medium leading-[1.2] md:text-(length:--display-fs) w-fit" href="mailto:kennguyen02587@gmail.com" data-from-link-underline="" data-underline-filled="true" data-underline-phase="idle">
+kennguyen02587@gmail.com
+</a> </span> </span> </div> <div class="flex flex-col gap-5 md:contents"> <p class="text-[calc(1.1_*_var(--scale))] font-medium uppercase leading-[1.4] md:hidden">
+social
+</p> <nav class="flex flex-col gap-1 text-2xl font-medium leading-[1.2] md:absolute md:right-16 md:top-(--vg) md:flex-row md:flex-wrap md:gap-6 md:text-base" aria-label="Social"> <a class="to-link-underline" href="https://www.instagram.com/khanh_nguyen_des/" aria-label="Instagram" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Instagram </a><a class="to-link-underline" href="https://www.behance.net/kennguyen034b8/" aria-label="Behance" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Behance </a><a class="to-link-underline" href="https://www.linkedin.com/in/khanh-nguyen-6b47a3177/" aria-label="Linkedin" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Linkedin </a> </nav> </div> </div> <div class="flex items-start justify-between border-t border-[#3a3632] pt-5 text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] md:hidden"> <p>© 2026 — khanh nguyen</p> <p>folio — edition</p> </div> </div> </div> </section>  </div> </div> </div>  </main>  
+  
+
+  <script src="./assets/_astro/Header.astro_astro_type_script_index_0_lang.-_d_Djl9.js" type="module"></script>
+  <script src="./assets/_astro/FullscreenMenu.astro_astro_type_script_index_0_lang.D_q-HyZd.js" type="module"></script>
+  <script src="./assets/_astro/TabletOrientationNotice.astro_astro_type_script_index_0_lang.DmoMhxPB.js" type="module"></script>
+  <script src="./assets/_astro/Loading.astro_astro_type_script_index_0_lang.zYvD-WGL.js" type="module"></script>
+  <script src="./assets/_astro/About.astro_astro_type_script_index_0_lang.DrXWdl1D.js" type="module"></script>
+  <script src="./assets/_astro/Work.astro_astro_type_script_index_0_lang.B0cS72Vi.js" type="module"></script>
+  <script src="./assets/_astro/Services.astro_astro_type_script_index_0_lang.CavSbKjf.js" type="module"></script>
+  <script src="./assets/_astro/Clients.astro_astro_type_script_index_0_lang.CkJXhcIa.js" type="module"></script>
+  <script src="./assets/_astro/Footer.astro_astro_type_script_index_0_lang.En_bDpoP.js" type="module"></script>
+  <script src="./assets/_astro/Layout.astro_astro_type_script_index_0_lang.78jby32H.js" type="module"></script>
+  <script src="./assets/_astro/index.astro_astro_type_script_index_0_lang.FpIfv3r_.js" type="module"></script>
+  <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    </script>
+
+<script id="universal-scroll-director">
+(function() {
+  'use strict';
+  console.log('🎬 [Universal Scroll Director] Inicializando motor de animação, revelação de assets e 3D...');
+
+  // --- 0. MOCK DE REDE ANTI-CRASH PARA HIDRATAÇÃO NUXT / SSR ---
+  if (typeof window !== 'undefined' && window.fetch) {
+    const origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      const urlStr = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+      if (urlStr.includes('/builds/meta/') || urlStr.includes('/_nuxt/builds/meta/')) {
+        return Promise.resolve(new Response(JSON.stringify({
+          id: "1b74772f-a27f-43d9-b862-c09e2209223a",
+          timestamp: 1786356888430,
+          matcher: { static: {}, wildcard: {}, dynamic: {} },
+          prerendered: ["/"]
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
+      }
+      return origFetch.apply(this, arguments).catch(function(err) {
+        if (urlStr.includes('/_nuxt/') || urlStr.includes('/api/') || urlStr.includes('/_vercel/')) {
+          return Promise.resolve(new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        throw err;
+      });
+    };
+  }
+
+  function onReady(fn) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(fn, 10);
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  onReady(function() {
+    // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
+    document.querySelectorAll('.opacity-0').forEach(function(el) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis, abas ou timelines GSAP ativas
+      if (
+        el.closest('#intro-logo-spinner') ||
+        el.closest('.amenities-slide-box') ||
+        el.closest('.splide') ||
+        el.closest('[data-anim]') ||
+        el.closest('[data-scribble]') ||
+        el.closest('.dynamic_section') ||
+        el.closest('.apartments') ||
+        el.classList.contains('project-slider-progress-line') ||
+        el.classList.contains('scale-[1.05]') ||
+        el.classList.contains('line') ||
+        el.classList.contains('word') ||
+        el.classList.contains('char') ||
+        (el.className && typeof el.className === 'string' && el.className.includes('photo--'))
+      ) {
+        return;
+      }
+      const cs = window.getComputedStyle(el);
+      if (cs.opacity === '0' && !el.id.includes('overlay')) {
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.opacity = '1';
+      }
+    });
+
+    // --- 2. MOTOR UNIVERSAL DE SPLITTEXT / APPEAR-LINE REVEAL ---
+    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+
+    lineMasks.forEach(function(mask) {
+      mask.style.overflow = 'visible';
+      mask.style.display = 'block';
+    });
+
+    splitLines.forEach(function(line, idx) {
+      line.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ' + ((idx % 6) * 0.08) + 's, opacity 0.8s ease ' + ((idx % 6) * 0.08) + 's';
+      line.style.transform = 'translateY(0px)';
+      line.style.opacity = '1';
+      line.style.visibility = 'visible';
+      line.style.display = 'block';
+    });
+
+    // Restaura textos que possam estar em aria-label mas vazios nos spans internos
+    document.querySelectorAll('[aria-label][data-v-30d30ebe]').forEach(function(container) {
+      const label = container.getAttribute('aria-label');
+      if (label && (!container.innerText || container.innerText.trim() === '')) {
+        const line = container.querySelector('.appear-line');
+        if (line) line.textContent = label;
+      }
+    });
+
+    // --- 3. REVELAÇÃO CINEMATOGRÁFICA DE CORTINAS SOBRE IMAGENS (OVERLAY CURTAINS) ---
+    // Procura divs com bg-secondary e z-10 cobrindo imagens de serviços e projetos
+    const curtainOverlays = Array.from(document.querySelectorAll('div.bg-secondary.z-10, div[class*="bg-secondary"][class*="z-10"], div[class*="bg-black"][class*="z-10"]'));
+    curtainOverlays.forEach(function(curtain) {
+      // Verifica se é uma cortina sobreposta a uma imagem
+      const parent = curtain.parentElement;
+      if (parent && (parent.querySelector('img') || parent.classList.contains('overflow-hidden') || parent.classList.contains('aspect-[5/3]'))) {
+        curtain.style.transition = 'transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease';
+        curtain.style.transformOrigin = 'top';
+        curtain.style.pointerEvents = 'none';
+
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              curtain.style.transform = 'translateY(-101%)';
+              curtain.style.opacity = '0';
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        observer.observe(parent);
+      }
+    });
+
+    // --- 4. MOTOR 3D CILÍNDRICO PROCEDURAL (#intro-logo-spinner) ---
+    const spinnerContainer = document.getElementById('intro-logo-spinner');
+    if (spinnerContainer) {
+      const squares = Array.from(spinnerContainer.querySelectorAll('[data-spinner-square]'));
+      const count = squares.length || 8;
+      const angleStep = 360 / count;
+      const radius = window.innerWidth > 640 ? (window.innerWidth * 0.48) : (window.innerWidth * 0.7);
+
+      spinnerContainer.style.transformStyle = 'preserve-3d';
+      spinnerContainer.style.position = 'relative';
+
+      squares.forEach(function(sq, i) {
+        const angle = i * angleStep;
+        sq.style.position = 'absolute';
+        sq.style.left = '50%';
+        sq.style.top = '50%';
+        sq.style.margin = '-' + (sq.offsetHeight / 2) + 'px 0 0 -' + (sq.offsetWidth / 2) + 'px';
+        sq.style.transformOrigin = 'center center';
+        sq.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)';
+        sq.style.opacity = '1';
+        sq.style.transition = 'opacity 0.5s ease, filter 0.5s ease, transform 0.3s ease-out';
+        sq.style.pointerEvents = 'auto';
+
+        // Revela imagem interna
+        const innerImgWrapper = sq.firstElementChild;
+        if (innerImgWrapper) {
+          innerImgWrapper.style.opacity = '1';
+          innerImgWrapper.style.visibility = 'visible';
+        }
+      });
+
+      let currentRotation = 0;
+      let targetRotation = 0;
+      let isDragging = false;
+      let startX = 0;
+      let autoSpinSpeed = 0.15;
+
+      function updateSpinnerTransform() {
+        currentRotation += (targetRotation - currentRotation) * 0.08;
+        spinnerContainer.style.transform = 'rotateX(-5deg) rotateY(' + currentRotation + 'deg)';
+
+        // Aplica foco e iluminação dinâmica nos itens voltados para a frente
+        squares.forEach(function(sq, i) {
+          const itemAngle = (i * angleStep + currentRotation) % 360;
+          const normalizedAngle = (itemAngle + 360) % 360;
+          const distToFront = Math.min(normalizedAngle, 360 - normalizedAngle);
+          const brightness = Math.max(0.35, 1 - (distToFront / 180) * 0.7);
+          sq.style.filter = 'brightness(' + brightness + ')';
+          sq.style.zIndex = Math.round(100 - distToFront);
+        });
+      }
+
+      // Interação por Scroll
+      window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset || window.scrollY || 0;
+        targetRotation = scrollY * 0.22;
+      }, { passive: true });
+
+      // Interação por Mouse Drag
+      const spinnerParent = spinnerContainer.parentElement || spinnerContainer;
+      spinnerParent.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        const delta = e.clientX - startX;
+        targetRotation += delta * 0.35;
+        startX = e.clientX;
+      });
+      window.addEventListener('mouseup', function() { isDragging = false; });
+
+      // Touch para mobile
+      spinnerParent.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches[0]) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+      window.addEventListener('touchmove', function(e) {
+        if (!isDragging || !e.touches || !e.touches[0]) return;
+        const delta = e.touches[0].clientX - startX;
+        targetRotation += delta * 0.45;
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+      window.addEventListener('touchend', function() { isDragging = false; });
+
+      // Loop de Rotação 60FPS
+      function spinnerLoop() {
+        if (!isDragging) {
+          targetRotation += autoSpinSpeed;
+        }
+        updateSpinnerTransform();
+        requestAnimationFrame(spinnerLoop);
+      }
+      requestAnimationFrame(spinnerLoop);
+    }
+
+    // --- 5. DISTRIBUIÇÃO ANGULAR E ROTAÇÃO DE ÍCONES RADIAIS (ASTERISCOS DE 8 LÂMINAS) ---
+    document.querySelectorAll('.relative').forEach(function(container) {
+      const blades = Array.from(container.children).filter(function(c) {
+        return c.classList.contains('origin-bottom') && c.classList.contains('absolute');
+      });
+      if (blades.length === 8) {
+        blades.forEach(function(blade, bIdx) {
+          const deg = bIdx * 45;
+          blade.style.transform = 'translateX(-50%) rotate(' + deg + 'deg)';
+          blade.style.transformOrigin = 'bottom center';
+        });
+        container.style.transition = 'transform 0.2s linear';
+        container.classList.add('radial-asterisk-active');
+      }
+    });
+
+    // Rotação sutil dos asteriscos sincronizada com scroll
+    window.addEventListener('scroll', function() {
+      const scrollY = window.pageYOffset || window.scrollY || 0;
+      document.querySelectorAll('.radial-asterisk-active').forEach(function(ast) {
+        ast.style.transform = 'rotate(' + (scrollY * 0.15) + 'deg)';
+      });
+    }, { passive: true });
+
+    // --- 6. MOTOR DE SLIDERS COM AUTOPLAY E ABAS INTERATIVAS (HERO & DEPOIMENTOS) ---
+    
+    // A) Hero Slider (4 Imagens de Fundo)
+    const heroImageContainers = Array.from(document.querySelectorAll('.w-full.h-full.relative > .w-full.h-full.absolute.top-0.left-0'));
+    const heroProgressBars = Array.from(document.querySelectorAll('.project-slider-progress-line'));
+
+    if (heroImageContainers.length >= 2 && heroProgressBars.length >= 2) {
+      let activeHeroIndex = 0;
+      let heroTimer = null;
+      const heroSlideDuration = 5500; // 5.5s
+
+      function setHeroSlide(index) {
+        activeHeroIndex = index % heroImageContainers.length;
+
+        heroImageContainers.forEach(function(imgWrap, i) {
+          imgWrap.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeHeroIndex) {
+            imgWrap.style.opacity = '1';
+            imgWrap.style.transform = 'scale(1.0)';
+            imgWrap.classList.remove('opacity-0');
+          } else {
+            imgWrap.style.opacity = '0';
+            imgWrap.style.transform = 'scale(1.05)';
+          }
+        });
+
+        heroProgressBars.forEach(function(barWrap, i) {
+          const fill = barWrap.querySelector('.bg-primary');
+          if (!fill) return;
+          fill.style.transition = 'none';
+          if (i < activeHeroIndex) {
+            fill.style.transform = 'scaleX(1)';
+          } else if (i === activeHeroIndex) {
+            fill.style.transform = 'scaleX(0)';
+            setTimeout(function() {
+              fill.style.transition = 'transform ' + (heroSlideDuration / 1000) + 's linear';
+              fill.style.transform = 'scaleX(1)';
+            }, 30);
+          } else {
+            fill.style.transform = 'scaleX(0)';
+          }
+        });
+      }
+
+      heroProgressBars.forEach(function(barWrap, i) {
+        const parentBtn = barWrap.closest('.cursor-pointer') || barWrap;
+        parentBtn.addEventListener('click', function() {
+          clearInterval(heroTimer);
+          setHeroSlide(i);
+          heroTimer = setInterval(function() {
+            setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+          }, heroSlideDuration);
+        });
+      });
+
+      setHeroSlide(0);
+      heroTimer = setInterval(function() {
+        setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+      }, heroSlideDuration);
+    }
+
+    // B) Testimonials Slider (4 Depoimentos e Clientes)
+    const testimonialSection = document.querySelector('[class*="aspect-[16/12]"]')?.closest('.layout-grid') || document.querySelector('[class*="-mt-[5vw]"]')?.parentElement;
+    if (testimonialSection) {
+      const testImages = Array.from(testimonialSection.querySelectorAll('[class*="aspect-[16/12]"] [class*="absolute"]'));
+      const testAvatars = Array.from(testimonialSection.querySelectorAll('[class*="aspect-square"] [class*="absolute"]'));
+      const testProgressBars = Array.from(testimonialSection.querySelectorAll('.cursor-pointer .bg-primary'));
+      const testQuotes = Array.from(testimonialSection.querySelectorAll('.invisible.pointer-events-none > div'));
+      const mainQuoteLine = testimonialSection.querySelector('[aria-label*="Storey brought"]')?.closest('.appear-line-mask')?.parentElement || testimonialSection.querySelector('.appear-line')?.parentElement;
+
+      if (testImages.length >= 2) {
+        let activeTestIndex = 0;
+        let testTimer = null;
+        const testDuration = 6000;
+
+        function setTestimonial(idx) {
+          activeTestIndex = idx % testImages.length;
+
+          testImages.forEach(function(img, i) {
+            img.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            if (i === activeTestIndex) {
+              img.style.opacity = '1';
+              img.style.transform = 'scale(1)';
+            } else {
+              img.style.opacity = '0';
+              img.style.transform = 'scale(1.05)';
+            }
+          });
+
+          testAvatars.forEach(function(av, i) {
+            av.style.transition = 'opacity 0.6s ease';
+            av.style.opacity = i === activeTestIndex ? '1' : '0';
+          });
+
+          testProgressBars.forEach(function(bar, i) {
+            bar.style.transition = 'none';
+            if (i < activeTestIndex) {
+              bar.style.transform = 'scaleX(1)';
+            } else if (i === activeTestIndex) {
+              bar.style.transform = 'scaleX(0)';
+              setTimeout(function() {
+                bar.style.transition = 'transform ' + (testDuration / 1000) + 's linear';
+                bar.style.transform = 'scaleX(1)';
+              }, 30);
+            } else {
+              bar.style.transform = 'scaleX(0)';
+            }
+          });
+
+          // Atualiza texto do depoimento
+          if (testQuotes[activeTestIndex] && mainQuoteLine) {
+            const newText = testQuotes[activeTestIndex].innerText.trim();
+            const targetLine = testimonialSection.querySelector('.appear-line');
+            if (targetLine) {
+              targetLine.style.opacity = '0';
+              targetLine.style.transform = 'translateY(10px)';
+              setTimeout(function() {
+                targetLine.textContent = newText;
+                targetLine.style.opacity = '1';
+                targetLine.style.transform = 'translateY(0)';
+              }, 250);
+            }
+          }
+        }
+
+        const barContainers = Array.from(testimonialSection.querySelectorAll('[class*="cursor-pointer"]')).filter(function(el) {
+          return el.querySelector('.bg-primary') || el.querySelector('.bg-primary\/30');
+        });
+        barContainers.forEach(function(container, i) {
+          container.addEventListener('click', function() {
+            clearInterval(testTimer);
+            setTestimonial(i);
+            testTimer = setInterval(function() {
+              setTestimonial((activeTestIndex + 1) % testImages.length);
+            }, testDuration);
+          });
+        });
+
+        setTestimonial(0);
+        testTimer = setInterval(function() {
+          setTestimonial((activeTestIndex + 1) % testImages.length);
+        }, testDuration);
+      }
+    }
+
+    // --- 7. HOVER BADGES INTERATIVOS & MICRO-INTERAÇÕES ---
+    document.querySelectorAll('a[href*="/projects/"]').forEach(function(link) {
+      const badge = link.querySelector('.bg-primary.w-fit.h-fit');
+      if (badge) {
+        badge.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        link.addEventListener('mouseenter', function() {
+          badge.style.opacity = '1';
+          badge.style.transform = 'scale(1.05)';
+        });
+        link.addEventListener('mouseleave', function() {
+          badge.style.opacity = '0';
+          badge.style.transform = 'scale(0.95)';
+        });
+      }
+    });
+
+    // --- 8. STACKING CARDS & METRIC STATS SLIDERS (15+ / 30+ SEM SOBREPOSIÇÃO) ---
+    const stackingCards = Array.from(document.querySelectorAll('[data-stacking-cards-item]'));
+    if (stackingCards.length > 1) {
+      let activeCardIdx = 0;
+      function renderStackingCard(idx) {
+        activeCardIdx = (idx + stackingCards.length) % stackingCards.length;
+        stackingCards.forEach(function(c, i) {
+          c.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeCardIdx) {
+            c.style.opacity = '1';
+            c.style.visibility = 'visible';
+            c.style.transform = 'translateY(0px)';
+            c.style.position = 'relative';
+            c.style.pointerEvents = 'auto';
+          } else {
+            c.style.opacity = '0';
+            c.style.visibility = 'hidden';
+            c.style.transform = 'translateY(15px)';
+            c.style.position = 'absolute';
+            c.style.pointerEvents = 'none';
+          }
+        });
+
+        // Atualiza indicadores numéricos como 01/02
+        const navLines = document.querySelectorAll('.problem_stats_line, .problem_stats_navigation');
+        navLines.forEach(function(nl) {
+          const spans = nl.querySelectorAll('span, div');
+          if (spans.length >= 2) {
+            spans[0].textContent = String(activeCardIdx + 1).padStart(2, '0');
+          }
+        });
+      }
+
+      renderStackingCard(0);
+      let cardTimer = setInterval(function() {
+        renderStackingCard(activeCardIdx + 1);
+      }, 4500);
+
+      // Conecta botões/setas de navegação
+      document.querySelectorAll('.problems_home_stats button, .problems_home_stats a, [class*="stats_nav"], .problems_stats_navigation').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          clearInterval(cardTimer);
+          renderStackingCard(activeCardIdx + 1);
+          cardTimer = setInterval(function() {
+            renderStackingCard(activeCardIdx + 1);
+          }, 4500);
+        });
+      });
+    }
+
+    // --- 9. SCROLL-LINKED TEXT HIGHLIGHT REVEAL ([data-highlight-text]) ---
+    document.querySelectorAll('[data-highlight-text]').forEach(function(container) {
+      if (container.dataset.highlightActivated) return;
+      container.dataset.highlightActivated = 'true';
+      const text = container.innerText.trim();
+      const words = text.split(/\s+/);
+      container.innerHTML = '';
+      const wordSpans = words.map(function(w) {
+        const span = document.createElement('span');
+        span.textContent = w + ' ';
+        span.style.display = 'inline';
+        span.style.transition = 'color 0.35s ease, opacity 0.35s ease';
+        span.style.color = '#71717a';
+        span.style.opacity = '0.35';
+        container.appendChild(span);
+        return span;
+      });
+
+      function updateTextHighlight() {
+        const rect = container.getBoundingClientRect();
+        const winH = window.innerHeight;
+        const progress = Math.min(Math.max((winH * 0.85 - rect.top) / (rect.height + winH * 0.35), 0), 1);
+        const activeCount = Math.floor(progress * wordSpans.length);
+
+        wordSpans.forEach(function(sp, i) {
+          if (i <= activeCount) {
+            sp.style.color = '#fafaf9';
+            sp.style.opacity = '1';
+          } else {
+            sp.style.color = '#71717a';
+            sp.style.opacity = '0.35';
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateTextHighlight, { passive: true });
+      updateTextHighlight();
+    });
+
+    // --- 10. GAP SECTION / KINETIC IMAGE CAROUSEL & LETTER SCRUB ---
+    const gapSection = document.querySelector('.gap_home_wrap, [class*="gap_wrap"]');
+    if (gapSection) {
+      const gapImages = Array.from(gapSection.querySelectorAll('.gap_home_image, [class*="gap_image"]'));
+      if (gapImages.length > 1) {
+        let gapIdx = 0;
+        gapImages.forEach(function(img, i) {
+          img.style.transition = 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+          img.style.opacity = i === 0 ? '1' : '0';
+        });
+        setInterval(function() {
+          gapImages.forEach(function(img) { img.style.opacity = '0'; });
+          gapIdx = (gapIdx + 1) % gapImages.length;
+          gapImages[gapIdx].style.opacity = '1';
+        }, 900);
+      }
+    }
+
+    // --- 12. MOTOR UNIVERSAL DE REVELAÇÃO WEBFLOW (data-anim="split", data-anim="element", data-anim="stagger", data-anim="slideUp-once") ---
+    if (typeof gsap !== 'undefined') {
+      // 12.1 Data-anim split
+      document.querySelectorAll('[data-anim="split"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        try {
+          if (typeof SplitText !== 'undefined') {
+            const cleanText = el.getAttribute('aria-label') || el.textContent.trim();
+            el.innerHTML = cleanText;
+            const st = new SplitText(el, { type: 'lines', linesClass: 'split-line', mask: 'lines' });
+            if (st.lines && st.lines.length > 0) {
+              const triggerEl = el.closest('section, .wrap') || el;
+              gsap.from(st.lines, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 90%',
+                  once: true
+                }
+              });
+            }
+          }
+        } catch(e) {}
+      });
+
+      // 12.2 Data-anim element e slideUp-once
+      document.querySelectorAll('[data-anim="element"], [data-anim="slideUp-once"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        const triggerEl = el.closest('section, .wrap') || el;
+        gsap.fromTo(el, 
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top 90%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // 12.3 Data-anim stagger
+      document.querySelectorAll('[data-anim="stagger"]').forEach(function(el) {
+        const children = Array.from(el.children).filter(function(child) {
+          return !child.hasAttribute('data-dropdown-list') && !child.classList.contains('faq-dropdown-list');
+        });
+        if (children.length > 0) {
+          const triggerEl = el.closest('section, .wrap') || el;
+          gsap.fromTo(children,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 90%',
+                once: true
+              }
+            }
+          );
+        }
+      });
+      // 12.4 Data-anim img-overlay
+      document.querySelectorAll('[data-anim="img-overlay"]').forEach(function(el) {
+        gsap.to(el, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      });
+
+      // 12.5 Data-anim img-paralax / img-parallax (Parallax de imagens Webflow)
+      document.querySelectorAll('[data-anim="img-paralax"], [data-anim="img-parallax"]').forEach(function(el) {
+        gsap.fromTo(el,
+          { yPercent: -10, scale: 1.1 },
+          {
+            yPercent: 10,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.closest('section, .wrap') || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      });
+
+      // 12.6 FAQ Dropdown Hover & Click Engine
+      document.querySelectorAll('.faq [data-dropdown]').forEach(function(dropdown) {
+        dropdown.addEventListener('mouseenter', function() {
+          dropdown.classList.add('is-active');
+        });
+        dropdown.addEventListener('mouseleave', function() {
+          dropdown.classList.remove('is-active');
+        });
+        dropdown.addEventListener('click', function() {
+          dropdown.classList.toggle('is-active');
+        });
+      });
+    }
+
+    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions, Webflow Reveals) ativados com sucesso.');
+  });
+})();
+</script>
+</body></html>

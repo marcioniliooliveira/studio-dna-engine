@@ -252,6 +252,154 @@ class UnifiedQualityGate {
       if (server && server.listening) server.close();
     }
   }
+
+  /**
+   * Executa a auditoria pós-clonagem independente de uma cópia em copias/
+   */
+  static async auditClone({
+    siteDir,
+    expectedHeight = null,
+    headless = true,
+    timeoutMs = 15000
+  }) {
+    const resolvedSiteDir = path.resolve(siteDir);
+    const htmlPath = path.join(resolvedSiteDir, 'index.html');
+
+    if (!fs.existsSync(htmlPath)) {
+      return {
+        passed: false,
+        status: 'failed',
+        error: `Arquivo index.html não encontrado em: ${resolvedSiteDir}`
+      };
+    }
+
+    let server;
+    let browser;
+    const networkFailures = [];
+    const jsErrors = [];
+
+    try {
+      server = http.createServer((req, res) => {
+        let reqPath = decodeURIComponent(req.url.split('?')[0]);
+        if (reqPath === '/' || reqPath === '') reqPath = '/index.html';
+
+        let targetFile = path.join(resolvedSiteDir, reqPath);
+        if (!fs.existsSync(targetFile) || !fs.statSync(targetFile).isFile()) {
+          const altAsset = path.join(resolvedSiteDir, 'assets', reqPath);
+          if (fs.existsSync(altAsset) && fs.statSync(altAsset).isFile()) {
+            targetFile = altAsset;
+          }
+        }
+
+        if (fs.existsSync(targetFile) && fs.statSync(targetFile).isFile()) {
+          const ext = path.extname(targetFile).toLowerCase();
+          res.writeHead(200, {
+            'Content-Type': MIME_TYPES[ext] || 'application/octet-stream'
+          });
+          fs.createReadStream(targetFile).pipe(res);
+        } else {
+          res.writeHead(404);
+          res.end('Not Found');
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        server.listen(0, '127.0.0.1', () => resolve());
+        server.on('error', reject);
+      });
+
+      const port = server.address().port;
+      browser = await chromium.launch({ headless });
+      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+
+      page.on('pageerror', err => jsErrors.push(err.message));
+      page.on('response', resp => {
+        if (resp.status() >= 400 && !resp.url().includes('favicon')) {
+          networkFailures.push({ url: resp.url(), status: resp.status() });
+        }
+      });
+
+      try {
+        await page.goto(`http://127.0.0.1:${port}/index.html`, {
+          waitUntil: 'load',
+          timeout: timeoutMs
+        });
+      } catch (e) {
+        await page.goto(`http://127.0.0.1:${port}/index.html`, { timeout: timeoutMs });
+      }
+
+      await page.waitForTimeout(800);
+
+      // Scroll gradual para ativar lazy loads e triggers
+      await page.evaluate(async () => {
+        const distance = 400;
+        const totalHeight = document.body.scrollHeight;
+        let currentScroll = 0;
+        while (currentScroll < totalHeight && currentScroll < 30000) {
+          window.scrollBy(0, distance);
+          currentScroll += distance;
+          await new Promise(r => setTimeout(r, 30));
+        }
+        window.scrollTo(0, 0);
+        await new Promise(r => setTimeout(r, 200));
+      });
+
+      await page.waitForTimeout(500);
+
+      const cloneMetrics = await page.evaluate(() => {
+        const totalHeight = document.documentElement.scrollHeight;
+        const sections = Array.from(document.querySelectorAll('section, header, footer, [class*="sec-"], [id*="sec-"]'));
+        
+        const collapsedSections = sections.filter(sec => {
+          const rect = sec.getBoundingClientRect();
+          const comp = window.getComputedStyle(sec);
+          const isCollapsed = Math.round(rect.height) === 0 || comp.opacity === '0' || comp.display === 'none';
+          const hasContent = (sec.innerText || '').trim().length > 50;
+          return isCollapsed && hasContent;
+        }).map(sec => ({
+          tag: sec.tagName.toLowerCase(),
+          id: sec.id || '',
+          className: sec.className || '',
+          textSnippet: (sec.innerText || '').slice(0, 60)
+        }));
+
+        const imgs = Array.from(document.querySelectorAll('img'));
+        const brokenImages = imgs.filter(img => img.naturalWidth === 0 && !img.src.includes('data:image/svg')).map(img => img.src);
+
+        return {
+          totalHeight,
+          sectionsCount: sections.length,
+          collapsedSections,
+          brokenImages
+        };
+      });
+
+      const heightPassed = expectedHeight ? (cloneMetrics.totalHeight / expectedHeight >= 0.70) : true;
+      const passed = jsErrors.length === 0 &&
+                     heightPassed &&
+                     cloneMetrics.collapsedSections.length === 0;
+
+      return {
+        timestamp: new Date().toISOString(),
+        passed,
+        status: passed ? 'verified' : 'failed',
+        metrics: {
+          totalHeight: cloneMetrics.totalHeight,
+          expectedHeight,
+          heightRatio: expectedHeight ? (cloneMetrics.totalHeight / expectedHeight) : 1,
+          sectionsCount: cloneMetrics.sectionsCount,
+          collapsedSectionsCount: cloneMetrics.collapsedSections.length,
+          collapsedSections: cloneMetrics.collapsedSections,
+          brokenImagesCount: cloneMetrics.brokenImages.length,
+          jsErrorsCount: jsErrors.length,
+          jsErrors
+        }
+      };
+    } finally {
+      if (browser) await browser.close();
+      if (server && server.listening) server.close();
+    }
+  }
 }
 
 module.exports = {
