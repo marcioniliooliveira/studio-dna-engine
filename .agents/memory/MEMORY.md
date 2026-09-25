@@ -28,4 +28,5 @@
 - [ref-aircenter] **AIR Center Reference** (`copias/aircenter-space/`): Referência pura com DOM completo (146KB), 3D ribbon, matriz de mobilidade e popovers técnicos operando com 0 erros de console.
 - [lead-silvio-iwata] **Silvio Iwata Imobiliária** (`clientes/silvio-iwata-imobiliaria/`): Lead imobiliário Maringá. Aguardando sessão de alinhamento com o usuário para definir narrativa, posicionamento e seleção de componentes.
 - [lead-integrii] **Integrii Imóveis** (`clientes/integrii-imoveis/`): Lead imobiliário Urbano/Agro. Aguardando sessão de alinhamento com o usuário para definir cisão de marca, tokens e componentes.
+- [ref-khanhnguyen] **Khanh Nguyen Portfolio Reference** (`copias/khanhnguyen-design/`): Referência pura (Astro v6.3.1, horizontal story scroll, loading intro timeline 2013-2026, Lenis, vídeos desktop/mobile, 0 erros JS, 19/19 imagens válidas no Quality Gate).
 
