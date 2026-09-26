@@ -9,14 +9,15 @@ Make the complete product path recoverable and delegable without treating plans,
 - **Observed:** the missing Git branch reference was restored to commit `515ebcb53ce4fdabda6e29dbacd631c13aa5b8d8`.
 - **Observed:** the umbrella specification and Program A plan were recovered from immutable Git blobs and match their recorded hashes.
 - **Observed:** the ignored `.superpowers/sdd/2026-09-22-program-a-continuity-antigravity/` scratch ledger was lost. It is no longer an authority source.
-- **Observed:** Program A Task A-01 exists as an uncommitted implementation and its focused tests pass.
+- **Observed:** Program A Task A-01 passed focused verification and independent scope review; it is versioned in commit `4dd6da9`.
 - **Observed:** the latest full-suite baseline has one unrelated failure in `test/local-runtime-determinism.test.js`.
 - **Observed:** the active Program A branch and `release/v2-design-orchestrator` diverge; the release branch has two V2 contract commits that require a deliberate integration task.
 - **Unverified:** native Antigravity execution and cross-harness continuity have not yet been demonstrated.
 
 ## Delegation chain
 
-- [ ] Verify and commit A-01 within its four-file allowlist. Verify: run the focused command in `delegation/current-handoff.json`, inspect the actual diff and classify the full-suite failure.
+- [x] Verify and commit A-01 within its four-file allowlist. Evidence: commit `4dd6da9`, focused tests, diff check and isolated replacement/failure probes.
+- [ ] Execute A-02 with an observed RED, strict closed contracts and deterministic generated schemas. Verify: run both commands in `delegation/current-handoff.json` and compare schema hashes across two generations.
 - [ ] Execute A-02 through A-11 from the approved Program A plan, one bounded task at a time. Verify: every task produces its listed command output, immutable evidence and an independent verifier decision.
 - [ ] Run the Program A clean-checkout and cross-harness drills. Verify: a second harness resumes without chat history and rejects a poisoned result.
 - [ ] Delegate `PLAN-B`; approve its specification delta and executable plan before unlocking implementation. Verify: phases 5–6 have exact files, negative fixtures, commands, authority and stop conditions.

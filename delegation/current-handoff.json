@@ -4,29 +4,46 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "515ebcb53ce4fdabda6e29dbacd631c13aa5b8d8",
+  "baseCommit": "4dd6da9fbe807a74b612b1241c3f97593b03858d",
   "roadmapPath": "delegation/master-roadmap.json",
+  "completedTasks": [
+    {
+      "id": "A-01",
+      "state": "passed",
+      "commit": "4dd6da9fbe807a74b612b1241c3f97593b03858d",
+      "evidence": [
+        "Focused behavior and compatibility tests passed on 2026-09-26.",
+        "Independent review found changes only in the four-path allowlist.",
+        "Repeated replacement, failed-serialization preservation and temporary cleanup passed in an isolated runtime probe.",
+        "The test file timestamp precedes the implementation by 42 seconds; the original RED command transcript was not recoverable."
+      ]
+    }
+  ],
   "activeTask": {
-    "id": "A-01",
-    "title": "Shared Canonical JSON and Atomic File Store",
-    "state": "verification-required",
-    "observed": [
-      "Focused behavior and compatibility tests passed on 2026-09-26.",
-      "The shared canonical JSON module, compatibility export, atomic file store and focused test exist in the working tree."
-    ],
-    "unverified": [
-      "No recoverable RED transcript exists from the failed delegated builder run.",
-      "The implementation is not committed and has not passed a fresh full-suite run."
+    "id": "A-02",
+    "title": "Strict Continuity Contracts and Generated JSON Schemas",
+    "state": "ready",
+    "requirements": [
+      "Reject unknown fields, invalid states, unsafe paths, unsorted identifiers and builder/verifier identity collisions.",
+      "Generate deterministic JSON Schemas from the runtime contracts.",
+      "Preserve V1 task-contract and blueprint behavior."
     ],
     "verifyCommands": [
-      "node --test test/continuity-primitives.test.js test/reference-authority-and-v2-transmuter.test.js",
-      "npm test"
+      "node --test test/continuity-contracts.test.js",
+      "node --test test/continuity-contracts.test.js test/task-contract.test.js test/blueprint.test.js"
     ],
     "allowedChanges": [
-      "src/shared/canonical-json.js",
-      "src/design/canonical-json.js",
-      "src/continuity/file-store.js",
-      "test/continuity-primitives.test.js"
+      "package.json",
+      "schemas/v2/capability-report.schema.json",
+      "schemas/v2/continuity-state.schema.json",
+      "schemas/v2/evidence-manifest.schema.json",
+      "schemas/v2/execution-task.schema.json",
+      "schemas/v2/human-decision.schema.json",
+      "schemas/v2/roadmap.schema.json",
+      "schemas/v2/task-result.schema.json",
+      "scripts/generate-continuity-schemas.js",
+      "src/continuity/contracts.js",
+      "test/continuity-contracts.test.js"
     ]
   },
   "preservePaths": [
@@ -54,11 +71,11 @@
     }
   ],
   "nextBoundedAction": {
-    "role": "verifier",
-    "action": "Review the A-01 diff against its four-file allowlist, rerun focused tests and classify the unrelated full-suite failure before commit.",
+    "role": "builder",
+    "action": "Execute A-02 from the approved Program A plan with an observed RED before implementing strict continuity contracts and generated schemas.",
     "stopConditions": [
-      "Any changed path outside the A-01 allowlist is attributable to the executor.",
-      "Focused tests fail.",
+      "Any changed path outside the A-02 allowlist is attributable to the executor.",
+      "The RED test passes before implementation or fails for an unrelated reason.",
       "The existing baseline failure changes signature.",
       "A user-owned dirty file would be overwritten."
     ]

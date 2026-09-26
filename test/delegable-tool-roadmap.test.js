@@ -95,12 +95,15 @@ test('delegation chain has explicit empirical gates and no ready task without a 
 });
 
 test('current handoff preserves dirty work and names the next bounded action', () => {
+  const roadmap = readJson('delegation/master-roadmap.json');
   const handoff = readJson('delegation/current-handoff.json');
   assert.equal(handoff.schemaVersion, 1);
   assert.equal(handoff.mode, 'manual-bootstrap');
   assert.equal(handoff.branch, 'feat/program-a-continuity-antigravity');
-  assert.equal(handoff.activeTask.id, 'A-01');
-  assert.equal(handoff.activeTask.state, 'verification-required');
+  assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-01').state, 'passed');
+  assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-02').state, 'ready');
+  assert.equal(handoff.activeTask.id, 'A-02');
+  assert.equal(handoff.activeTask.state, 'ready');
   assert.ok(handoff.activeTask.verifyCommands.length >= 2);
   assert.ok(handoff.preservePaths.includes('docs/DESIGN_CAPABILITY_ROADMAP_V2.md'));
   assert.ok(handoff.blockers.some(blocker => blocker.code === 'ANTIGRAVITY_CLI_UNAVAILABLE'));

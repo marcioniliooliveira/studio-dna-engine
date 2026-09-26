@@ -194,7 +194,7 @@
     {
       "id": "A-01",
       "title": "Shared Canonical JSON and Atomic File Store",
-      "state": "verification-required",
+      "state": "passed",
       "dependsOn": [],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/continuity-primitives.test.js test/reference-authority-and-v2-transmuter.test.js"
@@ -202,7 +202,7 @@
     {
       "id": "A-02",
       "title": "Strict Continuity Contracts and Generated JSON Schemas",
-      "state": "blocked",
+      "state": "ready",
       "dependsOn": ["A-01"],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/continuity-contracts.test.js test/task-contract.test.js test/blueprint.test.js"
