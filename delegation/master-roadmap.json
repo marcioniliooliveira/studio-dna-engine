@@ -202,7 +202,7 @@
     {
       "id": "A-02",
       "title": "Strict Continuity Contracts and Generated JSON Schemas",
-      "state": "ready",
+      "state": "passed",
       "dependsOn": ["A-01"],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/continuity-contracts.test.js test/task-contract.test.js test/blueprint.test.js"
@@ -210,7 +210,7 @@
     {
       "id": "A-03",
       "title": "Revisioned State, Hash-Linked Ledger and Roadmap Engine",
-      "state": "blocked",
+      "state": "ready",
       "dependsOn": ["A-02"],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/continuity-state-store.test.js test/continuity-authority.test.js test/continuity-roadmap-engine.test.js"

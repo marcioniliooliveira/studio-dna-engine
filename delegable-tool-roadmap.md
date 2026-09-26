@@ -17,7 +17,8 @@ Make the complete product path recoverable and delegable without treating plans,
 ## Delegation chain
 
 - [x] Verify and commit A-01 within its four-file allowlist. Evidence: commit `4dd6da9`, focused tests, diff check and isolated replacement/failure probes.
-- [ ] Execute A-02 with an observed RED, strict closed contracts and deterministic generated schemas. Verify: run both commands in `delegation/current-handoff.json` and compare schema hashes across two generations.
+- [x] Execute A-02 with an observed RED, strict closed contracts and deterministic generated schemas. Evidence: commit `1077cf6`, 13 focused tests and identical hashes across two schema generations.
+- [ ] Execute A-03 with an observed RED, hash-linked ledger, compare-and-swap state, immutable evidence and role-enforced roadmap transitions.
 - [ ] Execute A-02 through A-11 from the approved Program A plan, one bounded task at a time. Verify: every task produces its listed command output, immutable evidence and an independent verifier decision.
 - [ ] Run the Program A clean-checkout and cross-harness drills. Verify: a second harness resumes without chat history and rejects a poisoned result.
 - [ ] Delegate `PLAN-B`; approve its specification delta and executable plan before unlocking implementation. Verify: phases 5–6 have exact files, negative fixtures, commands, authority and stop conditions.

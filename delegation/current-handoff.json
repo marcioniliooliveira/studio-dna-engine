@@ -4,7 +4,7 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "4dd6da9fbe807a74b612b1241c3f97593b03858d",
+  "baseCommit": "1077cf6fce5510de957d7e78826c3bd4b449ca44",
   "roadmapPath": "delegation/master-roadmap.json",
   "completedTasks": [
     {
@@ -17,33 +17,41 @@
         "Repeated replacement, failed-serialization preservation and temporary cleanup passed in an isolated runtime probe.",
         "The test file timestamp precedes the implementation by 42 seconds; the original RED command transcript was not recoverable."
       ]
+    },
+    {
+      "id": "A-02",
+      "state": "passed",
+      "commit": "1077cf6fce5510de957d7e78826c3bd4b449ca44",
+      "evidence": [
+        "The contracts test was observed RED because src/continuity/contracts.js did not exist.",
+        "Focused continuity, V1 task-contract and blueprint verification passed 13/13.",
+        "Seven generated schemas were regenerated twice with no hash differences.",
+        "The full suite remained at the pre-existing single failure: 181 of 182 tests passed."
+      ]
     }
   ],
   "activeTask": {
-    "id": "A-02",
-    "title": "Strict Continuity Contracts and Generated JSON Schemas",
+    "id": "A-03",
+    "title": "Revisioned State, Hash-Linked Ledger and Roadmap Engine",
     "state": "ready",
     "requirements": [
-      "Reject unknown fields, invalid states, unsafe paths, unsorted identifiers and builder/verifier identity collisions.",
-      "Generate deterministic JSON Schemas from the runtime contracts.",
-      "Preserve V1 task-contract and blueprint behavior."
+      "Make events hash-linked and reject tampering or a wrong previous hash.",
+      "Make state compare-and-swap reject stale writers and persist atomically.",
+      "Make evidence immutable, validate Ed25519 human decisions and enforce closed roadmap transitions."
     ],
     "verifyCommands": [
-      "node --test test/continuity-contracts.test.js",
-      "node --test test/continuity-contracts.test.js test/task-contract.test.js test/blueprint.test.js"
+      "node --test test/continuity-state-store.test.js test/continuity-roadmap-engine.test.js",
+      "node --test test/continuity-state-store.test.js test/continuity-authority.test.js test/continuity-roadmap-engine.test.js"
     ],
     "allowedChanges": [
-      "package.json",
-      "schemas/v2/capability-report.schema.json",
-      "schemas/v2/continuity-state.schema.json",
-      "schemas/v2/evidence-manifest.schema.json",
-      "schemas/v2/execution-task.schema.json",
-      "schemas/v2/human-decision.schema.json",
-      "schemas/v2/roadmap.schema.json",
-      "schemas/v2/task-result.schema.json",
-      "scripts/generate-continuity-schemas.js",
-      "src/continuity/contracts.js",
-      "test/continuity-contracts.test.js"
+      "src/continuity/event-ledger.js",
+      "src/continuity/state-store.js",
+      "src/continuity/evidence-store.js",
+      "src/continuity/human-decision-authority.js",
+      "src/continuity/roadmap-engine.js",
+      "test/continuity-state-store.test.js",
+      "test/continuity-authority.test.js",
+      "test/continuity-roadmap-engine.test.js"
     ]
   },
   "preservePaths": [
@@ -62,7 +70,7 @@
     {
       "code": "FULL_SUITE_BASELINE_RED",
       "status": "observed",
-      "impact": "The 2026-09-26 full-suite run passed 176 of 177 tests and retained one failure in test/local-runtime-determinism.test.js: expected a function and received undefined."
+      "impact": "The 2026-09-26 full-suite run passed 181 of 182 tests and retained one failure in test/local-runtime-determinism.test.js: expected a function and received undefined."
     },
     {
       "code": "BRANCH_INTEGRATION_REQUIRED",
@@ -72,9 +80,9 @@
   ],
   "nextBoundedAction": {
     "role": "builder",
-    "action": "Execute A-02 from the approved Program A plan with an observed RED before implementing strict continuity contracts and generated schemas.",
+    "action": "Execute A-03 from the approved Program A plan with an observed RED before implementing state, evidence and roadmap semantics.",
     "stopConditions": [
-      "Any changed path outside the A-02 allowlist is attributable to the executor.",
+      "Any changed path outside the A-03 allowlist is attributable to the executor.",
       "The RED test passes before implementation or fails for an unrelated reason.",
       "The existing baseline failure changes signature.",
       "A user-owned dirty file would be overwritten."
