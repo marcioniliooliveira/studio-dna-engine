@@ -20,6 +20,7 @@
     "audit": "node scripts/box-diff-linter.js",
     "audit:scrutiny": "node scripts/run-scrutiny-test.js",
     "audit:unified": "node scripts/run-unified-gate.js",
+    "schemas:continuity": "node scripts/generate-continuity-schemas.js",
     "test:falsifiability": "node --test test/deep-scrutiny-falsifiability.test.js",
     "test:components": "node --test --test-concurrency=1 test/components/*.test.js",
     "clean:scratch": "node scripts/cleanup-scratch.js",
