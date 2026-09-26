@@ -104,8 +104,9 @@ test('current handoff preserves dirty work and names the next bounded action', (
   assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-02').state, 'passed');
   assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-03').state, 'passed');
   assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-04').state, 'passed');
-  assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-05').state, 'ready');
-  assert.equal(handoff.activeTask.id, 'A-05');
+  assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-05').state, 'passed');
+  assert.equal(roadmap.activeProgramTasks.find(task => task.id === 'A-06').state, 'ready');
+  assert.equal(handoff.activeTask.id, 'A-06');
   assert.equal(handoff.activeTask.state, 'ready');
   assert.ok(handoff.activeTask.verifyCommands.length >= 1);
   assert.ok(handoff.preservePaths.includes('docs/DESIGN_CAPABILITY_ROADMAP_V2.md'));

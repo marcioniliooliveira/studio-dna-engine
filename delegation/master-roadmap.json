@@ -226,7 +226,7 @@
     {
       "id": "A-05",
       "title": "Workspace Manifest and Actual Diff Guard",
-      "state": "ready",
+      "state": "passed",
       "dependsOn": ["A-04"],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/continuity-diff-guard.test.js test/server-security.test.js"
@@ -234,7 +234,7 @@
     {
       "id": "A-06",
       "title": "Provider-Neutral Adapter and Durable Filesystem Handoff",
-      "state": "blocked",
+      "state": "ready",
       "dependsOn": ["A-05"],
       "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
       "verifyCommand": "node --test test/adapter-contract-v2.test.js test/filesystem-handoff-adapter.test.js test/gemini-ide-adapter.test.js"

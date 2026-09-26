@@ -4,7 +4,7 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "d419dd68f115b8a82717e6107a6235102c8c7bdc",
+  "baseCommit": "2eecefb",
   "roadmapPath": "delegation/master-roadmap.json",
   "completedTasks": [
     {
@@ -53,21 +53,22 @@
     }
   ],
   "activeTask": {
-    "id": "A-05",
-    "title": "Workspace Manifest and Actual Diff Guard",
+    "id": "A-06",
+    "title": "Provider-Neutral Adapter and Durable Filesystem Handoff",
     "state": "ready",
     "requirements": [
-      "Collect a normalized workspace manifest without following escaping links.",
-      "Attribute only actual changes after dispatch to the executor.",
-      "Reject changed, unauthorized or excessive outputs even when they were dirty before dispatch."
+      "Define a provider-neutral task and result adapter with durable filesystem exchange.",
+      "Preserve task hashes, authority and independent verification across harnesses."
     ],
     "verifyCommands": [
-      "node --test test/continuity-diff-guard.test.js test/server-security.test.js"
+      "node --test test/adapter-contract-v2.test.js test/filesystem-handoff-adapter.test.js test/gemini-ide-adapter.test.js"
     ],
     "allowedChanges": [
-      "src/continuity/workspace-manifest.js",
-      "src/continuity/diff-guard.js",
-      "test/continuity-diff-guard.test.js"
+      "src/orchestration/adapter-contract-v2.js",
+      "src/execution/filesystem-handoff-adapter.js",
+      "src/execution/handoff-profiles.js",
+      "test/adapter-contract-v2.test.js",
+      "test/filesystem-handoff-adapter.test.js"
     ]
   },
   "preservePaths": [
@@ -96,9 +97,9 @@
   ],
   "nextBoundedAction": {
     "role": "builder",
-    "action": "Execute A-05 from the approved Program A plan with an observed RED before implementing the workspace manifest and actual diff guard.",
+    "action": "Execute A-06 from the approved Program A plan with an observed RED before implementing the provider-neutral adapter and filesystem handoff.",
     "stopConditions": [
-      "Any changed path outside the A-05 allowlist is attributable to the executor.",
+      "Any changed path outside the A-06 allowlist is attributable to the executor.",
       "The RED test passes before implementation or fails for an unrelated reason.",
       "The existing baseline failure changes signature.",
       "A user-owned dirty file would be overwritten."
