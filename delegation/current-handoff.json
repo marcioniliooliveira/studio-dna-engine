@@ -4,7 +4,7 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "1077cf6fce5510de957d7e78826c3bd4b449ca44",
+  "baseCommit": "900d87395829be910cf79385c8901638dd288362",
   "roadmapPath": "delegation/master-roadmap.json",
   "completedTasks": [
     {
@@ -28,30 +28,37 @@
         "Seven generated schemas were regenerated twice with no hash differences.",
         "The full suite remained at the pre-existing single failure: 181 of 182 tests passed."
       ]
+    },
+    {
+      "id": "A-03",
+      "state": "passed",
+      "commit": "900d87395829be910cf79385c8901638dd288362",
+      "evidence": [
+        "The state and roadmap test command was observed RED because the A-03 modules did not exist.",
+        "Focused state, authority and roadmap verification passed 8 of 8 tests.",
+        "Combined continuity and V1 contract verification passed 21 of 21 tests.",
+        "The full suite passed 189 of 190 tests; the unchanged baseline failure remains in test/local-runtime-determinism.test.js."
+      ]
     }
   ],
   "activeTask": {
-    "id": "A-03",
-    "title": "Revisioned State, Hash-Linked Ledger and Roadmap Engine",
+    "id": "A-04",
+    "title": "Truth Baseline and Canonical Continuity Seed",
     "state": "ready",
     "requirements": [
-      "Make events hash-linked and reject tampering or a wrong previous hash.",
-      "Make state compare-and-swap reject stale writers and persist atomically.",
-      "Make evidence immutable, validate Ed25519 human decisions and enforce closed roadmap transitions."
+      "Observe the Git baseline without treating user-owned dirty paths as generated work.",
+      "Create canonical continuity files and eleven Program A task contracts idempotently.",
+      "Import passed task states only from supplied verifier evidence; never invent history."
     ],
     "verifyCommands": [
-      "node --test test/continuity-state-store.test.js test/continuity-roadmap-engine.test.js",
-      "node --test test/continuity-state-store.test.js test/continuity-authority.test.js test/continuity-roadmap-engine.test.js"
+      "node --test test/continuity-baseline.test.js",
+      "node scripts/init-continuity.js --workspace . --spec docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md --check"
     ],
     "allowedChanges": [
-      "src/continuity/event-ledger.js",
-      "src/continuity/state-store.js",
-      "src/continuity/evidence-store.js",
-      "src/continuity/human-decision-authority.js",
-      "src/continuity/roadmap-engine.js",
-      "test/continuity-state-store.test.js",
-      "test/continuity-authority.test.js",
-      "test/continuity-roadmap-engine.test.js"
+      "src/continuity/baseline-audit.js",
+      "scripts/init-continuity.js",
+      "continuity/",
+      "test/continuity-baseline.test.js"
     ]
   },
   "preservePaths": [
@@ -70,7 +77,7 @@
     {
       "code": "FULL_SUITE_BASELINE_RED",
       "status": "observed",
-      "impact": "The 2026-09-26 full-suite run passed 181 of 182 tests and retained one failure in test/local-runtime-determinism.test.js: expected a function and received undefined."
+      "impact": "The 2026-09-26 full-suite run passed 189 of 190 tests and retained one failure in test/local-runtime-determinism.test.js: expected a function and received undefined."
     },
     {
       "code": "BRANCH_INTEGRATION_REQUIRED",
@@ -80,9 +87,9 @@
   ],
   "nextBoundedAction": {
     "role": "builder",
-    "action": "Execute A-03 from the approved Program A plan with an observed RED before implementing state, evidence and roadmap semantics.",
+    "action": "Execute A-04 from the approved Program A plan with an observed RED before implementing the read-only baseline audit and canonical seed.",
     "stopConditions": [
-      "Any changed path outside the A-03 allowlist is attributable to the executor.",
+      "Any changed path outside the A-04 allowlist is attributable to the executor.",
       "The RED test passes before implementation or fails for an unrelated reason.",
       "The existing baseline failure changes signature.",
       "A user-owned dirty file would be overwritten."

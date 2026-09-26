@@ -18,7 +18,8 @@ Make the complete product path recoverable and delegable without treating plans,
 
 - [x] Verify and commit A-01 within its four-file allowlist. Evidence: commit `4dd6da9`, focused tests, diff check and isolated replacement/failure probes.
 - [x] Execute A-02 with an observed RED, strict closed contracts and deterministic generated schemas. Evidence: commit `1077cf6`, 13 focused tests and identical hashes across two schema generations.
-- [ ] Execute A-03 with an observed RED, hash-linked ledger, compare-and-swap state, immutable evidence and role-enforced roadmap transitions.
+- [x] Execute A-03 with an observed RED, hash-linked ledger, compare-and-swap state, immutable evidence and role-enforced roadmap transitions. Evidence: commit `900d873`, 8 focused and 21 combined tests.
+- [ ] Execute A-04 with an observed RED, a read-only Git baseline and canonical continuity seed that refuses to invent passed history.
 - [ ] Execute A-02 through A-11 from the approved Program A plan, one bounded task at a time. Verify: every task produces its listed command output, immutable evidence and an independent verifier decision.
 - [ ] Run the Program A clean-checkout and cross-harness drills. Verify: a second harness resumes without chat history and rejects a poisoned result.
 - [ ] Delegate `PLAN-B`; approve its specification delta and executable plan before unlocking implementation. Verify: phases 5–6 have exact files, negative fixtures, commands, authority and stop conditions.
