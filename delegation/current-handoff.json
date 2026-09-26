@@ -4,7 +4,7 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "2eecefb",
+  "baseCommit": "2eecefba5c33cfe229242b7e8513c4de8fbd9713",
   "roadmapPath": "delegation/master-roadmap.json",
   "completedTasks": [
     {
