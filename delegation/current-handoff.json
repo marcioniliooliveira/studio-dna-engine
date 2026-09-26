@@ -4,7 +4,7 @@
   "mode": "manual-bootstrap",
   "projectStatus": "experimental",
   "branch": "feat/program-a-continuity-antigravity",
-  "baseCommit": "900d87395829be910cf79385c8901638dd288362",
+  "baseCommit": "d419dd68f115b8a82717e6107a6235102c8c7bdc",
   "roadmapPath": "delegation/master-roadmap.json",
   "completedTasks": [
     {
@@ -39,26 +39,35 @@
         "Combined continuity and V1 contract verification passed 21 of 21 tests.",
         "The full suite passed 189 of 190 tests; the unchanged baseline failure remains in test/local-runtime-determinism.test.js."
       ]
+    },
+    {
+      "id": "A-04",
+      "state": "passed",
+      "commit": "d419dd68f115b8a82717e6107a6235102c8c7bdc",
+      "evidence": [
+        "The baseline module and initializer tests were observed RED because their production modules did not exist.",
+        "Focused baseline verification passed 3 of 3 tests, including a seed linked to its initial event ledger.",
+        "Actual initialization and two --check runs completed without further writes.",
+        "The full suite passed 192 of 193 tests; the unchanged baseline failure remains in test/local-runtime-determinism.test.js."
+      ]
     }
   ],
   "activeTask": {
-    "id": "A-04",
-    "title": "Truth Baseline and Canonical Continuity Seed",
+    "id": "A-05",
+    "title": "Workspace Manifest and Actual Diff Guard",
     "state": "ready",
     "requirements": [
-      "Observe the Git baseline without treating user-owned dirty paths as generated work.",
-      "Create canonical continuity files and eleven Program A task contracts idempotently.",
-      "Import passed task states only from supplied verifier evidence; never invent history."
+      "Collect a normalized workspace manifest without following escaping links.",
+      "Attribute only actual changes after dispatch to the executor.",
+      "Reject changed, unauthorized or excessive outputs even when they were dirty before dispatch."
     ],
     "verifyCommands": [
-      "node --test test/continuity-baseline.test.js",
-      "node scripts/init-continuity.js --workspace . --spec docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md --check"
+      "node --test test/continuity-diff-guard.test.js test/server-security.test.js"
     ],
     "allowedChanges": [
-      "src/continuity/baseline-audit.js",
-      "scripts/init-continuity.js",
-      "continuity/",
-      "test/continuity-baseline.test.js"
+      "src/continuity/workspace-manifest.js",
+      "src/continuity/diff-guard.js",
+      "test/continuity-diff-guard.test.js"
     ]
   },
   "preservePaths": [
@@ -87,9 +96,9 @@
   ],
   "nextBoundedAction": {
     "role": "builder",
-    "action": "Execute A-04 from the approved Program A plan with an observed RED before implementing the read-only baseline audit and canonical seed.",
+    "action": "Execute A-05 from the approved Program A plan with an observed RED before implementing the workspace manifest and actual diff guard.",
     "stopConditions": [
-      "Any changed path outside the A-04 allowlist is attributable to the executor.",
+      "Any changed path outside the A-05 allowlist is attributable to the executor.",
       "The RED test passes before implementation or fails for an unrelated reason.",
       "The existing baseline failure changes signature.",
       "A user-owned dirty file would be overwritten."
