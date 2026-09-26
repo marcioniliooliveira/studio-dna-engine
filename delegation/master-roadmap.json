@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "roadmapId": "studio-dna-complete-delegable-roadmap",
+  "projectStatus": "experimental",
+  "updatedAt": "2026-09-26",
+  "assurancePolicy": "bounded-empirical-assurance-not-absolute-guarantee",
+  "authority": {
+    "umbrellaSpec": {
+      "path": "docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md",
+      "commit": "142ed50d08e045a7fbf5e1b1640ed1d321d99683",
+      "blob": "9f16ff53c63ee4b43c5495eab533d2b263bc773f"
+    },
+    "programAPlan": {
+      "path": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "commit": "515ebcb53ce4fdabda6e29dbacd631c13aa5b8d8",
+      "blob": "204909349616559fcd8cde7b9d427db73e101c6d"
+    }
+  },
+  "programs": [
+    {
+      "id": "A",
+      "title": "Continuity and Antigravity foundation",
+      "phaseIds": [0, 1, 2, 3, 4],
+      "state": "in-progress",
+      "implementationReady": true,
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "outcome": "A clean checkout or a different harness can determine, execute, verify and resume the next bounded task without chat history.",
+      "completionGate": "All eleven Program A tasks pass focused tests, full-suite verification, a poisoned-result rejection test and a clean-checkout cross-harness drill."
+    },
+    {
+      "id": "B",
+      "title": "Perception foundation",
+      "phaseIds": [5, 6],
+      "state": "planning-required",
+      "implementationReady": false,
+      "planningTaskId": "PLAN-B",
+      "outcome": "Raw reference evidence remains immutable while DOM, SVG, asset and runtime identities stay traceable across states.",
+      "completionGate": "Repeatable safe capture and evidence identity fixtures pass with absent evidence reported as unknown or blocked."
+    },
+    {
+      "id": "C",
+      "title": "First mechanism and bounded semantic judgment",
+      "phaseIds": [7, 8],
+      "state": "planning-required",
+      "implementationReady": false,
+      "planningTaskId": "PLAN-C",
+      "outcome": "Handwritten SVG emphasis survives content and layout changes while Jev resolves only typed residual ambiguity in shadow mode.",
+      "completionGate": "Broken SVG variants fail, three target implementations preserve declared invariants and Jev cannot mutate or approve."
+    },
+    {
+      "id": "D",
+      "title": "Transmutation and motion infrastructure",
+      "phaseIds": [9, 10, 11],
+      "state": "planning-required",
+      "implementationReady": false,
+      "planningTaskId": "PLAN-D",
+      "outcome": "Controlled transmutation preserves invariants and exposes deterministic motion inspection through Node first and MCP second.",
+      "completionGate": "Unauthorized changes, lost reveals and conflicting animation owners fail; direct Node and MCP outputs are equivalent."
+    },
+    {
+      "id": "E",
+      "title": "Generalization and empirical quality proof",
+      "phaseIds": [12, 13, 14],
+      "state": "planning-required",
+      "implementationReady": false,
+      "planningTaskId": "PLAN-E",
+      "outcome": "A second mechanism generalizes the model and qualified references drive visibly superior directions measured by blind review.",
+      "completionGate": "Image-mask reveal works without SVG-specific shared logic and the predeclared blind benchmark passes with no P0 failure."
+    }
+  ],
+  "phases": [
+    {
+      "id": 0,
+      "programId": "A",
+      "title": "Truth consolidation",
+      "state": "partial",
+      "expectedResult": "One authority chain, contradiction ledger, migration map and preservation policy.",
+      "exitEvidence": "Fresh inventory proves that no stale document can present itself as active authority."
+    },
+    {
+      "id": 1,
+      "programId": "A",
+      "title": "Continuity Core",
+      "state": "in-progress",
+      "expectedResult": "Strict schemas, canonical hashing, append-only evidence, roadmap state, drift detection and recovery.",
+      "exitEvidence": "A clean checkout selects the next valid task and rejects malformed, stale or contradictory state."
+    },
+    {
+      "id": 2,
+      "programId": "A",
+      "title": "Antigravity primary adapter",
+      "state": "planned",
+      "expectedResult": "Capability discovery, task projection, native roles and validated result ingestion.",
+      "exitEvidence": "A new Antigravity session executes one canonical task and refuses an invalid result."
+    },
+    {
+      "id": 3,
+      "programId": "A",
+      "title": "Portable adapters and manual fallback",
+      "state": "planned",
+      "expectedResult": "Gemini IDE V2, alternative harness and filesystem fallback share one normative contract.",
+      "exitEvidence": "The same task package runs in Antigravity, one alternative harness and manual fallback without requirement drift."
+    },
+    {
+      "id": 4,
+      "programId": "A",
+      "title": "Continuity and delegation test matrix",
+      "state": "planned",
+      "expectedResult": "Adversarial contracts, interruption recovery, role separation and no-chat-history drills.",
+      "exitEvidence": "After simulated executor loss, a different harness resumes and closes a safe task from repository evidence only."
+    },
+    {
+      "id": 5,
+      "programId": "B",
+      "title": "Research contract and safe capture",
+      "state": "planned",
+      "expectedResult": "Immutable capture manifests, environment readiness, hostile-page isolation and source boundaries.",
+      "exitEvidence": "Two captures preserve required evidence and missing dependencies never trigger destructive normalization."
+    },
+    {
+      "id": 6,
+      "programId": "B",
+      "title": "Minimal evidence and identity model",
+      "state": "planned",
+      "expectedResult": "Observed, derived, inferred and unknown records with stable spatial, temporal and causal identities.",
+      "exitEvidence": "A handwritten SVG, its text and animation retain traceable identity across declared states."
+    },
+    {
+      "id": 7,
+      "programId": "C",
+      "title": "Handwritten SVG vertical",
+      "state": "planned",
+      "expectedResult": "Topology, geometry, text association, timing and content-sensitive adaptation for one complete mechanism.",
+      "exitEvidence": "Changed text and layout preserve invariants, intentional negatives fail and blind review beats the generic baseline."
+    },
+    {
+      "id": 8,
+      "programId": "C",
+      "title": "Jev shadow integration and calibration",
+      "state": "planned",
+      "expectedResult": "Local Node adapter, typed questions, pinned model, evidence cache and append-only calibration.",
+      "exitEvidence": "Predictions are compared with independent outcomes and unresolved cases route to a human."
+    },
+    {
+      "id": 9,
+      "programId": "D",
+      "title": "Controlled transmutation kernel",
+      "state": "planned",
+      "expectedResult": "Mechanism model, invariants, permitted changes, lineage, actual diff guard and deterministic verifier.",
+      "exitEvidence": "The output explains what changed, why and from which evidence while unauthorized variables remain unchanged."
+    },
+    {
+      "id": 10,
+      "programId": "D",
+      "title": "Motion Capability Core and runtime adapters",
+      "state": "planned",
+      "expectedResult": "Engine-neutral CSS, WAAPI, GSAP and Motion inspection with ownership, seeking and trajectory capture.",
+      "exitEvidence": "Removed reveals and conflicting owners fail independently of final-frame visibility."
+    },
+    {
+      "id": 11,
+      "programId": "D",
+      "title": "MCP facade",
+      "state": "planned",
+      "expectedResult": "Narrow typed MCP tools over the proven local motion core with read and mutation boundaries.",
+      "exitEvidence": "MCP and direct Node results match and no tool receives arbitrary evaluation or approval authority."
+    },
+    {
+      "id": 12,
+      "programId": "E",
+      "title": "Image-mask reveal vertical",
+      "state": "planned",
+      "expectedResult": "A second mechanism validates shared identity and invariant abstractions.",
+      "exitEvidence": "The vertical passes without handwritten-SVG-specific branches in the shared model."
+    },
+    {
+      "id": 13,
+      "programId": "E",
+      "title": "Reference intelligence and direction boards",
+      "state": "planned",
+      "expectedResult": "Role-qualified reference packets, negative constraints, three distinct directions and intent goldens.",
+      "exitEvidence": "An agent reconstructs relationships without a raw clone and the owner chooses from visible differences."
+    },
+    {
+      "id": 14,
+      "programId": "E",
+      "title": "Review console and empirical benchmark",
+      "state": "planned",
+      "expectedResult": "Local evidence console, mechanical and editorial gates, telemetry, blind comparison and failure memory.",
+      "exitEvidence": "Immutable evidence supports promotion and the predeclared quality threshold passes with no P0 failure."
+    }
+  ],
+  "activeProgramTasks": [
+    {
+      "id": "A-01",
+      "title": "Shared Canonical JSON and Atomic File Store",
+      "state": "verification-required",
+      "dependsOn": [],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-primitives.test.js test/reference-authority-and-v2-transmuter.test.js"
+    },
+    {
+      "id": "A-02",
+      "title": "Strict Continuity Contracts and Generated JSON Schemas",
+      "state": "blocked",
+      "dependsOn": ["A-01"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-contracts.test.js test/task-contract.test.js test/blueprint.test.js"
+    },
+    {
+      "id": "A-03",
+      "title": "Revisioned State, Hash-Linked Ledger and Roadmap Engine",
+      "state": "blocked",
+      "dependsOn": ["A-02"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-state-store.test.js test/continuity-authority.test.js test/continuity-roadmap-engine.test.js"
+    },
+    {
+      "id": "A-04",
+      "title": "Truth Baseline and Canonical Continuity Seed",
+      "state": "blocked",
+      "dependsOn": ["A-03"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-baseline.test.js"
+    },
+    {
+      "id": "A-05",
+      "title": "Workspace Manifest and Actual Diff Guard",
+      "state": "blocked",
+      "dependsOn": ["A-04"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-diff-guard.test.js test/server-security.test.js"
+    },
+    {
+      "id": "A-06",
+      "title": "Provider-Neutral Adapter and Durable Filesystem Handoff",
+      "state": "blocked",
+      "dependsOn": ["A-05"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/adapter-contract-v2.test.js test/filesystem-handoff-adapter.test.js test/gemini-ide-adapter.test.js"
+    },
+    {
+      "id": "A-07",
+      "title": "Antigravity Workspace Plugin and Primary Adapter",
+      "state": "blocked",
+      "dependsOn": ["A-06"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/antigravity-adapter.test.js test/filesystem-handoff-adapter.test.js"
+    },
+    {
+      "id": "A-08",
+      "title": "Gemini IDE V2 and Cross-Harness Contract Proof",
+      "state": "blocked",
+      "dependsOn": ["A-07"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/gemini-ide-adapter.test.js test/gemini-ide-adapter-v2.test.js test/filesystem-handoff-adapter.test.js"
+    },
+    {
+      "id": "A-09",
+      "title": "V2 Orchestrator Lifecycle and CLI",
+      "state": "blocked",
+      "dependsOn": ["A-08"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/workflow-orchestrator-v2.test.js test/orchestrator-cli-v2.test.js"
+    },
+    {
+      "id": "A-10",
+      "title": "Drift Detection and Cold-Start Recovery",
+      "state": "blocked",
+      "dependsOn": ["A-09"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-recovery.integration.test.js test/continuity-state-store.test.js test/continuity-roadmap-engine.test.js"
+    },
+    {
+      "id": "A-11",
+      "title": "Conformance, Clean-Checkout Drill and Status Migration",
+      "state": "blocked",
+      "dependsOn": ["A-10"],
+      "planPath": "docs/superpowers/plans/2026-09-22-program-a-continuity-antigravity.md",
+      "verifyCommand": "node --test test/continuity-conformance.integration.test.js && node scripts/run-clean-checkout-continuity-drill.js --source . && npm test"
+    }
+  ],
+  "planningTasks": [
+    {
+      "id": "PLAN-B",
+      "state": "blocked",
+      "blockedBy": ["A-completion-gate"],
+      "role": "architect",
+      "inputs": [
+        "docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md",
+        "delegation/master-roadmap.json"
+      ],
+      "outputs": [
+        "docs/superpowers/specs/program-b-perception-foundation-design.md",
+        "docs/superpowers/plans/program-b-perception-foundation.md"
+      ],
+      "acceptance": [
+        "Every implementation task names exact inputs, outputs, write scope and commands.",
+        "Capture and identity negative fixtures are specified before production code.",
+        "A separate verifier and the project owner approve the plan before any task becomes ready."
+      ]
+    },
+    {
+      "id": "PLAN-C",
+      "state": "blocked",
+      "blockedBy": ["B-completion-gate"],
+      "role": "architect",
+      "inputs": [
+        "docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md",
+        "delegation/master-roadmap.json"
+      ],
+      "outputs": [
+        "docs/superpowers/specs/program-c-svg-jev-design.md",
+        "docs/superpowers/plans/program-c-svg-jev.md"
+      ],
+      "acceptance": [
+        "SVG invariants, free variables and intentional failure fixtures are explicit.",
+        "Jev remains shadow-only, hash-bound and unable to mutate or approve.",
+        "Blind comparison criteria and a human editorial gate are declared before implementation."
+      ]
+    },
+    {
+      "id": "PLAN-D",
+      "state": "blocked",
+      "blockedBy": ["C-completion-gate"],
+      "role": "architect",
+      "inputs": [
+        "docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md",
+        "delegation/master-roadmap.json"
+      ],
+      "outputs": [
+        "docs/superpowers/specs/program-d-transmutation-motion-design.md",
+        "docs/superpowers/plans/program-d-transmutation-motion.md"
+      ],
+      "acceptance": [
+        "Transmutation permissions and actual diff enforcement are machine-testable.",
+        "Motion owner, reveal-loss and trajectory fixtures precede MCP exposure.",
+        "Direct Node and MCP parity plus security boundaries are explicit gates."
+      ]
+    },
+    {
+      "id": "PLAN-E",
+      "state": "blocked",
+      "blockedBy": ["D-completion-gate"],
+      "role": "architect",
+      "inputs": [
+        "docs/superpowers/specs/2026-09-22-antigravity-executable-continuity-and-transmutation-design.md",
+        "delegation/master-roadmap.json"
+      ],
+      "outputs": [
+        "docs/superpowers/specs/program-e-generalization-benchmark-design.md",
+        "docs/superpowers/plans/program-e-generalization-benchmark.md"
+      ],
+      "acceptance": [
+        "A second mechanism tests shared abstractions instead of copying SVG-specific logic.",
+        "Reference qualification and three materially distinct directions are measurable.",
+        "Blind benchmark, cost telemetry and signed human promotion are mandatory."
+      ]
+    }
+  ],
+  "empiricalAssurance": [
+    {
+      "id": "contract-validation",
+      "proof": "Strict machine-readable contracts reject unknown fields, stale hashes and invalid states."
+    },
+    {
+      "id": "red-green-evidence",
+      "proof": "A failing regression is captured before the smallest implementation and rerun after it."
+    },
+    {
+      "id": "scope-diff-guard",
+      "proof": "The actual repository diff is compared with a normalized write allowlist."
+    },
+    {
+      "id": "independent-verifier",
+      "proof": "Builder and verifier identities differ; executor self-reported success has no authority."
+    },
+    {
+      "id": "immutable-artifact",
+      "proof": "Preview, QA and promotion consume the same content-addressed artifact."
+    },
+    {
+      "id": "clean-checkout-drill",
+      "proof": "A clean checkout reconstructs the next valid action without conversation history."
+    },
+    {
+      "id": "cross-harness-replay",
+      "proof": "The same canonical task and requirements run through at least two harnesses."
+    },
+    {
+      "id": "human-editorial-gate",
+      "proof": "Mechanical validity cannot substitute for explicit human visual approval."
+    },
+    {
+      "id": "blind-benchmark",
+      "proof": "Predeclared comparisons measure improvement over the generic baseline without revealing the generator."
+    },
+    {
+      "id": "cost-telemetry",
+      "proof": "Tokens, latency, attempts and human interventions are recorded before any savings claim."
+    }
+  ]
+}

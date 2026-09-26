@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "snapshotDate": "2026-09-26",
+  "mode": "manual-bootstrap",
+  "projectStatus": "experimental",
+  "branch": "feat/program-a-continuity-antigravity",
+  "baseCommit": "515ebcb53ce4fdabda6e29dbacd631c13aa5b8d8",
+  "roadmapPath": "delegation/master-roadmap.json",
+  "activeTask": {
+    "id": "A-01",
+    "title": "Shared Canonical JSON and Atomic File Store",
+    "state": "verification-required",
+    "observed": [
+      "Focused behavior and compatibility tests passed on 2026-09-26.",
+      "The shared canonical JSON module, compatibility export, atomic file store and focused test exist in the working tree."
+    ],
+    "unverified": [
+      "No recoverable RED transcript exists from the failed delegated builder run.",
+      "The implementation is not committed and has not passed a fresh full-suite run."
+    ],
+    "verifyCommands": [
+      "node --test test/continuity-primitives.test.js test/reference-authority-and-v2-transmuter.test.js",
+      "npm test"
+    ],
+    "allowedChanges": [
+      "src/shared/canonical-json.js",
+      "src/design/canonical-json.js",
+      "src/continuity/file-store.js",
+      "test/continuity-primitives.test.js"
+    ]
+  },
+  "preservePaths": [
+    ".superpowers/green-baseline-diagnosis.md",
+    "docs/DESIGN_CAPABILITY_ROADMAP_V2.md",
+    "docs/superpowers/plans/2026-09-21-jev-motion-preservation-and-delegation.md",
+    "jev-motion-foundation.md",
+    "test/local-runtime-determinism.test.js"
+  ],
+  "blockers": [
+    {
+      "code": "ANTIGRAVITY_CLI_UNAVAILABLE",
+      "status": "observed",
+      "impact": "Native Antigravity conformance cannot yet be proven; use the filesystem/manual bootstrap only."
+    },
+    {
+      "code": "FULL_SUITE_BASELINE_RED",
+      "status": "observed",
+      "impact": "The 2026-09-26 full-suite run passed 176 of 177 tests and retained one failure in test/local-runtime-determinism.test.js: expected a function and received undefined."
+    },
+    {
+      "code": "BRANCH_INTEGRATION_REQUIRED",
+      "status": "observed",
+      "impact": "release/v2-design-orchestrator contains two V2 contract commits absent from this branch; integration must be planned without overwriting dirty root changes."
+    }
+  ],
+  "nextBoundedAction": {
+    "role": "verifier",
+    "action": "Review the A-01 diff against its four-file allowlist, rerun focused tests and classify the unrelated full-suite failure before commit.",
+    "stopConditions": [
+      "Any changed path outside the A-01 allowlist is attributable to the executor.",
+      "Focused tests fail.",
+      "The existing baseline failure changes signature.",
+      "A user-owned dirty file would be overwritten."
+    ]
+  }
+}
