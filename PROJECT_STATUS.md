@@ -11,7 +11,13 @@ This file separates observed project state from product vision. Update a claim o
 |---|---|---|
 | JavaScript source is syntactically valid | `node --check` across 55 project JavaScript files on 2026-08-28 | Observed pass (0 syntax errors) |
 | Dependency audit has no known production vulnerability | `npm audit --omit=dev` on 2026-08-28 | Observed pass at that date |
-| Automated test suite passes | `npm test` runs 43 tests across security, pipeline, ICM, vault, transmuter, anti-slop and unified quality gate | Observed pass (43/43) |
+| Automated test suite passes | `npm test` runs 95 tests across security, pipeline, ICM, vault, transmuter, anti-slop, unified quality gate, DNA-IR schema, constraint engine, HUD projector, transactional mutation resolver, and dual-gradient presets E2E | Observed pass (95/95) on 2026-09-28 |
+| Dual-Gradient Presets & 3D Sync | Sincronização atômica dos 16 degraus do backdrop (`OPXY.bars`) e das 16 teclas de passo central do sintetizador (`OPXY.steps`) com 5 presets (Swiss, Berlin, Braun, Tokyo, Aura Precision), tipografia de assets (`Inter`), acento de hardware e preservação de cavidades LED validada em `test/dual-gradient-sync.test.js` e `test/opxy-presets-e2e.test.js` | Observed pass (5/5 presets + Playwright E2E) |
+| Gooey Text Reveal & Kinetic Strip | Transição fluida SVG gooey (`#dna-gooey-filter`) na sequência vertical do `#strip` (`sequence.`) e reveals de copy sem quebra de indexação de DOM, Lenis scroll ou cinemática translateY | Observed pass (Visual screenshot + E2E) |
+| Deliverables A & B: DNA-IR Schemas & OP-XY Mapping | Schemas agnósticos em `icm/_core/` e mapeamento canônico de OP-XY em `clientes/opxy-tuning-lab/dna-ir.json` validados em `test/dna-ir-schema.test.js` | Observed pass (6/6 tests) |
+| Deliverable C: Constraint Engine & DAG | DAG com ordenação topológica, detecção de ciclos e 5 handlers C1-C5 (tipografia, contraste rim-light, geometria FOV, a11y motion, fps tier) validados em `test/constraint-engine.test.js` | Observed pass (8/8 tests) |
+| Deliverable D: Schema-Driven HUD Projector | Projeção dinâmica de controles glassmórficos a partir de DNA-IR agnóstico em `src/generators/hud-projector.js` validada em `test/hud-schema-projection.test.js` | Observed pass (4/4 tests) |
+| Deliverables E & F: Mutation Resolver & Transactional Rollback | Resolução declarativa com Mutation Budget, Edit Locality Score ($L \ge 0.70$) e rollback atômico criptográfico (SHA-256) validados em `test/transactional-mutation-resolver.test.js` | Observed pass (5/5 tests) |
 | CI is reproducible | CI configured with `npm ci` and `npm test`; lockfile versioned | Observed pass |
 | Preview is client-isolated | Path traversal and cross-client leakage blocked and tested in `test/server-security.test.js` | Observed pass |
 | Preview is local-only | Server binds strictly to `127.0.0.1` and tested in `test/preview-server.integration.test.js` | Observed pass |
@@ -32,6 +38,7 @@ This file separates observed project state from product vision. Update a claim o
 | Client | DNA | Brand spec | Site artifact | QA Status | Maturity |
 |---|---:|---:|---:|---|---|
 | `piloto-elyse-luxe` | Yes | Yes | Yes | Verified (0 JS err, 0 broken img, 0 slop) | Candidate / Verified |
+| `opxy-tuning-lab` | Yes (DNA IR v0.1.0) | Yes | Yes | Verified (DNA IR + Constraints + HUD + Transactions) | Verified |
 | `caso-01-healthtech` | No | Yes | Yes | Unverified | Experimental |
 | `flashtech-caso-02-ecommerce` | No | No | Yes | Unverified | Experimental |
 | `flashtech-caso-03-d2c` | Yes | No | Yes | Unverified | Experimental |

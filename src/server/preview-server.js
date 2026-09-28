@@ -720,6 +720,16 @@ function startPreviewServer(options = {}) {
           content = UniversalAssetNormalizer.applyUniversalFixes(content);
         } catch(e) {}
         try {
+          delete require.cache[require.resolve('../generators/hud-projector')];
+          const { injectDnaHud } = require('../generators/hud-projector');
+          const clientRoot = path.dirname(path.dirname(filePath));
+          const dnaPath = path.join(clientRoot, 'dna-ir.json');
+          if (fs.existsSync(dnaPath)) {
+            const dnaIr = JSON.parse(fs.readFileSync(dnaPath, 'utf8'));
+            content = injectDnaHud(content, dnaIr);
+          }
+        } catch(e) {}
+        try {
           delete require.cache[require.resolve('../dev/dev-hud')];
           const { injectDevHud } = require('../dev/dev-hud');
           content = injectDevHud(content);

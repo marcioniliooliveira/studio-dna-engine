@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DNA Intermediate Representation (DNA-IR) Schema",
+  "description": "Universal, typed, versioned, framework-agnostic intermediate representation of website design, motion, structure and capability DNA.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "specimen",
+    "capabilities",
+    "sections",
+    "parameters",
+    "bindings",
+    "constraints",
+    "invariants"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "specimen": {
+      "type": "string",
+      "description": "Identifier of the reference specimen or client project"
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Graph of detected capabilities (layout, typography, motion, webgl, audio, etc.)"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "role"],
+        "properties": {
+          "id": { "type": "string" },
+          "role": { "type": "string" },
+          "domSelector": { "type": "string" },
+          "geometry": { "type": "object" },
+          "mutability": { "type": "object" }
+        }
+      }
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "type", "value", "mutability"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(?!.*(threejs|three\\.js|gsap|spline|react|vue)).*$"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["geometry", "typography", "surface", "motion", "content", "composition", "interaction", "audio", "responsive", "performance"]
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FontSpec", "ColorHex", "ColorGradient", "NumberRange", "LengthClamp", "TokenRef", "AssetRef", "FrequencyHz", "StringText", "Boolean", "Enum"]
+          },
+          "value": {},
+          "mutability": {
+            "type": "string",
+            "enum": ["invariant", "mutable", "derived", "locked"]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "origin": {
+            "type": "object",
+            "properties": {
+              "source": { "type": "string" },
+              "method": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["paramId", "adapter", "target", "property"],
+        "properties": {
+          "paramId": { "type": "string" },
+          "adapter": {
+            "type": "string",
+            "enum": ["css", "dom", "three", "gsap", "audio", "shader", "generic-js"]
+          },
+          "target": { "type": "string" },
+          "property": { "type": "string" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "source", "target", "rule"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["hard", "adaptive", "invariant"]
+          },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "rule": { "type": "string" }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "rule": { "type": "string" }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

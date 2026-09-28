@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Constraint Graph Schema",
+  "description": "Definition of hard, adaptive, and invariant constraints linking parameters and safe envelopes.",
+  "type": "object",
+  "required": ["constraints"],
+  "properties": {
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "source", "target", "rule"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["hard", "adaptive", "invariant"]
+          },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "rule": { "type": "string" },
+          "compensation": {
+            "type": "object",
+            "properties": {
+              "action": { "type": "string" },
+              "parameter": { "type": "string" },
+              "formula": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

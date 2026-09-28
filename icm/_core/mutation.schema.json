@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mutation Specification Schema",
+  "description": "Transactional specification of declarative intent, mutation budget, delta resolution and locality.",
+  "type": "object",
+  "required": ["mutationId", "parentBuildHash", "intent", "budget", "requestedDelta"],
+  "properties": {
+    "mutationId": { "type": "string" },
+    "parentBuildHash": { "type": "string" },
+    "intent": {
+      "type": "object",
+      "required": ["description"],
+      "properties": {
+        "description": { "type": "string" },
+        "strategy": { "type": "string" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "number", "minimum": 0, "maximum": 1 },
+        "color": { "type": "number", "minimum": 0, "maximum": 1 },
+        "typography": { "type": "number", "minimum": 0, "maximum": 1 },
+        "material": { "type": "number", "minimum": 0, "maximum": 1 },
+        "motion": { "type": "number", "minimum": 0, "maximum": 1 },
+        "layout": { "type": "number", "minimum": 0, "maximum": 1 },
+        "interaction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "structure": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "requestedDelta": { "type": "object" },
+    "resolvedDelta": { "type": "object" },
+    "derivedCompensations": { "type": "array" },
+    "localityScore": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "resolved", "validated", "committed", "rejected", "reverted"]
+    }
+  }
+}
