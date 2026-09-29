@@ -222,3 +222,25 @@ test('preview server blocks extraction requests to local network targets', async
   assert.equal(response.statusCode, 403);
   assert.equal(pipelineCalls, 0);
 });
+
+test('preview server redirects /site/:slug and /styleguide/:slug to canonical paths', async () => {
+  const fixture = await createFixtureServer({
+    'copias/alpha/site/index.html': '<html><body>alpha site</body></html>',
+    'copias/alpha/design-system/design-system.html': '<html><body>alpha styleguide</body></html>'
+  });
+
+  const siteResp = await requestTo(fixture.port, '/site/alpha');
+  const sgResp = await requestTo(fixture.port, '/styleguide/alpha');
+  const directDirResp = await requestTo(fixture.port, '/alpha');
+  await fixture.close();
+
+  assert.equal(siteResp.statusCode, 302);
+  assert.equal(siteResp.headers.location, '/alpha/site/index.html');
+
+  assert.equal(sgResp.statusCode, 302);
+  assert.equal(sgResp.headers.location, '/alpha/design-system/design-system.html');
+
+  assert.equal(directDirResp.statusCode, 200);
+  assert.match(directDirResp.headers['content-type'], /text\/html/);
+  assert.match(directDirResp.body, /alpha site/);
+});

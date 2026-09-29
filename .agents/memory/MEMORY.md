@@ -22,4 +22,5 @@
 - [caso-01-healthtech] **PulseMed** (`clientes/caso-01-healthtech/`): Base `#120824`, CTA `#E8FF54`, ref `copias/urbi-ae`.
 - [caso-03-d2c] **APEX Wireless** (`clientes/flashtech-caso-03-d2c/`): Base `#02040A`, CTA `#00F0FF`, ref `copias/ciao-energy`.
 - [caso-02-ecommerce] **NorthTrail** (`clientes/flashtech-caso-02-ecommerce/`): Tokens `trail.orange=#ea580c`, `sand.100=#f5f1e8`.
+- [marcionilio-oliveira] **Marcionilio Oliveira** (`clientes/marcionilio-oliveira/`): Base `#262220`, Marfim `#FAF9F6`, ref `copias/khanhnguyen-design`.
 

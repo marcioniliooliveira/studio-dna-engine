@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "refSlug": "khanhnguyen-design",
+  "brandName": "Seu Nome Completo",
+  "theme": {
+    "bgBase": "#262220",
+    "bgSurface": "#FAF9F6",
+    "accent": "#3A3632",
+    "textMain": "#F3EEE8",
+    "textDark": "#2E2B28"
+  },
+  "meta": {
+    "title": "Seu Nome — Creative Developer & Designer",
+    "description": "Portfólio de engenharia de interfaces e design digital com foco em cinemática e elegância.",
+    "lang": "pt-BR"
+  },
+  "options": {
+    "enforceBudget": true,
+    "enforceAntiSlop": true,
+    "tolerance": 0.15,
+    "injectSeo": true
+  }
+}

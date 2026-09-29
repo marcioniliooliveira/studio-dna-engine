@@ -1,0 +1,28 @@
+{
+  "clientSlug": "marcionilio-oliveira",
+  "brandName": "Marcionilio F.S.J de Oliveira",
+  "category": "High-End Editorial Portfolio / Creative Technologist",
+  "refSlug": "khanhnguyen-design",
+  "theme": {
+    "bgBase": "#262220",
+    "bgSurface": "#FAF9F6",
+    "bgPanel": "#EDEAE6",
+    "bgDark": "#1F1D1B",
+    "textLight": "#F3EEE8",
+    "textDark": "#2E2B28",
+    "headerBg": "#3A3632"
+  },
+  "typography": {
+    "display": "PP Editorial Old, serif",
+    "body": "PP Neue Montreal, ui-sans-serif, system-ui, sans-serif",
+    "numerals": "tabular-nums"
+  },
+  "meta": {
+    "title": "Marcionilio Oliveira — Web Designer & Creative Developer",
+    "description": "Web designer baseado no Brasil focado em interfaces interativas ricas em movimento, tipografia e arquitetura determinística.",
+    "location": "Paraná, Brasil",
+    "timezone": "America/Sao_Paulo (GMT-3)",
+    "lang": "pt-BR"
+  },
+  "status": "Disponível para novos projetos"
+}

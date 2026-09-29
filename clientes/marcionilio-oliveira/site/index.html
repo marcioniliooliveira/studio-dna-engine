@@ -1,0 +1,1040 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcionilio Oliveira — Web Designer &amp; Creative Developer</title>
+  <link rel="stylesheet" href="./assets/_astro/global.BvueZpQ-.css">
+  <style>@media(min-width:768px){[data-astro-cid-p35cuy7o][data-work-image]{will-change:transform,opacity}[data-astro-cid-p35cuy7o][data-work-item-arrow]{transform:translate(calc(-1 * var(--scale)),calc(1 * var(--scale))) scale(.6);transform-origin:left bottom;transition:opacity .3s ease-out,transform .45s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}[data-astro-cid-p35cuy7o][data-work-item-index]:is(:hover,:focus-within) [data-astro-cid-p35cuy7o][data-work-item-arrow]{opacity:1!important;transform:translate(0) scale(1)}}[data-section=loading] [data-name-line-text]>.word:first-child{margin:-.18em -.24em -.24em -.18em;padding:.18em .24em .24em .18em}
+
+@media(min-width:768px)and (max-width:1024px)and (orientation:portrait){.tablet-orientation-notice[data-astro-cid-ggzamrjs]{display:flex}}
+</style>
+<style id="universal-unlock-css">
+      /* 1. Supressão Completa de Cortinas de Transição e Preloaders (Anti-Blackscreen) */
+      #transition-overlay, 
+      [data-cover], 
+      .transition-curtain, 
+      .page-transition-overlay, 
+      .transition_screen, 
+      .preloader_wrap, 
+      .preloader, 
+      .loader, 
+      .site-loader, 
+      .loading-screen, 
+      .loading-overlay, 
+      #preloader, 
+      #loading-mask, 
+      [data-preloader], 
+      .splash-screen, 
+      .curtain, 
+      [data-curtain], 
+      [data-page-transition], 
+      .is-loading-overlay, 
+      .page-transition, 
+      .page_loader,
+      .w-preloader {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+      }
+
+      /* Desbloqueia position: sticky globalmente removendo overflow hostil dos ancestrais */
+      html, body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+      }
+      .page-wrapper, main, .main-wrapper, .container, .page-padding {
+        overflow: visible !important;
+      }
+
+      /* Desbloqueia sliders de marcas / logos para rotação infinita */
+      .brand-slider, .logo-slider, .partner-slider {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      /* Reparo de layout para seções empilhadas e eliminação de spacers fantasmas */
+      .faq-spacer {
+        display: none !important;
+      }
+      .faq-relative {
+        height: auto !important;
+      }
+      section.cta, .cta {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 10 !important;
+      }
+      section.faq, .faq {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 5 !important;
+      }
+
+      /* Interatividade de hover fluida na FAQ */
+      .faq [data-dropdown-list] {
+        opacity: 0 !important;
+        transform: translateX(24px) !important;
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none !important;
+      }
+      .faq [data-dropdown]:hover [data-dropdown-list],
+      .faq [data-dropdown].is-active [data-dropdown-list] {
+        opacity: 1 !important;
+        transform: translateX(0px) !important;
+        pointer-events: auto !important;
+      }
+      .faq [data-dropdown]:hover .faq-dropdown-toggle h3,
+      .faq [data-dropdown].is-active .faq-dropdown-toggle h3 {
+        color: #ffffff !important;
+        transition: color 0.3s ease;
+      }
+
+      /* Reseta máscaras para evitar listras estáticas em repouso */
+      [data-amenities-anim="big-image"].is-first {
+        position: relative !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        opacity: 1 !important;
+      }
+      [data-amenities-anim="big-image"]:not(.is-first) {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+        -webkit-mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+      }
+
+      /* 2. Overlays cosméticos não podem bloquear eventos de mouse */
+      .g_overlay, .g_grain_overlay {
+        pointer-events: none !important;
+      }
+
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis mantendo position: sticky */
+      html {
+        overflow-x: clip !important;
+        overflow-y: auto !important;
+        height: auto !important;
+      }
+      body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+        height: auto !important;
+      }
+      html.lenis-stopped, 
+      body.lenis-stopped, 
+      html.is-loading, 
+      body.is-loading,
+      body.no-scroll {
+        overflow: auto !important;
+        overflow-x: clip !important;
+        height: auto !important;
+      }
+
+      /* 4. Controles, Navbar, CTAs fixos */
+      .fixed, header, [id*="cta"] {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* 5. Garante renderização nítida de imagens e mídias */
+      img, svg, canvas, video {
+        content-visibility: visible;
+      }
+    </style>
+<script id="universal-resilience-polyfills">
+(function() {
+  'use strict';
+  // 1. Mocks de Analytics & Rastreamento
+  window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
+  window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
+  window.dataLayer = window.dataLayer || [];
+  window.umami = window.umami || { track: function() {} };
+
+  // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.CustomEase === 'undefined') {
+      window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
+    }
+    if (typeof window.SplitText === 'undefined') {
+      window.SplitText = function(target) {
+        return { lines: [], words: [], chars: [], revert: function() {} };
+      };
+    }
+  });
+
+  // 3. Stub de Audio (Howler.js)
+  if (typeof window.Howl === 'undefined') {
+    window.Howl = function() {
+      return {
+        play: function() { return 1; },
+        pause: function() {},
+        stop: function() {},
+        volume: function() {},
+        fade: function() {},
+        on: function() { return this; },
+        once: function() { return this; },
+        off: function() { return this; },
+        state: function() { return 'loaded'; }
+      };
+    };
+  }
+
+  // 4. Stub de Barba.js & Modais
+  if (typeof window.barba === 'undefined') {
+    window.barba = {
+      init: function() {},
+      use: function() {},
+      hooks: { before: function() {}, after: function() {}, enter: function() {}, leave: function() {} },
+      transitions: []
+    };
+  }
+  if (typeof window.ProjectModal === 'undefined') {
+    window.ProjectModal = function() {
+      return { open: function(){}, close: function(){} };
+    };
+  }
+
+  // 5. Imediato e Multinível Unhide Failsafe
+  function forceUnhide() {
+    document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
+    document.documentElement.classList.remove('is-loading', 'lenis-stopped');
+    if (document.body) {
+      document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
+    }
+    
+    // Limpeza de textos mascarados e nós do SplitText
+    var maskedNodes = document.querySelectorAll('[style*="visibility: hidden"], [style*="opacity: 0"], .gsap-reveal');
+    maskedNodes.forEach(function(el) {
+        if(el.classList.contains('child') || el.classList.contains('line')) {
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+        }
+    });
+
+    var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
+    blocked.forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+  }
+
+  // 6. Splide & Carousel Auto-Binder
+  function initSplides() {
+    if (typeof window.Splide !== 'undefined') {
+      var splides = document.querySelectorAll('.splide:not(.is-initialized)');
+      splides.forEach(function(s) {
+        try {
+          new window.Splide(s, {
+            type: 'loop',
+            perPage: 1,
+            autoplay: false,
+            pagination: true
+          }).mount();
+        } catch(e) {}
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      forceUnhide();
+      initSplides();
+    });
+  } else {
+    forceUnhide();
+    initSplides();
+  }
+  setTimeout(function() { forceUnhide(); initSplides(); }, 50);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 300);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 1000);
+})();
+</script>
+<style id="chapter1-typography-fix">
+  /* Calibração Geométrica Estrita de Chapter I (Prevenção de Colisão AABB) */
+  @media (min-width: 768px) {
+    [data-about-reveal-intro] {
+      font-size: clamp(1.1rem, calc(1.6 * var(--scale)), 1.55rem) !important;
+      line-height: 1.42 !important;
+      max-width: calc(62 * var(--scale)) !important;
+      font-weight: 500 !important;
+    }
+  }
+</style></head>
+<body class="overflow-x-hidden antialiased">
+ <!-- Figma Header - Mobile 390×64 (node 1366:1935); desktop rail unchanged at md: --><header class="fixed z-[110] opacity-0 inset-x-0 top-0 flex w-full flex-row items-center justify-between border-b border-(--header-border) bg-(--header-bg) text-(--header-text) px-5 py-4 md:inset-x-auto md:inset-y-0 md:left-0 md:right-auto md:bottom-0 md:w-16 md:flex-col md:items-center md:justify-start md:px-0 md:py-0 md:border-b-0 md:border-r transition-[background-color,color,border-color] duration-500 ease-out" style="--header-bg: #3A3632; --header-text: #f3eee8; --header-border: #5a524d;" data-intro-header="" aria-label="Global site header"> <div class="pointer-events-none absolute -bottom-px left-0 z-10 h-px w-full origin-left bg-[#8A8178] will-change-transform md:top-0 md:bottom-auto md:h-dvh md:w-[calc(0.3_*_var(--scale))] md:origin-top" data-header-scroll-progress="" aria-hidden="true"></div> <a href="/" class="block shrink-0 text-(--header-text) md:hidden" aria-label="Back to home"><span style="font-family:'PP Editorial Old', serif; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; font-weight:400; color:currentColor;">Marcionilio</span></a> <button id="menu-toggle" type="button" class="flex shrink-0 cursor-pointer items-center justify-center outline-none enabled:hover:opacity-80 md:h-16 md:w-full md:border-b md:border-(--header-border)" aria-expanded="false" aria-controls="fullscreen-menu" aria-label="Open menu"> <svg class="size-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <rect y="15" width="32" height="2" fill="#f3eee8"></rect> <rect data-menu-icon-bar="lower" x="0" y="22" width="32" height="2" fill="#f3eee8"></rect> <rect data-menu-icon-bar="upper" x="0" y="8" width="32" height="2" fill="#f3eee8"></rect> </svg> </button> <div class="hidden flex-1 flex-col items-center justify-between py-6 md:flex md:py-8"> <p class="vt-rl vt-reading-up text-[calc(1_*_var(--scale))] uppercase tracking-wide md:text-[calc(1.1_*_var(--scale))]">
+Folio — Edition
+</p> <a href="/" class="block w-[calc(1.33_*_var(--scale))] shrink-0 text-(--header-text)" aria-label="Back to home"><svg class="block w-full" viewBox="0 0 16 134" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Marcionilio">
+      <text x="-132" y="12" font-family="'PP Editorial Old', serif" font-size="12" letter-spacing="0.22em" fill="currentColor" transform="rotate(-90)" font-weight="400">MARCIONILIO</text>
+    </svg></a> <p class="vt-rl vt-reading-up text-[calc(1_*_var(--scale))] uppercase tracking-wide md:text-[calc(1.1_*_var(--scale))]">
+© 2026 </p> </div> </header>  <dialog id="fullscreen-menu" class="fixed inset-0 z-[90] m-0 h-dvh max-h-none w-full max-w-none border-0 bg-transparent p-0 backdrop:bg-transparent open:flex open:flex-col" aria-label="Site navigation" aria-modal="true"> <div data-menu-reveal="" class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-[#2e2b28] text-[#faf9f6]"> <!-- Figma Menu mobile (1334:1531): close lives in fixed Header; desktop keeps text control --> <button type="button" class="absolute right-4 top-8 hidden font-serif-2 text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-none opacity-0 outline-none hover:opacity-80 md:block md:right-16 md:top-(--vg) md:text-[3.6vh] cursor-pointer" data-menu-close="" data-reveal-line="" aria-label="Close menu">
+Close
+</button> <!-- Mobile band: px-5, pt below 64px header + 32px (Figma Section 1334:1538); desktop uses absolute rails --> <div class="flex min-h-0 flex-1 flex-col px-5 pt-24 pb-5 md:contents md:p-0"> <div class="flex min-h-0 flex-1 flex-col justify-between md:contents"> <nav class="flex flex-col gap-6 md:absolute md:left-32 md:top-(--vg) xl:gap-[3.6vh]" aria-label="Primary"> <a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/" data-nav-item="" aria-current="page" data-nav-active="true"> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 01. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Home </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/about" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 02. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> About </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="/works" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 03. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Works </span>  </span> </a><a class="group flex items-center gap-5 text-[#faf9f6] opacity-25 outline-none hover:opacity-90 data-[nav-active=true]:opacity-100 xl:gap-6 text-[calc(6.8*var(--scale))] md:text-[min(20vh,15vw)]" href="mailto:contato@marcionilio.dev" data-nav-item=""> <span class="w-6 shrink-0 font-serif text-[0.3em] font-normal leading-[1.2] opacity-0 md:w-auto" data-reveal-line=""> 04. </span> <span class="relative inline-block"> <span class="font-serif font-normal uppercase leading-[0.9] opacity-0 md:tracking-[-0.04em]" data-reveal-line=""> Contact </span>  </span> </a> </nav> <div class="flex flex-wrap gap-6 border-t border-[#5f5a54] pt-5 text-sm font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:right-16 md:border-0 md:pt-0 md:text-[1.8vh]"> <a class="to-link-underline opacity-0 outline-none" href="https://www.instagram.com/khanh_nguyen_des/" aria-label="Instagram" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Instagram </a><a class="to-link-underline opacity-0 outline-none" href="https://www.behance.net/kennguyen034b8/" aria-label="Behance" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Behance </a><a class="to-link-underline opacity-0 outline-none" href="https://www.linkedin.com/in/khanh-nguyen-6b47a3177/" aria-label="Linkedin" target="_blank" rel="noreferrer" data-to-link-underline="" data-social-link="" data-reveal-line="" data-underline-filled="false" data-underline-phase="idle"> Linkedin </a> </div> </div> </div> </div> </dialog>  <div id="dissolve-mount" aria-hidden="true"></div> <div class="tablet-orientation-notice fixed inset-0 z-[120] hidden items-center justify-center bg-[#2e2b28] px-8 text-center text-[#faf9f6]" role="status" aria-live="polite" data-astro-cid-ggzamrjs=""> <div class="max-w-[32rem]" data-astro-cid-ggzamrjs=""> <div class="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-[#8a8178]" aria-hidden="true" data-astro-cid-ggzamrjs=""> <svg class="h-12 w-12" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" data-astro-cid-ggzamrjs=""> <path d="M13 12H35C36.6569 12 38 13.3431 38 15V33C38 34.6569 36.6569 36 35 36H13C11.3431 36 10 34.6569 10 33V15C10 13.3431 11.3431 12 13 12Z" stroke="currentColor" stroke-width="2" data-astro-cid-ggzamrjs=""></path> <path d="M17 8L13 12L17 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ggzamrjs=""></path> <path d="M31 40L35 36L31 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ggzamrjs=""></path> </svg> </div> <p class="font-serif text-[calc(3.2_*_var(--scale))] leading-none tracking-[-0.04em]" data-astro-cid-ggzamrjs="">
+Rotate your screen
+</p> <p class="mt-5 text-base font-medium leading-[1.25] text-[#c8c0b8]" data-astro-cid-ggzamrjs="">
+Please turn your tablet to landscape for the best viewing experience.
+</p> </div> </div>   <main> <div data-horizontal-story="" class="bg-[#edeae6]" id="site-top"> <div data-horizontal-pin="" class="relative w-full md:h-dvh" style="margin: 0px; max-width: 1920px; width: 1920px; max-height: 1080px; height: 1080px; padding: 0px; box-sizing: border-box;"> <div data-horizontal-track="" class="flex w-full flex-col md:h-dvh md:flex-row md:flex-nowrap"> <!-- Layout insets: Figma Home 1440×900 — https://www.figma.com/design/O7C1iWKOJ0y9FMHvDgUW6I/Personal-Site?node-id=1284-1355 --><section class="relative flex w-full flex-col shrink-0 h-dvh overflow-hidden bg-[#262220] text-[#f3eee8]" data-section="loading" data-header-bg="#3A3632" data-header-text="#f3eee8" data-header-border="#5a524d" data-horizontal-panel="" data-start-year="2018" data-end-year="2026" aria-label="Loading introduction"> <div class="pointer-events-none absolute bottom-0 left-0 z-0 w-full origin-bottom-left bg-[#3A3632]" aria-hidden="true" data-loading-base-overlay="" style="transform-origin: 0% 100%; height: 100vh;"></div> <!-- [data-hero-year] = clip shell; [data-year-row] = opacity + slide + --year-slot; suffix strip only animates last two digits. --> <div data-hero-year="" class="absolute inset-x-5 bottom-8 md:inset-x-auto md:left-32 md:top-(--vg) md:bottom-auto z-[2] overflow-hidden"> <div class="opacity-0 font-serif tabular-nums translate-z-0 [--year-slot:calc(8.4_*_var(--scale))] md:[--year-slot:calc(18.1_*_var(--scale))]" data-year-row="" aria-hidden="true"> <div class="flex h-[1em] w-max text-(length:--year-slot) leading-none"> <span class="flex h-full items-center overflow-hidden [&amp;_.char]:inline-block" data-year-start-line=""> <span class="block whitespace-nowrap leading-none" data-year-start-text=""><div class="char" style="display: inline-block;">2</div><div class="char" style="display: inline-block;">0</div></span> </span> <div class="h-[1em] overflow-hidden"> <div data-year-strip="" class="translate-z-0"><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">
+      <span class="flex h-full min-w-0 max-w-full items-center overflow-hidden [&amp;_.char]:inline-block" data-year-start-line="">
+        <span class="block whitespace-nowrap leading-none" data-year-start-text="">
+          <div class="char" style="display: inline-block;">1</div>
+          <div class="char" style="display: inline-block;">8</div>
+        </span>
+      </span>
+    </span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">19</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">20</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">21</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">22</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">23</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">24</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">25</span><span class="year-strip-cell flex h-[1em] items-center leading-none tabular-nums">26</span></div> </div> </div> </div> </div> <!-- Name hero: same inset; shell has no translateY (opacity + char motion only) --> <div data-hero-name="" class="absolute inset-x-5 bottom-8 md:inset-x-auto md:left-32 md:top-(--vg) md:bottom-auto z-[1]" style=""> <div data-name-row="" class="w-full text-(length:--name-fs) leading-none [--name-fs:calc(8_*_var(--scale))] md:[--name-fs:calc(15.2_*_var(--scale))] tracking-[-0.04em] font-editorial-dlig"> <h1 class="font-serif-2 leading-none uppercase [&amp;_.word]:inline-block" data-name-heading=""> <span class="block w-max overflow-hidden pl-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block;">Marcionilio</div></span> </span> <span class="block w-max overflow-hidden pl-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block;">Oliveira</div></span> </span> </h1> </div> </div>  <p class="absolute inset-x-5 z-[1] font-normal leading-[1.3] text-[calc(1.8_*_var(--scale))] text-[#f3eee8] opacity-0 top-[calc(8.4_*_var(--scale))] md:inset-x-auto md:top-[calc(5.8_*_var(--scale))] md:right-16 md:w-[calc(40_*_var(--scale))] md:text-(length:--cta-fs) md:text-[#faf9f6]/90" data-reveal-line="" data-loading-tagline="">
+Web designer baseado no Brasil. Gosto da vida calma, fujo de discurso vazio e construo interfaces interativas que provam seu próprio valor.
+</p><p class="absolute bottom-12 left-4 z-[1] hidden text-base font-normal leading-[1.4] text-[#faf9f6]/85 opacity-0 md:block md:left-32 md:bottom-(--vg)" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0" data-line="">Paraná, Brasil</span> </span> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 tabular-nums" data-line="">
+(GMT-3) <span data-clock="">12:00</span> </span> </span> </p>  <p class="absolute inset-x-5 z-[1] text-left font-normal leading-[1.2] text-[calc(1.8_*_var(--scale))] text-[#f3eee8] opacity-0 top-[calc(8.4_*_var(--scale))] md:inset-x-auto md:top-auto md:bottom-(--vg) md:right-16 md:text-right md:text-(length:--cta-fs) md:whitespace-nowrap" data-loading-journey-line="">Uma jornada através de anos de tecnologia e design</p><p class="absolute bottom-12 left-1/2 z-[1] hidden w-full max-w-[calc(40_*_var(--scale))] -translate-x-1/2 px-4 text-left text-base font-normal leading-[1.4] text-[#faf9f6]/90 opacity-0 md:block md:left-[calc(50%_-_calc(16.8_*_var(--scale)))] md:w-[calc(40_*_var(--scale))] md:max-w-[calc(40_*_var(--scale))] md:translate-x-0 md:px-0 md:bottom-(--vg)" data-reveal-line="">
+    <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 w-full" data-line="">Disponível para</span> </span>
+    <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0 w-full" data-line="">novos projetos</span> </span>
+  </p> <p class="absolute bottom-12 right-4 z-[1] hidden text-right font-serif text-xl font-normal uppercase leading-none text-[#faf9f6]/80 opacity-0 md:block md:right-16 md:text-(length:--display-fs) md:bottom-(--vg)" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block whitespace-nowrap translate-z-0" data-line="">SCROLL</span> </span> </p> </section>   <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#faf9f6] text-[#2e2b28]" data-section="home-about" aria-label="About" data-header-bg="#faf9f6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <div class="relative flex min-h-0 flex-1 flex-col gap-12 px-5 py-14 md:gap-0 md:px-0 md:py-0"> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl">
+Chapter I
+</p> <div class="flex w-full flex-col gap-5 md:absolute md:top-(--vg) md:right-16 md:z-10 md:w-[calc(61.4_*_var(--scale))] md:min-w-0" data-about-reveal-group-trigger="">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.2] opacity-0" data-about-reveal-label="">
+Quick intro
+</p> <p class="text-2xl leading-[1.3] opacity-0 md:text-[clamp(1.05rem,calc(1.75_*_var(--scale)),1.62rem)] md:leading-[1.4] md:max-w-[calc(60_*_var(--scale))] font-medium" data-about-reveal-intro="">
+Trabalho como web designer criando interfaces digitais ricas em movimento e tipografia. Passo meus dias com tranquilidade, prezo meu descanso e escolho onde coloco meu tempo. Quando assumo uma ideia, dedico energia monumental para entregar um resultado gráfico impecável.
+</p></div> <a class="to-link-underline inline-flex items-center gap-2 text-lg font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:text-(length:--cta-fs) md:z-10 md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.4_*_var(--scale)))]" href="#contact" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle">
+More about me
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" class="size-5 shrink-0 md:size-6" aria-hidden="true">
+<g id="arrow_forward">
+<mask id="mask0_0_22" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" fill="var(--fill-0, #D9D9D9)"></rect>
+</mask>
+<g mask="url(#mask0_0_22)">
+<path id="arrow_forward_2" d="M16.175 13H4V11H16.175L10.575 5.4L12 4L20 12L12 20L10.575 18.6L16.175 13Z" fill="currentColor"></path>
+</g>
+</g>
+</svg> </a> <div class="flex w-full flex-col items-center gap-2 md:contents"> <div class="relative aspect-[300/400] w-full overflow-hidden md:absolute md:bottom-(--vg) md:right-16 md:z-0 md:aspect-auto md:h-(--portrait-h) md:w-(--portrait-w)" data-about-reveal-group-image-shell=""> <div class="pointer-events-none absolute inset-0 z-[5] bg-[#d8d1c8] opacity-0" data-reveal-image-overlay="" aria-hidden="true" style="visibility: hidden;"></div> <div class="relative z-10 size-full overflow-hidden" data-reveal-image=""> <img src="./assets/_astro/home-portrait.beOnDaN4_Z2jhemt.webp" alt="Portrait of Khanh Nguyen." loading="lazy" decoding="async" width="882" height="1176" class="size-full object-cover object-bottom"> </div> </div> <blockquote class="w-full border-0 p-0 text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] not-italic md:absolute md:z-10 md:w-[calc(14.3_*_var(--scale))] md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.4_*_var(--scale)))] md:top-(--portrait-top)">  <p class="mb-0 opacity-0" data-about-reveal-quote="">“Vida calma.<br class="hidden md:block"> Código com valor.”</p></blockquote> </div>  <p class="hidden text-base font-normal leading-[1.4] opacity-0 md:absolute md:bottom-(--vg) md:left-32 md:block md:max-w-[calc(29.4_*_var(--scale))]" data-reveal-line="">Princípios: foco onde coloco o tempo, vida calma e rigor gráfico.</p></div> </section>  <!--
+  "More Work" cinematic expand panel.
+  Layout layers (stacking order within the section):
+    z-10  — expanding dark rect (absolute, centered; starts at scale 0 via JS)
+    z-20  — text row (More / Work), visible above the rect while it grows
+  The section's overflow-hidden clips both layers, giving a clean cinematic exit
+  as the text flies apart and the rect fills the section bounds.
+
+  Animation is driven entirely by initHorizontalScroll.ts — no script block
+  needed here. On desktop, the master horizontal timeline inserts a "pause
+  phase" at the point where this panel is centred in the viewport:
+    Phase 1  — track slides to the panel's centred x position.
+    Phase 2  — rect scales 0 → cover; More flies left; Work flies right.
+    Phase 3  — track resumes to its final x position.
+
+  On mobile, the native vertical story pins this 100svh panel for the same
+  expand phase: the vertical rect scales to cover; More flies up; Work flies
+  down.
+--><section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh h-[100svh] items-center justify-center bg-[#faf9f6] px-5 py-14 text-[#2e2b28] md:px-0 md:py-0" aria-label="More work" data-more-work-section="" data-header-bg="#faf9f6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <!-- Desktop expanding rect: absolute-centered, z-10. --> <!-- JS sets scale(0) on init; scales to viewport-cover as the panel scrolls to center. --> <div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center md:flex" aria-hidden="true"> <div data-more-work-rect="" class="h-[calc(14_*_var(--scale))] w-[calc(24.9_*_var(--scale))] overflow-hidden bg-[#d9d9d9]" style="transform-origin: 50% 50%;"> <video class="h-full w-full object-cover" src="./assets/_astro/thework-desktop.BOEUPLXP.mp4" autoplay="" muted="" loop="" playsinline="" preload="metadata"></video> </div> </div> <!-- Text and mobile rect: centred layers, with a constant 16px visual gap. --> <div class="relative z-20 flex flex-1 items-center justify-center md:flex-initial md:flex-row md:gap-16 md:px-4"> <p data-more-work-more="" class="absolute bottom-[calc(50%_+_calc(1.6_*_var(--scale)))] left-1/2 z-20 -translate-x-1/2 font-serif text-[calc(7_*_var(--scale))] font-normal uppercase leading-none md:relative md:bottom-auto md:left-auto md:translate-x-[calc(1.6_*_var(--scale))] md:text-[calc(12.8_*_var(--scale))]">
+The
+</p> <div class="pointer-events-none absolute left-1/2 top-1/2 z-10 flex h-[calc(15.2_*_var(--scale))] w-[calc(8.5_*_var(--scale))] -translate-x-1/2 -translate-y-1/2 items-center justify-center md:hidden" aria-hidden="true"> <div data-more-work-mobile-rect="" class="h-full w-full overflow-hidden bg-[#d9d9d9]"> <video class="h-full w-full object-cover" src="./assets/_astro/thework-mobile.DFnsCk-1.mp4" autoplay="" muted="" loop="" playsinline="" preload="metadata"></video> </div> </div> <p data-more-work-work="" class="absolute left-1/2 top-[calc(50%_+_calc(1.6_*_var(--scale)))] z-20 -translate-x-1/2 font-serif text-[calc(7_*_var(--scale))] font-normal uppercase leading-none md:relative md:left-auto md:top-auto md:-translate-x-[calc(1.6_*_var(--scale))] md:text-[calc(12.8_*_var(--scale))]">
+Work
+</p> </div> </section> <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#edeae6] text-[#2e2b28]" aria-label="Selected work" data-section="home-work" data-header-bg="#edeae6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel="" data-astro-cid-p35cuy7o=""> <div class="relative flex min-h-0 flex-1 flex-col gap-12 px-5 py-14 md:gap-0 md:px-0 md:py-0" data-astro-cid-p35cuy7o=""> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl" data-astro-cid-p35cuy7o="">
+Chapter II
+</p> <div class="flex flex-col gap-2.5 md:absolute md:right-16 md:top-(--vg) md:w-full md:max-w-[calc(61.2_*_var(--scale))]" data-astro-cid-p35cuy7o="">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] opacity-0" data-reveal-line="" data-work-label="" data-astro-cid-p35cuy7o="">
+Related work
+</p><ul class="w-full text-[calc(4.1_*_var(--scale))] font-medium leading-[1.2] opacity-0 md:text-(length:--list-fs)" data-work-list="" data-astro-cid-p35cuy7o=""> <li class="relative" data-work-item-index="0" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/evo-money?from=home" aria-label="View EVO Money project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> EVO Money </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="1" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/plant-tag?from=home" aria-label="View Plant Tag project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Plant Tag </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="2" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/swisshaus?from=home" aria-label="View Swiss Haus project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Swiss Haus </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#b8b3ac] scale-x-0" data-work-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span> <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-[#2e2b28] scale-x-0" data-work-hover-line="" aria-hidden="true" data-astro-cid-p35cuy7o=""></span>  </li><li class="relative" data-work-item-index="3" data-astro-cid-p35cuy7o=""> <a class="flex items-center justify-between gap-4 py-2.5 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2e2b28]" href="/works/betahaus?from=home" aria-label="View Betahaus project details" data-transition-color="#faf9f6" data-astro-cid-p35cuy7o=""> <span class="block overflow-hidden min-w-0 flex-1 transition-opacity duration-500 ease-out" data-work-item-text-wrap="" data-astro-cid-p35cuy7o=""> <span class="block translate-z-0" data-line="" data-work-item-text="" data-astro-cid-p35cuy7o=""> Betahaus </span> </span> <svg width="56" height="56" viewBox="0 0 56 56" fill="none" class="hidden size-8 shrink-0 opacity-0 md:block md:size-14" data-work-item-arrow="true" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<mask id="mask0_1284_1671" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="56" height="56">
+<rect width="56" height="56" fill="#D9D9D9"></rect>
+</mask>
+<g mask="url(#mask0_1284_1671)">
+<path d="M16.4366 42.3367L14 39.9001L36.9612 16.9167H16.0866V13.4167H42.9199V40.2501H39.4199V19.3755L16.4366 42.3367Z" fill="#1C1B1F"></path>
+</g>
+</svg> </a>  </li> </ul> </div> <a class="to-link-underline inline-flex items-center gap-2 text-lg font-medium leading-[1.2] md:absolute md:bottom-(--vg) md:right-16 md:text-(length:--cta-fs)" href="/works" data-to-link-underline="" data-astro-cid-p35cuy7o="" data-underline-filled="false" data-underline-phase="idle">
+View All Work
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" class="size-5 shrink-0 md:size-6" aria-hidden="true" data-astro-cid-p35cuy7o="true">
+<g id="arrow_forward">
+<mask id="mask0_0_22" style="mask-type:alpha;" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" fill="var(--fill-0, #D9D9D9)"></rect>
+</mask>
+<g mask="url(#mask0_0_22)">
+<path id="arrow_forward_2" d="M16.175 13H4V11H16.175L10.575 5.4L12 4L20 12L12 20L10.575 18.6L16.175 13Z" fill="currentColor"></path>
+</g>
+</g>
+</svg> </a> <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.3] text-[#1a1a1a] md:absolute md:bottom-(--vg) md:max-w-[calc(29.4_*_var(--scale))] md:left-[calc(100%_-_calc(6.4_*_var(--scale))_-_calc(61.2_*_var(--scale)))]" data-astro-cid-p35cuy7o="">
+❋ Live site unavailable for some inactive or incomplete projects
+</p> <div class="relative isolate hidden w-full max-w-[calc(40.1_*_var(--scale))] shrink-0 overflow-hidden md:absolute md:bottom-(--vg) md:left-32 md:block md:max-w-[min(calc(40.1_*_var(--scale)),calc(100%_-_calc(8_*_var(--scale))))]" data-work-preview="" aria-hidden="true" data-astro-cid-p35cuy7o=""> <svg width="401" height="225" viewBox="0 0 401 225" fill="none" class="h-auto w-full transition-opacity duration-300 ease-out" data-work-placeholder="true" data-astro-cid-p35cuy7o="true">
+<rect x="0.743164" y="0.5" width="399.563" height="224" stroke="#B8B3AC"></rect>
+<path d="M0.243164 1L400.243 224" stroke="#B8B3AC"></path>
+</svg> <img src="./assets/_astro/evo-money-thumbnail-16-9.B00Lym5-_qy4LO.webp" alt="" loading="lazy" decoding="async" data-work-image="0" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="./assets/_astro/plant-tag-thumbnail-16-9.CEaBMfaz_Z64N3z.webp" alt="" loading="lazy" decoding="async" data-work-image="1" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="./assets/_astro/swisshaus-thumbnail-16-9.Dl-P9oLP_Z1jbLrY.webp" alt="" loading="lazy" decoding="async" data-work-image="2" data-astro-cid-p35cuy7o="true" width="1440" height="804" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"><img src="./assets/_astro/betahaus-thumbnail-16-9.ZH-WOOsP_GLeLu.webp" alt="" loading="lazy" decoding="async" data-work-image="3" data-astro-cid-p35cuy7o="true" width="1440" height="810" class="pointer-events-none absolute inset-0 z-0 h-full w-full origin-center object-cover opacity-0" style="z-index: 0; visibility: hidden;"> </div> </div> </section>  <section class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#2e2b28] pt-14 text-[#faf9f6] md:pt-0 md:pl-16 md:w-max relative z-1" aria-label="Services" data-header-bg="#2e2b28" data-header-text="#faf9f6" data-header-border="#5a524d" data-horizontal-panel="" data-services-section=""> <div class="flex w-full flex-col md:min-h-0 md:w-max md:flex-1 md:flex-row md:items-stretch md:pl-16"> <div class="mb-12 flex flex-col gap-10 px-5 md:mb-0 md:w-[calc(63.6_*_var(--scale))] md:min-h-0 md:shrink-0 md:justify-between md:gap-0 md:px-0 md:py-(--vg) md:pr-6"> <p class="font-serif text-lg font-normal uppercase leading-none md:text-2xl">
+Chapter III
+</p> <div class="flex flex-col gap-5">   <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.2] opacity-0" data-reveal-line="">
+What I do?
+</p><p class="text-2xl font-normal leading-[1.3] opacity-0 md:text-(length:--display-fs)" data-reveal-line="">Desenho interfaces digitais com hierarquia visual clara, física de movimento calculada e arquitetura estável.</p></div> </div> <article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden border-t"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="./assets/_astro/product-design.DfgsIgHZ_2ep3iR.webp" alt="Web Design" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 01 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]">Web Design</p> <p class="text-sm leading-[1.3] md:text-base">Desenho layouts limpos com hierarquia visual clara e tipografia equilibrada. Cada tela existe para guiar o usuário sem ruído.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="./assets/_astro/digital-experiences.DDLaUBVQ_Z19kMkW.webp" alt="Creative Dev" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 02 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]">Creative Dev</p> <p class="text-sm leading-[1.3] md:text-base">Dou vida às páginas com movimento fluido e interações com resposta tátil. Animações calculadas para enriquecer o uso, sem prejudicar o tempo de resposta.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="./assets/_astro/art-direction.DvxnZOBk_UzEGf.webp" alt="Frontend Build" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 03 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]">Frontend Build</p> <p class="text-sm leading-[1.3] md:text-base">Construo interfaces modernas e estáveis. Código limpo, carregamento rápido em qualquer tela e zero dependências pesadas acumuladas à toa.</p> </article><article data-service-item="" class="flex w-full h-[70dvh] flex-col justify-between gap-10 border-[#5f5a54] border-b px-5 py-8 last:border-b-0 md:h-full md:w-[calc(40_*_var(--scale))] md:shrink-0 md:gap-0 md:border-b-0 md:border-t-0 md:border-l md:p-(--vg) relative group overflow-hidden"> <div data-service-bg-reveal="" class="absolute inset-0 -z-1 overflow-hidden"> <div class="absolute inset-0 z-1 bg-[#1f1d1b]/70"></div> <div data-service-bg-media="" class="size-full"> <img src="./assets/_astro/development.DAJZlvuy_ZLxwRa.webp" alt="Internal Tools" loading="lazy" decoding="async" width="1536" height="2752" class="size-full object-cover object-center md:scale-110"> </div> </div> <p class="font-serif text-[calc(7_*_var(--scale))] leading-none md:text-[calc(9_*_var(--scale))] md:leading-[1.3] md:tracking-[-0.024em]"> 04 </p> <p class="font-serif text-[calc(3.2_*_var(--scale))] font-normal uppercase leading-[1.3] md:text-(length:--display-fs) md:leading-[1.2]">Internal Tools</p> <p class="text-sm leading-[1.3] md:text-base">Desenvolvo automações, scripts e motores determinísticos que resolvem gargalos de produção. Código direto ao ponto para transformar esforço manual em processo seguro.</p> </article> </div> </section>  <section class="relative flex w-full flex-col shrink-0 overflow-clip md:h-dvh  bg-[#edeae6] text-[#2e2b28]" aria-label="Clients" data-section="home-clients" data-header-bg="#edeae6" data-header-text="#2e2b28" data-header-border="#b8b3ac" data-horizontal-panel=""> <div class="relative flex min-h-0 flex-1 flex-col gap-10 px-5 py-14 md:gap-0 md:px-0 md:py-0"> <p class="font-serif text-lg font-normal uppercase leading-none md:absolute md:left-32 md:top-(--vg) md:text-2xl">
+Chapter IV
+</p> <div class="w-full md:absolute md:right-32 md:top-(--vg) md:max-w-[calc(61.2_*_var(--scale))]">  <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] mb-5 opacity-0" data-reveal-line="" data-clients-label="">
+Selected experiences
+</p><div class="grid grid-cols-[minmax(0,1fr)_calc(5.6_*_var(--scale))] items-stretch gap-4 [--client-row-height:calc(5.04_*_var(--scale))] md:block" data-clients-mobile-grid=""> <ul class="flex min-w-0 flex-col gap-1 overflow-visible text-[calc(4.2_*_var(--scale))] font-medium leading-[1.2] opacity-0 md:text-(length:--list-fs) [&amp;:not([data-clients-list-interactive])_li]:pointer-events-none [&amp;:not([data-clients-list-interactive])_li]:cursor-default [&amp;[data-clients-list-interactive]_li]:cursor-pointer" data-clients-list="" data-clients-list-interactive=""><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Motion &amp; Física (GSAP + Lenis)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Motion &amp; Física (GSAP + Lenis)</span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Arquitetura Modular (Next.js + Astro)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Arquitetura Modular (Next.js + Astro)</span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Rigor Visual (Tailwind CSS + Tokens Semânticos)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Rigor Visual (Tailwind CSS + Tokens Semânticos)</span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Motores Locais (Node.js + SQLite Nativo)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Motores Locais (Node.js + SQLite Nativo)</span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Inspeção &amp; Evidência (Playwright)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Inspeção &amp; Evidência (Playwright)</span> </span> </li><li class="relative group" data-client-row=""> <div class="pointer-events-none absolute right-full mr-6 hidden items-center justify-center overflow-hidden md:flex md:aspect-[188/251] md:w-[calc(18.8_*_var(--scale))] md:bg-[#faf9f6] [clip-path:inset(0_0_0_100%)] duration-500 ease-[cubic-bezier(.3,.86,.36,.95)] group-hover:[clip-path:inset(0_0_0_0)] top-0"> <div class="shrink-0 w-[74.5%]"> <img src="./assets/_astro/trusting-social.DpmGxmAc_Zwcg8r.svg" alt="Base da Web (HTML Semântico + Padrões W3C)" loading="lazy" decoding="async" width="140" height="140" class="w-full"> </div> </div> <span class="block overflow-hidden transition-opacity duration-500 ease-out" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">Base da Web (HTML Semântico + Padrões W3C)</span> </span> </li></ul> <div class="relative md:hidden"> <div class="sticky top-[calc(50vh-var(--client-row-height)/2)] flex h-(--client-row-height) items-center justify-end" data-clients-mobile-logos=""> <div class="grid size-[calc(6.4_*_var(--scale))]"> <div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="./assets/_astro/trusting-social.DpmGxmAc_Z2iV97Y.svg" alt="Trusting Social logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="./assets/_astro/vietnamwork.3okzrBEw_Z2iV97Y.svg" alt="Vietnamwork logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="./assets/_astro/autonomous.CjY4rwNV_Z2iV97Y.svg" alt="Autonomous logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="./assets/_astro/ven.B2Y4CFaB_Z2iV97Y.svg" alt="VEN Agency logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div><div class="col-start-1 row-start-1 flex size-[calc(6.4_*_var(--scale))] scale-0 items-center justify-center opacity-0 will-change-transform" data-client-mobile-logo=""> <img src="./assets/_astro/glass-egg.BEyyPGun_Z2iV97Y.svg" alt="Glass Egg logo" loading="lazy" decoding="async" width="56" height="56" class="size-full object-contain"> </div> </div> </div> </div> </div> <p class="relative opacity-0 text-[calc(4.2_*_var(--scale))] font-medium leading-[1.2] md:text-(length:--list-fs) block overflow-hidden transition-opacity duration-500 ease-out" data-client-row="" data-client-more="" data-client-text-wrap=""> <span class="block translate-z-0" data-line="">And more</span> </p> </div> <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] md:absolute md:bottom-(--vg) md:left-32 md:max-w-[calc(29.4_*_var(--scale))]">
+Work spanning brands, products,
+<br>
+and digital teams.
+</p> </div> </section>  <section id="contact" class="relative flex w-full flex-col shrink-0 overflow-hidden md:h-dvh bg-[#1f1d1b] text-[#ccc]" data-section="home-footer" aria-label="Contact" data-header-bg="#1f1d1b" data-header-text="#ccc" data-header-border="#5a524d" data-horizontal-panel=""> <div class="relative flex min-h-[calc(100dvh_-_calc(6_*_var(--scale)))] flex-1 flex-col justify-between gap-10 px-5 pt-14 pb-5 md:min-h-0 md:px-0 md:py-0"> <div class="flex flex-col gap-5 md:contents"> <p class="text-[calc(1.1_*_var(--scale))] font-normal uppercase leading-[1.4] md:absolute md:bottom-(--vg) md:right-16 md:whitespace-nowrap md:text-right">
+Where stories find their form
+</p> <div class="w-full leading-none md:absolute md:left-32 md:top-(--vg) md:max-w-[calc(80.2_*_var(--scale))]"> <h2 class="font-serif-2 text-[calc(7_*_var(--scale))] leading-none tracking-[-0.04em] opacity-0 md:text-[calc(18.1_*_var(--scale))] [&amp;_.word]:inline-block uppercase font-editorial-dlig" data-char-line-heading=""> <span class="block w-max overflow-hidden pl-[0.2em] pr-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block; transform-origin: 50% 100%;">Next</div></span> </span> <span class="block w-max overflow-hidden pl-[0.2em] pr-[0.2em] -ml-[0.2em] pt-[0.1em] -mt-[0.1em]"> <span class="block whitespace-nowrap" data-name-line-text=""><div class="word" style="display: inline-block; transform-origin: 50% 100%;">chapter</div></span> </span> </h2> </div> </div> <div class="flex flex-col gap-10 md:contents"> <div class="flex flex-col gap-10 md:contents"> <div class="flex flex-col gap-5 md:absolute md:bottom-(--vg) md:left-32 md:gap-4 opacity-0" data-reveal-line=""> <span class="block overflow-hidden"> <span class="block translate-z-0" data-line=""> <p class="text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4]">
+Contact to
+</p> </span> </span> <span class="block overflow-hidden"> <span class="block translate-z-0 w-fit" data-line=""> <a class="from-link-underline text-2xl font-medium leading-[1.2] md:text-(length:--display-fs) w-fit" href="mailto:contato@marcionilio.dev" data-from-link-underline="" data-underline-filled="true" data-underline-phase="idle">contato@marcionilio.dev</a> </span> </span> </div> <div class="flex flex-col gap-5 md:contents"> <p class="text-[calc(1.1_*_var(--scale))] font-medium uppercase leading-[1.4] md:hidden">
+social
+</p> <nav class="flex flex-col gap-1 text-2xl font-medium leading-[1.2] md:absolute md:right-16 md:top-(--vg) md:flex-row md:flex-wrap md:gap-6 md:text-base" aria-label="Social"> <a class="to-link-underline" href="https://www.instagram.com/khanh_nguyen_des/" aria-label="Instagram" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Instagram </a><a class="to-link-underline" href="https://www.behance.net/kennguyen034b8/" aria-label="Behance" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Behance </a><a class="to-link-underline" href="https://www.linkedin.com/in/khanh-nguyen-6b47a3177/" aria-label="Linkedin" target="_blank" rel="noreferrer" data-to-link-underline="" data-underline-filled="false" data-underline-phase="idle"> Linkedin </a> </nav> </div> </div> <div class="flex items-start justify-between border-t border-[#3a3632] pt-5 text-[calc(1.1_*_var(--scale))] uppercase leading-[1.4] md:hidden"> <p>© 2026 — Marcionilio F.S.J de Oliveira — All Rights Reserved</p> <p>folio — edition</p> </div> </div> </div> </section>  </div> </div> </div>  </main>  
+  
+
+  <script src="./assets/_astro/Header.astro_astro_type_script_index_0_lang.-_d_Djl9.js" type="module"></script>
+  <script src="./assets/_astro/FullscreenMenu.astro_astro_type_script_index_0_lang.D_q-HyZd.js" type="module"></script>
+  <script src="./assets/_astro/TabletOrientationNotice.astro_astro_type_script_index_0_lang.DmoMhxPB.js" type="module"></script>
+  <script src="./assets/_astro/Loading.astro_astro_type_script_index_0_lang.zYvD-WGL.js" type="module"></script>
+  <script src="./assets/_astro/About.astro_astro_type_script_index_0_lang.DrXWdl1D.js" type="module"></script>
+  <script src="./assets/_astro/Work.astro_astro_type_script_index_0_lang.B0cS72Vi.js" type="module"></script>
+  <script src="./assets/_astro/Services.astro_astro_type_script_index_0_lang.CavSbKjf.js" type="module"></script>
+  <script src="./assets/_astro/Clients.astro_astro_type_script_index_0_lang.CkJXhcIa.js" type="module"></script>
+  <script src="./assets/_astro/Footer.astro_astro_type_script_index_0_lang.En_bDpoP.js" type="module"></script>
+  <script src="./assets/_astro/Layout.astro_astro_type_script_index_0_lang.78jby32H.js" type="module"></script>
+  <script src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" type="module"></script>
+  <script src="./assets/_astro/index.astro_astro_type_script_index_0_lang.FpIfv3r_.js" type="module"></script>
+  <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    </script>
+
+<script id="universal-scroll-director">
+(function() {
+  'use strict';
+  console.log('🎬 [Universal Scroll Director] Inicializando motor de animação, revelação de assets e 3D...');
+
+  // --- 0. MOCK DE REDE ANTI-CRASH PARA HIDRATAÇÃO NUXT / SSR ---
+  if (typeof window !== 'undefined' && window.fetch) {
+    const origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      const urlStr = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+      if (urlStr.includes('/builds/meta/') || urlStr.includes('/_nuxt/builds/meta/')) {
+        return Promise.resolve(new Response(JSON.stringify({
+          id: "1b74772f-a27f-43d9-b862-c09e2209223a",
+          timestamp: 1786356888430,
+          matcher: { static: {}, wildcard: {}, dynamic: {} },
+          prerendered: ["/"]
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
+      }
+      return origFetch.apply(this, arguments).catch(function(err) {
+        if (urlStr.includes('/_nuxt/') || urlStr.includes('/api/') || urlStr.includes('/_vercel/')) {
+          return Promise.resolve(new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        throw err;
+      });
+    };
+  }
+
+  function onReady(fn) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(fn, 10);
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  onReady(function() {
+    // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
+    document.querySelectorAll('.opacity-0').forEach(function(el) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis ou abas
+      if (el.closest('#intro-logo-spinner') || el.closest('.amenities-slide-box') || el.closest('.splide') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
+        return;
+      }
+      const cs = window.getComputedStyle(el);
+      if (cs.opacity === '0' && !el.id.includes('overlay')) {
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.opacity = '1';
+      }
+    });
+
+    // --- 2. MOTOR UNIVERSAL DE SPLITTEXT / APPEAR-LINE REVEAL ---
+    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+
+    lineMasks.forEach(function(mask) {
+      mask.style.overflow = 'visible';
+      mask.style.display = 'block';
+    });
+
+    splitLines.forEach(function(line, idx) {
+      line.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ' + ((idx % 6) * 0.08) + 's, opacity 0.8s ease ' + ((idx % 6) * 0.08) + 's';
+      line.style.transform = 'translateY(0px)';
+      line.style.opacity = '1';
+      line.style.visibility = 'visible';
+      line.style.display = 'block';
+    });
+
+    // Restaura textos que possam estar em aria-label mas vazios nos spans internos
+    document.querySelectorAll('[aria-label][data-v-30d30ebe]').forEach(function(container) {
+      const label = container.getAttribute('aria-label');
+      if (label && (!container.innerText || container.innerText.trim() === '')) {
+        const line = container.querySelector('.appear-line');
+        if (line) line.textContent = label;
+      }
+    });
+
+    // --- 3. REVELAÇÃO CINEMATOGRÁFICA DE CORTINAS SOBRE IMAGENS (OVERLAY CURTAINS) ---
+    // Procura divs com bg-secondary e z-10 cobrindo imagens de serviços e projetos
+    const curtainOverlays = Array.from(document.querySelectorAll('div.bg-secondary.z-10, div[class*="bg-secondary"][class*="z-10"], div[class*="bg-black"][class*="z-10"]'));
+    curtainOverlays.forEach(function(curtain) {
+      // Verifica se é uma cortina sobreposta a uma imagem
+      const parent = curtain.parentElement;
+      if (parent && (parent.querySelector('img') || parent.classList.contains('overflow-hidden') || parent.classList.contains('aspect-[5/3]'))) {
+        curtain.style.transition = 'transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease';
+        curtain.style.transformOrigin = 'top';
+        curtain.style.pointerEvents = 'none';
+
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              curtain.style.transform = 'translateY(-101%)';
+              curtain.style.opacity = '0';
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        observer.observe(parent);
+      }
+    });
+
+    // --- 4. MOTOR 3D CILÍNDRICO PROCEDURAL (#intro-logo-spinner) ---
+    const spinnerContainer = document.getElementById('intro-logo-spinner');
+    if (spinnerContainer) {
+      const squares = Array.from(spinnerContainer.querySelectorAll('[data-spinner-square]'));
+      const count = squares.length || 8;
+      const angleStep = 360 / count;
+      const radius = window.innerWidth > 640 ? (window.innerWidth * 0.48) : (window.innerWidth * 0.7);
+
+      spinnerContainer.style.transformStyle = 'preserve-3d';
+      spinnerContainer.style.position = 'relative';
+
+      squares.forEach(function(sq, i) {
+        const angle = i * angleStep;
+        sq.style.position = 'absolute';
+        sq.style.left = '50%';
+        sq.style.top = '50%';
+        sq.style.margin = '-' + (sq.offsetHeight / 2) + 'px 0 0 -' + (sq.offsetWidth / 2) + 'px';
+        sq.style.transformOrigin = 'center center';
+        sq.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)';
+        sq.style.opacity = '1';
+        sq.style.transition = 'opacity 0.5s ease, filter 0.5s ease, transform 0.3s ease-out';
+        sq.style.pointerEvents = 'auto';
+
+        // Revela imagem interna
+        const innerImgWrapper = sq.firstElementChild;
+        if (innerImgWrapper) {
+          innerImgWrapper.style.opacity = '1';
+          innerImgWrapper.style.visibility = 'visible';
+        }
+      });
+
+      let currentRotation = 0;
+      let targetRotation = 0;
+      let isDragging = false;
+      let startX = 0;
+      let autoSpinSpeed = 0.15;
+
+      function updateSpinnerTransform() {
+        currentRotation += (targetRotation - currentRotation) * 0.08;
+        spinnerContainer.style.transform = 'rotateX(-5deg) rotateY(' + currentRotation + 'deg)';
+
+        // Aplica foco e iluminação dinâmica nos itens voltados para a frente
+        squares.forEach(function(sq, i) {
+          const itemAngle = (i * angleStep + currentRotation) % 360;
+          const normalizedAngle = (itemAngle + 360) % 360;
+          const distToFront = Math.min(normalizedAngle, 360 - normalizedAngle);
+          const brightness = Math.max(0.35, 1 - (distToFront / 180) * 0.7);
+          sq.style.filter = 'brightness(' + brightness + ')';
+          sq.style.zIndex = Math.round(100 - distToFront);
+        });
+      }
+
+      // Interação por Scroll
+      window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset || window.scrollY || 0;
+        targetRotation = scrollY * 0.22;
+      }, { passive: true });
+
+      // Interação por Mouse Drag
+      const spinnerParent = spinnerContainer.parentElement || spinnerContainer;
+      spinnerParent.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        const delta = e.clientX - startX;
+        targetRotation += delta * 0.35;
+        startX = e.clientX;
+      });
+      window.addEventListener('mouseup', function() { isDragging = false; });
+
+      // Touch para mobile
+      spinnerParent.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches[0]) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+      window.addEventListener('touchmove', function(e) {
+        if (!isDragging || !e.touches || !e.touches[0]) return;
+        const delta = e.touches[0].clientX - startX;
+        targetRotation += delta * 0.45;
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+      window.addEventListener('touchend', function() { isDragging = false; });
+
+      // Loop de Rotação 60FPS
+      function spinnerLoop() {
+        if (!isDragging) {
+          targetRotation += autoSpinSpeed;
+        }
+        updateSpinnerTransform();
+        requestAnimationFrame(spinnerLoop);
+      }
+      requestAnimationFrame(spinnerLoop);
+    }
+
+    // --- 5. DISTRIBUIÇÃO ANGULAR E ROTAÇÃO DE ÍCONES RADIAIS (ASTERISCOS DE 8 LÂMINAS) ---
+    document.querySelectorAll('.relative').forEach(function(container) {
+      const blades = Array.from(container.children).filter(function(c) {
+        return c.classList.contains('origin-bottom') && c.classList.contains('absolute');
+      });
+      if (blades.length === 8) {
+        blades.forEach(function(blade, bIdx) {
+          const deg = bIdx * 45;
+          blade.style.transform = 'translateX(-50%) rotate(' + deg + 'deg)';
+          blade.style.transformOrigin = 'bottom center';
+        });
+        container.style.transition = 'transform 0.2s linear';
+        container.classList.add('radial-asterisk-active');
+      }
+    });
+
+    // Rotação sutil dos asteriscos sincronizada com scroll
+    window.addEventListener('scroll', function() {
+      const scrollY = window.pageYOffset || window.scrollY || 0;
+      document.querySelectorAll('.radial-asterisk-active').forEach(function(ast) {
+        ast.style.transform = 'rotate(' + (scrollY * 0.15) + 'deg)';
+      });
+    }, { passive: true });
+
+    // --- 6. MOTOR DE SLIDERS COM AUTOPLAY E ABAS INTERATIVAS (HERO & DEPOIMENTOS) ---
+    
+    // A) Hero Slider (4 Imagens de Fundo)
+    const heroImageContainers = Array.from(document.querySelectorAll('.w-full.h-full.relative > .w-full.h-full.absolute.top-0.left-0'));
+    const heroProgressBars = Array.from(document.querySelectorAll('.project-slider-progress-line'));
+
+    if (heroImageContainers.length >= 2 && heroProgressBars.length >= 2) {
+      let activeHeroIndex = 0;
+      let heroTimer = null;
+      const heroSlideDuration = 5500; // 5.5s
+
+      function setHeroSlide(index) {
+        activeHeroIndex = index % heroImageContainers.length;
+
+        heroImageContainers.forEach(function(imgWrap, i) {
+          imgWrap.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeHeroIndex) {
+            imgWrap.style.opacity = '1';
+            imgWrap.style.transform = 'scale(1.0)';
+            imgWrap.classList.remove('opacity-0');
+          } else {
+            imgWrap.style.opacity = '0';
+            imgWrap.style.transform = 'scale(1.05)';
+          }
+        });
+
+        heroProgressBars.forEach(function(barWrap, i) {
+          const fill = barWrap.querySelector('.bg-primary');
+          if (!fill) return;
+          fill.style.transition = 'none';
+          if (i < activeHeroIndex) {
+            fill.style.transform = 'scaleX(1)';
+          } else if (i === activeHeroIndex) {
+            fill.style.transform = 'scaleX(0)';
+            setTimeout(function() {
+              fill.style.transition = 'transform ' + (heroSlideDuration / 1000) + 's linear';
+              fill.style.transform = 'scaleX(1)';
+            }, 30);
+          } else {
+            fill.style.transform = 'scaleX(0)';
+          }
+        });
+      }
+
+      heroProgressBars.forEach(function(barWrap, i) {
+        const parentBtn = barWrap.closest('.cursor-pointer') || barWrap;
+        parentBtn.addEventListener('click', function() {
+          clearInterval(heroTimer);
+          setHeroSlide(i);
+          heroTimer = setInterval(function() {
+            setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+          }, heroSlideDuration);
+        });
+      });
+
+      setHeroSlide(0);
+      heroTimer = setInterval(function() {
+        setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+      }, heroSlideDuration);
+    }
+
+    // B) Testimonials Slider (4 Depoimentos e Clientes)
+    const testimonialSection = document.querySelector('[class*="aspect-[16/12]"]')?.closest('.layout-grid') || document.querySelector('[class*="-mt-[5vw]"]')?.parentElement;
+    if (testimonialSection) {
+      const testImages = Array.from(testimonialSection.querySelectorAll('[class*="aspect-[16/12]"] [class*="absolute"]'));
+      const testAvatars = Array.from(testimonialSection.querySelectorAll('[class*="aspect-square"] [class*="absolute"]'));
+      const testProgressBars = Array.from(testimonialSection.querySelectorAll('.cursor-pointer .bg-primary'));
+      const testQuotes = Array.from(testimonialSection.querySelectorAll('.invisible.pointer-events-none > div'));
+      const mainQuoteLine = testimonialSection.querySelector('[aria-label*="Storey brought"]')?.closest('.appear-line-mask')?.parentElement || testimonialSection.querySelector('.appear-line')?.parentElement;
+
+      if (testImages.length >= 2) {
+        let activeTestIndex = 0;
+        let testTimer = null;
+        const testDuration = 6000;
+
+        function setTestimonial(idx) {
+          activeTestIndex = idx % testImages.length;
+
+          testImages.forEach(function(img, i) {
+            img.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            if (i === activeTestIndex) {
+              img.style.opacity = '1';
+              img.style.transform = 'scale(1)';
+            } else {
+              img.style.opacity = '0';
+              img.style.transform = 'scale(1.05)';
+            }
+          });
+
+          testAvatars.forEach(function(av, i) {
+            av.style.transition = 'opacity 0.6s ease';
+            av.style.opacity = i === activeTestIndex ? '1' : '0';
+          });
+
+          testProgressBars.forEach(function(bar, i) {
+            bar.style.transition = 'none';
+            if (i < activeTestIndex) {
+              bar.style.transform = 'scaleX(1)';
+            } else if (i === activeTestIndex) {
+              bar.style.transform = 'scaleX(0)';
+              setTimeout(function() {
+                bar.style.transition = 'transform ' + (testDuration / 1000) + 's linear';
+                bar.style.transform = 'scaleX(1)';
+              }, 30);
+            } else {
+              bar.style.transform = 'scaleX(0)';
+            }
+          });
+
+          // Atualiza texto do depoimento
+          if (testQuotes[activeTestIndex] && mainQuoteLine) {
+            const newText = testQuotes[activeTestIndex].innerText.trim();
+            const targetLine = testimonialSection.querySelector('.appear-line');
+            if (targetLine) {
+              targetLine.style.opacity = '0';
+              targetLine.style.transform = 'translateY(10px)';
+              setTimeout(function() {
+                targetLine.textContent = newText;
+                targetLine.style.opacity = '1';
+                targetLine.style.transform = 'translateY(0)';
+              }, 250);
+            }
+          }
+        }
+
+        const barContainers = Array.from(testimonialSection.querySelectorAll('[class*="cursor-pointer"]')).filter(function(el) {
+          return el.querySelector('.bg-primary') || el.querySelector('.bg-primary\/30');
+        });
+        barContainers.forEach(function(container, i) {
+          container.addEventListener('click', function() {
+            clearInterval(testTimer);
+            setTestimonial(i);
+            testTimer = setInterval(function() {
+              setTestimonial((activeTestIndex + 1) % testImages.length);
+            }, testDuration);
+          });
+        });
+
+        setTestimonial(0);
+        testTimer = setInterval(function() {
+          setTestimonial((activeTestIndex + 1) % testImages.length);
+        }, testDuration);
+      }
+    }
+
+    // --- 7. HOVER BADGES INTERATIVOS & MICRO-INTERAÇÕES ---
+    document.querySelectorAll('a[href*="/projects/"]').forEach(function(link) {
+      const badge = link.querySelector('.bg-primary.w-fit.h-fit');
+      if (badge) {
+        badge.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        link.addEventListener('mouseenter', function() {
+          badge.style.opacity = '1';
+          badge.style.transform = 'scale(1.05)';
+        });
+        link.addEventListener('mouseleave', function() {
+          badge.style.opacity = '0';
+          badge.style.transform = 'scale(0.95)';
+        });
+      }
+    });
+
+    // --- 8. STACKING CARDS & METRIC STATS SLIDERS (15+ / 30+ SEM SOBREPOSIÇÃO) ---
+    const stackingCards = Array.from(document.querySelectorAll('[data-stacking-cards-item]'));
+    if (stackingCards.length > 1) {
+      let activeCardIdx = 0;
+      function renderStackingCard(idx) {
+        activeCardIdx = (idx + stackingCards.length) % stackingCards.length;
+        stackingCards.forEach(function(c, i) {
+          c.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeCardIdx) {
+            c.style.opacity = '1';
+            c.style.visibility = 'visible';
+            c.style.transform = 'translateY(0px)';
+            c.style.position = 'relative';
+            c.style.pointerEvents = 'auto';
+          } else {
+            c.style.opacity = '0';
+            c.style.visibility = 'hidden';
+            c.style.transform = 'translateY(15px)';
+            c.style.position = 'absolute';
+            c.style.pointerEvents = 'none';
+          }
+        });
+
+        // Atualiza indicadores numéricos como 01/02
+        const navLines = document.querySelectorAll('.problem_stats_line, .problem_stats_navigation');
+        navLines.forEach(function(nl) {
+          const spans = nl.querySelectorAll('span, div');
+          if (spans.length >= 2) {
+            spans[0].textContent = String(activeCardIdx + 1).padStart(2, '0');
+          }
+        });
+      }
+
+      renderStackingCard(0);
+      let cardTimer = setInterval(function() {
+        renderStackingCard(activeCardIdx + 1);
+      }, 4500);
+
+      // Conecta botões/setas de navegação
+      document.querySelectorAll('.problems_home_stats button, .problems_home_stats a, [class*="stats_nav"], .problems_stats_navigation').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          clearInterval(cardTimer);
+          renderStackingCard(activeCardIdx + 1);
+          cardTimer = setInterval(function() {
+            renderStackingCard(activeCardIdx + 1);
+          }, 4500);
+        });
+      });
+    }
+
+    // --- 9. SCROLL-LINKED TEXT HIGHLIGHT REVEAL ([data-highlight-text]) ---
+    document.querySelectorAll('[data-highlight-text]').forEach(function(container) {
+      if (container.dataset.highlightActivated) return;
+      container.dataset.highlightActivated = 'true';
+      const text = container.innerText.trim();
+      const words = text.split(/\s+/);
+      container.innerHTML = '';
+      const wordSpans = words.map(function(w) {
+        const span = document.createElement('span');
+        span.textContent = w + ' ';
+        span.style.display = 'inline';
+        span.style.transition = 'color 0.35s ease, opacity 0.35s ease';
+        span.style.color = '#71717a';
+        span.style.opacity = '0.35';
+        container.appendChild(span);
+        return span;
+      });
+
+      function updateTextHighlight() {
+        const rect = container.getBoundingClientRect();
+        const winH = window.innerHeight;
+        const progress = Math.min(Math.max((winH * 0.85 - rect.top) / (rect.height + winH * 0.35), 0), 1);
+        const activeCount = Math.floor(progress * wordSpans.length);
+
+        wordSpans.forEach(function(sp, i) {
+          if (i <= activeCount) {
+            sp.style.color = '#fafaf9';
+            sp.style.opacity = '1';
+          } else {
+            sp.style.color = '#71717a';
+            sp.style.opacity = '0.35';
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateTextHighlight, { passive: true });
+      updateTextHighlight();
+    });
+
+    // --- 10. GAP SECTION / KINETIC IMAGE CAROUSEL & LETTER SCRUB ---
+    const gapSection = document.querySelector('.gap_home_wrap, [class*="gap_wrap"]');
+    if (gapSection) {
+      const gapImages = Array.from(gapSection.querySelectorAll('.gap_home_image, [class*="gap_image"]'));
+      if (gapImages.length > 1) {
+        let gapIdx = 0;
+        gapImages.forEach(function(img, i) {
+          img.style.transition = 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+          img.style.opacity = i === 0 ? '1' : '0';
+        });
+        setInterval(function() {
+          gapImages.forEach(function(img) { img.style.opacity = '0'; });
+          gapIdx = (gapIdx + 1) % gapImages.length;
+          gapImages[gapIdx].style.opacity = '1';
+        }, 900);
+      }
+    }
+
+    // --- 12. MOTOR UNIVERSAL DE REVELAÇÃO WEBFLOW (data-anim="split", data-anim="element", data-anim="stagger", data-anim="slideUp-once") ---
+    if (typeof gsap !== 'undefined') {
+      // 12.1 Data-anim split
+      document.querySelectorAll('[data-anim="split"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        try {
+          if (typeof SplitText !== 'undefined') {
+            const cleanText = el.getAttribute('aria-label') || el.textContent.trim();
+            el.innerHTML = cleanText;
+            const st = new SplitText(el, { type: 'lines', linesClass: 'split-line', mask: 'lines' });
+            if (st.lines && st.lines.length > 0) {
+              const triggerEl = el.closest('section, .wrap') || el;
+              gsap.from(st.lines, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 90%',
+                  once: true
+                }
+              });
+            }
+          }
+        } catch(e) {}
+      });
+
+      // 12.2 Data-anim element e slideUp-once
+      document.querySelectorAll('[data-anim="element"], [data-anim="slideUp-once"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        const triggerEl = el.closest('section, .wrap') || el;
+        gsap.fromTo(el, 
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top 90%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // 12.3 Data-anim stagger
+      document.querySelectorAll('[data-anim="stagger"]').forEach(function(el) {
+        const children = Array.from(el.children).filter(function(child) {
+          return !child.hasAttribute('data-dropdown-list') && !child.classList.contains('faq-dropdown-list');
+        });
+        if (children.length > 0) {
+          const triggerEl = el.closest('section, .wrap') || el;
+          gsap.fromTo(children,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 90%',
+                once: true
+              }
+            }
+          );
+        }
+      });
+      // 12.4 Data-anim img-overlay
+      document.querySelectorAll('[data-anim="img-overlay"]').forEach(function(el) {
+        gsap.to(el, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      });
+
+      // 12.5 Data-anim img-paralax / img-parallax (Parallax de imagens Webflow)
+      document.querySelectorAll('[data-anim="img-paralax"], [data-anim="img-parallax"]').forEach(function(el) {
+        gsap.fromTo(el,
+          { yPercent: -10, scale: 1.1 },
+          {
+            yPercent: 10,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.closest('section, .wrap') || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      });
+
+      // 12.6 FAQ Dropdown Hover & Click Engine
+      document.querySelectorAll('.faq [data-dropdown]').forEach(function(dropdown) {
+        dropdown.addEventListener('mouseenter', function() {
+          dropdown.classList.add('is-active');
+        });
+        dropdown.addEventListener('mouseleave', function() {
+          dropdown.classList.remove('is-active');
+        });
+        dropdown.addEventListener('click', function() {
+          dropdown.classList.toggle('is-active');
+        });
+      });
+    }
+
+    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions, Webflow Reveals) ativados com sucesso.');
+  });
+})();
+</script>
+</body></html>

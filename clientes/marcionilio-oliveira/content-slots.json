@@ -1,0 +1,123 @@
+{
+  "intro": {
+    "startYear": "2018",
+    "endYear": "2026",
+    "nameFirst": "Marcionilio",
+    "nameLast": "Oliveira",
+    "nameFull": "Marcionilio F.S.J de Oliveira",
+    "tagline": "Web designer baseado no Brasil. Gosto da vida calma, fujo de discurso vazio e construo interfaces interativas que provam seu próprio valor.",
+    "taglineEn": "Web designer based in Brazil. I live at an easy pace, skip the buzzwords, and build interactive sites that speak for themselves.",
+    "location": "Paraná, Brasil",
+    "timezone": "America/Sao_Paulo",
+    "timezoneLabel": "(GMT-3)",
+    "journeyLine": "Uma jornada através de anos de tecnologia e design",
+    "status": "Disponível para trabalho",
+    "scrollPrompt": "SCROLL"
+  },
+  "about": {
+    "chapter": "Chapter I",
+    "label": "Quick intro",
+    "bio": "Trabalho como web designer criando interfaces digitais ricas em movimento e tipografia. Passo meus dias com tranquilidade, prezo meu descanso e escolho onde coloco meu tempo. Quando assumo uma ideia, dedico energia monumental para entregar um resultado gráfico impecável.",
+    "ctaText": "Mais sobre mim",
+    "ctaHref": "#contact",
+    "portraitImage": "./assets/_astro/home-portrait.beOnDaN4_Z2jhemt.webp",
+    "portraitAlt": "Retrato de Marcionilio Oliveira"
+  },
+  "moreWork": {
+    "wordLeft": "THE",
+    "wordRight": "WORK",
+    "videoDesktop": "./assets/_astro/thework-desktop.BOEUPLXP.mp4",
+    "videoMobile": "./assets/_astro/thework-mobile.DFnsCk-1.mp4"
+  },
+  "selectedWork": {
+    "chapter": "Chapter II",
+    "label": "Selected work",
+    "ctaText": "Ver todos os projetos",
+    "ctaHref": "#contact",
+    "disclaimer": "❋ Códigos de produção e estudos de caso disponíveis sob consulta.",
+    "projects": [
+      {
+        "index": 0,
+        "title": "Design System & Web App",
+        "category": "Plataforma Web & Escala Modular",
+        "year": "2025",
+        "thumbnail": "./assets/_astro/evo-money-thumbnail-16-9.B00Lym5-_qy4LO.webp",
+        "link": "#contact"
+      },
+      {
+        "index": 1,
+        "title": "Creative Motion & Interação",
+        "category": "Física Tátil & GSAP",
+        "year": "2024",
+        "thumbnail": "./assets/_astro/plant-tag-thumbnail-16-9.CEaBMfaz_Z64N3z.webp",
+        "link": "#contact"
+      },
+      {
+        "index": 2,
+        "title": "Plataforma Web Modular",
+        "category": "Next.js & Astro SSG",
+        "year": "2024",
+        "thumbnail": "./assets/_astro/swisshaus-thumbnail-16-9.Dl-P9oLP_Z1jbLrY.webp",
+        "link": "#contact"
+      },
+      {
+        "index": 3,
+        "title": "Sistemas & Ferramentas Internas",
+        "category": "Automação & Motores Determinísticos",
+        "year": "2023",
+        "thumbnail": "./assets/_astro/betahaus-thumbnail-16-9.ZH-WOOsP_GLeLu.webp",
+        "link": "#contact"
+      }
+    ]
+  },
+  "services": {
+    "chapter": "Chapter III",
+    "label": "What I do?",
+    "headline": "Desenho interfaces digitais com hierarquia visual clara, física de movimento calculada e arquitetura estável.",
+    "cards": [
+      {
+        "number": "01",
+        "title": "Web Design",
+        "description": "Desenho layouts limpos com hierarquia visual clara e tipografia equilibrada. Cada tela existe para guiar o usuário sem ruído."
+      },
+      {
+        "number": "02",
+        "title": "Creative Dev",
+        "description": "Dou vida às páginas com movimento fluido e interações com resposta tátil. Animações calculadas para enriquecer o uso, sem prejudicar o tempo de resposta."
+      },
+      {
+        "number": "03",
+        "title": "Frontend Build",
+        "description": "Construo interfaces modernas e estáveis. Código limpo, carregamento rápido em qualquer tela e zero dependências pesadas acumuladas à toa."
+      },
+      {
+        "number": "04",
+        "title": "Internal Tools",
+        "description": "Desenvolvo automações, scripts e motores determinísticos que resolvem gargalos de produção. Código direto ao ponto para transformar esforço manual em processo seguro."
+      }
+    ]
+  },
+  "clients": {
+    "chapter": "Chapter IV",
+    "label": "Selected experiences",
+    "note": "Princípios técnicos e ferramentas que sustentam cada entrega.",
+    "brands": [
+      "Motion & Física (GSAP + Lenis)",
+      "Arquitetura Modular (Next.js + Astro)",
+      "Rigor Visual (Tailwind CSS + Tokens Semânticos)",
+      "Motores Locais (Node.js + SQLite Nativo)",
+      "Inspeção & Evidência (Playwright)",
+      "Base da Web (HTML Semântico + Padrões W3C)"
+    ]
+  },
+  "contact": {
+    "caption": "Where stories find their form",
+    "sub": "Next chapter",
+    "email": "contato@marcionilio.dev",
+    "socials": [
+      { "name": "LinkedIn", "url": "https://linkedin.com" },
+      { "name": "GitHub", "url": "https://github.com" }
+    ],
+    "copyright": "© 2026 — Marcionilio F.S.J de Oliveira — All Rights Reserved"
+  }
+}

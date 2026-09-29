@@ -1,0 +1,123 @@
+{
+  "intro": {
+    "startYear": "2018",
+    "endYear": "2026",
+    "nameFirst": "Seu",
+    "nameLast": "Sobrenome",
+    "tagline": "Engenheiro de interfaces e creative developer focado em experiências digitais com precisão tipográfica e cinemática.",
+    "location": "São Paulo, Brasil",
+    "timezone": "America/Sao_Paulo",
+    "timezoneLabel": "(GMT-3)",
+    "journeyLine": "Uma jornada através de anos de tecnologia e design",
+    "status": "Disponível para novos projetos",
+    "scrollPrompt": "SCROLL"
+  },
+  "about": {
+    "chapter": "Chapter I",
+    "label": "Quick intro",
+    "bio": "Olá, sou [Nome] — designer e engenheiro de software focado na construção de produtos digitais elegantes, arquiteturas de alta fidelidade e sistemas visuais com clareza e ritmo.",
+    "ctaText": "Mais sobre mim",
+    "ctaHref": "#contact",
+    "portraitImage": "./assets/_astro/home-portrait.beOnDaN4_Z2jhemt.webp",
+    "portraitAlt": "Retrato profissional"
+  },
+  "moreWork": {
+    "wordLeft": "THE",
+    "wordRight": "WORK",
+    "videoDesktop": "./assets/_astro/thework-desktop.BOEUPLXP.mp4",
+    "videoMobile": "./assets/_astro/thework-mobile.DFnsCk-1.mp4"
+  },
+  "selectedWork": {
+    "chapter": "Chapter II",
+    "label": "Selected work",
+    "ctaText": "Ver todos os projetos",
+    "ctaHref": "#contact",
+    "disclaimer": "❋ Códigos de produção e estudos de caso disponíveis sob consulta.",
+    "projects": [
+      {
+        "index": 0,
+        "title": "Projeto Alpha",
+        "category": "Plataforma Web & Design System",
+        "year": "2025",
+        "thumbnail": "./assets/_astro/evo-money-thumbnail-16-9.B00Lym5-_qy4LO.webp",
+        "link": "#"
+      },
+      {
+        "index": 1,
+        "title": "Projeto Beta",
+        "category": "Aplicação Financeira & Dashboard",
+        "year": "2024",
+        "thumbnail": "./assets/_astro/plant-tag-thumbnail-16-9.CEaBMfaz_Z64N3z.webp",
+        "link": "#"
+      },
+      {
+        "index": 2,
+        "title": "Projeto Gamma",
+        "category": "E-Commerce de Luxo & Motion UI",
+        "year": "2024",
+        "thumbnail": "./assets/_astro/swisshaus-thumbnail-16-9.Dl-P9oLP_Z1jbLrY.webp",
+        "link": "#"
+      },
+      {
+        "index": 3,
+        "title": "Projeto Delta",
+        "category": "Identidade Visual & Experiência Imersiva",
+        "year": "2023",
+        "thumbnail": "./assets/_astro/betahaus-thumbnail-16-9.ZH-WOOsP_GLeLu.webp",
+        "link": "#"
+      }
+    ]
+  },
+  "services": {
+    "chapter": "Chapter III",
+    "label": "What I do?",
+    "headline": "Criando experiências digitais com estrutura sólida, refinamento estético e performance extrema.",
+    "cards": [
+      {
+        "number": "01",
+        "title": "Product Design",
+        "description": "Design de produtos digitais centrados no usuário, unindo pesquisa, wireframes iterativos e design systems escaláveis."
+      },
+      {
+        "number": "02",
+        "title": "Creative Development",
+        "description": "Interfaces web fluidas com animações matemáticas, transições de alta classe e física inercial (GSAP + Lenis)."
+      },
+      {
+        "number": "03",
+        "title": "Design Systems",
+        "description": "Arquitetura de tokens semânticos, componentes reutilizáveis e documentação viva para equipes de alto desempenho."
+      },
+      {
+        "number": "04",
+        "title": "Full-Stack Architecture",
+        "description": "Aplicações modernas em Next.js/Astro, APIs performáticas, banco de dados robusto e infraestrutura escalável."
+      }
+    ]
+  },
+  "clients": {
+    "chapter": "Chapter IV",
+    "label": "Selected experiences",
+    "note": "Projetos e colaborações com empresas, marcas e times inovadores.",
+    "brands": [
+      "Empresa / Parceiro 01",
+      "Empresa / Parceiro 02",
+      "Empresa / Parceiro 03",
+      "Empresa / Parceiro 04",
+      "Empresa / Parceiro 05",
+      "E mais"
+    ]
+  },
+  "contact": {
+    "caption": "Where stories find their form",
+    "sub": "Next chapter",
+    "email": "contato@seunome.com",
+    "socials": [
+      { "name": "LinkedIn", "url": "https://linkedin.com" },
+      { "name": "GitHub", "url": "https://github.com" },
+      { "name": "Twitter / X", "url": "https://x.com" },
+      { "name": "Instagram", "url": "https://instagram.com" }
+    ],
+    "copyright": "© 2026 — Seu Nome Folio — Edition"
+  }
+}

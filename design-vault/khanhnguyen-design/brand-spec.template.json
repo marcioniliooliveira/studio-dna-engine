@@ -1,0 +1,21 @@
+{
+  "brandName": "Seu Nome Completo",
+  "role": "Creative Technologist / Design Engineer",
+  "niche": "High-End Portfolio / Creative Direction",
+  "theme": {
+    "bgBase": "#262220",
+    "bgAbout": "#FAF9F6",
+    "bgWork": "#EDEAE6",
+    "bgServices": "#2E2B28",
+    "bgFooter": "#1F1D1B",
+    "accent": "#3A3632",
+    "textMain": "#F3EEE8",
+    "textDark": "#2E2B28",
+    "textMuted": "#8A8178"
+  },
+  "meta": {
+    "title": "Seu Nome — Creative Developer & Designer",
+    "description": "Portfólio de engenharia de interfaces, direção criativa e experiências digitais interativas.",
+    "lang": "pt-BR"
+  }
+}
