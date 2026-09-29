@@ -150,6 +150,7 @@ class UniversalAssetNormalizer {
         overflow-y: visible !important;
         height: auto !important;
       }
+      }
       html.lenis-stopped, 
       body.lenis-stopped, 
       html.is-loading, 
@@ -157,6 +158,17 @@ class UniversalAssetNormalizer {
       body.no-scroll {
         overflow: auto !important;
         overflow-x: clip !important;
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis mantendo position: sticky */
+      html {
+        overflow-x: clip !important;
+        overflow-y: auto !important;
+        height: auto !important;
+      }
+      body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+        height: auto !important;
+      }
         height: auto !important;
       }
 
@@ -170,6 +182,25 @@ class UniversalAssetNormalizer {
       img, svg, canvas, video {
         content-visibility: visible;
       }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
+      }
+
+      /* 7. Prevenção de travamento de texto com filtros de reveal congelados */
+      .reveal-word, .word-mask, .reveal-copy, .reveal-link, .product-meta, .product-title, .product-copy, .product-action {
+        filter: none !important;
+      }
     </style>`;
   }
 
@@ -180,21 +211,284 @@ class UniversalAssetNormalizer {
     return `<script id="universal-resilience-polyfills">
 (function() {
   'use strict';
-  // 1. Mocks de Analytics & Rastreamento
+  // 1. Mocks de Analytics, Rastreamento & WebFont
   window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
   window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
   window.dataLayer = window.dataLayer || [];
   window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
 
-  // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
+  // 1.1 ServiceWorker Safe Stub (evita 404 em ambiente de preview/offline)
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      navigator.serviceWorker.register = function() {
+        return Promise.resolve({ scope: '/' });
+      };
+    } catch(e) {}
+  }
+
+  // 1.2 Offscreen Canvas & WebGL Resilience Stub
+  // Impede que scripts esperando canvases de boot/offscreen quebrem se o elemento estiver ausente ou foi serializado fora de época
+  if (typeof document !== 'undefined') {
+    function createDummyNode(tag, idOrClass) {
+      var dummy = document.createElement(tag || 'div');
+      dummy.id = idOrClass || '';
+      dummy.style.display = 'none';
+      dummy._gsap = {};
+      dummy.querySelector = function(sel) {
+        var sub = document.createElement('div');
+        sub._gsap = {};
+        return sub;
+      };
+      dummy.querySelectorAll = function(sel) {
+        return [];
+      };
+      dummy.remove = function() {
+        if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
+      };
+      if (document.body) {
+        document.body.appendChild(dummy);
+      }
+      return dummy;
+    }
+
+    var origGetElementById = document.getElementById.bind(document);
+    document.getElementById = function(id) {
+      var el = origGetElementById(id);
+      if (el) return el;
+      if (id === 'loader' || id === 'preloader' || (id && id.toLowerCase().indexOf('loader') !== -1)) {
+        return createDummyNode('div', id);
+      }
+      if (id === 'ldCanvas' || (id && id.toLowerCase().indexOf('canvas') !== -1)) {
+        var dummy = document.createElement('canvas');
+        dummy.id = id;
+        dummy.style.display = 'none';
+        dummy.width = 1920;
+        dummy.height = 1080;
+        if (!dummy.transferControlToOffscreen) {
+          dummy.transferControlToOffscreen = function() {
+            return typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(dummy.width, dummy.height) : dummy;
+          };
+        }
+        if (document.body) {
+          document.body.appendChild(dummy);
+        }
+        return dummy;
+      }
+      return null;
+    };
+
+    var origQuerySelector = document.querySelector.bind(document);
+    document.querySelector = function(sel) {
+      var el = origQuerySelector(sel);
+      if (el) return el;
+      if (typeof sel === 'string' && (sel === '[data-count]' || sel.indexOf('loader') !== -1 || sel.indexOf('preloader') !== -1)) {
+        return createDummyNode('div', sel.replace(/[^a-zA-Z0-9_-]/g, ''));
+      }
+      return null;
+    };
+  }
+
+  // 1.3 Safe Blob Worker Patch (corrige workers minificados que chamam identificadores não exportados)
+  if (typeof window !== 'undefined' && typeof window.Blob !== 'undefined') {
+    var OrigBlob = window.Blob;
+    window.Blob = function(parts, options) {
+      if (options && options.type && options.type.indexOf('javascript') !== -1 && Array.isArray(parts)) {
+        var modified = parts.map(function(part) {
+          if (typeof part === 'string' && part.indexOf('sketchCore') !== -1) {
+            return 'self.sketchCore = typeof sketchCore !== "undefined" ? sketchCore : (typeof te !== "undefined" ? te : function(){});\\n' + part;
+          }
+          return part;
+        });
+        return new OrigBlob(modified, options);
+      }
+      return new OrigBlob(parts, options);
+    };
+    window.Blob.prototype = OrigBlob.prototype;
+  }
+
+  // 1.4 GSAP Safe Target Hardening (previne TypeError: Cannot read properties of null (reading \'_gsap\'))
+  function hardenGsap(g) {
+    if (!g || g.__hardened) return;
+    g.__hardened = true;
+    function sanitizeTargets(targets) {
+      if (Array.isArray(targets)) {
+        var filtered = targets.filter(Boolean);
+        return filtered.length > 0 ? filtered : [document.createElement('div')];
+      }
+      if (targets === null || typeof targets === 'undefined') {
+        return document.createElement('div');
+      }
+      return targets;
+    }
+
+    ['to', 'from', 'fromTo', 'set'].forEach(function(m) {
+      if (typeof g[m] === 'function') {
+        var orig = g[m];
+        g[m] = function(targets) {
+          var args = Array.prototype.slice.call(arguments);
+          args[0] = sanitizeTargets(args[0]);
+          return orig.apply(this, args);
+        };
+      }
+    });
+
+    if (g.core && g.core.Timeline && g.core.Timeline.prototype) {
+      var proto = g.core.Timeline.prototype;
+      ['to', 'from', 'fromTo', 'set'].forEach(function(m) {
+        if (typeof proto[m] === 'function') {
+          var origProto = proto[m];
+          proto[m] = function(targets) {
+            var args = Array.prototype.slice.call(arguments);
+            args[0] = sanitizeTargets(args[0]);
+            return origProto.apply(this, args);
+          };
+        }
+      });
+    }
+  }
+
+  var _gsap = typeof window !== 'undefined' ? window.gsap : null;
+  if (typeof window !== 'undefined') {
+    try {
+      Object.defineProperty(window, 'gsap', {
+        configurable: true,
+        enumerable: true,
+        get: function() { return _gsap; },
+        set: function(val) {
+          _gsap = val;
+          try { hardenGsap(_gsap); } catch(e) {}
+        }
+      });
+    } catch(e) {}
+    if (_gsap) {
+      try { hardenGsap(_gsap); } catch(e) {}
+    }
+  }
+
+  // 2. Functional Native SplitText Engine & Polyfills de GSAP
+  function createSplitTextClass() {
+    function SplitText(target, vars) {
+      if (!(this instanceof SplitText)) return new SplitText(target, vars);
+      vars = vars || {};
+      this.elements = [];
+      if (typeof target === 'string') {
+        this.elements = Array.from(document.querySelectorAll(target));
+      } else if (target instanceof Element) {
+        this.elements = [target];
+      } else if (target && target.length) {
+        this.elements = Array.from(target);
+      }
+
+      this.lines = [];
+      this.words = [];
+      this.chars = [];
+      this._originals = [];
+
+      var type = vars.type || 'chars,words,lines';
+      var wantLines = type.indexOf('lines') !== -1;
+      var wantWords = type.indexOf('words') !== -1;
+      var wantChars = type.indexOf('chars') !== -1;
+      var linesClass = vars.linesClass || 'line';
+      var wordsClass = vars.wordsClass || 'word';
+      var charsClass = vars.charsClass || 'char';
+
+      var self = this;
+      this.elements.forEach(function(el) {
+        self._originals.push({ el: el, html: el.innerHTML });
+        var text = el.innerText || el.textContent || '';
+        if (!text.trim()) return;
+
+        el.innerHTML = '';
+        var rawWords = text.trim().split(/\s+/);
+        var createdWords = [];
+
+        rawWords.forEach(function(wText, wIdx) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = wordsClass;
+          wordSpan.style.display = 'inline-block';
+          wordSpan.style.position = 'relative';
+
+          if (wantChars) {
+            for (var c = 0; c < wText.length; c++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = charsClass;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.position = 'relative';
+              charSpan.textContent = wText[c];
+              wordSpan.appendChild(charSpan);
+              self.chars.push(charSpan);
+            }
+          } else {
+            wordSpan.textContent = wText;
+          }
+
+          el.appendChild(wordSpan);
+          createdWords.push(wordSpan);
+          self.words.push(wordSpan);
+
+          if (wIdx < rawWords.length - 1) {
+            el.appendChild(document.createTextNode(' '));
+          }
+        });
+
+        if (wantLines && createdWords.length > 0) {
+          var lineGroups = [];
+          var currentLine = [];
+          var lastTop = -9999;
+
+          createdWords.forEach(function(w) {
+            var top = w.offsetTop;
+            if (top > lastTop + 5 && currentLine.length > 0) {
+              lineGroups.push(currentLine);
+              currentLine = [];
+            }
+            currentLine.push(w);
+            lastTop = top;
+          });
+          if (currentLine.length > 0) lineGroups.push(currentLine);
+
+          el.innerHTML = '';
+          lineGroups.forEach(function(group) {
+            var lineDiv = document.createElement('div');
+            lineDiv.className = linesClass;
+            lineDiv.style.display = 'block';
+            lineDiv.style.overflow = 'hidden';
+            lineDiv.style.position = 'relative';
+
+            var lineInner = document.createElement('span');
+            lineInner.style.display = 'inline-block';
+            lineInner.style.width = '100%';
+
+            group.forEach(function(w, idx) {
+              lineInner.appendChild(w);
+              if (idx < group.length - 1) lineInner.appendChild(document.createTextNode(' '));
+            });
+
+            lineDiv.appendChild(lineInner);
+            el.appendChild(lineDiv);
+            self.lines.push(lineDiv);
+          });
+        }
+      });
+
+      this.revert = function() {
+        this._originals.forEach(function(item) {
+          item.el.innerHTML = item.html;
+        });
+      };
+    }
+    return SplitText;
+  }
+
+  window.SplitText = window.SplitText || createSplitTextClass();
+
   window.addEventListener('DOMContentLoaded', function() {
     if (typeof window.CustomEase === 'undefined') {
       window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
     }
     if (typeof window.SplitText === 'undefined') {
-      window.SplitText = function(target) {
-        return { lines: [], words: [], chars: [], revert: function() {} };
-      };
+      window.SplitText = createSplitTextClass();
     }
   });
 
@@ -230,29 +524,44 @@ class UniversalAssetNormalizer {
     };
   }
 
-  // 5. Imediato e Multinível Unhide Failsafe
+  // 5. Imediato e Multinível Unhide Failsafe (Resiliente, Não-Destrutivo)
   function forceUnhide() {
     document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
     document.documentElement.classList.remove('is-loading', 'lenis-stopped');
     if (document.body) {
       document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
     }
-    
-    // Limpeza de textos mascarados e nós do SplitText
-    var maskedNodes = document.querySelectorAll('[style*="visibility: hidden"], [style*="opacity: 0"], .gsap-reveal');
-    maskedNodes.forEach(function(el) {
-        if(el.classList.contains('child') || el.classList.contains('line')) {
-            el.style.visibility = 'visible';
-            el.style.opacity = '1';
-        }
-    });
 
+    // Apenas bloqueios reais de tela preta e cortinas estáticas de preload são destruídos
     var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
     blocked.forEach(function(el) {
       el.style.setProperty('display', 'none', 'important');
       el.style.setProperty('opacity', '0', 'important');
       el.style.setProperty('pointer-events', 'none', 'important');
     });
+
+    // Se houver elementos presos com opacity 0 que NÃO pertencem a animações ativas, libera com suavidade
+    var stuckNodes = document.querySelectorAll('.gsap-reveal:not([data-anim]):not([data-scribble])');
+    stuckNodes.forEach(function(el) {
+      if (el.classList.contains('child') || el.classList.contains('line')) {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+      }
+    });
+
+    // Desbloqueia nós de texto presos com blur estático ou travado
+    var blurredNodes = document.querySelectorAll('[style*="blur"]');
+    blurredNodes.forEach(function(el) {
+      if (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'SPAN' || el.tagName === 'A' || el.classList.contains('reveal-word') || el.classList.contains('reveal-copy')) {
+        if (el.style.filter && el.style.filter.indexOf('blur') !== -1 && !el.classList.contains('kinetic-word')) {
+          el.style.filter = 'none';
+        }
+      }
+    });
+
+    if (typeof window.ScrollTrigger !== 'undefined') {
+      try { window.ScrollTrigger.refresh(); } catch(e) {}
+    }
   }
 
   // 6. Splide & Carousel Auto-Binder
@@ -318,6 +627,12 @@ class UniversalAssetNormalizer {
     // B.3) Remove estilos inline transientes gravados na extração
     result = UniversalAssetNormalizer.cleanTransientStyles(result);
 
+    // B.4) Assegura autoplay, muted, loop e playsinline em vídeos
+    result = UniversalAssetNormalizer.ensureVideoAutoplayAttributes(result);
+
+    // B.5) Hidrata iframes que contêm data-src para evitar telas em branco
+    result = UniversalAssetNormalizer.hydrateLazyIframes(result);
+
     // C) Injeta universal-unlock-css no <head>
     const unlockCss = UniversalAssetNormalizer.getUniversalUnlockCss();
     if (!result.includes('id="universal-unlock-css"')) {
@@ -361,6 +676,55 @@ class UniversalAssetNormalizer {
   }
 
   /**
+   * Garante que tags <video> de fundo tenham autoplay, muted, loop e playsinline
+   */
+  static ensureVideoAutoplayAttributes(html) {
+    if (!html || typeof html !== 'string') return html;
+    return html.replace(/<video\b([^>]*)>/gi, (match, attrs) => {
+      let updated = attrs;
+      if (!/\bautoplay\b/i.test(updated)) updated += ' autoplay';
+      if (!/\bmuted\b/i.test(updated)) updated += ' muted';
+      if (!/\bloop\b/i.test(updated)) updated += ' loop';
+      if (!/\bplaysinline\b/i.test(updated)) updated += ' playsinline';
+      return `<video${updated}>`;
+    });
+  }
+
+  ensureVideoAutoplayAttributes(html) {
+    return UniversalAssetNormalizer.ensureVideoAutoplayAttributes(html);
+  }
+
+  /**
+   * Hidrata iframes que contêm data-src para evitar telas em branco se o runtime JS atrasar
+   */
+  static hydrateLazyIframes(html) {
+    if (!html || typeof html !== 'string') return html;
+    try {
+      const cheerio = require('cheerio');
+      const $ = cheerio.load(html, { decodeEntities: false });
+      let modified = false;
+      $('iframe').each((i, el) => {
+        const dataSrc = $(el).attr('data-src');
+        if (dataSrc) {
+          modified = true;
+          $(el).removeAttr('srcdoc');
+          const currentSrc = $(el).attr('src');
+          if (!currentSrc || currentSrc === 'about:blank') {
+            $(el).attr('src', dataSrc);
+          }
+        }
+      });
+      return modified ? $.html() : html;
+    } catch(e) {
+      return html;
+    }
+  }
+
+  hydrateLazyIframes(html) {
+    return UniversalAssetNormalizer.hydrateLazyIframes(html);
+  }
+
+  /**
    * Limpa nós de texto fragmentados por SplitText no DOM original
    */
   static cleanFragmentedDom(html) {
@@ -398,9 +762,15 @@ class UniversalAssetNormalizer {
     try {
       const cheerio = require('cheerio');
       const $ = cheerio.load(html, { decodeEntities: false });
+      // 1. Remove classes transientes em html e body que congelam estados de headless ou preloaders
+      const transientClasses = ['poster', 'lenis-stopped', 'is-loading', 'body-loading', 'page-loading', 'no-scroll'];
+      transientClasses.forEach(cls => {
+        $('html').removeClass(cls);
+        $('body').removeClass(cls);
+      });
 
-      // Remove mask-gradient transiente, clip-path e transforms de inicialização
-      $('[style*="--mask-gradient"], [style*="clip-path"], [style*="translate"], [style*="opacity"]').each((i, el) => {
+      // 2. Remove mask-gradient transiente, clip-path, transforms de inicialização e filtros de blur congelados
+      $('[style*="--mask-gradient"], [style*="clip-path"], [style*="translate"], [style*="opacity"], [style*="filter"], [style*="blur"]').each((i, el) => {
         const style = $(el).attr('style');
         if (style) {
           let cleanStyle = style
@@ -409,6 +779,8 @@ class UniversalAssetNormalizer {
             .replace(/translate:[^;]+;?/gi, '')
             .replace(/rotate:[^;]+;?/gi, '')
             .replace(/scale:[^;]+;?/gi, '')
+            .replace(/filter:\s*blur\([^)]+\);?/gi, '')
+            .replace(/filter:\s*none;?/gi, '')
             .trim();
           
           if (cleanStyle && cleanStyle !== ';') {
@@ -455,6 +827,7 @@ class UniversalAssetNormalizer {
 
     for (const hFile of htmlFiles) {
       await this.sanitizeAndResolveHtml(hFile);
+      await this.localizeImportMapsAndVendorAssets(hFile);
     }
 
     console.log(`✅ [UniversalAssetNormalizer] Saneamento e desbloqueio concluídos para ${htmlFiles.length} arquivo(s) HTML.`);
@@ -697,6 +1070,141 @@ class UniversalAssetNormalizer {
     });
 
     fs.writeFileSync(filePath, html, 'utf8');
+  }
+
+  /**
+   * Localiza import maps (Three.js, GSAP, Lenis, etc.) baixando módulos para assets/vendor e reescrevendo URLs
+   */
+  async localizeImportMapsAndVendorAssets(filePath) {
+    if (!fs.existsSync(filePath)) return;
+    let html = fs.readFileSync(filePath, 'utf8');
+    const importMapRegex = /<script\s+type=["']importmap["'][^>]*>([\s\S]*?)<\/script>/gi;
+    let match = importMapRegex.exec(html);
+    if (!match) return;
+
+    try {
+      const parsed = JSON.parse(match[1].trim());
+      if (!parsed.imports || typeof parsed.imports !== 'object') return;
+
+      const downloads = [];
+      const prefixMaps = [];
+
+      for (const [key, targetUrl] of Object.entries(parsed.imports)) {
+        if (typeof targetUrl !== 'string') continue;
+
+        let remoteUrl = targetUrl;
+        if (targetUrl.startsWith('./assets/vendor/')) {
+          let clean = targetUrl.replace('./assets/vendor/', '');
+          clean = clean.replace(/([a-zA-Z0-9_\-]+)\/\1\//g, '$1/');
+          const slashIdx = clean.indexOf('/');
+          if (slashIdx !== -1) {
+            const host = clean.slice(0, slashIdx);
+            const pathPart = clean.slice(slashIdx);
+            remoteUrl = `https://${host}${pathPart}`;
+          } else {
+            continue;
+          }
+        } else if (!targetUrl.startsWith('http')) {
+          continue;
+        }
+
+        const u = new URL(remoteUrl);
+        if (remoteUrl.endsWith('/')) {
+          let localRelDir = `./assets/vendor/${u.hostname}${u.pathname}`;
+          localRelDir = localRelDir.replace(/([a-zA-Z0-9_\-]+)\/\1\//g, '$1/');
+          if (!localRelDir.endsWith('/')) localRelDir += '/';
+          parsed.imports[key] = localRelDir;
+          prefixMaps.push({
+            prefixKey: key,
+            remoteBaseUrl: remoteUrl,
+            localDiskDir: path.join(this.assetsDir, 'vendor', u.hostname, u.pathname)
+          });
+        } else {
+          const localRel = `./assets/vendor/${u.hostname}${u.pathname}`;
+          const localDisk = path.join(this.assetsDir, 'vendor', u.hostname, u.pathname);
+          parsed.imports[key] = localRel;
+          downloads.push(this.downloadVendorModuleRecursive(remoteUrl, localDisk));
+        }
+      }
+
+      if (prefixMaps.length > 0) {
+        for (const pMap of prefixMaps) {
+          const importRegex = new RegExp(`['"]${pMap.prefixKey}([^'"]+)['"]`, 'g');
+          let m;
+          const subFilesToFetch = new Set();
+          while ((m = importRegex.exec(html)) !== null) {
+            subFilesToFetch.add(m[1]);
+          }
+
+          for (const subPath of subFilesToFetch) {
+            await this.downloadVendorModuleRecursive(pMap.remoteBaseUrl + subPath, path.join(pMap.localDiskDir, subPath));
+          }
+        }
+      }
+
+      // Auto-download Draco WASM decoder files when DRACOLoader is used
+      if (html.includes('DRACOLoader') && prefixMaps.length > 0) {
+        const threeMap = prefixMaps.find(p => p.prefixKey.includes('three'));
+        if (threeMap) {
+          const dracoFiles = ['draco_decoder.wasm', 'draco_wasm_wrapper.js', 'draco_decoder.js'];
+          for (const df of dracoFiles) {
+            const remoteDraco = `${threeMap.remoteBaseUrl}libs/draco/gltf/${df}`;
+            const localDraco = path.join(threeMap.localDiskDir, 'libs', 'draco', 'gltf', df);
+            downloads.push(this.downloadFileAsync(remoteDraco, localDraco));
+          }
+        }
+      }
+
+      // Sanitize three/addons/ to ensure it never has subfolder drift
+      for (const [key, val] of Object.entries(parsed.imports)) {
+        if (key === 'three/addons/' && typeof val === 'string' && val.includes('/examples/jsm/')) {
+          parsed.imports[key] = val.replace(/\/examples\/jsm\/.*$/, '/examples/jsm/');
+        }
+      }
+
+      await Promise.all(downloads);
+
+      const newImportMapTag = `<script type="importmap">\n${JSON.stringify(parsed, null, 2)}\n</script>`;
+      html = html.replace(/<script\s+type=["']importmap["'][^>]*>[\s\S]*?<\/script>\s*/gi, '');
+      if (html.includes('<head>')) {
+        html = html.replace('<head>', `<head>\n  ${newImportMapTag}`);
+      } else {
+        html = `${newImportMapTag}\n${html}`;
+      }
+      fs.writeFileSync(filePath, html, 'utf8');
+      console.log(`📦 [UniversalAssetNormalizer] Importmap e dependências Three.js localizadas em: ${path.basename(filePath)}`);
+    } catch (e) {
+      console.warn(`⚠️ [UniversalAssetNormalizer] Falha ao localizar importmap:`, e.message);
+    }
+  }
+
+  /**
+   * Baixa um módulo ESM vendor recursivamente resolvendo seus imports relativos
+   */
+  async downloadVendorModuleRecursive(remoteUrl, localDestPath, visited = new Set()) {
+    if (visited.has(remoteUrl)) return;
+    visited.add(remoteUrl);
+
+    if (!fs.existsSync(localDestPath) || fs.statSync(localDestPath).size < 50) {
+      await this.downloadFileAsync(remoteUrl, localDestPath);
+    }
+    if (!fs.existsSync(localDestPath)) return;
+
+    try {
+      const code = fs.readFileSync(localDestPath, 'utf8');
+      const relImportRegex = /(?:from\s*|import\s*\()\s*['"](\.[^'"]+)['"]/g;
+      let m;
+      const childPromises = [];
+      while ((m = relImportRegex.exec(code)) !== null) {
+        const relSpecifier = m[1];
+        const childRemoteUrl = new URL(relSpecifier, remoteUrl).href;
+        const childLocalPath = path.resolve(path.dirname(localDestPath), relSpecifier);
+        childPromises.push(this.downloadVendorModuleRecursive(childRemoteUrl, childLocalPath, visited));
+      }
+      if (childPromises.length > 0) {
+        await Promise.all(childPromises);
+      }
+    } catch (e) {}
   }
 }
 

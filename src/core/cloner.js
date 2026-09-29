@@ -17,6 +17,129 @@ function askQuestion(query) {
 }
 
 /**
+ * Determines whether a URL is an allowed asset (same-origin or trusted CDN for media, 3D, WASM, fonts)
+ */
+function isAllowedAssetUrl(url, targetHost) {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url);
+    if (!urlObj.hostname || urlObj.hostname === targetHost) return true;
+
+    // Block telemetry, tracking and analytics
+    const blockedPatterns = [
+      'google-analytics.com', 'googletagmanager.com', 'hotjar.com',
+      'connect.facebook.net', 'analytics', 'doubleclick.net',
+      'clarity.ms', 'segment.io', 'mixpanel.com', 'stats.wp.com',
+      'fullstory.com', 'amplitude.com'
+    ];
+    if (blockedPatterns.some(b => urlObj.hostname.includes(b))) return false;
+
+    // Allowed trusted CDNs for 3D, WASM, fonts, media, and scripts
+    const allowedCdnPatterns = [
+      /cdn\.jsdelivr\.net/i,
+      /unpkg\.com/i,
+      /cdnjs\.cloudflare\.com/i,
+      /fonts\.googleapis\.com/i,
+      /fonts\.gstatic\.com/i,
+      /\.supabase\.co/i,
+      /\.amazonaws\.com/i,
+      /assets\.webflow\.com/i,
+      /framerusercontent\.com/i,
+      /cdn\.prod\.website-files\.com/i
+    ];
+    return allowedCdnPatterns.some(pat => pat.test(urlObj.hostname));
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Checks if a file extension represents a modern web asset (3D, WASM, HDR textures, audio)
+ */
+function isModernAssetExtension(ext) {
+  if (!ext || typeof ext !== 'string') return false;
+  const normalized = ext.startsWith('.') ? ext.toLowerCase() : '.' + ext.toLowerCase();
+  const modernExtensions = [
+    '.glb', '.gltf', '.bin', '.wasm', '.hdr', '.exr', '.obj', '.fbx', '.usdz', '.wav', '.mp3'
+  ];
+  return modernExtensions.includes(normalized);
+}
+
+/**
+ * Localizes remote CDN importmap imports with relative local paths
+ */
+function localizeImportMap(html, assetMap) {
+  if (!html || !assetMap) return html;
+  return html.replace(/<script\s+type=["']importmap["'][^>]*>([\s\S]*?)<\/script>/gi, (match, jsonContent) => {
+    try {
+      const parsed = JSON.parse(jsonContent.trim());
+      if (parsed.imports && typeof parsed.imports === 'object') {
+        for (const [key, val] of Object.entries(parsed.imports)) {
+          if (typeof val === 'string') {
+            for (const [remoteUrl, localRel] of assetMap.entries()) {
+              if (val === remoteUrl) {
+                parsed.imports[key] = localRel;
+                break;
+              } else if (val.endsWith('/') && remoteUrl.startsWith(val)) {
+                try {
+                  const u = new URL(val);
+                  const baseRel = `./assets/vendor/${u.hostname}${u.pathname}`;
+                  parsed.imports[key] = baseRel.endsWith('/') ? baseRel : baseRel + '/';
+                } catch (e) {
+                  const relDir = path.dirname(localRel).split(path.sep).join('/') + '/';
+                  parsed.imports[key] = relDir;
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+      return `<script type="importmap">\n${JSON.stringify(parsed, null, 2)}\n</script>`;
+    } catch (e) {
+      return match;
+    }
+  });
+}
+
+/**
+ * Actively polls the page for sandbox preview containers (Aura, Sandpack, CodeSandbox)
+ */
+async function findPreviewFrameTarget(page, timeoutMs = 15000) {
+  const startTime = Date.now();
+  const pollInterval = 500;
+
+  while (Date.now() - startTime < timeoutMs) {
+    const allIframes = await page.$$('iframe');
+    for (const iframeEl of allIframes) {
+      try {
+        const box = await iframeEl.boundingBox();
+        const src = (await iframeEl.getAttribute('src')) || '';
+        const title = (await iframeEl.getAttribute('title')) || '';
+        const hasSrcDoc = (await iframeEl.getAttribute('srcdoc')) !== null;
+        const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
+        const isPreviewCandidate = title.toLowerCase().includes('preview') || 
+                                   hasSrcDoc ||
+                                   src.includes('sandpack') ||
+                                   src.includes('aura.build');
+
+        if (!isVideo && ((box && box.width > 400 && box.height > 250) || isPreviewCandidate)) {
+          const frame = await iframeEl.contentFrame();
+          if (frame) {
+            const bodyLength = await frame.evaluate(() => document.body ? document.body.innerHTML.length : 0).catch(() => 0);
+            if (bodyLength > 100) {
+              return frame;
+            }
+          }
+        }
+      } catch (err) {}
+    }
+    await page.waitForTimeout(pollInterval);
+  }
+  return page;
+}
+
+/**
  * Clona estrutura bruta de HTML, CSS, fontes e mídias do site
  */
 async function cloneSite(rawUrl, customOptions = {}) {
@@ -57,30 +180,39 @@ async function cloneSite(rawUrl, customOptions = {}) {
   });
   const page = await context.newPage();
 
+  const downloadedAssets = new Map();
+
   // Auto-captura recursos em tempo de execução
   page.on('response', async (response) => {
     try {
       const resUrl = response.url();
-      const urlObj = new URL(resUrl);
-      if (urlObj.hostname !== targetHost) return;
+      if (!isAllowedAssetUrl(resUrl, targetHost)) return;
 
+      const urlObj = new URL(resUrl);
       const ext = path.extname(urlObj.pathname).toLowerCase();
       const isAsset = [
         '.js', '.css', '.json', 
         '.woff', '.woff2', '.ttf', '.otf', 
         '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp',
         '.mp4', '.webm', '.ogg'
-      ].includes(ext) || urlObj.pathname.includes('/_nuxt/') || urlObj.pathname.includes('/wp-content/') || urlObj.pathname.includes('/wp-includes/');
+      ].includes(ext) || isModernAssetExtension(ext) || urlObj.pathname.includes('/_nuxt/') || urlObj.pathname.includes('/wp-content/') || urlObj.pathname.includes('/wp-includes/');
       
       if (!isAsset) return;
 
-      const relPath = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname;
+      let relPath = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname;
       if (!relPath) return;
+
+      if (urlObj.hostname !== targetHost) {
+        relPath = path.join('vendor', urlObj.hostname, relPath);
+      }
 
       const localPath = path.join(assetsDir, relPath);
       const localSubdir = path.dirname(localPath);
 
-      if (fs.existsSync(localPath)) return;
+      if (fs.existsSync(localPath)) {
+        downloadedAssets.set(resUrl, `./assets/${relPath.split(path.sep).join('/')}`);
+        return;
+      }
       if (!fs.existsSync(localSubdir)) fs.mkdirSync(localSubdir, { recursive: true });
 
       const buf = await response.body();
@@ -125,6 +257,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       }
 
       fs.writeFileSync(localPath, finalContent);
+      downloadedAssets.set(resUrl, `./assets/${relPath.split(path.sep).join('/')}`);
     } catch (err) {}
   });
 
@@ -197,22 +330,21 @@ async function cloneSite(rawUrl, customOptions = {}) {
       await page.waitForTimeout(2000);
     }
 
-    // Detecta iframe de conteúdo
-    let target = page;
-    const allIframes = await page.$$('iframe');
-    for (const iframeEl of allIframes) {
-      const box = await iframeEl.boundingBox();
-      const src = await iframeEl.getAttribute('src') || '';
-      const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
-      const hasNoSrc = !src || src === 'about:blank' || src.startsWith('javascript:');
-      if (box && box.width > 500 && box.height > 300 && !isVideo && !hasNoSrc) {
-        const frame = await iframeEl.contentFrame();
-        if (frame) {
-          target = frame;
-          await frame.waitForLoadState('networkidle');
-          break;
-        }
-      }
+    // Detecta iframe de preview (Aura.build, Sandpack, CodeSandbox, etc.)
+    console.log(`🔍 [Site Cloner] Verificando existência de sandbox preview container...`);
+    const target = await findPreviewFrameTarget(page, 15000);
+    if (target !== page) {
+      console.log(`ℹ️ [Site Cloner] Container de preview detectado. Desembrulhando aplicação interna...`);
+      await target.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForTimeout(2000);
+    }
+
+    if (target !== page && !isIncremental) {
+      try {
+        const { autoScroll } = require('../utils/auto-scroll');
+        await autoScroll(target);
+        await page.waitForTimeout(1000);
+      } catch (e) {}
     }
 
     // Re-injetar templates se existirem
@@ -279,7 +411,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
       const scriptSrcs = Array.from(document.querySelectorAll('script[src]'))
         .filter(s => {
           const src = s.src || '';
-          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit');
+          return !src.includes('google') && !src.includes('doubleclick') && !src.includes('umami') && !src.includes('promotekit') && !src.includes('_next/static/chunks/main') && !src.includes('_next/static/chunks/webpack') && !src.includes('_next/static/chunks/app/');
         })
         .map(s => ({
           src: s.src,
@@ -288,10 +420,15 @@ async function cloneSite(rawUrl, customOptions = {}) {
           async: s.hasAttribute('async')
         }));
 
+      const importMaps = Array.from(document.querySelectorAll('script[type="importmap"]'))
+        .map(s => s.textContent.trim());
+
       const inlineScripts = Array.from(document.querySelectorAll('script:not([src])'))
         .filter(s => {
           const t = s.textContent || '';
-          return t.length > 50 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__');
+          const type = (s.getAttribute('type') || '').toLowerCase();
+          if (type === 'importmap') return false;
+          return t.length > 20 && !t.includes('gtag') && !t.includes('dataLayer') && !t.includes('__AURA_SUPABASE_FIREWALL__') && !t.includes('self.__next_f');
         })
         .map(s => ({
           content: s.textContent,
@@ -371,29 +508,34 @@ async function cloneSite(rawUrl, customOptions = {}) {
         cssLinks,
         inlineStyles,
         scriptSrcs,
+        importMaps,
         inlineScripts,
         sectionData,
+        htmlClasses: document.documentElement.className || '',
         bodyClasses: document.body.className,
         htmlLang: document.documentElement.lang || 'en',
         bodyHtml: bodyClone.innerHTML
       };
     }, isIncremental);
 
-    const downloadedAssets = new Map();
-
     async function downloadAsset(url, defaultFilename) {
       try {
         const urlObj = new URL(url, targetUrl);
-        if (urlObj.hostname !== targetHost && urlObj.hostname !== '' && urlObj.hostname) return null;
+        if (!isAllowedAssetUrl(urlObj.href, targetHost)) return null;
         if (downloadedAssets.has(urlObj.href)) return downloadedAssets.get(urlObj.href);
 
-        const relPath = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname;
-        const normalizedRelPath = relPath || defaultFilename;
+        let relPath = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname;
+        if (!relPath) relPath = defaultFilename;
+        if (urlObj.hostname !== targetHost) {
+          relPath = path.join('vendor', urlObj.hostname, relPath);
+        }
+
+        const normalizedRelPath = relPath;
         const localPath = path.join(assetsDir, normalizedRelPath);
         const localSubdir = path.dirname(localPath);
 
         if (!fs.existsSync(localSubdir)) fs.mkdirSync(localSubdir, { recursive: true });
-        const relativeHtmlPath = `./assets/${normalizedRelPath}`;
+        const relativeHtmlPath = `./assets/${normalizedRelPath.split(path.sep).join('/')}`;
 
         const res = await page.request.get(urlObj.href);
         if (res.ok()) {
@@ -445,6 +587,23 @@ async function cloneSite(rawUrl, customOptions = {}) {
       }
     }
 
+    // Auto-baixa dependências de import maps para o assets/vendor local
+    if (result.importMaps && result.importMaps.length > 0) {
+      for (const im of result.importMaps) {
+        try {
+          const parsed = JSON.parse(im);
+          if (parsed.imports) {
+            for (const [key, remoteUrl] of Object.entries(parsed.imports)) {
+              if (typeof remoteUrl === 'string' && remoteUrl.startsWith('http') && !remoteUrl.endsWith('/')) {
+                const defaultName = key.replace(/[^a-zA-Z0-9._-]/g, '_') + '.js';
+                await downloadAsset(remoteUrl, defaultName);
+              }
+            }
+          }
+        } catch (e) {}
+      }
+    }
+
     const localCssLinks = [];
     for (let i = 0; i < result.cssLinks.length; i++) {
       const href = result.cssLinks[i];
@@ -480,17 +639,22 @@ async function cloneSite(rawUrl, customOptions = {}) {
     const universalUnlockCss = UniversalAssetNormalizer.getUniversalUnlockCss();
     const universalPolyfills = UniversalAssetNormalizer.getUniversalResiliencePolyfills();
 
+    const importMapsHtml = result.importMaps && result.importMaps.length > 0
+      ? result.importMaps.map(im => `  <script type="importmap">\n${im}\n</script>`).join('\n')
+      : '';
+
     // Salva cada seção
     result.sectionData.forEach((sec, i) => {
       const filename = `${String(i).padStart(2, '0')}_${sec.id}.html`;
       const sectionHtmlDoc = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Section - ${sec.id}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
+${importMapsHtml}
 ${universalUnlockCss}
 ${universalPolyfills}
 </head>
@@ -509,13 +673,14 @@ ${inlineScriptsHtml}
     }
 
     const cloneHtml = `<!DOCTYPE html>
-<html lang="${result.htmlLang}">
+<html lang="${result.htmlLang}" class="${result.htmlClasses}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clone - ${siteName}</title>
 ${cssLinksHtml}
   <style>${result.inlineStyles}</style>
+${importMapsHtml}
 ${universalUnlockCss}
 ${universalPolyfills}
 </head>
@@ -527,8 +692,10 @@ ${inlineScriptsHtml}
 </body>
 </html>`;
 
+    const localizedCloneHtml = localizeImportMap(cloneHtml, downloadedAssets);
+
     const outputPath = path.join(siteFolder, 'index.html');
-    fs.writeFileSync(outputPath, cloneHtml);
+    fs.writeFileSync(outputPath, localizedCloneHtml);
 
     // Auto-executa a normalização profunda e o saneamento de assets/HTML
     try {
@@ -554,5 +721,9 @@ ${inlineScriptsHtml}
 }
 
 module.exports = {
-  cloneSite
+  cloneSite,
+  isAllowedAssetUrl,
+  isModernAssetExtension,
+  findPreviewFrameTarget,
+  localizeImportMap
 };

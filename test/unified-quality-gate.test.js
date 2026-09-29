@@ -73,6 +73,9 @@ test('UnifiedQualityGate: detects broken slop and fails the gate', async () => {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
+
+
+// --- Image Readiness Tests (Head) ---
 test('UnifiedQualityGate: loads and decodes a local lazy image below the initial viewport before auditing it', async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uqg-test-lazy-image-'));
   const siteDir = path.join(tmpDir, 'site');
@@ -246,4 +249,36 @@ require(${JSON.stringify(auditPath)});
       return true;
     }
   );
+
+// --- Scroll Dynamics Tests (Incoming) ---
+test('UnifiedQualityGate.auditClone: verifies scroll height, sections and console health', async () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uqg-test-clone-'));
+  const siteDir = path.join(tmpDir, 'site');
+  fs.mkdirSync(siteDir, { recursive: true });
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><title>Good Clone</title></head>
+<body>
+  <header style="height: 100px;"><h1>Brand Header</h1></header>
+  <section style="height: 1200px;"><p>Detailed product showcase with rich typography and layout.</p></section>
+  <footer style="height: 200px;"><p>Footer</p></footer>
+</body>
+</html>`;
+
+  fs.writeFileSync(path.join(siteDir, 'index.html'), html, 'utf8');
+
+  const report = await UnifiedQualityGate.auditClone({
+    siteDir,
+    expectedHeight: 1500,
+    headless: true
+  });
+
+  assert.equal(report.passed, true);
+  assert.equal(report.status, 'verified');
+  assert.equal(report.metrics.jsErrorsCount, 0);
+  assert.equal(report.metrics.collapsedSectionsCount, 0);
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+
 });

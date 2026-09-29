@@ -57,6 +57,30 @@
       "artifacts": {
         "skeleton": "skeleton.html",
         "contentSlots": "content-slots.json",
+        "referenceCard": "REFERENCE_CARD.md"
+      }
+    },
+
+    {
+      "slug": "khanhnguyen-design",
+      "name": "Khanh Nguyen Portfolio (Awwwards Horizontal Editorial)",
+      "path": "design-vault/khanhnguyen-design",
+      "status": "candidate",
+      "provenance": "copias/khanhnguyen-design",
+      "archetype": "Horizontal Editorial Portfolio / Pin Scroll",
+      "palette": {
+        "bg": "#262220",
+        "surface": "#3A3632",
+        "light": "#faf9f6",
+        "warm": "#edeae6",
+        "clay": "#2e2b28",
+        "deep": "#1f1d1b"
+      },
+      "stack": ["HTML5", "Astro SSG", "Tailwind CSS", "GSAP ScrollTrigger", "Lenis"],
+      "artifacts": {
+        "skeleton": "skeleton.html",
+        "contentSlots": "content-slots.template.json",
+        "compositionSpec": "composition-spec.template.json",
         "tokens": "tokens.json",
         "tailwindConfig": "tailwind.config.js",
         "brandSpecTemplate": "brand-spec.template.json",
@@ -64,16 +88,27 @@
       }
     },
     {
-      "slug": "bymonolog-com",
-      "name": "By Monolog (Editorial Studio)",
-      "path": "design-vault/bymonolog-com",
-      "status": "experimental",
-      "provenance": "copias/bymonolog-com",
-      "archetype": "Creative Studio / Typography Heavy",
+      "slug": "op-xy-76-aura-build",
+      "name": "OP–XY Hardware Showcase (3D Scroll & Audio Synthesis)",
+      "path": "design-vault/op-xy-76-aura-build",
+      "status": "candidate",
+      "provenance": "copias/op-xy-76-aura-build",
+      "archetype": "3D Hardware Showcase / Tactile Industrial",
+      "palette": {
+        "bg": "#0c0d0e",
+        "surface": "#141517",
+        "surfaceRaised": "#1c1d20",
+        "accent": "#ff3a2f",
+        "text": "#e2e4e8"
+      },
+      "stack": ["HTML5", "Three.js r186", "Draco WASM", "GSAP ScrollTrigger", "Lenis", "Web Audio API"],
       "artifacts": {
+        "skeleton": "skeleton.html",
+        "contentSlots": "content-slots.template.json",
+        "compositionSpec": "composition-spec.template.json",
         "tokens": "tokens.json",
-        "tailwindConfig": "tailwind.config.js",
-        "brandSpecTemplate": "brand-spec.template.json"
+        "brandSpecTemplate": "brand-spec.template.json",
+        "referenceCard": "REFERENCE_CARD.md"
       }
     },
     {

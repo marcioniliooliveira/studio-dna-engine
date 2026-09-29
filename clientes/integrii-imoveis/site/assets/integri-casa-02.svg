@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Imagem demonstrativa de um apartamento iluminado</title>
+  <desc id="desc">Ilustração editorial de uma sala com janela ampla e vista urbana abstrata.</desc>
+  <defs><linearGradient id="room" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#dce8f0"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="#00233a"/>
+  <path d="M0 0h1600v610L0 760Z" fill="url(#room)"/>
+  <rect x="900" y="150" width="480" height="470" fill="#a8bcce" stroke="#00233a" stroke-width="18"/>
+  <path d="M1060 150v470M1220 150v470M900 386h480" stroke="#00233a" stroke-width="14"/>
+  <path d="M900 480 1010 410l120 92 110-146 140 82v172H900Z" fill="#264458" opacity=".52"/>
+  <path d="M0 760 540 550l430 155 630-150v445H0Z" fill="#f2f2f2"/>
+  <path d="M310 736h420v180H310Z" fill="#ffffff" stroke="#00233a" stroke-width="14"/>
+  <path d="M260 738h520" stroke="#264458" stroke-width="34" stroke-linecap="round"/>
+  <circle cx="1130" cy="780" r="120" fill="#264458" opacity=".25"/>
+  <path d="M1130 894V650M1050 760l80-110 80 110" fill="none" stroke="#00233a" stroke-width="18" stroke-linecap="round"/>
+</svg>

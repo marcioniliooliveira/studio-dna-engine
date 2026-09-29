@@ -26,11 +26,11 @@ async function extractDesignDna(targetUrl, outputFolder = null, customConfig = {
 
   try {
     try {
-      await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: Math.min(config.timeout, 15000) });
-    } catch (netErr) {
-      if (page.url() === 'about:blank') {
-        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: config.timeout }).catch(() => {});
-      }
+      await page.goto(targetUrl, { waitUntil: 'load', timeout: config.timeout });
+    } catch (e) {
+      try {
+        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+      } catch (e2) {}
     }
     await page.waitForTimeout(2000);
 

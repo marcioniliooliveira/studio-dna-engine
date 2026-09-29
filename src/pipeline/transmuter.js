@@ -695,6 +695,10 @@ function runDeterministicTransmutation({
     }
   }
 
+  // 5. Neutralizar scripts de hidratação legados da referência (evita crashes de Hydration Mismatch)
+  finalHtml = finalHtml.replace(/<script[^>]*id=["']__NEXT_DATA__["'][^>]*>[\s\S]*?<\/script>/gi, '');
+  finalHtml = finalHtml.replace(/<script[^>]*id=["']__NUXT_DATA__["'][^>]*>[\s\S]*?<\/script>/gi, '');
+
   const outputHash = computeHash(finalHtml);
 
   // 7. Gravar Artefato do Site

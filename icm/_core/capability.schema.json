@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Capability Graph Schema",
+  "description": "Formal detection and activation graph of site architectural capabilities.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["active", "confidence"],
+    "properties": {
+      "active": { "type": "boolean" },
+      "confidence": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "driver": { "type": "string" },
+      "provenance": { "type": "string" }
+    }
+  }
+}

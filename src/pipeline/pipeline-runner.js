@@ -75,7 +75,12 @@ function createPipelineRunner(dependencies) {
     function persistStatus() {
       const temporaryPath = `${statusPath}.tmp`;
       fs.writeFileSync(temporaryPath, JSON.stringify(pipelineStatus, null, 2));
-      fs.renameSync(temporaryPath, statusPath);
+      try {
+        fs.renameSync(temporaryPath, statusPath);
+      } catch {
+        fs.copyFileSync(temporaryPath, statusPath);
+        try { fs.unlinkSync(temporaryPath); } catch (_) {}
+      }
     }
 
     const ledger = recordExecution

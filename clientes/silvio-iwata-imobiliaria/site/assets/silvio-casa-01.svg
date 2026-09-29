@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Imagem demonstrativa de uma casa contemporânea</title>
+  <desc id="desc">Ilustração cinematográfica em verde floresta de uma casa cercada por árvores.</desc>
+  <defs><linearGradient id="forest" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#005023"/><stop offset="1" stop-color="#055227"/></linearGradient><linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#e8edf4"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="url(#forest)"/>
+  <circle cx="1230" cy="180" r="150" fill="#8dbc2a" opacity=".75"/>
+  <path d="M0 670 360 430l380 170 390-260 470 210v450H0Z" fill="#8dbc2a" opacity=".28"/>
+  <path d="M325 660 730 340l515 320v275H325Z" fill="url(#light)" stroke="#055227" stroke-width="16"/>
+  <path d="m245 660 485-380 600 380" fill="none" stroke="#8dbc2a" stroke-width="28" stroke-linejoin="round"/>
+  <rect x="515" y="660" width="172" height="275" fill="#055227"/>
+  <rect x="805" y="600" width="265" height="180" fill="#b9d8c1" stroke="#005023" stroke-width="14"/>
+  <path d="M937 600v180M805 690h265" stroke="#005023" stroke-width="11"/>
+  <path d="M170 935h1300" stroke="#8dbc2a" stroke-width="24" stroke-linecap="round"/>
+  <path d="M1350 935c-20-120 45-220 110-274M1410 935c12-86 70-164 138-190" fill="none" stroke="#8dbc2a" stroke-width="22" stroke-linecap="round"/>
+</svg>

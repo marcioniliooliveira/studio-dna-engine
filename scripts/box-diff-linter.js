@@ -22,11 +22,17 @@ async function runBoxDiffLinter(siteSlug = 'negocia-bem-imobiliaria', port = 400
     '.html': 'text/html; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
     '.js': 'application/javascript; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
+    '.avif': 'image/avif',
+    '.svg': 'image/svg+xml',
     '.otf': 'font/otf',
-    '.woff2': 'font/woff2'
+    '.woff': 'font/woff',
+    '.woff2': 'font/woff2',
+    '.mp4': 'video/mp4'
   };
 
   let server;
@@ -79,11 +85,29 @@ async function runBoxDiffLinter(siteSlug = 'negocia-bem-imobiliaria', port = 400
     } catch (e) {
       await page.goto(`http://127.0.0.1:${activePort}/index.html`, { timeout: 15000 });
     }
-    await page.waitForFunction(() => {
-      const imgs = Array.from(document.querySelectorAll('img'));
-      return imgs.length === 0 || imgs.every(i => i.complete);
-    }, { timeout: 8000 }).catch(() => {});
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
+
+    // Scroll progressivo e decodificação para disparar lazy loading de imagens offscreen
+    await page.evaluate(async () => {
+      document.querySelectorAll('img').forEach(img => {
+        img.loading = 'eager';
+      });
+      await Promise.all(
+        Array.from(document.querySelectorAll('img')).map(img => (img.decode ? img.decode().catch(() => {}) : null))
+      );
+      const distance = 400;
+      const totalHeight = document.body.scrollHeight;
+      let currentScroll = 0;
+      while (currentScroll < totalHeight) {
+        window.scrollBy(0, distance);
+        currentScroll += distance;
+        await new Promise(r => setTimeout(r, 40));
+      }
+      window.scrollTo(0, 0);
+      await new Promise(r => setTimeout(r, 200));
+    });
+
+    await page.waitForTimeout(1000);
 
     // Mapear seções e Bounding Boxes
     const report = await page.evaluate(() => {
@@ -102,10 +126,14 @@ async function runBoxDiffLinter(siteSlug = 'negocia-bem-imobiliaria', port = 400
         };
       });
 
-      // Validação de Imagens (Detecta imagens quebradas)
+      // Validação de Imagens (Detecta imagens quebradas excluindo abas/slides inativos)
       const imgs = Array.from(document.querySelectorAll('img'));
       const brokenImages = imgs
-        .filter(img => img.naturalWidth === 0 && !img.src.includes('data:image/svg'))
+        .filter(img => {
+          const isHidden = img.closest('.w-tab-pane:not(.w--tab-active), .w-slide:not(:first-child), [aria-hidden="true"], .hidden, [style*="display: none"]');
+          if (isHidden) return false;
+          return img.naturalWidth === 0 && !img.src.includes('data:image/svg');
+        })
         .map(img => ({
           src: img.src,
           alt: img.alt || '',
