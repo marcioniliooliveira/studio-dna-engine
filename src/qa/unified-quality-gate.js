@@ -299,6 +299,7 @@ class UnifiedQualityGate {
       // 6. Avaliação Final dos Gates
       const passed = antiSlopReport.passed &&
                      jsErrors.length === 0 &&
+                     networkFailures.length === 0 &&
                      domAudit.brokenImages.length === 0 &&
                      domAudit.readinessFailures.length === 0 &&
                      scrollAudit.passed;

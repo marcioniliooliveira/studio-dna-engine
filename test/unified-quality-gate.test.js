@@ -249,6 +249,8 @@ require(${JSON.stringify(auditPath)});
       return true;
     }
   );
+});
+
 
 // --- Scroll Dynamics Tests (Incoming) ---
 test('UnifiedQualityGate.auditClone: verifies scroll height, sections and console health', async () => {
