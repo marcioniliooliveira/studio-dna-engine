@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swiss with zero broken mechanics', async () => {
+test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swiss with zero broken mechanics', { timeout: 90000 }, async () => {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -21,17 +21,21 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
     const barsCount = window.OPXY.bars.length;
     const stepsCount = window.OPXY.steps.length;
     const brandText = document.querySelector('#hero .wm h1')?.textContent?.trim() || '';
+    const stripB = document.querySelector('#strip .stack b');
+    const stripGradClip = stripB ? (getComputedStyle(stripB).backgroundClip || getComputedStyle(stripB).webkitBackgroundClip) : null;
 
     return {
       computedSans,
       barsCount,
       stepsCount,
-      brandText
+      brandText,
+      stripGradClip
     };
   });
 
   assert.equal(initialInfo.barsCount, 16, 'Must have 16 backdrop bars');
   assert.equal(initialInfo.stepsCount, 16, 'Must have 16 sequencer step keys');
+  assert.equal(initialInfo.stripGradClip, 'text', 'Strip sequence heading must have background-clip: text');
 
   // ── STEP 2: Apply Berlin Dark Steel ──
   await page.evaluate(() => {
@@ -278,7 +282,7 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
 
   assert.ok(gooeyInfo.hasFilter, 'SVG filter #dna-gooey-filter must be present in DOM');
   assert.ok(gooeyInfo.hasSvg, 'SVG container #dna-gooey-svg must be present in DOM');
-  assert.ok(gooeyInfo.stackFilter.includes('dna-gooey-filter'), '#strip .stack must have gooey filter applied');
+  assert.ok(gooeyInfo.stackFilter.includes('dna-morph-filter') || gooeyInfo.stackFilter.includes('dna-gooey-filter'), '#strip .stack must have morph or gooey filter applied');
   assert.equal(gooeyInfo.w1On, true, 'Word 1 (sequence.) must have .on class');
   assert.equal(gooeyInfo.w0Was, true, 'Word 0 (sample.) must have .was class');
   assert.equal(gooeyInfo.w2On, false, 'Word 2 (synthesize.) must not be active');

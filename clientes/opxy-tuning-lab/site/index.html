@@ -851,327 +851,115 @@ target?.scrollIntoView({behavior: 'smooth', block: 'start'});
       </div>
     </div>
   </section>
+
+
+  <section class="beat" id="macro">
+    <div class="stage">
+      <div class="slate glass rev in" id="slate">
+        <div class="row"><b>68 mechanical keys.</b><div class="k">ultra low profile · 0.45 mm travel · a led in every vital key</div></div>
+        <div class="row"><b>two octaves, printed once.</b><div class="k">the chromatic keys carry their legends in ink, not in a sticker</div></div>
+        <div class="row"><b>four grayscale encoders.</b><div class="k">knurled, push to select · one tone step each</div></div>
+        <div class="row on"><b>480 × 222 ips.</b><div class="k">the whole interface in grayscale · red only for record</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat" id="engines">
+    <div class="stage">
+      <div class="band"><div class="strip" id="engStrip" style="transform: translateX(-605.361px);">
+        <b style="cursor: pointer;">axis</b><b style="cursor: pointer;" class="">dissolve</b><b style="cursor: pointer;">e-piano</b><b style="cursor: pointer;" class="">hardsync</b><b style="cursor: pointer;">organ</b><b style="cursor: pointer;" class="">prism</b><b style="cursor: pointer;" class="on">simple</b><b style="cursor: pointer;">wavetable</b>
+      </div></div>
+      <div class="copy rev in">
+        <p>eight synth engines and twenty-four voices, plus a drum sampler, a multisampler and a synth sampler. any engine sits on any of the eight tracks, with four filter types and a send level each.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat" id="seq">
+    <div class="stage">
+      <div class="panel deck rev in" id="seqPanel">
+        <div class="sweep"></div>
+        <div class="top">
+          <div class="ttl"><h2>the sequencer.</h2><div class="k"><span>pattern <b>a1</b></span><span>16 tracks</span><span>64 steps · 4 pages</span><span>24 punch-in fx</span></div></div>
+          <canvas class="scope" id="scope" width="840" height="112" aria-hidden="true"></canvas>
+          <div class="vu" id="vu" aria-hidden="true"><i style="--seg: rgb(40,40,40);" class="on"></i><i style="--seg: rgb(53,53,53);" class=""></i><i style="--seg: rgb(66,66,66);" class=""></i><i style="--seg: rgb(79,79,79);" class=""></i><i style="--seg: rgb(92,92,92);" class=""></i><i style="--seg: rgb(105,105,105);" class=""></i><i style="--seg: rgb(118,118,118);" class=""></i><i style="--seg: rgb(131,131,131);" class=""></i><i style="--seg: rgb(144,144,144);" class=""></i><i style="--seg: rgb(157,157,157);" class=""></i><i style="--seg: rgb(170,170,170);" class=""></i><i style="--seg: rgb(183,183,183);" class=""></i><i style="--seg: rgb(196,196,196);" class=""></i><i style="--seg: rgb(209,209,209);" class=""></i><i style="--seg: rgb(222,222,222);"></i><i style="--seg: rgb(235,235,235);"></i></div>
+          <div class="tr">
+            <span class="recdot" id="recDot" aria-hidden="true"></span>
+            <button class="bpm" id="bpmBtn" aria-label="tempo, drag up or down"><b id="bpm">120</b>bpm</button>
+            <button id="seqPlay" aria-label="play or stop the pattern"><svg viewBox="0 0 12 12" id="seqIco"><path d="M2 1.5v9l8-4.5z"></path></svg></button>
+          </div>
+        </div>
+        <div class="grid" id="seqGrid"><div class="lab">kick</div><button class="cell on" aria-label="kick step 1" aria-pressed="true" data-r="0" data-s="0"></button><button class="cell" aria-label="kick step 2" aria-pressed="false" data-r="0" data-s="1"></button><button class="cell" aria-label="kick step 3" aria-pressed="false" data-r="0" data-s="2"></button><button class="cell" aria-label="kick step 4" aria-pressed="false" data-r="0" data-s="3"></button><button class="cell on" aria-label="kick step 5" aria-pressed="true" data-r="0" data-s="4"></button><button class="cell" aria-label="kick step 6" aria-pressed="false" data-r="0" data-s="5"></button><button class="cell" aria-label="kick step 7" aria-pressed="false" data-r="0" data-s="6"></button><button class="cell ph" aria-label="kick step 8" aria-pressed="false" data-r="0" data-s="7"></button><button class="cell on" aria-label="kick step 9" aria-pressed="true" data-r="0" data-s="8"></button><button class="cell" aria-label="kick step 10" aria-pressed="false" data-r="0" data-s="9"></button><button class="cell on" aria-label="kick step 11" aria-pressed="true" data-r="0" data-s="10"></button><button class="cell" aria-label="kick step 12" aria-pressed="false" data-r="0" data-s="11"></button><button class="cell on" aria-label="kick step 13" aria-pressed="true" data-r="0" data-s="12"></button><button class="cell" aria-label="kick step 14" aria-pressed="false" data-r="0" data-s="13"></button><button class="cell" aria-label="kick step 15" aria-pressed="false" data-r="0" data-s="14"></button><button class="cell" aria-label="kick step 16" aria-pressed="false" data-r="0" data-s="15"></button><div class="lab">snare</div><button class="cell" aria-label="snare step 1" aria-pressed="false" data-r="1" data-s="0"></button><button class="cell" aria-label="snare step 2" aria-pressed="false" data-r="1" data-s="1"></button><button class="cell" aria-label="snare step 3" aria-pressed="false" data-r="1" data-s="2"></button><button class="cell" aria-label="snare step 4" aria-pressed="false" data-r="1" data-s="3"></button><button class="cell on" aria-label="snare step 5" aria-pressed="true" data-r="1" data-s="4"></button><button class="cell" aria-label="snare step 6" aria-pressed="false" data-r="1" data-s="5"></button><button class="cell" aria-label="snare step 7" aria-pressed="false" data-r="1" data-s="6"></button><button class="cell ph" aria-label="snare step 8" aria-pressed="false" data-r="1" data-s="7"></button><button class="cell" aria-label="snare step 9" aria-pressed="false" data-r="1" data-s="8"></button><button class="cell" aria-label="snare step 10" aria-pressed="false" data-r="1" data-s="9"></button><button class="cell" aria-label="snare step 11" aria-pressed="false" data-r="1" data-s="10"></button><button class="cell" aria-label="snare step 12" aria-pressed="false" data-r="1" data-s="11"></button><button class="cell on" aria-label="snare step 13" aria-pressed="true" data-r="1" data-s="12"></button><button class="cell" aria-label="snare step 14" aria-pressed="false" data-r="1" data-s="13"></button><button class="cell" aria-label="snare step 15" aria-pressed="false" data-r="1" data-s="14"></button><button class="cell on" aria-label="snare step 16" aria-pressed="true" data-r="1" data-s="15"></button><div class="lab">hat</div><button class="cell on" aria-label="hat step 1" aria-pressed="true" data-r="2" data-s="0"></button><button class="cell" aria-label="hat step 2" aria-pressed="false" data-r="2" data-s="1"></button><button class="cell on" aria-label="hat step 3" aria-pressed="true" data-r="2" data-s="2"></button><button class="cell" aria-label="hat step 4" aria-pressed="false" data-r="2" data-s="3"></button><button class="cell on" aria-label="hat step 5" aria-pressed="true" data-r="2" data-s="4"></button><button class="cell" aria-label="hat step 6" aria-pressed="false" data-r="2" data-s="5"></button><button class="cell on" aria-label="hat step 7" aria-pressed="true" data-r="2" data-s="6"></button><button class="cell on ph" aria-label="hat step 8" aria-pressed="true" data-r="2" data-s="7"></button><button class="cell on" aria-label="hat step 9" aria-pressed="true" data-r="2" data-s="8"></button><button class="cell" aria-label="hat step 10" aria-pressed="false" data-r="2" data-s="9"></button><button class="cell on" aria-label="hat step 11" aria-pressed="true" data-r="2" data-s="10"></button><button class="cell" aria-label="hat step 12" aria-pressed="false" data-r="2" data-s="11"></button><button class="cell on" aria-label="hat step 13" aria-pressed="true" data-r="2" data-s="12"></button><button class="cell" aria-label="hat step 14" aria-pressed="false" data-r="2" data-s="13"></button><button class="cell on" aria-label="hat step 15" aria-pressed="true" data-r="2" data-s="14"></button><button class="cell" aria-label="hat step 16" aria-pressed="false" data-r="2" data-s="15"></button><div class="lab">synth</div><button class="cell on rec" aria-label="synth step 1" aria-pressed="true" data-r="3" data-s="0"></button><button class="cell rec" aria-label="synth step 2" aria-pressed="false" data-r="3" data-s="1"></button><button class="cell rec" aria-label="synth step 3" aria-pressed="false" data-r="3" data-s="2"></button><button class="cell on rec" aria-label="synth step 4" aria-pressed="true" data-r="3" data-s="3"></button><button class="cell rec" aria-label="synth step 5" aria-pressed="false" data-r="3" data-s="4"></button><button class="cell rec" aria-label="synth step 6" aria-pressed="false" data-r="3" data-s="5"></button><button class="cell on rec" aria-label="synth step 7" aria-pressed="true" data-r="3" data-s="6"></button><button class="cell rec ph" aria-label="synth step 8" aria-pressed="false" data-r="3" data-s="7"></button><button class="cell rec" aria-label="synth step 9" aria-pressed="false" data-r="3" data-s="8"></button><button class="cell rec" aria-label="synth step 10" aria-pressed="false" data-r="3" data-s="9"></button><button class="cell on rec" aria-label="synth step 11" aria-pressed="true" data-r="3" data-s="10"></button><button class="cell rec" aria-label="synth step 12" aria-pressed="false" data-r="3" data-s="11"></button><button class="cell rec" aria-label="synth step 13" aria-pressed="false" data-r="3" data-s="12"></button><button class="cell on rec" aria-label="synth step 14" aria-pressed="true" data-r="3" data-s="13"></button><button class="cell rec" aria-label="synth step 15" aria-pressed="false" data-r="3" data-s="14"></button><button class="cell rec" aria-label="synth step 16" aria-pressed="false" data-r="3" data-s="15"></button></div>
+        <div class="steps" id="seqSteps"><i></i><span class="phbar" id="phbar" style="transform: translateX(491.269px); width: 61px;"></span><i class="">1</i><i class="">2</i><i class="">3</i><i class="">4</i><i class="">5</i><i class="">6</i><i class="">7</i><i class="ph">8</i><i>9</i><i>10</i><i>11</i><i>12</i><i>13</i><i>14</i><i>15</i><i>16</i></div>
+      </div>
+      <div class="note rev in">
+        <div class="k">step components</div>
+        <p>every step can carry its own velocity, timing, pitch and up to fourteen components. brain transposes the chord progression underneath, so a pattern keeps reinventing itself while you play.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat" id="connect">
+    <div class="stage">
+      <div class="head rev in">
+        <h2>connect everything.</h2>
+        <p>the right end is an i/o system. amps, headphones, a modular, a drum machine, your laptop, and the mic on the side records straight into a track.</p>
+      </div>
+      <div class="band" id="portBand">
+        <div class="port" data-z="31.5" style="cursor: pointer;"><b>power</b><span>on · off. sixteen hours on a charge.</span></div>
+        <div class="port" data-z="13.7" style="cursor: pointer;"><b>usb-c</b><span>audio and midi, host and device, charging.</span></div>
+        <div class="port" data-z="0" style="cursor: pointer;"><b>line in</b><span>3.5 mm stereo. sample anything.</span></div>
+        <div class="port" data-z="-10.2" style="cursor: pointer;"><b>midi in</b><span>3.5 mm. clock and notes from outside.</span></div>
+        <div class="port" data-z="-20.5" style="cursor: pointer;"><b>multi out</b><span>midi, cv/gate, sync and aux audio on one jack.</span></div>
+        <div class="port" data-z="-30.8" style="cursor: pointer;"><b>line out</b><span>3.5 mm stereo with headset mic support.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat dark" id="flip">
+    <div class="stage">
+      <div class="head rev in">
+        <h2>the other side.</h2>
+        <p>the exact footprint of the OP–1 field. an aluminium plate, four feet, two loop pads, and everything it is printed once.</p>
+      </div>
+      <div class="plate rev in" id="plate">
+        <div class="row"><span>size</span><span>288 × 102 × 29 mm</span></div>
+        <div class="row"><span>display</span><span>480 × 222 px ips</span></div>
+        <div class="row"><span>keys</span><span>68 mechanical, ultra low profile</span></div>
+        <div class="row"><span>encoders</span><span>4 grayscale, push</span></div>
+        <div class="row"><span>sensors</span><span>6-axis imu, microphone</span></div>
+        <div class="row"><span>battery</span><span>16 hours</span></div>
+        <div class="row"><span>i/o</span><span>line in · midi in · multi out · line out · usb-c</span></div>
+        <div class="langs"><b>OP–XY</b> portable synthesizer · synthétiseur portable · tragbarer synthesizer · designed in stockholm</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat" id="close">
+    <div class="stage">
+      <div class="cta rev in">
+        <h2>OP–XY</h2>
+        <div class="k"><b>$2,299</b> · shipping now · free shipping over $120</div>
+        <div class="acts">
+          <a class="btn" href="#"><span>pre-order</span><span class="price">$2,299</span></a>
+          <a class="btn ghost" href="#"><span>user guide</span></a>
+        </div>
+      </div>
+      <footer>
+        <div class="cols">
+          <div><a href="#">store</a><a href="#">guides</a><a href="#">downloads</a></div>
+          <div><a href="#">support</a><a href="#">press</a><a href="#">returns</a></div>
+        </div>
+        <div>©2026 teenage engineering ab · stockholm</div>
+      </footer>
+    </div>
+  </section>
   </main>
 
 
 <!-- ========================================================================= -->
 <!-- STUDIO DNA · LIVE TUNING HUD & DIRECTION PRESET ENGINE                   -->
 <!-- ========================================================================= -->
-<style id="studio-dna-live-hud-styles">
-  #dna-hud-root {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999999;
-    font-family: var(--mono, "Geist Mono", monospace);
-    font-size: 11px;
-    color: var(--fg, #e2e4e8);
-    user-select: none;
-    -webkit-font-smoothing: antialiased;
-  }
-  #dna-hud-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    background: rgba(12, 13, 14, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 999px;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  #dna-hud-toggle:hover {
-    border-color: rgba(255, 255, 255, 0.35);
-    transform: translateY(-2px);
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75);
-  }
-  #dna-hud-toggle .hud-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--rec, #ff3a2f);
-    box-shadow: 0 0 10px var(--rec, #ff3a2f);
-    transition: background 0.3s, box-shadow 0.3s;
-  }
-  #dna-hud-toggle .hud-title {
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: #fff;
-  }
-  #dna-hud-toggle .hud-badge {
-    font-size: 9px;
-    padding: 2px 7px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    color: var(--fg-dim, #8b8f97);
-  }
-
-  /* PANEL */
-  #dna-hud-panel {
-    display: none;
-    position: absolute;
-    bottom: 52px;
-    right: 0;
-    width: 380px;
-    max-height: 84vh;
-    background: rgba(14, 15, 17, 0.94);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 14px;
-    backdrop-filter: blur(24px);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
-    flex-direction: column;
-    overflow: hidden;
-    animation: dnaFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  #dna-hud-panel.open {
-    display: flex;
-  }
-  @keyframes dnaFadeIn {
-    from { opacity: 0; transform: translateY(12px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* HEADER */
-  .hud-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
-  }
-  .hud-header h2 {
-    margin: 0;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .hud-close-btn {
-    background: none;
-    border: none;
-    color: var(--fg-dim, #8b8f97);
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-  }
-  .hud-close-btn:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  /* TABS */
-  .hud-tabs {
-    display: flex;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-  }
-  .hud-tab-btn {
-    flex: 1;
-    padding: 9px 8px;
-    background: none;
-    border: none;
-    color: var(--fg-dim, #8b8f97);
-    font-family: inherit;
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-  }
-  .hud-tab-btn:hover {
-    color: #fff;
-  }
-  .hud-tab-btn.active {
-    color: #fff;
-    border-bottom-color: var(--rec, #ff3a2f);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  /* BODY */
-  .hud-body {
-    padding: 16px;
-    overflow-y: auto;
-    max-height: 60vh;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .hud-tab-content {
-    display: none;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .hud-tab-content.active {
-    display: flex;
-  }
-
-  /* PRESET CARDS */
-  .preset-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .preset-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-  }
-  .preset-card.active {
-    border-color: var(--rec, #ff3a2f);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
-  }
-  .preset-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .preset-name {
-    font-weight: 600;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .preset-swatches {
-    display: flex;
-    gap: 4px;
-  }
-  .preset-swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.4);
-  }
-  .preset-desc {
-    font-size: 10px;
-    color: var(--fg-dim, #8b8f97);
-    line-height: 1.4;
-  }
-
-  /* FIELDS */
-  .hud-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .hud-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--fg-dim, #8b8f97);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .hud-input-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .hud-color-box {
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    cursor: pointer;
-    background: none;
-    outline: none;
-  }
-  .hud-color-box::-webkit-color-swatch-wrapper { padding: 0; }
-  .hud-color-box::-webkit-color-swatch { border: none; border-radius: 5px; }
-  .hud-text-input, .hud-textarea {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 11px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .hud-textarea {
-    min-height: 48px;
-    resize: vertical;
-    line-height: 1.4;
-  }
-  .hud-text-input:focus, .hud-textarea:focus {
-    border-color: var(--rec, #ff3a2f);
-  }
-  .hud-slider {
-    flex: 1;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-
-  /* ACTIONS */
-  .hud-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-  }
-  .hud-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 9px 12px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-  }
-  .hud-btn-primary {
-    background: var(--rec, #ff3a2f);
-    color: #fff;
-  }
-  .hud-btn-primary:hover {
-    filter: brightness(1.15);
-  }
-  .hud-btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  }
-  .hud-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.14);
-  }
-  .hud-toast {
-    font-size: 10px;
-    text-align: center;
-    color: #00ffaa;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .hud-toast.show {
-    opacity: 1;
-  }
-</style>
-
 <div id="dna-hud-root">
   <div id="dna-hud-toggle">
     <div class="hud-dot"></div>
@@ -1348,476 +1136,240 @@ target?.scrollIntoView({behavior: 'smooth', block: 'start'});
   </div>
 </div>
 
-<script id="studio-dna-live-hud-logic">
+<script id="universal-resilience-polyfills">
 (function() {
-  const PRESETS = {
-    swiss: {
-      id: 'swiss',
-      name: 'Swiss Industrial Brutalism',
-      badge: 'OP–XY',
-      colors: {
-        '--bg': '#0c0d0e',
-        '--surface': '#141517',
-        '--surface-raised': '#1c1d20',
-        '--border': 'rgba(255, 255, 255, 0.08)',
-        '--border-strong': 'rgba(255, 255, 255, 0.18)',
-        '--fg': '#e2e4e8',
-        '--fg-dim': '#8b8f97',
-        '--fg-muted': '#52565e',
-        '--rec': '#ff3a2f',
-        '--rec-dim': 'rgba(255, 58, 47, 0.22)',
-        '--status-lens': '#00ffaa'
-      },
-      copy: {
-        brand: 'OP–XY',
-        price: '$2,299',
-        claim: 'a synthesizer, a sampler and a sequencer. one instrument, all black.',
-        sub: 'portable synthesizer · sampler · sequencer',
-        word4: 'perform.',
-        specs: 'four rows · 68 keys · one grayscale',
-        desc: 'the whole instrument is a grid. one row of instruments, one row of steps, and a two-octave keyboard under your fingers. the display keeps everything in grayscale, so the red means one thing: record.'
+  'use strict';
+  // 1. Mocks de Analytics, Rastreamento & WebFont
+  window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
+  window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
+  window.dataLayer = window.dataLayer || [];
+  window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
+
+  // 1.1 ServiceWorker Safe Stub (evita 404 em ambiente de preview/offline)
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      navigator.serviceWorker.register = function() {
+        return Promise.resolve({ scope: '/' });
+      };
+    } catch(e) {}
+  }
+
+  // 2. Functional Native SplitText Engine & Polyfills de GSAP
+  function createSplitTextClass() {
+    function SplitText(target, vars) {
+      if (!(this instanceof SplitText)) return new SplitText(target, vars);
+      vars = vars || {};
+      this.elements = [];
+      if (typeof target === 'string') {
+        this.elements = Array.from(document.querySelectorAll(target));
+      } else if (target instanceof Element) {
+        this.elements = [target];
+      } else if (target && target.length) {
+        this.elements = Array.from(target);
       }
-    },
-    berlin: {
-      id: 'berlin',
-      name: 'Berlin Dark Steel',
-      badge: 'KRONOS–8',
-      colors: {
-        '--bg': '#070809',
-        '--surface': '#0e1012',
-        '--surface-raised': '#15191c',
-        '--border': 'rgba(0, 255, 102, 0.12)',
-        '--border-strong': 'rgba(0, 255, 102, 0.28)',
-        '--fg': '#dce8e0',
-        '--fg-dim': '#768c7e',
-        '--fg-muted': '#45574c',
-        '--rec': '#00ff66',
-        '--rec-dim': 'rgba(0, 255, 102, 0.24)',
-        '--status-lens': '#00ff66'
-      },
-      copy: {
-        brand: 'KRONOS–8',
-        price: '€2,450',
-        claim: 'sixteen raw analog tracks. forged in dark steel, engineered for the floor.',
-        sub: 'precision analog workstation · dual dsp core',
-        word4: 'trigger.',
-        specs: '68 microswitches · zero latency · phosphor display',
-        desc: 'every tactile response is calibrated for club acoustics. velocity-sensitive mechanical pads, dedicated macro pots, and a discrete analog filter path behind every voice.'
-      }
-    },
-    braun: {
-      id: 'braun',
-      name: 'Braun Functional Heritage',
-      badge: 'MODUL–01',
-      colors: {
-        '--bg': '#131211',
-        '--surface': '#1c1a18',
-        '--surface-raised': '#262320',
-        '--border': 'rgba(235, 215, 195, 0.10)',
-        '--border-strong': 'rgba(235, 215, 195, 0.22)',
-        '--fg': '#f2ece2',
-        '--fg-dim': '#a1978a',
-        '--fg-muted': '#5c554c',
-        '--rec': '#e8590c',
-        '--rec-dim': 'rgba(232, 89, 12, 0.24)',
-        '--status-lens': '#f59f00'
-      },
-      copy: {
-        brand: 'MODUL–01',
-        price: '$1,950',
-        claim: 'order, clarity and restraint. an honest instrument for timeless sound design.',
-        sub: 'electroacoustic sound system · intuitive composition',
-        word4: 'articulate.',
-        specs: '68 precision contacts · matte chassis · tactile feedback',
-        desc: 'form derived strictly from acoustic purpose. tactile mechanical switches grouped by functional hierarchy, with a high-contrast monochrome interface for zero distraction.'
-      }
-    },
-    tokyo: {
-      id: 'tokyo',
-      name: 'Tokyo Neo-Acoustic',
-      badge: 'AETHEL–XY',
-      colors: {
-        '--bg': '#090b10',
-        '--surface': '#10141d',
-        '--surface-raised': '#18202f',
-        '--border': 'rgba(0, 229, 255, 0.12)',
-        '--border-strong': 'rgba(0, 229, 255, 0.28)',
-        '--fg': '#e2e9f5',
-        '--fg-dim': '#7e90b0',
-        '--fg-muted': '#4a5770',
-        '--rec': '#00e5ff',
-        '--rec-dim': 'rgba(0, 229, 255, 0.25)',
-        '--status-lens': '#00e5ff'
-      },
-      copy: {
-        brand: 'AETHEL–XY',
-        price: '¥348,000',
-        claim: 'physical modeling meets generative sequencing. precision in every touch.',
-        sub: 'neural polyphonic engine · multi-timbral studio',
-        word4: 'compose.',
-        specs: '68 micro-actuated keys · haptic feedback · dual neural dsp',
-        desc: 'designed for fluid real-time improvisation. high-speed scanning matrix captures subtle finger velocity and polyphonic aftertouch across all sixty-eight keys.'
-      }
+
+      this.lines = [];
+      this.words = [];
+      this.chars = [];
+      this._originals = [];
+
+      var type = vars.type || 'chars,words,lines';
+      var wantLines = type.indexOf('lines') !== -1;
+      var wantWords = type.indexOf('words') !== -1;
+      var wantChars = type.indexOf('chars') !== -1;
+      var linesClass = vars.linesClass || 'line';
+      var wordsClass = vars.wordsClass || 'word';
+      var charsClass = vars.charsClass || 'char';
+
+      var self = this;
+      this.elements.forEach(function(el) {
+        self._originals.push({ el: el, html: el.innerHTML });
+        var text = el.innerText || el.textContent || '';
+        if (!text.trim()) return;
+
+        el.innerHTML = '';
+        var rawWords = text.trim().split(/s+/);
+        var createdWords = [];
+
+        rawWords.forEach(function(wText, wIdx) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = wordsClass;
+          wordSpan.style.display = 'inline-block';
+          wordSpan.style.position = 'relative';
+
+          if (wantChars) {
+            for (var c = 0; c < wText.length; c++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = charsClass;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.position = 'relative';
+              charSpan.textContent = wText[c];
+              wordSpan.appendChild(charSpan);
+              self.chars.push(charSpan);
+            }
+          } else {
+            wordSpan.textContent = wText;
+          }
+
+          el.appendChild(wordSpan);
+          createdWords.push(wordSpan);
+          self.words.push(wordSpan);
+
+          if (wIdx < rawWords.length - 1) {
+            el.appendChild(document.createTextNode(' '));
+          }
+        });
+
+        if (wantLines && createdWords.length > 0) {
+          var lineGroups = [];
+          var currentLine = [];
+          var lastTop = -9999;
+
+          createdWords.forEach(function(w) {
+            var top = w.offsetTop;
+            if (top > lastTop + 5 && currentLine.length > 0) {
+              lineGroups.push(currentLine);
+              currentLine = [];
+            }
+            currentLine.push(w);
+            lastTop = top;
+          });
+          if (currentLine.length > 0) lineGroups.push(currentLine);
+
+          el.innerHTML = '';
+          lineGroups.forEach(function(group) {
+            var lineDiv = document.createElement('div');
+            lineDiv.className = linesClass;
+            lineDiv.style.display = 'block';
+            lineDiv.style.overflow = 'hidden';
+            lineDiv.style.position = 'relative';
+
+            var lineInner = document.createElement('span');
+            lineInner.style.display = 'inline-block';
+            lineInner.style.width = '100%';
+
+            group.forEach(function(w, idx) {
+              lineInner.appendChild(w);
+              if (idx < group.length - 1) lineInner.appendChild(document.createTextNode(' '));
+            });
+
+            lineDiv.appendChild(lineInner);
+            el.appendChild(lineDiv);
+            self.lines.push(lineDiv);
+          });
+        }
+      });
+
+      this.revert = function() {
+        this._originals.forEach(function(item) {
+          item.el.innerHTML = item.html;
+        });
+      };
     }
-  };
+    return SplitText;
+  }
 
-  let activePresetKey = 'swiss';
-  const root = document.documentElement;
+  window.SplitText = window.SplitText || createSplitTextClass();
 
-  // DOM Elements
-  const toggleBtn = document.getElementById('dna-hud-toggle');
-  const panel = document.getElementById('dna-hud-panel');
-  const closeBtn = document.getElementById('dna-hud-close');
-  const badge = document.getElementById('hud-active-preset-badge');
-
-  // Open/Close
-  toggleBtn.addEventListener('click', () => {
-    panel.classList.toggle('open');
-  });
-  closeBtn.addEventListener('click', () => {
-    panel.classList.remove('open');
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.CustomEase === 'undefined') {
+      window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
+    }
+    if (typeof window.SplitText === 'undefined') {
+      window.SplitText = createSplitTextClass();
+    }
   });
 
-  // Tabs
-  const tabBtns = document.querySelectorAll('.hud-tab-btn');
-  const tabContents = document.querySelectorAll('.hud-tab-content');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-      if (btn.dataset.tab === 'export') updateExportSpec();
+  // 3. Stub de Audio (Howler.js)
+  if (typeof window.Howl === 'undefined') {
+    window.Howl = function() {
+      return {
+        play: function() { return 1; },
+        pause: function() {},
+        stop: function() {},
+        volume: function() {},
+        fade: function() {},
+        on: function() { return this; },
+        once: function() { return this; },
+        off: function() { return this; },
+        state: function() { return 'loaded'; }
+      };
+    };
+  }
+
+  // 4. Stub de Barba.js & Modais
+  if (typeof window.barba === 'undefined') {
+    window.barba = {
+      init: function() {},
+      use: function() {},
+      hooks: { before: function() {}, after: function() {}, enter: function() {}, leave: function() {} },
+      transitions: []
+    };
+  }
+  if (typeof window.ProjectModal === 'undefined') {
+    window.ProjectModal = function() {
+      return { open: function(){}, close: function(){} };
+    };
+  }
+
+  // 5. Imediato e Multinível Unhide Failsafe (Resiliente, Não-Destrutivo)
+  function forceUnhide() {
+    document.documentElement.classList.add('css-ready', 'has-loaded', 'loaded', 'wf-loaded');
+    document.documentElement.classList.remove('is-loading', 'lenis-stopped');
+    if (document.body) {
+      document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
+    }
+
+    // Apenas bloqueios reais de tela preta e cortinas estáticas de preload são destruídos
+    var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
+    blocked.forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
     });
-  });
 
-  // Helpers
-  function hexToRgba(hex, alpha) {
-    let c = hex.replace('#', '');
-    if (c.length === 3) c = c.split('').map(x => x + x).join('');
-    const num = parseInt(c, 16);
-    return 'rgba(' + [(num >> 16) & 255, (num >> 8) & 255, num & 255].join(', ') + ', ' + alpha + ')';
+    // Se houver elementos presos com opacity 0 que NÃO pertencem a animações ativas, libera com suavidade
+    var stuckNodes = document.querySelectorAll('.gsap-reveal:not([data-anim]):not([data-scribble])');
+    stuckNodes.forEach(function(el) {
+      if (el.classList.contains('child') || el.classList.contains('line')) {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+      }
+    });
   }
 
-  // Update 3D Hardware Accent
-  function update3DAccent(hex) {
-    if (typeof window.OPXY_UPDATE_ACCENT === 'function') {
-      window.OPXY_UPDATE_ACCENT(hex);
-    }
-  }
-
-  // Apply Colors
-  function applyColor(key, val) {
-    root.style.setProperty(key, val);
-    if (key === '--bg') {
-      document.body.style.backgroundColor = val;
-    }
-    if (key === '--rec') {
-      root.style.setProperty('--rec-dim', hexToRgba(val, 0.22));
-      update3DAccent(val);
-      document.querySelectorAll('.hud-dot').forEach(d => {
-        d.style.background = val;
-        d.style.boxShadow = '0 0 10px ' + val;
+  // 6. Splide & Carousel Auto-Binder
+  function initSplides() {
+    if (typeof window.Splide !== 'undefined') {
+      var splides = document.querySelectorAll('.splide:not(.is-initialized)');
+      splides.forEach(function(s) {
+        try {
+          new window.Splide(s, {
+            type: 'loop',
+            perPage: 1,
+            autoplay: false,
+            pagination: true
+          }).mount();
+        } catch(e) {}
       });
     }
-    updateExportSpec();
   }
 
-  // Bind Color Inputs
-  function bindColorField(name, cssVar) {
-    const picker = document.getElementById('pick-' + name);
-    const text = document.getElementById('text-' + name);
-    const label = document.getElementById('val-' + name);
-    if (!picker || !text) return;
-
-    picker.addEventListener('input', (e) => {
-      const v = e.target.value;
-      text.value = v;
-      if (label) label.textContent = v;
-      applyColor(cssVar, v);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      forceUnhide();
+      initSplides();
     });
-    text.addEventListener('input', (e) => {
-      const v = e.target.value;
-      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
-        picker.value = v;
-        if (label) label.textContent = v;
-        applyColor(cssVar, v);
-      }
-    });
+  } else {
+    forceUnhide();
+    initSplides();
   }
-
-  bindColorField('rec', '--rec');
-  bindColorField('bg', '--bg');
-  bindColorField('surface', '--surface');
-  bindColorField('fg', '--fg');
-  bindColorField('fg-dim', '--fg-dim');
-
-  // Border Slider
-  const sliderBorder = document.getElementById('slider-border');
-  if (sliderBorder) {
-    sliderBorder.addEventListener('input', (e) => {
-      const a = e.target.value;
-      document.getElementById('val-border').textContent = a;
-      root.style.setProperty('--border', 'rgba(255, 255, 255, ' + a + ')');
-      updateExportSpec();
-    });
-  }
-
-  // Apply Copy
-  function applyCopyData(copy) {
-    // 1. Brand name in nav & hero
-    const navBrand = document.querySelector('#nav .wm');
-    if (navBrand) navBrand.textContent = copy.brand;
-
-    const heroH1 = document.querySelector('#hero .wm h1');
-    if (heroH1) {
-      heroH1.setAttribute('aria-label', copy.brand);
-      heroH1.innerHTML = copy.brand.split('').map(char => '<span>' + char + '</span>').join('');
-    }
-
-    // 2. Price in nav
-    const priceEl = document.querySelector('#nav .btn .price');
-    if (priceEl) priceEl.textContent = copy.price;
-
-    // 3. Subtitle / Categories
-    const subContainer = document.querySelector('#hero .wm .k');
-    if (subContainer) {
-      const parts = copy.sub.split('·').map(s => s.trim()).filter(Boolean);
-      subContainer.innerHTML = parts.map(p => '<span>' + p + '</span>').join(' ');
-    }
-
-    // 4. Claim lines
-    const claimEl = document.querySelector('#hero .claim');
-    if (claimEl) {
-      const words = copy.claim.split(' ');
-      const chunkSize = Math.ceil(words.length / 3);
-      const l1 = words.slice(0, chunkSize).join(' ');
-      const l2 = words.slice(chunkSize, chunkSize * 2).join(' ');
-      const l3 = words.slice(chunkSize * 2).join(' ');
-      claimEl.innerHTML = '<span class="l"><span>' + l1 + '</span></span>' +
-                          '<span class="l"><span>' + l2 + '</span></span>' +
-                          '<span class="l"><span>' + l3 + '</span></span>';
-    }
-
-    // 5. Word 4 in Strip stack
-    const stackWords = document.querySelectorAll('#strip .stack b');
-    if (stackWords.length >= 4) {
-      stackWords[3].textContent = copy.word4;
-    }
-
-    // 6. Specs tag
-    const specsEl = document.querySelector('#strip .cap .k');
-    if (specsEl) specsEl.textContent = copy.specs;
-
-    // 7. Description
-    const descEl = document.querySelector('#strip .cap p');
-    if (descEl) descEl.textContent = copy.desc;
-
-    // Document title
-    document.title = copy.brand + ' · ' + copy.sub;
-  }
-
-  // Bind Copy Inputs
-  function bindCopyInput(id, callback) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      callback(el.value);
-      updateExportSpec();
-    });
-  }
-
-  bindCopyInput('edit-brand', (v) => {
-    const navBrand = document.querySelector('#nav .wm');
-    if (navBrand) navBrand.textContent = v;
-    const heroH1 = document.querySelector('#hero .wm h1');
-    if (heroH1) {
-      heroH1.setAttribute('aria-label', v);
-      heroH1.innerHTML = v.split('').map(char => '<span>' + char + '</span>').join('');
-    }
-    badge.textContent = v;
-  });
-
-  bindCopyInput('edit-price', (v) => {
-    const priceEl = document.querySelector('#nav .btn .price');
-    if (priceEl) priceEl.textContent = v;
-  });
-
-  bindCopyInput('edit-sub', (v) => {
-    const subContainer = document.querySelector('#hero .wm .k');
-    if (subContainer) {
-      const parts = v.split('·').map(s => s.trim()).filter(Boolean);
-      subContainer.innerHTML = parts.map(p => '<span>' + p + '</span>').join(' ');
-    }
-  });
-
-  bindCopyInput('edit-claim', (v) => {
-    const claimEl = document.querySelector('#hero .claim');
-    if (claimEl) {
-      const words = v.split(' ');
-      const chunkSize = Math.ceil(words.length / 3);
-      const l1 = words.slice(0, chunkSize).join(' ');
-      const l2 = words.slice(chunkSize, chunkSize * 2).join(' ');
-      const l3 = words.slice(chunkSize * 2).join(' ');
-      claimEl.innerHTML = '<span class="l"><span>' + l1 + '</span></span>' +
-                          '<span class="l"><span>' + l2 + '</span></span>' +
-                          '<span class="l"><span>' + l3 + '</span></span>';
-    }
-  });
-
-  bindCopyInput('edit-word4', (v) => {
-    const stackWords = document.querySelectorAll('#strip .stack b');
-    if (stackWords.length >= 4) stackWords[3].textContent = v;
-  });
-
-  bindCopyInput('edit-specs', (v) => {
-    const specsEl = document.querySelector('#strip .cap .k');
-    if (specsEl) specsEl.textContent = v;
-  });
-
-  bindCopyInput('edit-desc', (v) => {
-    const descEl = document.querySelector('#strip .cap p');
-    if (descEl) descEl.textContent = v;
-  });
-
-  // Apply Preset
-  function applyPreset(key) {
-    const preset = PRESETS[key];
-    if (!preset) return;
-    activePresetKey = key;
-
-    // Update preset cards UI
-    document.querySelectorAll('.preset-card').forEach(c => {
-      c.classList.toggle('active', c.dataset.preset === key);
-    });
-
-    // Update badge
-    badge.textContent = preset.badge;
-
-    // Apply Colors
-    Object.entries(preset.colors).forEach(([k, v]) => {
-      root.style.setProperty(k, v);
-    });
-    document.body.style.backgroundColor = preset.colors['--bg'];
-
-    // Update Color Pickers
-    const updatePicker = (id, hex) => {
-      const p = document.getElementById('pick-' + id);
-      const t = document.getElementById('text-' + id);
-      const l = document.getElementById('val-' + id);
-      if (p) p.value = hex;
-      if (t) t.value = hex;
-      if (l) l.textContent = hex;
-    };
-    updatePicker('rec', preset.colors['--rec']);
-    updatePicker('bg', preset.colors['--bg']);
-    updatePicker('surface', preset.colors['--surface']);
-    updatePicker('fg', preset.colors['--fg']);
-    updatePicker('fg-dim', preset.colors['--fg-dim']);
-
-    // Update 3D hardware record color
-    update3DAccent(preset.colors['--rec']);
-
-    // Apply Copy
-    applyCopyData(preset.copy);
-
-    // Update Copy Inputs
-    document.getElementById('edit-brand').value = preset.copy.brand;
-    document.getElementById('edit-price').value = preset.copy.price;
-    document.getElementById('edit-sub').value = preset.copy.sub;
-    document.getElementById('edit-claim').value = preset.copy.claim;
-    document.getElementById('edit-word4').value = preset.copy.word4;
-    document.getElementById('edit-specs').value = preset.copy.specs;
-    document.getElementById('edit-desc').value = preset.copy.desc;
-
-    // Update Export JSON
-    updateExportSpec();
-  }
-
-  // Preset Clicks
-  document.querySelectorAll('.preset-card').forEach(card => {
-    card.addEventListener('click', () => {
-      applyPreset(card.dataset.preset);
-    });
-  });
-
-  // Export JSON Builder
-  function updateExportSpec() {
-    const view = document.getElementById('export-json-view');
-    if (!view) return;
-
-    const brand = document.getElementById('edit-brand').value;
-    const rec = document.getElementById('text-rec').value;
-    const bg = document.getElementById('text-bg').value;
-    const surface = document.getElementById('text-surface').value;
-    const fg = document.getElementById('text-fg').value;
-    const fgDim = document.getElementById('text-fg-dim').value;
-
-    const spec = {
-      "$schema": "https://studio-dna-engine.dev/schemas/brand-spec.json",
-      "meta": {
-        "slug": brand.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        "brandName": brand,
-        "basePreset": activePresetKey,
-        "extractedAt": new Date().toISOString()
-      },
-      "colors": {
-        "--bg": bg,
-        "--surface": surface,
-        "--fg": fg,
-        "--fg-dim": fgDim,
-        "--rec": rec,
-        "--rec-dim": hexToRgba(rec, 0.22)
-      },
-      "copy": {
-        "brand": brand,
-        "price": document.getElementById('edit-price').value,
-        "categories": document.getElementById('edit-sub').value,
-        "heroClaim": document.getElementById('edit-claim').value,
-        "performWord": document.getElementById('edit-word4').value,
-        "specs": document.getElementById('edit-specs').value,
-        "description": document.getElementById('edit-desc').value
-      }
-    };
-
-    view.value = JSON.stringify(spec, null, 2);
-  }
-
-  // Copy Spec Action
-  const copyBtn = document.getElementById('btn-copy-spec');
-  const toast = document.getElementById('hud-toast');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      updateExportSpec();
-      const txt = document.getElementById('export-json-view').value;
-      navigator.clipboard.writeText(txt).then(() => {
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
-      });
-    });
-  }
-
-  // Download Spec Action
-  const dlBtn = document.getElementById('btn-download-spec');
-  if (dlBtn) {
-    dlBtn.addEventListener('click', () => {
-      updateExportSpec();
-      const txt = document.getElementById('export-json-view').value;
-      const blob = new Blob([txt], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = (document.getElementById('edit-brand').value || 'brand') + '-spec.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-  }
-
-  // Initialize
-  updateExportSpec();
+  setTimeout(function() { forceUnhide(); initSplides(); }, 50);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 300);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 1000);
 })();
 </script>
-
 <script type="importmap">{"imports":{
   "three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
   "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/",
@@ -2539,7 +2091,7 @@ async function bootSite() {
   snd.addEventListener('click', () => { if (OPXY_AUDIO.on) OPXY_AUDIO.disable(); else OPXY_AUDIO.enable(); });
 
   /* ── the beats · a ScrollTrigger per section writes its progress; the frame loop reads them ── */
-  const beats = ['hero', 'strip'];
+  const beats = ['hero', 'strip', 'macro', 'engines', 'seq', 'connect', 'flip', 'close'];
   const prog = PAGE.prog = {}; const els = beats.map(id => $('#' + id));
   PAGE.measure = () => {
     let cur = 'hero';
@@ -2737,7 +2289,7 @@ function afterScene() {
   addEventListener('pointermove', () => OPXY.dirty(), { passive: true });
   OPXY.onKeyHover = k => { if (!window.OPXY_AUDIO.on) return; OPXY.tapKey(k, 120); playKey(k); };
   OPXY.onKeyDown = k => { OPXY_AUDIO.enable().then(() => playKey(k)); };
-  const st = OPXY.state, S = OPXY.stations, prog = PAGE.prog, beats = ['hero', 'strip'];
+  const st = OPXY.state, S = OPXY.stations, prog = PAGE.prog, beats = ['hero', 'strip', 'macro', 'engines', 'seq', 'connect', 'flip', 'close'];
   let roll = 0, rollV = 0, seqWasOn = false, yawT = 0, lastP = 0;
   /* ── the frame ──
      Two clocks, never both: while the NEXT section's top is crossing the viewport (the sticky stages
@@ -2852,6 +2404,13 @@ function playKey(k) {
 
 <script data-img-fallback-handler="">!function(){var f=["https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg","https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4734259a-bad7-422f-981e-ce01e79184f2_1600w.jpg","https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c543a9e1-f226-4ced-80b0-feb8445a75b9_1600w.jpg","https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp","https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/30104e3c-5eea-4b93-93e9-5313698a7156_1600w.webp"],h=new Set;function g(s){for(var x=0,i=0;i<s.length;i++)x=(x<<5)-x+s.charCodeAt(i)|0;return f[Math.abs(x)%f.length]}function r(t){var s=t.src;if(s&&!h.has(s)){h.add(s);t.src=g(s)}}window.addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")r(t)},!0);function c(){document.querySelectorAll("img").forEach(function(i){if(i.complete&&!i.naturalWidth&&i.src)r(i)})}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",c);else c()}()</script>
 
+
+
+
+
+
+
+
 <style id="dna-hud-styles">
 
 /* Studio DNA Engine — HUD Projector Glassmorphic Styles */
@@ -2874,6 +2433,13 @@ function playKey(k) {
   font-size: 11px;
   line-height: 1.4;
   user-select: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dna-hud-panel.is-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(16px) scale(0.97) !important;
 }
 
 .dna-hud-header {
@@ -2908,25 +2474,224 @@ function playKey(k) {
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .dna-hud-lens {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.015);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dna-hud-lens.is-active-section {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
 }
 
 .dna-hud-lens-title {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #666;
+  color: #888;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background 0.2s, color 0.2s;
+}
+
+.dna-hud-lens-title:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.dna-chevron {
+  font-size: 8px;
+  color: #666;
+  transition: transform 0.2s ease;
+}
+
+.dna-hud-lens.is-collapsed .dna-chevron {
+  transform: rotate(-90deg);
+}
+
+.dna-hud-lens-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dna-hud-lens.is-collapsed .dna-hud-lens-content {
+  display: none;
+}
+
+.dna-contrast-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 255, 102, 0.12);
+  border: 1px solid rgba(0, 255, 102, 0.25);
+  color: #00ff66;
+  font-weight: 500;
+}
+
+.dna-contrast-badge.warn {
+  background: rgba(255, 170, 0, 0.12);
+  border-color: rgba(255, 170, 0, 0.3);
+  color: #ffaa00;
+}
+
+.dna-inspector-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 3px 6px;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+
+.dna-inspector-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dna-inspector-btn.active {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: #3b82f6;
+  color: #60a5fa;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.dna-inspect-highlight {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 3px !important;
+}
+
+.dna-export-bar {
+  display: flex;
   gap: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  padding-bottom: 4px;
+  margin-top: 6px;
+}
+
+.dna-export-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ededed;
+  border-radius: 4px;
+  padding: 6px 4px;
+  font-family: inherit;
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.dna-export-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #3b82f6;
+}
+
+.dna-export-btn:active {
+  transform: scale(0.97);
+}
+
+/* Close & Reopen Controls */
+.dna-hud-close-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dna-hud-close-btn:hover {
+  background: rgba(255, 58, 47, 0.16);
+  border-color: rgba(255, 58, 47, 0.35);
+  color: #ff5544;
+  transform: scale(1.05);
+}
+
+.dna-hud-reopen-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(12, 13, 14, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-family: var(--mono, "Geist Mono", monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.95);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s,
+              box-shadow 0.2s;
+  user-select: none;
+}
+
+.dna-hud-reopen-btn.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.dna-hud-reopen-btn:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 32px rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.dna-hud-reopen-btn kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 9px;
+  color: #888;
+  font-family: inherit;
+}
+
+.dna-effect-tuning-group {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .dna-control-row {
@@ -3075,8 +2840,9 @@ function playKey(k) {
   margin-top: 3px;
 }
 
-/* Hero Brand Copy Dual-Gradient Sync */
-#hero .wm h1 {
+/* Hero Brand Copy & Strip Sequence Dual-Gradient Sync */
+#hero .wm h1,
+#strip .stack b {
   background: linear-gradient(135deg, var(--brand-grad-start, #555960), var(--brand-grad-end, #ffffff)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -3088,8 +2854,8 @@ function playKey(k) {
   color: transparent !important;
 }
 
-/* Gooey Liquid Text Reveal Engine (Non-destructive, Vengeance UI inspired) */
-.dna-gooey-svg {
+/* Morph-Text & Gooey Liquid Transition Engine (Universal & Non-destructive) */
+.dna-morph-svg, .dna-gooey-svg {
   position: absolute;
   width: 0;
   height: 0;
@@ -3097,22 +2863,94 @@ function playKey(k) {
   overflow: hidden;
 }
 
-#strip .stack {
-  filter: url(#dna-gooey-filter);
+/* 1. Default & Morph Transition Mode (VengeanceUI atop threshold) */
+#strip[data-transition-style="morph"] .stack,
+#strip:not([data-transition-style]) .stack {
+  filter: url(#dna-morph-filter);
+  overflow: visible;
+  font-family: var(--sans);
 }
 
-#strip .stack b {
+#strip[data-transition-style="morph"] .stack b,
+#strip:not([data-transition-style]) .stack b {
+  font-family: var(--sans);
+  filter: blur(var(--morph-blur, 18px));
+  transform: translateY(40%) scale(var(--morph-scale-enter, 0.85));
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease !important;
+  will-change: transform, filter, opacity;
+}
+
+#strip[data-transition-style="morph"] .stack b.on,
+#strip:not([data-transition-style]) .stack b.on {
+  transform: translateY(0) scale(1) !important;
+  filter: blur(0px) !important;
+  opacity: 1 !important;
+}
+
+#strip[data-transition-style="morph"] .stack b.was,
+#strip:not([data-transition-style]) .stack b.was {
+  transform: translateY(-40%) scale(var(--morph-scale-exit, 1.15)) !important;
+  filter: blur(var(--morph-blur, 18px)) !important;
+  opacity: 0 !important;
+}
+
+/* 2. Gooey Liquid Mode */
+#strip[data-transition-style="gooey"] .stack {
+  filter: url(#dna-gooey-filter);
+  overflow: hidden;
+  font-family: var(--sans);
+}
+
+#strip[data-transition-style="gooey"] .stack b {
+  font-family: var(--sans);
   filter: blur(10px);
+  transform: translateY(105%);
+  opacity: 0;
   transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease, filter .7s cubic-bezier(.2,.7,.2,1) !important;
   will-change: transform, opacity, filter;
 }
 
-#strip .stack b.on {
+#strip[data-transition-style="gooey"] .stack b.on {
+  transform: translateY(0) !important;
   filter: blur(0px) !important;
+  opacity: 1 !important;
 }
 
-#strip .stack b.was {
+#strip[data-transition-style="gooey"] .stack b.was {
+  transform: translateY(-105%) !important;
   filter: blur(10px) !important;
+  opacity: 0 !important;
+}
+
+/* 3. Classic Slide Mode */
+#strip[data-transition-style="classic"] .stack {
+  filter: none !important;
+  overflow: hidden;
+  font-family: var(--sans);
+}
+
+#strip[data-transition-style="classic"] .stack b {
+  font-family: var(--sans);
+  filter: none !important;
+  transform: translateY(105%);
+  opacity: 0;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease !important;
+}
+
+#strip[data-transition-style="classic"] .stack b.on {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}
+
+#strip[data-transition-style="classic"] .stack b.was {
+  transform: translateY(-105%) !important;
+  opacity: 0 !important;
+}
+
+.dna-morph-text {
+  filter: url(#dna-morph-filter);
+  transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dna-gooey-reveal {
@@ -3130,13 +2968,10 @@ function playKey(k) {
 }
 
 </style>
-<svg id="dna-gooey-svg" class="dna-gooey-svg" style="position: absolute; width: 0; height: 0; pointer-events: none; overflow: hidden;" aria-hidden="true">
+<svg id="dna-gooey-svg" class="dna-gooey-svg dna-morph-svg" style="position: absolute; width: 0; height: 0; pointer-events: none; overflow: hidden;" aria-hidden="true">
   <defs>
-    <filter id="dna-gooey-filter" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140" result="gooey" />
-      <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
-    </filter>
+    <filter id="dna-morph-filter" x="-20%" y="-20%" width="140%" height="140%"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -9" result="threshold" /><feComposite in="SourceGraphic" in2="threshold" operator="atop" /></filter>
+    <filter id="dna-gooey-filter" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140" result="gooey" /><feComposite in="SourceGraphic" in2="gooey" operator="atop" /></filter>
   </defs>
 </svg>
 <div id="dna-tuning-hud" class="dna-hud-panel" data-experience="DNA Experience">
@@ -3144,52 +2979,138 @@ function playKey(k) {
     <div class="dna-hud-title">
       <span class="live-dot"></span>
       <span>DNA Experience — DNA HUD</span>
+      <span id="dna-contrast-badge" class="dna-contrast-badge">APCA Lc 82 ✓</span>
     </div>
-    <span style="color: #666; font-size: 10px;">v0.1.0</span>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button type="button" id="dna-inspect-btn" class="dna-inspector-btn" title="Inspect element to tune (Mira)">🎯</button>
+      <span style="color: #666; font-size: 10px;">v0.1.0</span>
+      <button type="button" id="dna-hud-close-btn" class="dna-hud-close-btn" title="Fechar HUD (Atalho: H)">✕</button>
+    </div>
   </div>
   <div class="dna-hud-body">
     
     <div class="dna-hud-lens" data-lens="presets">
       <div class="dna-hud-lens-title">
-        <span>🎛️</span>
-        <span>Design Presets</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>🎛️</span>
+          <span>Design Presets</span>
+        </div>
+        <span class="dna-chevron">▼</span>
       </div>
-      <div class="dna-preset-grid">
-        <button type="button" class="dna-preset-btn active" data-preset="swiss">
-          <div class="dna-preset-hdr"><span>🇨🇭</span><span>Swiss Alpine</span></div>
-          <div class="dna-preset-sub">OP–XY · Geist</div>
-          <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #101112, #c2cad4);"></div>
-        </button>
-        <button type="button" class="dna-preset-btn" data-preset="berlin">
-          <div class="dna-preset-hdr"><span>🇩🇪</span><span>Berlin Steel</span></div>
-          <div class="dna-preset-sub">KRONOS–8 · JetBrains</div>
-          <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #09140d, #4ee884);"></div>
-        </button>
-        <button type="button" class="dna-preset-btn" data-preset="braun">
-          <div class="dna-preset-hdr"><span>🇩🇪</span><span>Braun Heritage</span></div>
-          <div class="dna-preset-sub">MODUL–01 · Plus Jakarta</div>
-          <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #161310, #e8a964);"></div>
-        </button>
-        <button type="button" class="dna-preset-btn" data-preset="tokyo">
-          <div class="dna-preset-hdr"><span>🇯🇵</span><span>Tokyo Neo</span></div>
-          <div class="dna-preset-sub">AETHEL–XY · Syne</div>
-          <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #070f1a, #00e5ff);"></div>
-        </button>
-        <button type="button" class="dna-preset-btn" data-preset="aura">
-          <div class="dna-preset-hdr"><span>🇸🇪</span><span>Aura Precision</span></div>
-          <div class="dna-preset-sub">AURA–XY · Inter</div>
-          <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #0c0f17, #60a5fa);"></div>
-        </button>
+      <div class="dna-hud-lens-content">
+        <div class="dna-preset-grid">
+          <button type="button" class="dna-preset-btn active" data-preset="swiss">
+            <div class="dna-preset-hdr"><span>🇨🇭</span><span>Swiss Alpine</span></div>
+            <div class="dna-preset-sub">OP–XY · Geist</div>
+            <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #101112, #c2cad4);"></div>
+          </button>
+          <button type="button" class="dna-preset-btn" data-preset="berlin">
+            <div class="dna-preset-hdr"><span>🇩🇪</span><span>Berlin Steel</span></div>
+            <div class="dna-preset-sub">KRONOS–8 · JetBrains</div>
+            <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #09140d, #4ee884);"></div>
+          </button>
+          <button type="button" class="dna-preset-btn" data-preset="braun">
+            <div class="dna-preset-hdr"><span>🇩🇪</span><span>Braun Heritage</span></div>
+            <div class="dna-preset-sub">MODUL–01 · Plus Jakarta</div>
+            <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #161310, #e8a964);"></div>
+          </button>
+          <button type="button" class="dna-preset-btn" data-preset="tokyo">
+            <div class="dna-preset-hdr"><span>🇯🇵</span><span>Tokyo Neo</span></div>
+            <div class="dna-preset-sub">AETHEL–XY · Syne</div>
+            <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #070f1a, #00e5ff);"></div>
+          </button>
+          <button type="button" class="dna-preset-btn" data-preset="aura">
+            <div class="dna-preset-hdr"><span>🇸🇪</span><span>Aura Precision</span></div>
+            <div class="dna-preset-sub">AURA–XY · Inter</div>
+            <div class="dna-preset-swatch" style="background: linear-gradient(90deg, #0c0f17, #60a5fa);"></div>
+          </button>
+        </div>
+        <div class="dna-control-row" style="margin-top: 10px;">
+          <div class="dna-control-header">
+            <span class="dna-param-label">strip.motion.transitionStyle</span>
+          </div>
+          <select id="dna-transition-style-select" class="dna-input-select" onchange="window.OPXY_SET_TRANSITION_STYLE ? window.OPXY_SET_TRANSITION_STYLE(this.value) : null">
+            <option value="classic" >⚡ Classic Slide</option>
+<option value="gooey" >💧 Gooey Droplets</option>
+<option value="morph" selected>🌊 Morph Liquefy</option>
+          </select>
+        </div>
+        
+
+      <div class="dna-effect-tuning-group" data-effect-controls="gooey-droplets" style="display:none;">
+        <div style="font-size:9px; color:#888; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Gooey Droplets Parameters</div>
+        
+      <div class="dna-control-row" style="margin-top: 6px;">
+        <div class="dna-control-header">
+          <span class="dna-param-label">Gooey Droplet Blur</span>
+        </div>
+        <div class="dna-control-input-group">
+          <input type="range" class="dna-hud-range"
+            min="2" max="20" step="1"
+            value="10"
+            data-effect-controls="gooey-droplets"
+            data-adapter="css"
+            data-property="--gooey-blur"
+            oninput="document.documentElement.style.setProperty('--gooey-blur', this.value + 'px'); const d = document.getElementById('val-gooey.blur'); if(d) d.textContent = this.value + 'px'">
+          <span class="dna-val-display" id="val-gooey.blur">10px</span>
+        </div>
+      </div>
+    
+      </div>
+    
+
+      <div class="dna-effect-tuning-group" data-effect-controls="morph-text" style="">
+        <div style="font-size:9px; color:#888; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Morph Liquefy Parameters</div>
+        
+      <div class="dna-control-row" style="margin-top: 6px;">
+        <div class="dna-control-header">
+          <span class="dna-param-label">Morph Threshold Blur</span>
+        </div>
+        <div class="dna-control-input-group">
+          <input type="range" class="dna-hud-range"
+            min="4" max="32" step="1"
+            value="18"
+            data-effect-controls="morph-text"
+            data-adapter="css"
+            data-property="--morph-blur"
+            oninput="document.documentElement.style.setProperty('--morph-blur', this.value + 'px'); const d = document.getElementById('val-morph.blur'); if(d) d.textContent = this.value + 'px'">
+          <span class="dna-val-display" id="val-morph.blur">18px</span>
+        </div>
+      </div>
+    
+
+      <div class="dna-control-row" style="margin-top: 6px;">
+        <div class="dna-control-header">
+          <span class="dna-param-label">Entry Scale</span>
+        </div>
+        <div class="dna-control-input-group">
+          <input type="range" class="dna-hud-range"
+            min="0.5" max="1" step="0.05"
+            value="0.85"
+            data-effect-controls="morph-text"
+            data-adapter="css"
+            data-property="--morph-scale-enter"
+            oninput="document.documentElement.style.setProperty('--morph-scale-enter', this.value + ''); const d = document.getElementById('val-morph.scaleEnter'); if(d) d.textContent = this.value + ''">
+          <span class="dna-val-display" id="val-morph.scaleEnter">0.85</span>
+        </div>
+      </div>
+    
+      </div>
+    
       </div>
     </div>
   
     
       <div class="dna-hud-lens" data-lens="typography">
         <div class="dna-hud-lens-title">
-          <span>Aa</span>
-          <span>Typography &amp; Hierarchy</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>Aa</span>
+            <span>Typography &amp; Hierarchy</span>
+          </div>
+          <span class="dna-chevron">▼</span>
         </div>
-        
+        <div class="dna-hud-lens-content">
+          
         <div class="dna-control-row">
           <div class="dna-control-header">
             <span class="dna-param-label">hero.typography.primary</span>
@@ -3247,15 +3168,20 @@ function playKey(k) {
           
         </div>
       
+        </div>
       </div>
     
 
       <div class="dna-hud-lens" data-lens="surface">
         <div class="dna-hud-lens-title">
-          <span>✦</span>
-          <span>Surface &amp; Lighting</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>✦</span>
+            <span>Surface &amp; Lighting</span>
+          </div>
+          <span class="dna-chevron">▼</span>
         </div>
-        
+        <div class="dna-hud-lens-content">
+          
         <div class="dna-control-row">
           <div class="dna-control-header">
             <span class="dna-param-label">hero.surface.backdrop.toneGradient</span>
@@ -3355,15 +3281,20 @@ function playKey(k) {
           
         </div>
       
+        </div>
       </div>
     
 
       <div class="dna-hud-lens" data-lens="content">
         <div class="dna-hud-lens-title">
-          <span>¶</span>
-          <span>Copy &amp; Messaging</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>¶</span>
+            <span>Copy &amp; Messaging</span>
+          </div>
+          <span class="dna-chevron">▼</span>
         </div>
-        
+        <div class="dna-hud-lens-content">
+          
         <div class="dna-control-row">
           <div class="dna-control-header">
             <span class="dna-param-label">hero.copy.brand</span>
@@ -3435,15 +3366,20 @@ function playKey(k) {
           
         </div>
       
+        </div>
       </div>
     
 
       <div class="dna-hud-lens" data-lens="audio">
         <div class="dna-hud-lens-title">
-          <span>♫</span>
-          <span>Acoustic Feedback</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>♫</span>
+            <span>Acoustic Feedback</span>
+          </div>
+          <span class="dna-chevron">▼</span>
         </div>
-        
+        <div class="dna-hud-lens-content">
+          
         <div class="dna-control-row">
           <div class="dna-control-header">
             <span class="dna-param-label">audio.keyFeedback.baseFrequency</span>
@@ -3465,15 +3401,20 @@ function playKey(k) {
           
         </div>
       
+        </div>
       </div>
     
 
       <div class="dna-hud-lens" data-lens="motion">
         <div class="dna-hud-lens-title">
-          <span>⏱</span>
-          <span>Kinetic &amp; Camera Motion</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>⏱</span>
+            <span>Kinetic &amp; Camera Motion</span>
+          </div>
+          <span class="dna-chevron">▼</span>
         </div>
-        
+        <div class="dna-hud-lens-content">
+          
         <div class="dna-control-row">
           <div class="dna-control-header">
             <span class="dna-param-label">motion.cameraGlidingDamp</span>
@@ -3495,10 +3436,670 @@ function playKey(k) {
           
         </div>
       
+        </div>
       </div>
     
+    
+    <div class="dna-hud-lens" data-lens="export">
+      <div class="dna-hud-lens-title">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>💾</span>
+          <span>Dev-to-Code & Export</span>
+        </div>
+        <span class="dna-chevron">▼</span>
+      </div>
+      <div class="dna-hud-lens-content">
+        <div class="dna-export-bar">
+          <button type="button" id="dna-btn-copy-css" class="dna-export-btn">📋 Copiar Tokens</button>
+          <button type="button" id="dna-btn-export-spec" class="dna-export-btn">💾 Baixar Spec JSON</button>
+          <button type="button" id="dna-btn-reset-preset" class="dna-export-btn">↺ Reset Preset</button>
+        </div>
+        <div id="dna-export-status" style="font-size: 9px; color: #00ffaa; min-height: 12px; margin-top: 4px;"></div>
+      </div>
+    </div>
+  
   </div>
 </div>
+<button type="button" id="dna-hud-reopen-btn" class="dna-hud-reopen-btn" title="Abrir Live Tuning HUD (Atalho: H)">
+  <span class="live-dot"></span>
+  <span>🎛️ DNA HUD</span>
+  <kbd>H</kbd>
+</button>
+<script id="universal-scroll-director">
+(function() {
+  'use strict';
+  console.log('🎬 [Universal Scroll Director] Inicializando motor de animação, revelação de assets e 3D...');
+
+  // --- 0. MOCK DE REDE ANTI-CRASH PARA HIDRATAÇÃO NUXT / SSR ---
+  if (typeof window !== 'undefined' && window.fetch) {
+    const origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      const urlStr = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+      if (urlStr.includes('/builds/meta/') || urlStr.includes('/_nuxt/builds/meta/')) {
+        return Promise.resolve(new Response(JSON.stringify({
+          id: "1b74772f-a27f-43d9-b862-c09e2209223a",
+          timestamp: 1786356888430,
+          matcher: { static: {}, wildcard: {}, dynamic: {} },
+          prerendered: ["/"]
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
+      }
+      return origFetch.apply(this, arguments).catch(function(err) {
+        if (urlStr.includes('/_nuxt/') || urlStr.includes('/api/') || urlStr.includes('/_vercel/')) {
+          return Promise.resolve(new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        throw err;
+      });
+    };
+  }
+
+  function onReady(fn) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(fn, 10);
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  onReady(function() {
+    // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
+    document.querySelectorAll('.opacity-0').forEach(function(el) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis, abas ou timelines GSAP ativas
+      if (
+        el.closest('#intro-logo-spinner') ||
+        el.closest('.amenities-slide-box') ||
+        el.closest('.splide') ||
+        el.closest('[data-anim]') ||
+        el.closest('[data-scribble]') ||
+        el.closest('.dynamic_section') ||
+        el.closest('.apartments') ||
+        el.classList.contains('project-slider-progress-line') ||
+        el.classList.contains('scale-[1.05]') ||
+        el.classList.contains('line') ||
+        el.classList.contains('word') ||
+        el.classList.contains('char') ||
+        (el.className && typeof el.className === 'string' && el.className.includes('photo--'))
+      ) {
+        return;
+      }
+      const cs = window.getComputedStyle(el);
+      if (cs.opacity === '0' && !el.id.includes('overlay')) {
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.opacity = '1';
+      }
+    });
+
+    // --- 2. MOTOR UNIVERSAL DE SPLITTEXT / APPEAR-LINE REVEAL ---
+    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+
+    lineMasks.forEach(function(mask) {
+      mask.style.overflow = 'visible';
+      mask.style.display = 'block';
+    });
+
+    splitLines.forEach(function(line, idx) {
+      line.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ' + ((idx % 6) * 0.08) + 's, opacity 0.8s ease ' + ((idx % 6) * 0.08) + 's';
+      line.style.transform = 'translateY(0px)';
+      line.style.opacity = '1';
+      line.style.visibility = 'visible';
+      line.style.display = 'block';
+    });
+
+    // Restaura textos que possam estar em aria-label mas vazios nos spans internos
+    document.querySelectorAll('[aria-label][data-v-30d30ebe]').forEach(function(container) {
+      const label = container.getAttribute('aria-label');
+      if (label && (!container.innerText || container.innerText.trim() === '')) {
+        const line = container.querySelector('.appear-line');
+        if (line) line.textContent = label;
+      }
+    });
+
+    // --- 3. REVELAÇÃO CINEMATOGRÁFICA DE CORTINAS SOBRE IMAGENS (OVERLAY CURTAINS) ---
+    // Procura divs com bg-secondary e z-10 cobrindo imagens de serviços e projetos
+    const curtainOverlays = Array.from(document.querySelectorAll('div.bg-secondary.z-10, div[class*="bg-secondary"][class*="z-10"], div[class*="bg-black"][class*="z-10"]'));
+    curtainOverlays.forEach(function(curtain) {
+      // Verifica se é uma cortina sobreposta a uma imagem
+      const parent = curtain.parentElement;
+      if (parent && (parent.querySelector('img') || parent.classList.contains('overflow-hidden') || parent.classList.contains('aspect-[5/3]'))) {
+        curtain.style.transition = 'transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease';
+        curtain.style.transformOrigin = 'top';
+        curtain.style.pointerEvents = 'none';
+
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              curtain.style.transform = 'translateY(-101%)';
+              curtain.style.opacity = '0';
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        observer.observe(parent);
+      }
+    });
+
+    // --- 4. MOTOR 3D CILÍNDRICO PROCEDURAL (#intro-logo-spinner) ---
+    const spinnerContainer = document.getElementById('intro-logo-spinner');
+    if (spinnerContainer) {
+      const squares = Array.from(spinnerContainer.querySelectorAll('[data-spinner-square]'));
+      const count = squares.length || 8;
+      const angleStep = 360 / count;
+      const radius = window.innerWidth > 640 ? (window.innerWidth * 0.48) : (window.innerWidth * 0.7);
+
+      spinnerContainer.style.transformStyle = 'preserve-3d';
+      spinnerContainer.style.position = 'relative';
+
+      squares.forEach(function(sq, i) {
+        const angle = i * angleStep;
+        sq.style.position = 'absolute';
+        sq.style.left = '50%';
+        sq.style.top = '50%';
+        sq.style.margin = '-' + (sq.offsetHeight / 2) + 'px 0 0 -' + (sq.offsetWidth / 2) + 'px';
+        sq.style.transformOrigin = 'center center';
+        sq.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)';
+        sq.style.opacity = '1';
+        sq.style.transition = 'opacity 0.5s ease, filter 0.5s ease, transform 0.3s ease-out';
+        sq.style.pointerEvents = 'auto';
+
+        // Revela imagem interna
+        const innerImgWrapper = sq.firstElementChild;
+        if (innerImgWrapper) {
+          innerImgWrapper.style.opacity = '1';
+          innerImgWrapper.style.visibility = 'visible';
+        }
+      });
+
+      let currentRotation = 0;
+      let targetRotation = 0;
+      let isDragging = false;
+      let startX = 0;
+      let autoSpinSpeed = 0.15;
+
+      function updateSpinnerTransform() {
+        currentRotation += (targetRotation - currentRotation) * 0.08;
+        spinnerContainer.style.transform = 'rotateX(-5deg) rotateY(' + currentRotation + 'deg)';
+
+        // Aplica foco e iluminação dinâmica nos itens voltados para a frente
+        squares.forEach(function(sq, i) {
+          const itemAngle = (i * angleStep + currentRotation) % 360;
+          const normalizedAngle = (itemAngle + 360) % 360;
+          const distToFront = Math.min(normalizedAngle, 360 - normalizedAngle);
+          const brightness = Math.max(0.35, 1 - (distToFront / 180) * 0.7);
+          sq.style.filter = 'brightness(' + brightness + ')';
+          sq.style.zIndex = Math.round(100 - distToFront);
+        });
+      }
+
+      // Interação por Scroll
+      window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset || window.scrollY || 0;
+        targetRotation = scrollY * 0.22;
+      }, { passive: true });
+
+      // Interação por Mouse Drag
+      const spinnerParent = spinnerContainer.parentElement || spinnerContainer;
+      spinnerParent.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        const delta = e.clientX - startX;
+        targetRotation += delta * 0.35;
+        startX = e.clientX;
+      });
+      window.addEventListener('mouseup', function() { isDragging = false; });
+
+      // Touch para mobile
+      spinnerParent.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches[0]) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+      window.addEventListener('touchmove', function(e) {
+        if (!isDragging || !e.touches || !e.touches[0]) return;
+        const delta = e.touches[0].clientX - startX;
+        targetRotation += delta * 0.45;
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+      window.addEventListener('touchend', function() { isDragging = false; });
+
+      // Loop de Rotação 60FPS
+      function spinnerLoop() {
+        if (!isDragging) {
+          targetRotation += autoSpinSpeed;
+        }
+        updateSpinnerTransform();
+        requestAnimationFrame(spinnerLoop);
+      }
+      requestAnimationFrame(spinnerLoop);
+    }
+
+    // --- 5. DISTRIBUIÇÃO ANGULAR E ROTAÇÃO DE ÍCONES RADIAIS (ASTERISCOS DE 8 LÂMINAS) ---
+    document.querySelectorAll('.relative').forEach(function(container) {
+      const blades = Array.from(container.children).filter(function(c) {
+        return c.classList.contains('origin-bottom') && c.classList.contains('absolute');
+      });
+      if (blades.length === 8) {
+        blades.forEach(function(blade, bIdx) {
+          const deg = bIdx * 45;
+          blade.style.transform = 'translateX(-50%) rotate(' + deg + 'deg)';
+          blade.style.transformOrigin = 'bottom center';
+        });
+        container.style.transition = 'transform 0.2s linear';
+        container.classList.add('radial-asterisk-active');
+      }
+    });
+
+    // Rotação sutil dos asteriscos sincronizada com scroll
+    window.addEventListener('scroll', function() {
+      const scrollY = window.pageYOffset || window.scrollY || 0;
+      document.querySelectorAll('.radial-asterisk-active').forEach(function(ast) {
+        ast.style.transform = 'rotate(' + (scrollY * 0.15) + 'deg)';
+      });
+    }, { passive: true });
+
+    // --- 6. MOTOR DE SLIDERS COM AUTOPLAY E ABAS INTERATIVAS (HERO & DEPOIMENTOS) ---
+    
+    // A) Hero Slider (4 Imagens de Fundo)
+    const heroImageContainers = Array.from(document.querySelectorAll('.w-full.h-full.relative > .w-full.h-full.absolute.top-0.left-0'));
+    const heroProgressBars = Array.from(document.querySelectorAll('.project-slider-progress-line'));
+
+    if (heroImageContainers.length >= 2 && heroProgressBars.length >= 2) {
+      let activeHeroIndex = 0;
+      let heroTimer = null;
+      const heroSlideDuration = 5500; // 5.5s
+
+      function setHeroSlide(index) {
+        activeHeroIndex = index % heroImageContainers.length;
+
+        heroImageContainers.forEach(function(imgWrap, i) {
+          imgWrap.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeHeroIndex) {
+            imgWrap.style.opacity = '1';
+            imgWrap.style.transform = 'scale(1.0)';
+            imgWrap.classList.remove('opacity-0');
+          } else {
+            imgWrap.style.opacity = '0';
+            imgWrap.style.transform = 'scale(1.05)';
+          }
+        });
+
+        heroProgressBars.forEach(function(barWrap, i) {
+          const fill = barWrap.querySelector('.bg-primary');
+          if (!fill) return;
+          fill.style.transition = 'none';
+          if (i < activeHeroIndex) {
+            fill.style.transform = 'scaleX(1)';
+          } else if (i === activeHeroIndex) {
+            fill.style.transform = 'scaleX(0)';
+            setTimeout(function() {
+              fill.style.transition = 'transform ' + (heroSlideDuration / 1000) + 's linear';
+              fill.style.transform = 'scaleX(1)';
+            }, 30);
+          } else {
+            fill.style.transform = 'scaleX(0)';
+          }
+        });
+      }
+
+      heroProgressBars.forEach(function(barWrap, i) {
+        const parentBtn = barWrap.closest('.cursor-pointer') || barWrap;
+        parentBtn.addEventListener('click', function() {
+          clearInterval(heroTimer);
+          setHeroSlide(i);
+          heroTimer = setInterval(function() {
+            setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+          }, heroSlideDuration);
+        });
+      });
+
+      setHeroSlide(0);
+      heroTimer = setInterval(function() {
+        setHeroSlide((activeHeroIndex + 1) % heroImageContainers.length);
+      }, heroSlideDuration);
+    }
+
+    // B) Testimonials Slider (4 Depoimentos e Clientes)
+    const testimonialSection = document.querySelector('[class*="aspect-[16/12]"]')?.closest('.layout-grid') || document.querySelector('[class*="-mt-[5vw]"]')?.parentElement;
+    if (testimonialSection) {
+      const testImages = Array.from(testimonialSection.querySelectorAll('[class*="aspect-[16/12]"] [class*="absolute"]'));
+      const testAvatars = Array.from(testimonialSection.querySelectorAll('[class*="aspect-square"] [class*="absolute"]'));
+      const testProgressBars = Array.from(testimonialSection.querySelectorAll('.cursor-pointer .bg-primary'));
+      const testQuotes = Array.from(testimonialSection.querySelectorAll('.invisible.pointer-events-none > div'));
+      const mainQuoteLine = testimonialSection.querySelector('[aria-label*="Storey brought"]')?.closest('.appear-line-mask')?.parentElement || testimonialSection.querySelector('.appear-line')?.parentElement;
+
+      if (testImages.length >= 2) {
+        let activeTestIndex = 0;
+        let testTimer = null;
+        const testDuration = 6000;
+
+        function setTestimonial(idx) {
+          activeTestIndex = idx % testImages.length;
+
+          testImages.forEach(function(img, i) {
+            img.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            if (i === activeTestIndex) {
+              img.style.opacity = '1';
+              img.style.transform = 'scale(1)';
+            } else {
+              img.style.opacity = '0';
+              img.style.transform = 'scale(1.05)';
+            }
+          });
+
+          testAvatars.forEach(function(av, i) {
+            av.style.transition = 'opacity 0.6s ease';
+            av.style.opacity = i === activeTestIndex ? '1' : '0';
+          });
+
+          testProgressBars.forEach(function(bar, i) {
+            bar.style.transition = 'none';
+            if (i < activeTestIndex) {
+              bar.style.transform = 'scaleX(1)';
+            } else if (i === activeTestIndex) {
+              bar.style.transform = 'scaleX(0)';
+              setTimeout(function() {
+                bar.style.transition = 'transform ' + (testDuration / 1000) + 's linear';
+                bar.style.transform = 'scaleX(1)';
+              }, 30);
+            } else {
+              bar.style.transform = 'scaleX(0)';
+            }
+          });
+
+          // Atualiza texto do depoimento
+          if (testQuotes[activeTestIndex] && mainQuoteLine) {
+            const newText = testQuotes[activeTestIndex].innerText.trim();
+            const targetLine = testimonialSection.querySelector('.appear-line');
+            if (targetLine) {
+              targetLine.style.opacity = '0';
+              targetLine.style.transform = 'translateY(10px)';
+              setTimeout(function() {
+                targetLine.textContent = newText;
+                targetLine.style.opacity = '1';
+                targetLine.style.transform = 'translateY(0)';
+              }, 250);
+            }
+          }
+        }
+
+        const barContainers = Array.from(testimonialSection.querySelectorAll('[class*="cursor-pointer"]')).filter(function(el) {
+          return el.querySelector('.bg-primary') || el.querySelector('.bg-primary\/30');
+        });
+        barContainers.forEach(function(container, i) {
+          container.addEventListener('click', function() {
+            clearInterval(testTimer);
+            setTestimonial(i);
+            testTimer = setInterval(function() {
+              setTestimonial((activeTestIndex + 1) % testImages.length);
+            }, testDuration);
+          });
+        });
+
+        setTestimonial(0);
+        testTimer = setInterval(function() {
+          setTestimonial((activeTestIndex + 1) % testImages.length);
+        }, testDuration);
+      }
+    }
+
+    // --- 7. HOVER BADGES INTERATIVOS & MICRO-INTERAÇÕES ---
+    document.querySelectorAll('a[href*="/projects/"]').forEach(function(link) {
+      const badge = link.querySelector('.bg-primary.w-fit.h-fit');
+      if (badge) {
+        badge.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        link.addEventListener('mouseenter', function() {
+          badge.style.opacity = '1';
+          badge.style.transform = 'scale(1.05)';
+        });
+        link.addEventListener('mouseleave', function() {
+          badge.style.opacity = '0';
+          badge.style.transform = 'scale(0.95)';
+        });
+      }
+    });
+
+    // --- 8. STACKING CARDS & METRIC STATS SLIDERS (15+ / 30+ SEM SOBREPOSIÇÃO) ---
+    const stackingCards = Array.from(document.querySelectorAll('[data-stacking-cards-item]'));
+    if (stackingCards.length > 1) {
+      let activeCardIdx = 0;
+      function renderStackingCard(idx) {
+        activeCardIdx = (idx + stackingCards.length) % stackingCards.length;
+        stackingCards.forEach(function(c, i) {
+          c.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (i === activeCardIdx) {
+            c.style.opacity = '1';
+            c.style.visibility = 'visible';
+            c.style.transform = 'translateY(0px)';
+            c.style.position = 'relative';
+            c.style.pointerEvents = 'auto';
+          } else {
+            c.style.opacity = '0';
+            c.style.visibility = 'hidden';
+            c.style.transform = 'translateY(15px)';
+            c.style.position = 'absolute';
+            c.style.pointerEvents = 'none';
+          }
+        });
+
+        // Atualiza indicadores numéricos como 01/02
+        const navLines = document.querySelectorAll('.problem_stats_line, .problem_stats_navigation');
+        navLines.forEach(function(nl) {
+          const spans = nl.querySelectorAll('span, div');
+          if (spans.length >= 2) {
+            spans[0].textContent = String(activeCardIdx + 1).padStart(2, '0');
+          }
+        });
+      }
+
+      renderStackingCard(0);
+      let cardTimer = setInterval(function() {
+        renderStackingCard(activeCardIdx + 1);
+      }, 4500);
+
+      // Conecta botões/setas de navegação
+      document.querySelectorAll('.problems_home_stats button, .problems_home_stats a, [class*="stats_nav"], .problems_stats_navigation').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          clearInterval(cardTimer);
+          renderStackingCard(activeCardIdx + 1);
+          cardTimer = setInterval(function() {
+            renderStackingCard(activeCardIdx + 1);
+          }, 4500);
+        });
+      });
+    }
+
+    // --- 9. SCROLL-LINKED TEXT HIGHLIGHT REVEAL ([data-highlight-text]) ---
+    document.querySelectorAll('[data-highlight-text]').forEach(function(container) {
+      if (container.dataset.highlightActivated) return;
+      container.dataset.highlightActivated = 'true';
+      const text = container.innerText.trim();
+      const words = text.split(/\s+/);
+      container.innerHTML = '';
+      const wordSpans = words.map(function(w) {
+        const span = document.createElement('span');
+        span.textContent = w + ' ';
+        span.style.display = 'inline';
+        span.style.transition = 'color 0.35s ease, opacity 0.35s ease';
+        span.style.color = '#71717a';
+        span.style.opacity = '0.35';
+        container.appendChild(span);
+        return span;
+      });
+
+      function updateTextHighlight() {
+        const rect = container.getBoundingClientRect();
+        const winH = window.innerHeight;
+        const progress = Math.min(Math.max((winH * 0.85 - rect.top) / (rect.height + winH * 0.35), 0), 1);
+        const activeCount = Math.floor(progress * wordSpans.length);
+
+        wordSpans.forEach(function(sp, i) {
+          if (i <= activeCount) {
+            sp.style.color = '#fafaf9';
+            sp.style.opacity = '1';
+          } else {
+            sp.style.color = '#71717a';
+            sp.style.opacity = '0.35';
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateTextHighlight, { passive: true });
+      updateTextHighlight();
+    });
+
+    // --- 10. GAP SECTION / KINETIC IMAGE CAROUSEL & LETTER SCRUB ---
+    const gapSection = document.querySelector('.gap_home_wrap, [class*="gap_wrap"]');
+    if (gapSection) {
+      const gapImages = Array.from(gapSection.querySelectorAll('.gap_home_image, [class*="gap_image"]'));
+      if (gapImages.length > 1) {
+        let gapIdx = 0;
+        gapImages.forEach(function(img, i) {
+          img.style.transition = 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+          img.style.opacity = i === 0 ? '1' : '0';
+        });
+        setInterval(function() {
+          gapImages.forEach(function(img) { img.style.opacity = '0'; });
+          gapIdx = (gapIdx + 1) % gapImages.length;
+          gapImages[gapIdx].style.opacity = '1';
+        }, 900);
+      }
+    }
+
+    // --- 12. MOTOR UNIVERSAL DE REVELAÇÃO WEBFLOW (data-anim="split", data-anim="element", data-anim="stagger", data-anim="slideUp-once") ---
+    if (typeof gsap !== 'undefined') {
+      // 12.1 Data-anim split
+      document.querySelectorAll('[data-anim="split"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        try {
+          if (typeof SplitText !== 'undefined') {
+            const cleanText = el.getAttribute('aria-label') || el.textContent.trim();
+            el.innerHTML = cleanText;
+            const st = new SplitText(el, { type: 'lines', linesClass: 'split-line', mask: 'lines' });
+            if (st.lines && st.lines.length > 0) {
+              const triggerEl = el.closest('section, .wrap') || el;
+              gsap.from(st.lines, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 90%',
+                  once: true
+                }
+              });
+            }
+          }
+        } catch(e) {}
+      });
+
+      // 12.2 Data-anim element e slideUp-once
+      document.querySelectorAll('[data-anim="element"], [data-anim="slideUp-once"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        const triggerEl = el.closest('section, .wrap') || el;
+        gsap.fromTo(el, 
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top 90%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // 12.3 Data-anim stagger
+      document.querySelectorAll('[data-anim="stagger"]').forEach(function(el) {
+        const children = Array.from(el.children).filter(function(child) {
+          return !child.hasAttribute('data-dropdown-list') && !child.classList.contains('faq-dropdown-list');
+        });
+        if (children.length > 0) {
+          const triggerEl = el.closest('section, .wrap') || el;
+          gsap.fromTo(children,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 90%',
+                once: true
+              }
+            }
+          );
+        }
+      });
+      // 12.4 Data-anim img-overlay
+      document.querySelectorAll('[data-anim="img-overlay"]').forEach(function(el) {
+        gsap.to(el, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      });
+
+      // 12.5 Data-anim img-paralax / img-parallax (Parallax de imagens Webflow)
+      document.querySelectorAll('[data-anim="img-paralax"], [data-anim="img-parallax"]').forEach(function(el) {
+        gsap.fromTo(el,
+          { yPercent: -10, scale: 1.1 },
+          {
+            yPercent: 10,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.closest('section, .wrap') || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      });
+
+      // 12.6 FAQ Dropdown Hover & Click Engine
+      document.querySelectorAll('.faq [data-dropdown]').forEach(function(dropdown) {
+        dropdown.addEventListener('mouseenter', function() {
+          dropdown.classList.add('is-active');
+        });
+        dropdown.addEventListener('mouseleave', function() {
+          dropdown.classList.remove('is-active');
+        });
+        dropdown.addEventListener('click', function() {
+          dropdown.classList.toggle('is-active');
+        });
+      });
+    }
+
+    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions, Webflow Reveals) ativados com sucesso.');
+  });
+})();
+</script>
 <script id="dna-hud-runtime">
 (function() {
   const hud = document.getElementById('dna-tuning-hud');
@@ -3725,10 +4326,242 @@ function playKey(k) {
 
   window.OPXY_APPLY_PRESET = applyPreset;
 
+  window.OPXY_SET_TRANSITION_STYLE = function(style) {
+    const strip = document.getElementById('strip');
+    if (strip) {
+      strip.setAttribute('data-transition-style', style || 'morph');
+    }
+    const sel = document.getElementById('dna-transition-style-select');
+    if (sel && sel.value !== style) {
+      sel.value = style;
+    }
+    hud.querySelectorAll('.dna-effect-tuning-group').forEach(grp => {
+      const effId = grp.getAttribute('data-effect-controls');
+      const isMatch = (style === 'morph' && effId === 'morph-text') || (style === 'gooey' && effId === 'gooey-droplets');
+      grp.style.display = isMatch ? 'block' : 'none';
+    });
+  };
+
+  // Accordion Lens Collapse Handler
+  hud.querySelectorAll('.dna-hud-lens-title').forEach(titleEl => {
+    titleEl.addEventListener('click', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      this.closest('.dna-hud-lens').classList.toggle('is-collapsed');
+    });
+  });
+
+  // Global Keyboard Shortcut & Close / Reopen Handlers
+  const btnClose = document.getElementById('dna-hud-close-btn');
+  const btnReopen = document.getElementById('dna-hud-reopen-btn');
+
+  function setHudVisibility(visible) {
+    if (visible) {
+      hud.classList.remove('is-hidden');
+      if (btnReopen) btnReopen.classList.remove('is-visible');
+    } else {
+      hud.classList.add('is-hidden');
+      if (btnReopen) btnReopen.classList.add('is-visible');
+    }
+  }
+
+  if (btnClose) {
+    btnClose.addEventListener('click', function(e) {
+      e.stopPropagation();
+      setHudVisibility(false);
+    });
+  }
+
+  if (btnReopen) {
+    btnReopen.addEventListener('click', function(e) {
+      e.stopPropagation();
+      setHudVisibility(true);
+    });
+  }
+
+  window.addEventListener('keydown', function(e) {
+    if ((e.key === 'h' || e.key === 'H') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+      const isCurrentlyHidden = hud.classList.contains('is-hidden');
+      setHudVisibility(isCurrentlyHidden);
+    }
+  });
+
+  // Dev-to-Code Export Drawer Handlers
+  const btnCopyCss = document.getElementById('dna-btn-copy-css');
+  const btnExportSpec = document.getElementById('dna-btn-export-spec');
+  const btnReset = document.getElementById('dna-btn-reset-preset');
+  const exportStatus = document.getElementById('dna-export-status');
+
+  function showExportStatus(msg) {
+    if (exportStatus) {
+      exportStatus.textContent = msg;
+      setTimeout(() => { exportStatus.textContent = ''; }, 3000);
+    }
+  }
+
+  if (btnCopyCss) {
+    btnCopyCss.addEventListener('click', function() {
+      const rootStyles = getComputedStyle(document.documentElement);
+      const tokens = [
+        '  --sans: "' + (rootStyles.getPropertyValue('--sans').trim() || 'Geist') + '";',
+        '  --mono: "' + (rootStyles.getPropertyValue('--mono').trim() || 'Geist Mono') + '";',
+        '  --bg: ' + (rootStyles.getPropertyValue('--bg').trim() || '#0c0d0e') + ';',
+        '  --surface: ' + (rootStyles.getPropertyValue('--surface').trim() || '#151618') + ';',
+        '  --rec: ' + (rootStyles.getPropertyValue('--rec').trim() || '#ff3a2f') + ';',
+        '  --brand-grad-start: ' + (rootStyles.getPropertyValue('--brand-grad-start').trim() || '#555960') + ';',
+        '  --brand-grad-end: ' + (rootStyles.getPropertyValue('--brand-grad-end').trim() || '#ffffff') + ';',
+        '  --morph-blur: ' + (rootStyles.getPropertyValue('--morph-blur').trim() || '18px') + ';',
+        '  --morph-scale-enter: ' + (rootStyles.getPropertyValue('--morph-scale-enter').trim() || '0.85') + ';'
+      ];
+      const cssBlock = [':root {', ...tokens, '}'].join(String.fromCharCode(10));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cssBlock).then(() => {
+          showExportStatus('✓ Tokens CSS copiados!');
+        });
+      } else {
+        showExportStatus('✓ Tokens gerados no console');
+        console.log(cssBlock);
+      }
+    });
+  }
+
+  if (btnExportSpec) {
+    btnExportSpec.addEventListener('click', function() {
+      const activeBtn = hud.querySelector('.dna-preset-btn.active');
+      const activePreset = activeBtn ? activeBtn.getAttribute('data-preset') : 'swiss';
+      const rootStyles = getComputedStyle(document.documentElement);
+      const spec = {
+        exportedAt: new Date().toISOString(),
+        preset: activePreset,
+        brand: document.querySelector('#hero .wm h1')?.textContent || 'OP–XY',
+        colors: {
+          bg: rootStyles.getPropertyValue('--bg').trim(),
+          surface: rootStyles.getPropertyValue('--surface').trim(),
+          rec: rootStyles.getPropertyValue('--rec').trim(),
+          gradientStart: rootStyles.getPropertyValue('--brand-grad-start').trim(),
+          gradientEnd: rootStyles.getPropertyValue('--brand-grad-end').trim()
+        },
+        typography: {
+          sans: rootStyles.getPropertyValue('--sans').trim(),
+          mono: rootStyles.getPropertyValue('--mono').trim()
+        },
+        transitionStyle: document.getElementById('strip')?.getAttribute('data-transition-style') || 'morph'
+      };
+      const blob = new Blob([JSON.stringify(spec, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'brand-spec-' + activePreset + '.json';
+      a.click();
+      showExportStatus('✓ Spec JSON baixado!');
+    });
+  }
+
+  if (btnReset) {
+    btnReset.addEventListener('click', function() {
+      const activeBtn = hud.querySelector('.dna-preset-btn.active');
+      const activePreset = activeBtn ? activeBtn.getAttribute('data-preset') : 'swiss';
+      applyPreset(activePreset);
+      showExportStatus('✓ Padrões do preset restaurados');
+    });
+  }
+
+  // APCA Contrast Live Guard
+  function updateContrastBadge() {
+    const badge = document.getElementById('dna-contrast-badge');
+    if (!badge) return;
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0c0d0e';
+    const fg = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#ededed';
+    const pBg = parseHex(bg), pFg = parseHex(fg);
+    const lum1 = 0.2126 * pBg.r + 0.7152 * pBg.g + 0.0722 * pBg.b;
+    const lum2 = 0.2126 * pFg.r + 0.7152 * pFg.g + 0.0722 * pFg.b;
+    const ratio = (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+    const lc = Math.round(ratio * 10);
+    badge.textContent = 'APCA Lc ' + lc + ' ✓';
+    badge.classList.toggle('warn', ratio < 4.5);
+  }
+  updateContrastBadge();
+
+  // Visual Inspector Mode: Click to Tune
+  const inspectBtn = document.getElementById('dna-inspect-btn');
+  let inspecting = false;
+  let hoveredEl = null;
+
+  if (inspectBtn) {
+    inspectBtn.addEventListener('click', function() {
+      inspecting = !inspecting;
+      inspectBtn.classList.toggle('active', inspecting);
+      if (!inspecting && hoveredEl) {
+        hoveredEl.classList.remove('dna-inspect-highlight');
+        hoveredEl = null;
+      }
+    });
+
+    document.addEventListener('mouseover', function(e) {
+      if (!inspecting) return;
+      if (hud.contains(e.target)) return;
+      if (hoveredEl && hoveredEl !== e.target) {
+        hoveredEl.classList.remove('dna-inspect-highlight');
+      }
+      hoveredEl = e.target;
+      hoveredEl.classList.add('dna-inspect-highlight');
+    }, true);
+
+    document.addEventListener('click', function(e) {
+      if (!inspecting) return;
+      if (hud.contains(e.target)) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      let targetParam = null;
+      if (e.target.closest('#hero .wm h1, #nav .wm')) targetParam = 'hero.copy.brand';
+      else if (e.target.closest('#hero .claim')) targetParam = 'hero.copy.claim';
+      else if (e.target.closest('#strip .stack')) targetParam = 'strip.copy.caption';
+      else if (e.target.closest('#strip h2')) targetParam = 'strip.copy.headline';
+
+      if (targetParam) {
+        const input = hud.querySelector('[data-param-id="' + targetParam + '"]');
+        if (input) {
+          const lens = input.closest('.dna-hud-lens');
+          if (lens) lens.classList.remove('is-collapsed');
+          input.focus();
+          input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      inspecting = false;
+      inspectBtn.classList.remove('active');
+      if (hoveredEl) {
+        hoveredEl.classList.remove('dna-inspect-highlight');
+        hoveredEl = null;
+      }
+    }, true);
+  }
+
+  // Scroll Spy Observer: Highlights lens matching the in-view section
+  if ('IntersectionObserver' in window) {
+    const scrollSpyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+          const id = entry.target.id;
+          hud.querySelectorAll('.dna-hud-lens').forEach(lens => {
+            const cat = lens.getAttribute('data-lens');
+            const isActive = (id === 'hero' && (cat === 'presets' || cat === 'typography' || cat === 'surface')) ||
+                             (id === 'strip' && (cat === 'motion' || cat === 'content'));
+            lens.classList.toggle('is-active-section', isActive);
+          });
+        }
+      });
+    }, { threshold: [0.3] });
+
+    document.querySelectorAll('#hero, #strip, #macro, #engines, #seq, #connect, #flip, #close').forEach(sec => {
+      scrollSpyObserver.observe(sec);
+    });
+  }
+
   hud.querySelectorAll('.dna-preset-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const preset = this.getAttribute('data-preset');
       applyPreset(preset);
+      updateContrastBadge();
     });
   });
 
@@ -3744,6 +4577,7 @@ function playKey(k) {
 
     if (adapter === 'css') {
       document.documentElement.style.setProperty(prop, val);
+      updateContrastBadge();
     } else if (adapter === 'three') {
       if (window.OPXY && window.OPXY.backdrop && window.OPXY.backdrop.bars) {
         if (prop === 'toneMultiplier') {
@@ -3772,10 +4606,11 @@ function playKey(k) {
     const val = target.value;
     if (adapter === 'css') {
       document.documentElement.style.setProperty(prop, val);
+      updateContrastBadge();
     }
   });
 
-  // 8. Gooey Reveal Observer para os demais textos da página
+  // Gooey Reveal Observer para os demais textos da página
   if ('IntersectionObserver' in window) {
     const gooeyObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

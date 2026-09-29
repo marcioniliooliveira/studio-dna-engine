@@ -51,7 +51,126 @@
         "camera": "locked",
         "geometry3D": "locked"
       }
+    },
+    {
+      "id": "macro",
+      "role": "hardware-chassis-macro",
+      "domSelector": "#macro",
+      "geometry": {
+        "height": "220vh",
+        "stage": "sticky 100vh",
+        "camera": "macro-angle"
+      },
+      "children": ["macro-chassis-details", "aluminum-finish"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "medium",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "engines",
+      "role": "sound-engines-filmstrip",
+      "domSelector": "#engines",
+      "geometry": {
+        "height": "300vh",
+        "stage": "sticky 100vh",
+        "camera": "isometric-engines"
+      },
+      "children": ["engines-filmstrip", "active-engine-voice", "specs-copy"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "high",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "seq",
+      "role": "interactive-sequencer-grid",
+      "domSelector": "#seq",
+      "geometry": {
+        "height": "280vh",
+        "stage": "sticky 100vh",
+        "camera": "sequencer-station"
+      },
+      "children": ["sequencer-16-tracks", "vu-meters", "step-buttons"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "high",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "connect",
+      "role": "io-rear-chassis",
+      "domSelector": "#connect",
+      "geometry": {
+        "height": "160vh",
+        "stage": "sticky 100vh",
+        "camera": "rear-io-ports"
+      },
+      "children": ["ports-grid", "cable-routing", "io-specs"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "medium",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "flip",
+      "role": "reverse-chassis-architecture",
+      "domSelector": "#flip",
+      "geometry": {
+        "height": "150vh",
+        "stage": "sticky 100vh",
+        "camera": "underside-flip"
+      },
+      "children": ["underside-chassis", "battery-compartment", "serial-plate"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "medium",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "close",
+      "role": "conversion-specs-cta",
+      "domSelector": "#close",
+      "geometry": {
+        "height": "180vh",
+        "stage": "sticky 100vh",
+        "camera": "final-hero-angle"
+      },
+      "children": ["pricing-cta", "specs-table", "footer-navigation"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "high",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
     }
+  ],
+  "effects": [
+    "morph-text",
+    "gooey-droplets",
+    "classic-slide"
   ],
   "parameters": [
     {

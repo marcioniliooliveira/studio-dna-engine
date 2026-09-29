@@ -1,0 +1,17 @@
+{
+  "id": "classic-slide",
+  "name": "Classic Slide",
+  "category": "typography-transition",
+  "description": "High-speed kinematic vertical text translation with zero blur or SVG filters",
+  "source": "native",
+  "prerequisites": {
+    "svgFilters": [],
+    "cssTokens": {}
+  },
+  "bindings": {
+    "targetAttribute": "data-transition-style",
+    "attributeValue": "classic",
+    "supportedSelectors": ["#strip", "[data-dna-effect]"]
+  },
+  "controls": []
+}

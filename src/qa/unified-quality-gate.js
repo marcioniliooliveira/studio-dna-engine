@@ -195,7 +195,50 @@ class UnifiedQualityGate {
         };
       });
 
-      // 4. Capturar Golden Screenshot de Verificação
+      // 4. Avaliação de Dinâmicas de Scroll & Sticky Stage Isolation
+      const scrollAudit = await page.evaluate(async () => {
+        const totalH = document.body.scrollHeight;
+        const checkpoints = [0, 0.25, 0.5, 0.75, 0.95];
+        const overlaps = [];
+
+        for (const fraction of checkpoints) {
+          const targetY = totalH * fraction;
+          window.scrollTo(0, targetY);
+          if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+            window.lenis.scrollTo(targetY, { immediate: true });
+          }
+          await new Promise(r => setTimeout(r, 60));
+
+          const stages = Array.from(document.querySelectorAll('.stage, [class*="stage"]'));
+          if (stages.length > 1) {
+            const activeStages = stages.filter(s => {
+              const cs = getComputedStyle(s);
+              const op = parseFloat(cs.opacity);
+              return cs.display !== 'none' && !isNaN(op) && op > 0.8;
+            });
+            if (activeStages.length > 1) {
+              overlaps.push({
+                targetY: Math.round(targetY),
+                activeCount: activeStages.length,
+                stageIds: activeStages.map(s => s.closest('section')?.id || s.className)
+              });
+            }
+          }
+        }
+
+        window.scrollTo(0, 0);
+        if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+          window.lenis.scrollTo(0, { immediate: true });
+        }
+
+        return {
+          passed: overlaps.length === 0,
+          overlapsCount: overlaps.length,
+          overlaps
+        };
+      });
+
+      // 5. Capturar Golden Screenshot de Verificação
       const reportsDir = path.join(parentDir, 'qa-reports');
       if (!fs.existsSync(reportsDir)) {
         fs.mkdirSync(reportsDir, { recursive: true });
@@ -203,10 +246,11 @@ class UnifiedQualityGate {
       const screenshotPath = path.join(reportsDir, 'verified-golden-preview.png');
       await page.screenshot({ path: screenshotPath, fullPage: false });
 
-      // 5. Avaliação Final dos Gates
+      // 6. Avaliação Final dos Gates
       const passed = antiSlopReport.passed &&
                      jsErrors.length === 0 &&
-                     domAudit.brokenImages.length === 0;
+                     domAudit.brokenImages.length === 0 &&
+                     scrollAudit.passed;
 
       const report = {
         timestamp: new Date().toISOString(),
@@ -235,6 +279,11 @@ class UnifiedQualityGate {
             brokenImagesCount: domAudit.brokenImages.length,
             brokenImages: domAudit.brokenImages,
             sectionsCount: domAudit.boxes.length
+          },
+          scrollDynamics: {
+            passed: scrollAudit.passed,
+            overlapsCount: scrollAudit.overlapsCount,
+            overlaps: scrollAudit.overlaps
           }
         },
         artifacts: {

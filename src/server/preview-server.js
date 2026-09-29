@@ -727,12 +727,11 @@ function startPreviewServer(options = {}) {
           if (fs.existsSync(dnaPath)) {
             const dnaIr = JSON.parse(fs.readFileSync(dnaPath, 'utf8'));
             content = injectDnaHud(content, dnaIr);
+          } else {
+            delete require.cache[require.resolve('../dev/dev-hud')];
+            const { injectDevHud } = require('../dev/dev-hud');
+            content = injectDevHud(content);
           }
-        } catch(e) {}
-        try {
-          delete require.cache[require.resolve('../dev/dev-hud')];
-          const { injectDevHud } = require('../dev/dev-hud');
-          content = injectDevHud(content);
         } catch(e) {}
         res.end(content);
         return;
