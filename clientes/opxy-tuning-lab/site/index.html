@@ -579,21 +579,182 @@ background:rgba(10,10,11,.42);-webkit-backdrop-filter:blur(14px);backdrop-filter
 #macro .slate .row{display:none}
 #macro .slate .row.on{display:block}
 #macro .slate .row b,#macro .slate .row .k{transition:opacity .3s ease}
-/* ── 3 · engines · a filmstrip of engine names across the top band, the key field below ── */
+/* ── 3 · engines · single focused active engine word with scroll burn reveal ── */
 #engines{height:300vh}
-#engines .band{position:absolute;left:0;right:0;top:calc(var(--nav) + 3vh);overflow:hidden}
-#engines .strip{display:flex;gap:.6em;white-space:nowrap;padding-left:var(--gutter);will-change:transform}
-#engines .strip b{font-weight:300;font-size:var(--s5);letter-spacing:-.03em;line-height:1;color:rgba(237,237,237,.42);transition:color .35s ease;display:inline-flex;align-items:baseline;gap:.6em}
-#engines .strip b::after{content:'·';color:rgba(237,237,237,.22);font-weight:200}
-#engines .strip b:last-child::after{content:''}
-#engines .strip b.on{color:var(--text)}
-#engines .strip b.on::after{color:#2a2a2e}
-#engines .idx{position:absolute;left:var(--gutter);top:calc(var(--nav) + 3vh + var(--s5) + 26px);display:flex;align-items:center;gap:14px}
+#engines .band{position:absolute;left:var(--gutter);top:calc(var(--nav) + 3vh);overflow:visible;pointer-events:none;z-index:40}
+#engines .strip{position:relative;display:inline-flex;align-items:baseline;pointer-events:auto;min-width:6ch;height:1.1em}
+#engines .strip b{
+  font-weight:300;font-size:clamp(54px,7.5vw,96px);letter-spacing:-.035em;line-height:1;
+  display:none;align-items:baseline;white-space:nowrap;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  opacity:0;
+  cursor:pointer;
+}
+#engines .strip b::after{content:'';display:none}
+
+/* 1. Morph Liquefy on #engines (Default) */
+#engines[data-transition-style="morph"] .strip,
+#engines:not([data-transition-style]) .strip {
+  filter: url(#dna-morph-filter);
+  overflow: visible;
+}
+#engines[data-transition-style="morph"] .strip b,
+#engines:not([data-transition-style]) .strip b {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex;
+  filter: blur(var(--morph-blur, 18px));
+  transform: translateY(40%) scale(var(--morph-scale-enter, 0.85));
+  opacity: 0; pointer-events: none;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+  will-change: transform, filter, opacity;
+}
+#engines[data-transition-style="morph"] .strip b.on,
+#engines:not([data-transition-style]) .strip b.on {
+  position: relative;
+  display: inline-flex !important;
+  transform: translateY(0) scale(1) !important;
+  filter: blur(0px) drop-shadow(0 2px 12px rgba(0,0,0,0.6)) !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+#engines[data-transition-style="morph"] .strip b.was,
+#engines:not([data-transition-style]) .strip b.was {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex !important;
+  transform: translateY(-40%) scale(var(--morph-scale-exit, 1.15)) !important;
+  filter: blur(var(--morph-blur, 18px)) !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* 2. Gooey Liquid on #engines */
+#engines[data-transition-style="gooey"] .strip {
+  filter: url(#dna-gooey-filter);
+  overflow: visible;
+}
+#engines[data-transition-style="gooey"] .strip b {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex;
+  filter: blur(10px);
+  transform: translateY(105%);
+  opacity: 0; pointer-events: none;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease, filter .7s cubic-bezier(.2,.7,.2,1);
+  will-change: transform, opacity, filter;
+}
+#engines[data-transition-style="gooey"] .strip b.on {
+  position: relative;
+  display: inline-flex !important;
+  transform: translateY(0) !important;
+  filter: blur(0px) drop-shadow(0 2px 12px rgba(0,0,0,0.6)) !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+#engines[data-transition-style="gooey"] .strip b.was {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex !important;
+  transform: translateY(-105%) !important;
+  filter: blur(10px) !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* 3. Classic Slide on #engines */
+#engines[data-transition-style="classic"] .strip {
+  filter: none !important;
+  overflow: visible;
+}
+#engines[data-transition-style="classic"] .strip b {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex;
+  transform: translateY(105%);
+  opacity: 0; pointer-events: none;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease;
+}
+#engines[data-transition-style="classic"] .strip b.on {
+  position: relative;
+  display: inline-flex !important;
+  transform: translateY(0) !important;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.6)) !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+#engines[data-transition-style="classic"] .strip b.was {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex !important;
+  transform: translateY(-105%) !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* 4. Scroll Burn Reveal on #engines */
+#engines[data-transition-style="burn"] .strip {
+  filter: none !important;
+}
+#engines[data-transition-style="burn"] .strip b {
+  position: absolute; left: 0; top: 0;
+  display: none;
+  opacity: 0; transform: scale(0.96);
+  transition: opacity .35s ease,transform .35s cubic-bezier(.16,1,.3,1),filter .35s ease;
+}
+#engines[data-transition-style="burn"] .strip b.on {
+  position: relative;
+  display: inline-flex; opacity: 1; transform: scale(1);
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.6));
+}
+#engines[data-transition-style="burn"] .strip b.burning {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex; pointer-events: none;
+  text-shadow: -3px 0 0 rgba(255,40,60,0.75), 3px 0 0 rgba(0,240,255,0.75);
+  animation: engBurnOut .28s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+#engines .strip b .burn-char{
+  display:inline-block;will-change:transform,filter,opacity;
+  background-image:inherit;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  transition:transform .32s cubic-bezier(.16,1,.3,1),filter .32s ease,opacity .32s ease;
+}
+@keyframes engBurnOut{
+  0%{opacity:.95;transform:scale(1);filter:blur(0px)}
+  45%{opacity:.5;transform:scale(1.15);filter:blur(4px)}
+  100%{opacity:0;transform:scale(1.35);filter:blur(12px)}
+}
+#engines .strip b.burning .burn-char{
+  filter:blur(var(--b-blur, 12px));
+  opacity:var(--b-op, 0);
+  transform:translateY(var(--b-ty, -14px)) scale(var(--b-sc, 1.3));
+}
+#engines .strip b[data-engine="0"],#engines .strip b.eng-0{background-image:linear-gradient(135deg,#00f0ff 0%,#38bdf8 100%)}
+#engines .strip b[data-engine="1"],#engines .strip b.eng-1{background-image:linear-gradient(135deg,#c084fc 0%,#818cf8 100%)}
+#engines .strip b[data-engine="2"],#engines .strip b.eng-2{background-image:linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%)}
+#engines .strip b[data-engine="3"],#engines .strip b.eng-3{background-image:linear-gradient(135deg,#ff3344 0%,#f97316 100%)}
+#engines .strip b[data-engine="4"],#engines .strip b.eng-4{background-image:linear-gradient(135deg,#10b981 0%,#34d399 100%)}
+#engines .strip b[data-engine="5"],#engines .strip b.eng-5{background-image:linear-gradient(135deg,#00ff66 0%,#a7f3d0 100%)}
+#engines .strip b[data-engine="6"],#engines .strip b.eng-6{background-image:linear-gradient(135deg,#ffffff 0%,#a1a1aa 100%)}
+#engines .strip b[data-engine="7"],#engines .strip b.eng-7{background-image:linear-gradient(135deg,#38bdf8 0%,#6366f1 100%)}
+#engines .idx{position:absolute;left:var(--gutter);top:calc(var(--nav) + 3vh + clamp(54px,7.5vw,96px) + 20px);display:flex;align-items:center;gap:14px}
 #engines .idx .n{font:200 var(--s3)/1 var(--sans);letter-spacing:-.02em;min-width:2ch}
 #engines .idx .bar{width:120px;height:1px;background:var(--line);position:relative}
-#engines .idx .bar i{position:absolute;left:0;top:0;height:1px;background:var(--text);width:0}
-#engines .copy{position:absolute;right:var(--gutter);top:calc(var(--nav) + 3vh + var(--s5) + 22px);width:min(44vw,40ch);text-align:right}
+#engines .idx .bar i{position:absolute;left:0;top:0;height:1px;background:var(--text);width:0;transition:width .3s ease}
+#engines .copy{position:absolute;right:var(--gutter);top:calc(var(--nav) + 3vh + 22px);width:min(44vw,40ch);text-align:right}
 #engines .copy p{font-size:var(--s1)}
+/* ── bottom-right swatches HUD ── */
+#engSwatches{
+  position:absolute;right:clamp(16px,2.5vw,36px);bottom:clamp(16px,3vh,36px);z-index:50;
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  background:rgba(14,14,18,.72);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45);pointer-events:auto;
+}
+.eng-swatch{
+  width:12px;height:12px;border-radius:50%;background:var(--sc,#fff);border:1.5px solid transparent;
+  cursor:pointer;padding:0;opacity:.45;transform:scale(.9);
+  transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .28s ease,box-shadow .28s ease,border-color .28s ease;
+}
+.eng-swatch:hover{opacity:.85;transform:scale(1.12)}
+.eng-swatch.on{opacity:1;transform:scale(1.3);border-color:#ffffff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 2px 8px rgba(0,0,0,.6)}
 /* ── 4 · sequencer · the instrument high in frame; beneath it, its own display blown up: a black
 plate with sixteen columns of KEYS, a live scope, a grayscale meter, a sweeping playhead ── */
 #seq{height:260vh}
@@ -867,10 +1028,20 @@ target?.scrollIntoView({behavior: 'smooth', block: 'start'});
   <section class="beat" id="engines">
     <div class="stage">
       <div class="band"><div class="strip" id="engStrip" style="transform: translateX(-605.361px);">
-        <b style="cursor: pointer;">axis</b><b style="cursor: pointer;" class="">dissolve</b><b style="cursor: pointer;">e-piano</b><b style="cursor: pointer;" class="">hardsync</b><b style="cursor: pointer;">organ</b><b style="cursor: pointer;" class="">prism</b><b style="cursor: pointer;" class="on">simple</b><b style="cursor: pointer;">wavetable</b>
+        <b style="cursor: pointer;" data-engine="0" class="eng-0">axis</b><b style="cursor: pointer;" data-engine="1" class="eng-1">dissolve</b><b style="cursor: pointer;" data-engine="2" class="eng-2">e-piano</b><b style="cursor: pointer;" data-engine="3" class="eng-3">hardsync</b><b style="cursor: pointer;" data-engine="4" class="eng-4">organ</b><b style="cursor: pointer;" data-engine="5" class="eng-5">prism</b><b style="cursor: pointer;" data-engine="6" class="eng-6 on">simple</b><b style="cursor: pointer;" data-engine="7" class="eng-7">wavetable</b>
       </div></div>
       <div class="copy rev in">
-        <p>eight synth engines and twenty-four voices, plus a drum sampler, a multisampler and a synth sampler. any engine sits on any of the eight tracks, with four filter types and a send level each.</p>
+        <p><b>eight synth engines</b> and <b>twenty-four voices</b>, plus a drum sampler, a multisampler and a synth sampler. any engine sits on any of the eight tracks, with four filter types and a send level each.</p>
+      </div>
+      <div class="eng-swatches" id="engSwatches" aria-label="Engine color selectors">
+        <button class="eng-swatch" data-idx="0" style="--sc: #00f0ff;" title="axis (1/8)" aria-label="axis engine"></button>
+        <button class="eng-swatch" data-idx="1" style="--sc: #c084fc;" title="dissolve (2/8)" aria-label="dissolve engine"></button>
+        <button class="eng-swatch" data-idx="2" style="--sc: #f59e0b;" title="e-piano (3/8)" aria-label="e-piano engine"></button>
+        <button class="eng-swatch" data-idx="3" style="--sc: #ff3344;" title="hardsync (4/8)" aria-label="hardsync engine"></button>
+        <button class="eng-swatch" data-idx="4" style="--sc: #10b981;" title="organ (5/8)" aria-label="organ engine"></button>
+        <button class="eng-swatch" data-idx="5" style="--sc: #00ff66;" title="prism (6/8)" aria-label="prism engine"></button>
+        <button class="eng-swatch on" data-idx="6" style="--sc: #ffffff;" title="simple (7/8)" aria-label="simple engine"></button>
+        <button class="eng-swatch" data-idx="7" style="--sc: #38bdf8;" title="wavetable (8/8)" aria-label="wavetable engine"></button>
       </div>
     </div>
   </section>
@@ -1658,6 +1829,102 @@ async function bootScene({ MODEL_URL }) {
     window.OPXY?.dirty?.();
   };
 
+  /* Dynamic engine color synchronization via preset mechanics (step keys, backdrop bars, subtle display) */
+  const centerLight = new THREE.PointLight(0x00f0ff, 0, 0.45);
+  centerLight.position.set(0, 0.045, 0);
+  pivot.add(centerLight);
+  OPXY.centerLight = centerLight;
+  OPXY._currentCenterColor = '#00f0ff';
+
+  function parseHexRGB(h) {
+    let c = (h || '#00f0ff').replace('#', '');
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const n = parseInt(c, 16);
+    return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
+  }
+
+  function get16EngineSteps(startH, endH) {
+    const c1 = parseHexRGB(startH), c2 = parseHexRGB(endH);
+    const arr = [];
+    for (let i = 0; i < 16; i++) {
+      const t = i / 15;
+      const u = Math.pow(t, 1.45);
+      arr.push({
+        r: c1.r + (c2.r - c1.r) * u,
+        g: c1.g + (c2.g - c1.g) * u,
+        b: c1.b + (c2.b - c1.b) * u
+      });
+    }
+    return arr;
+  }
+
+  OPXY.setCenterGlow = function(hexColor, intensity = 1.0) {
+    if (!hexColor) return;
+    OPXY._currentCenterColor = hexColor;
+    if (centerLight) centerLight.intensity = 0; // Pure studio lighting, zero blown out glare!
+
+    // Map color to dual-gradient pair for stepped tone generation
+    let startHex = hexColor;
+    let endHex = hexColor;
+    if (window.ENGINE_GRADIENTS) {
+      const found = window.ENGINE_GRADIENTS.find(g => (g.hex && g.hex.toLowerCase() === hexColor.toLowerCase()) || (g.start && g.start.toLowerCase() === hexColor.toLowerCase()));
+      if (found) {
+        startHex = found.baseDark || found.start;
+        endHex = found.end || found.hex;
+      }
+    }
+    const steps16 = get16EngineSteps(startHex, endHex);
+
+    // 1. Sync Sequencer Step Buttons (key-22..key-37) - identical to preset architecture
+    if (controls) {
+      for (let i = 0; i < 16; i++) {
+        const kId = 'key-' + (22 + i);
+        const c = controls[kId];
+        const s = steps16[i];
+        if (c && s) {
+          c.traverse(o => {
+            if (o.isMesh && o.material) {
+              const isStep = /base|cap/i.test(o.name) || /Grayscale step/i.test(o.material.name || '');
+              const isLed = /LED|cavity/i.test(o.name) || /Soft white LED/i.test(o.material.name || '');
+              if (isStep && !isLed) {
+                if (o.material.color && typeof o.material.color.setRGB === 'function') {
+                  o.material.color.setRGB(s.r, s.g, s.b);
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+
+    // 2. Sync Backdrop Bars with engine tones
+    if (Array.isArray(bars)) {
+      bars.forEach((b, i) => {
+        if (b.material && b.material.color) {
+          const s = steps16[i];
+          b.userData.toneR = s.r;
+          b.userData.toneG = s.g;
+          b.userData.toneB = s.b;
+          b.material.color.setRGB(s.r, s.g, s.b);
+        }
+      });
+    }
+
+    // 3. Display OLED Subtle Emissive (simulates illuminated UI without bloom blowout)
+    if (OPXY.display && OPXY.display.emissive) {
+      const col = new THREE.Color(startHex);
+      OPXY.display.emissive.copy(col);
+      OPXY.display.emissiveIntensity = 0.18 * intensity;
+      OPXY.display.needsUpdate = true;
+    }
+
+    OPXY.dirty?.();
+  };
+
+  OPXY.getCenterColor = function() {
+    return OPXY._currentCenterColor || '#00f0ff';
+  };
+
   /* cameras from the file are references only: never rendered */
   gltf.cameras?.forEach(c => c.removeFromParent?.());
 
@@ -1699,7 +1966,7 @@ async function bootScene({ MODEL_URL }) {
     mk2:     { pos: [0.075, 0.058, 0.108], look: [0.112, 0.017, 0.040], fov: 20, shift: [0.1, 0.05], roll: 0, m: { shift: [0, 0.0], k: 1.25 } },
     mk3:     { pos: [-0.006, 0.072, 0.028], look: [0.033, 0.026, -0.031], fov: 20, shift: [-0.1, 0.05], roll: 0, m: { shift: [0, 0.0], k: 1.25 } },
     mk4:     { pos: [-0.105, 0.088, 0.030], look: [-0.045, 0.017, -0.031], fov: 20, shift: [0.12, 0.05], roll: 0, m: { shift: [0, 0.0], k: 1.25 } },
-    engines: { pos: [-0.26, 0.24, 0.24], look: [0.04, 0.014, -0.005], fov: 22, shift: [0, 0.26], roll: 0, m: { shift: [0, 0.12], k: 1.5 } },
+    engines: { pos: [-0.28, 0.25, 0.26], look: [0.02, 0.014, -0.005], fov: 22, shift: [-0.04, 0.17], roll: 0, m: { shift: [-0.02, 0.10], k: 1.55 } },
     seq:     { pos: [-0.29, 0.16, 0.40], look: [0.02, 0.012, -0.01], fov: 22, shift: [0.34, -0.42], roll: 0, m: { shift: [0.1, -0.22], k: 1.7 } },
     io:      { pos: [0.50, 0.06, 0.16], look: [0.145, 0.014, 0.0], fov: 18, shift: [0.26, 0.1], roll: 0, m: { shift: [0.3, 0.0], k: 1.6 } },
     io2:     { pos: [0.50, 0.06, -0.16], look: [0.145, 0.014, 0.0], fov: 18, shift: [0.26, 0.1], roll: 0, m: { shift: [0.3, 0.0], k: 1.6 } },
@@ -1903,9 +2170,9 @@ async function bootScene({ MODEL_URL }) {
     key.position.set(Math.sin(ang) * 0.75, lerp(0.35, 0.8, orb), Math.cos(ang) * 0.75);
     key.intensity = lerp(1.2, 6, orb);
     rim.intensity = lerp(3.0, 1.4, orb);
-    if (OPXY.display) OPXY.display.emissiveIntensity = st.display * 0.85;
-    if (OPXY.led) OPXY.led.emissiveIntensity = st.display * 2.4;
-    if (OPXY.lens) OPXY.lens.emissiveIntensity = st.display * 1.2;
+    if (OPXY.display) OPXY.display.emissiveIntensity = st.display * 0.18;
+    if (OPXY.led) OPXY.led.emissiveIntensity = st.display * 0.8;
+    if (OPXY.lens) OPXY.lens.emissiveIntensity = st.display * 0.6;
 
     /* presses and encoder turns · 0.45 mm authored travel, damped toward the target */
     for (const k in presses) { const p = presses[k]; if (Math.abs(p.t - p.v) > 0.002) dirty = 3; p.v += (p.t - p.v) * Math.min(1, dt * 28); if (film.done) { const c = controls[k]; c.position.y = c.userData.seat.y - 0.45 * p.v; } }
@@ -2115,23 +2382,195 @@ function heroCopyIn(delay = 0) {
 
 /* ── engines · the filmstrip scrubs with the scroll; the active engine plays a key ── */
 const ENGINE_NAMES = ['axis', 'dissolve', 'e-piano', 'hardsync', 'organ', 'prism', 'simple', 'wavetable'];
-const ENG = (window.ENG = { active: -1, els: [], w: 0, hover: -1 });
+const ENGINE_GRADIENTS = (window.ENGINE_GRADIENTS = [
+  { baseDark: '#041018', start: '#041018', end: '#00f0ff', hex: '#00f0ff', name: 'axis' },
+  { baseDark: '#10081c', start: '#10081c', end: '#a855f7', hex: '#c084fc', name: 'dissolve' },
+  { baseDark: '#180e04', start: '#180e04', end: '#fbbf24', hex: '#f59e0b', name: 'e-piano' },
+  { baseDark: '#180605', start: '#180605', end: '#f97316', hex: '#ff3344', name: 'hardsync' },
+  { baseDark: '#04140d', start: '#04140d', end: '#34d399', hex: '#10b981', name: 'organ' },
+  { baseDark: '#051508', start: '#051508', end: '#a7f3d0', hex: '#00ff66', name: 'prism' },
+  { baseDark: '#0c0d10', start: '#0c0d10', end: '#d4d4d8', hex: '#ffffff', name: 'simple' },
+  { baseDark: '#060d1c', start: '#060d1c', end: '#6366f1', hex: '#38bdf8', name: 'wavetable' }
+]);
+const ENGINE_COLORS = (window.ENGINE_COLORS = ENGINE_GRADIENTS);
+const ENG = (window.ENG = { active: -1, els: [], swatches: [], w: 0, hover: -1, currentColor: '#00f0ff' });
+
+function splitEngineChars(el) {
+  if (!el || el.querySelector('.burn-char')) return;
+  const raw = el.textContent.trim().replace(/·/g, '').trim();
+  el.innerHTML = '';
+  for (let i = 0; i < raw.length; i++) {
+    const sp = document.createElement('span');
+    sp.className = 'burn-char';
+    sp.textContent = raw[i];
+    el.appendChild(sp);
+  }
+}
+
 function buildEngines() {
-  ENG.els = $$('#engStrip b'); const measure = () => { const l = ENG.els[ENG.els.length - 1]; ENG.w = l.offsetLeft + l.offsetWidth; }; measure(); addEventListener('resize', measure);
+  ENG.els = $$('#engStrip b');
+  ENG.swatches = $$('#engSwatches .eng-swatch');
+  const measure = () => { const l = ENG.els[ENG.els.length - 1]; if (l) ENG.w = l.offsetLeft + l.offsetWidth; };
+  measure(); addEventListener('resize', measure);
   /* hover an engine name: it becomes the voice and plays; click: a chord in that voice */
-  $('#engStrip').addEventListener('pointerleave', () => { ENG.hover = -1; });
+  $('#engStrip')?.addEventListener('pointerleave', () => { ENG.hover = -1; });
   ENG.els.forEach((el, i) => {
+    splitEngineChars(el);
+    el.setAttribute('data-engine', i);
+    el.classList.add(`eng-${i}`);
     el.style.cursor = 'pointer';
     el.addEventListener('pointerenter', () => { if (PAGE.beat !== 'engines') return; ENG.hover = i; setEngine(i, true); });
-    el.addEventListener('click', () => { OPXY_AUDIO.enable().then(() => { [0, 4, 7, 12].forEach((iv, j) => { OPXY_AUDIO.note(48 + iv, { engine: i, dur: 1.1, vel: 0.45, when: j * 0.06 }); const k = OPXY.whites[[0, 2, 4, 7][j]]; setTimeout(() => OPXY.tapKey(k, 220), j * 60); }); }); });
+    el.addEventListener('click', () => {
+      setEngine(i, true);
+      OPXY_AUDIO.enable().then(() => { [0, 4, 7, 12].forEach((iv, j) => { OPXY_AUDIO.note(48 + iv, { engine: i, dur: 1.1, vel: 0.45, when: j * 0.06 }); const k = OPXY.whites[[0, 2, 4, 7][j]]; setTimeout(() => OPXY.tapKey(k, 220), j * 60); }); });
+    });
   });
+  ENG.swatches.forEach((sw, i) => {
+    sw.addEventListener('click', () => {
+      setEngine(i, true);
+      const sec = $('#engines');
+      if (sec && window.lenis) {
+        const top = sec.offsetTop;
+        const h = sec.offsetHeight - innerHeight;
+        const targetScroll = top + ((i + 0.5) / 8) * h;
+        window.lenis.scrollTo(targetScroll, { duration: 0.8 });
+      }
+    });
+    sw.addEventListener('pointerenter', () => {
+      if (PAGE.beat === 'engines') {
+        ENG.hover = i;
+        setEngine(i, true);
+      }
+    });
+  });
+  const initialIdx = ENG.els.findIndex(e => e.classList.contains('on'));
+  if (initialIdx >= 0) {
+    setEngine(initialIdx, false);
+  }
 }
+
 function setEngine(i, play) {
-  if (i === ENG.active) return; ENG.active = i;
-  ENG.els.forEach((el, j) => el.classList.toggle('on', j === i));
+  if (i === ENG.active && ENG.swatches.length && ENG.swatches[i]?.classList.contains('on')) return;
+  const prevIdx = ENG.active;
+  ENG.active = i;
+  const col = ENGINE_COLORS[i]?.hex || '#00f0ff';
+  ENG.currentColor = col;
+
+  const activeStyle = document.getElementById('engines')?.getAttribute('data-transition-style') || 
+                      document.getElementById('strip')?.getAttribute('data-transition-style') || 
+                      'morph';
+
+  if (activeStyle === 'burn') {
+    // 1. Middle-out glyph burn reveal on previously active engine word
+    if (prevIdx >= 0 && prevIdx !== i && ENG.els[prevIdx]) {
+      const prevEl = ENG.els[prevIdx];
+      prevEl.classList.remove('on', 'was');
+      prevEl.classList.add('burning');
+      const chars = [...prevEl.querySelectorAll('.burn-char')];
+      const mid = (chars.length - 1) / 2;
+      chars.forEach((c, idx) => {
+        const dist = Math.abs(idx - mid);
+        if (window.gsap) {
+          gsap.to(c, {
+            y: -16,
+            scale: 1.35,
+            filter: 'blur(12px)',
+            opacity: 0,
+            delay: dist * 0.022,
+            duration: 0.25,
+            ease: 'power2.out'
+          });
+        }
+      });
+      if (window.gsap) {
+        gsap.to(prevEl, {
+          opacity: 0,
+          duration: 0.28,
+          ease: 'power2.out',
+          onComplete: () => {
+            prevEl.classList.remove('burning');
+            prevEl.style.display = 'none';
+            chars.forEach(c => gsap.set(c, { clearProps: 'all' }));
+          }
+        });
+      } else {
+        prevEl.classList.remove('burning');
+        prevEl.style.display = 'none';
+      }
+    }
+
+    // 2. Expose newly active engine word with staggered entrance
+    ENG.els.forEach((el, j) => {
+      splitEngineChars(el);
+      if (j === i) {
+        el.classList.remove('was', 'burning');
+        el.classList.add('on');
+        el.style.display = 'inline-flex';
+        el.style.opacity = '1';
+        const chars = [...el.querySelectorAll('.burn-char')];
+        const mid = (chars.length - 1) / 2;
+        chars.forEach((c, idx) => {
+          const dist = Math.abs(idx - mid);
+          if (window.gsap) {
+            gsap.fromTo(c,
+              { y: 12, scale: 0.92, filter: 'blur(6px)', opacity: 0 },
+              { y: 0, scale: 1, filter: 'blur(0px)', opacity: 1, duration: 0.3, delay: dist * 0.02 + 0.04, ease: 'power3.out' }
+            );
+          } else {
+            c.style.opacity = '1';
+            c.style.transform = 'none';
+            c.style.filter = 'none';
+          }
+        });
+      } else if (j !== prevIdx) {
+        el.classList.remove('on', 'was', 'burning');
+        el.style.display = 'none';
+        el.style.opacity = '0';
+      }
+    });
+  } else {
+    // Morph Liquefy, Gooey Liquid, and Classic Slide:
+    ENG.els.forEach((el, j) => {
+      splitEngineChars(el);
+      el.style.display = '';
+      el.style.opacity = '';
+      el.style.transform = '';
+      el.style.filter = '';
+      const chars = el.querySelectorAll('.burn-char');
+      chars.forEach(c => {
+        c.style.opacity = '';
+        c.style.transform = '';
+        c.style.filter = '';
+      });
+      if (j === i) {
+        el.classList.remove('was', 'burning');
+        el.classList.add('on');
+      } else if (j === prevIdx && prevIdx >= 0) {
+        el.classList.remove('on', 'burning');
+        el.classList.add('was');
+        setTimeout(() => {
+          if (!el.classList.contains('on')) {
+            el.classList.remove('was');
+          }
+        }, 850);
+      } else {
+        el.classList.remove('on', 'was', 'burning');
+      }
+    });
+  }
+
+  ENG.swatches.forEach((sw, j) => sw.classList.toggle('on', j === i));
+  if (window.OPXY?.ready) {
+    window.OPXY.setCenterGlow?.(col, 1.0);
+  }
   OPXY_AUDIO.engine = i;
-  if (play && window.OPXY?.ready) { const k = OPXY.whites[(i * 2 + 2) % OPXY.whites.length]; OPXY.tapKey(k, 140); OPXY_AUDIO.note(48 + [0, 2, 4, 5, 7, 9, 11, 12][i], { engine: i, dur: 0.7, vel: 0.5 }); }
+  if (play && window.OPXY?.ready) {
+    const k = OPXY.whites[(i * 2 + 2) % OPXY.whites.length];
+    OPXY.tapKey(k, 140);
+    OPXY_AUDIO.note(48 + [0, 2, 4, 5, 7, 9, 11, 12][i], { engine: i, dur: 0.7, vel: 0.5 });
+  }
 }
+window.setEngine = setEngine;
 
 /* ── the sequencer · a real 16-step pattern on four rows of keys; the model plays it. Paint cells by
    dragging, drag the tempo, space plays. A scope draws the actual audio (or the pattern's own pulse
@@ -2324,6 +2763,7 @@ function afterScene() {
       if (a === 'connect') { /* the tracking shot starts where the travel ends */ }
       if (b === 'connect') { OPXY.setCam(S.io2, S[STATION[a]], t, true); }
       if (b === 'hero') { $('#hero .claim').style.opacity = 0; $('#hero .wm').style.opacity = 0; }
+      if (b === 'engines' && a !== 'engines') { OPXY.setCenterGlow?.(null, 0); }
     } else if (b === 'hero') {
       OPXY.setCam(S.hero);
       /* the hero HOLDS for a viewport: its copy leaves first, then the sweep */
@@ -2339,8 +2779,7 @@ function afterScene() {
     } else if (b === 'engines') {
       OPXY.setCam(S.engines); setWord(-2);
       const q = Math.max(0, Math.min(1, p));
-      const over = Math.max(0, ENG.w - innerWidth + parseFloat(getComputedStyle($('#engStrip')).paddingLeft));
-      $('#engStrip').style.transform = `translateX(${-over * q}px)`;
+      $('#engStrip').style.transform = 'none';
       if (ENG.hover === undefined || ENG.hover < 0) setEngine(Math.min(7, Math.floor(q * 8)), true);
       OPXY.turnEncoder(Math.floor(q * 8) % 4, (p - lastP) * 14);
     } else if (b === 'seq') {
@@ -2840,14 +3279,38 @@ function playKey(k) {
   margin-top: 3px;
 }
 
-/* Hero Brand Copy & Strip Sequence Dual-Gradient Sync */
+/* Hero Brand Copy, Strip Sequence & Section Highlight Typography Dual-Gradient Sync */
 #hero .wm h1,
-#strip .stack b {
+#strip .stack b,
+#macro .slate .row b,
+#seq .top h2,
+#seq .top .k b,
+#seq .note .k,
+#seq .bpm b,
+#engines .copy b,
+#engines .idx .n,
+#flip.dark .head h2,
+#flip .plate .langs b,
+#close .cta h2,
+#close .cta .k b,
+#nav .wm,
+.dna-brand-gradient {
   background: linear-gradient(135deg, var(--brand-grad-start, #555960), var(--brand-grad-end, #ffffff)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   color: transparent !important;
+  display: inline-block;
+}
+#connect .head h2,
+#connect .band .port.on b,
+#flip:not(.dark) .head h2 {
+  background: linear-gradient(135deg, var(--brand-grad-start, #555960), var(--ink, #111111)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
+  display: inline-block;
 }
 #hero .wm h1 span {
   -webkit-text-fill-color: transparent !important;
@@ -3030,9 +3493,10 @@ function playKey(k) {
             <span class="dna-param-label">strip.motion.transitionStyle</span>
           </div>
           <select id="dna-transition-style-select" class="dna-input-select" onchange="window.OPXY_SET_TRANSITION_STYLE ? window.OPXY_SET_TRANSITION_STYLE(this.value) : null">
-            <option value="classic" >⚡ Classic Slide</option>
-<option value="gooey" >💧 Gooey Droplets</option>
-<option value="morph" selected>🌊 Morph Liquefy</option>
+            <option value="morph" selected>🌊 Morph Liquefy</option>
+            <option value="burn">🔥 Scroll Burn Reveal</option>
+            <option value="gooey">💧 Gooey Droplets</option>
+            <option value="classic">⚡ Classic Slide</option>
           </select>
         </div>
         
@@ -4299,13 +4763,16 @@ function playKey(k) {
       if (vKey === '--bg') document.body.style.backgroundColor = vVal;
     }
 
-    // 5. Sincroniza DOM Copy
-    document.querySelectorAll('#hero .wm h1, #nav .wm, #hero h1').forEach(el => {
+    // 5. Sincroniza DOM Copy & Preços
+    document.querySelectorAll('#hero .wm h1, #nav .wm, #hero h1, #close .cta h2, #close h2, #flip .plate .langs b').forEach(el => {
       el.textContent = cfg.copy.brand;
+    });
+    document.querySelectorAll('#close .cta .k b, #nav .btn .price, #close .acts .price').forEach(el => {
+      el.textContent = cfg.copy.price;
     });
     const claimEl = document.querySelector('#hero .claim');
     if (claimEl) claimEl.textContent = cfg.copy.claim;
-    const specsEl = document.querySelector('#strip .specs');
+    const specsEl = document.querySelector('#strip .specs, #strip .cap .k');
     if (specsEl) specsEl.textContent = cfg.copy.specs;
 
     // 6. Atualiza UI dos botões de preset no HUD
@@ -4327,20 +4794,31 @@ function playKey(k) {
   window.OPXY_APPLY_PRESET = applyPreset;
 
   window.OPXY_SET_TRANSITION_STYLE = function(style) {
+    const s = style || 'morph';
     const strip = document.getElementById('strip');
     if (strip) {
-      strip.setAttribute('data-transition-style', style || 'morph');
+      strip.setAttribute('data-transition-style', s);
+    }
+    const engines = document.getElementById('engines');
+    if (engines) {
+      engines.setAttribute('data-transition-style', s);
     }
     const sel = document.getElementById('dna-transition-style-select');
-    if (sel && sel.value !== style) {
-      sel.value = style;
+    if (sel && sel.value !== s) {
+      sel.value = s;
     }
     hud.querySelectorAll('.dna-effect-tuning-group').forEach(grp => {
       const effId = grp.getAttribute('data-effect-controls');
-      const isMatch = (style === 'morph' && effId === 'morph-text') || (style === 'gooey' && effId === 'gooey-droplets');
+      const isMatch = (s === 'morph' && effId === 'morph-text') || 
+                      (s === 'gooey' && effId === 'gooey-droplets') || 
+                      (s === 'burn' && effId === 'burn-text');
       grp.style.display = isMatch ? 'block' : 'none';
     });
+    if (window.ENG && window.ENG.active >= 0 && typeof window.setEngine === 'function') {
+      window.setEngine(window.ENG.active, false);
+    }
   };
+  window.OPXY_SET_TRANSITION_STYLE('morph');
 
   // Accordion Lens Collapse Handler
   hud.querySelectorAll('.dna-hud-lens-title').forEach(titleEl => {

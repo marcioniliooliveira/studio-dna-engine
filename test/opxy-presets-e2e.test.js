@@ -24,18 +24,26 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
     const stripB = document.querySelector('#strip .stack b');
     const stripGradClip = stripB ? (getComputedStyle(stripB).backgroundClip || getComputedStyle(stripB).webkitBackgroundClip) : null;
 
+    const closeEl = document.querySelector('#close .cta h2');
+    const closeClip = closeEl ? (getComputedStyle(closeEl).backgroundClip || getComputedStyle(closeEl).webkitBackgroundClip) : null;
+    const closeBrand = closeEl?.textContent?.trim() || '';
+
     return {
       computedSans,
       barsCount,
       stepsCount,
       brandText,
-      stripGradClip
+      stripGradClip,
+      closeBrand,
+      closeClip
     };
   });
 
   assert.equal(initialInfo.barsCount, 16, 'Must have 16 backdrop bars');
   assert.equal(initialInfo.stepsCount, 16, 'Must have 16 sequencer step keys');
   assert.equal(initialInfo.stripGradClip, 'text', 'Strip sequence heading must have background-clip: text');
+  assert.equal(initialInfo.closeBrand, 'OP–XY', 'Close section CTA must initialize with OP–XY');
+  assert.equal(initialInfo.closeClip, 'text', 'Close section CTA heading must have background-clip: text');
 
   // ── STEP 2: Apply Berlin Dark Steel ──
   await page.evaluate(() => {
@@ -87,6 +95,9 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
       }
     });
 
+    const closeEl = document.querySelector('#close .cta h2');
+    const closePriceEl = document.querySelector('#close .cta .k b');
+
     return {
       sans,
       mono,
@@ -96,6 +107,8 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
       brandGradStart,
       brandClip,
       brandFill,
+      closeBrand: closeEl?.textContent?.trim(),
+      closePrice: closePriceEl?.textContent?.trim(),
       bar0ToneR: bar0.userData.toneR,
       bar15ToneG: bar15.userData.toneG,
       step1Color,
@@ -107,6 +120,8 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
   assert.equal(berlinInfo.sans, 'Chakra Petch', 'Berlin must set angular industrial Chakra Petch font');
   assert.equal(berlinInfo.mono, 'JetBrains Mono', 'Berlin must set JetBrains Mono font');
   assert.equal(berlinInfo.brand, 'KRONOS–8', 'Berlin brand must be KRONOS–8');
+  assert.equal(berlinInfo.closeBrand, 'KRONOS–8', 'Berlin close CTA brand must sync to KRONOS–8');
+  assert.equal(berlinInfo.closePrice, '€2,450', 'Berlin close CTA price must sync to €2,450');
   assert.equal(berlinInfo.rec, '#00ff66', 'Berlin accent must be phosphor green #00ff66');
   assert.equal(berlinInfo.brandGradStart, '#00ff66', 'Berlin hero brand copy must follow phosphor green gradient');
   assert.equal(berlinInfo.brandClip, 'text', 'Hero brand heading must have background-clip: text');
@@ -298,11 +313,13 @@ test('OP-XY Presets & Synchronized Dual-Gradient: applies Berlin, Tokyo, and Swi
     const sans = getComputedStyle(root).getPropertyValue('--sans').trim();
     const brand = document.querySelector('#hero .wm h1')?.textContent?.trim();
     const brandGradStart = getComputedStyle(root).getPropertyValue('--brand-grad-start').trim();
-    return { sans, brand, brandGradStart };
+    const closeBrand = document.querySelector('#close .cta h2')?.textContent?.trim();
+    return { sans, brand, brandGradStart, closeBrand };
   });
 
   assert.equal(swissInfo.sans, 'Geist', 'Swiss must restore clean modernist Geist font');
   assert.equal(swissInfo.brand, 'OP–XY', 'Swiss brand must restore OP–XY');
+  assert.equal(swissInfo.closeBrand, 'OP–XY', 'Swiss close CTA brand must restore OP–XY');
   assert.equal(swissInfo.brandGradStart, '#555960', 'Swiss brand copy must restore monochrome gradient');
 
   await browser.close();

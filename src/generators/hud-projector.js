@@ -474,14 +474,38 @@ function getGlassmorphicStyles() {
   margin-top: 3px;
 }
 
-/* Hero Brand Copy & Strip Sequence Dual-Gradient Sync */
+/* Hero Brand Copy, Strip Sequence & Section Highlight Typography Dual-Gradient Sync */
 #hero .wm h1,
-#strip .stack b {
+#strip .stack b,
+#macro .slate .row b,
+#seq .top h2,
+#seq .top .k b,
+#seq .note .k,
+#seq .bpm b,
+#engines .copy b,
+#engines .idx .n,
+#flip.dark .head h2,
+#flip .plate .langs b,
+#close .cta h2,
+#close .cta .k b,
+#nav .wm,
+.dna-brand-gradient {
   background: linear-gradient(135deg, var(--brand-grad-start, #555960), var(--brand-grad-end, #ffffff)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   color: transparent !important;
+  display: inline-block;
+}
+#connect .head h2,
+#connect .band .port.on b,
+#flip:not(.dark) .head h2 {
+  background: linear-gradient(135deg, var(--brand-grad-start, #555960), var(--ink, #111111)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
+  display: inline-block;
 }
 #hero .wm h1 span {
   -webkit-text-fill-color: transparent !important;
@@ -817,11 +841,14 @@ function projectHudFromDnaIr(dnaIr, options = {}) {
     ? dnaIr.effects
     : ['morph-text', 'gooey-droplets', 'classic-slide'];
 
+  if (typeof effectRegistry._preloadCanonicalEffects === 'function') {
+    effectRegistry._preloadCanonicalEffects();
+  }
   const registeredTransitions = effectRegistry.listByCategory('typography-transition');
   const effectOptionsHtml = registeredTransitions.map(eff => {
     const val = eff.bindings?.attributeValue || eff.id;
     const isSelected = val === 'morph' ? 'selected' : '';
-    const icon = val === 'morph' ? '🌊' : (val === 'gooey' ? '💧' : '⚡');
+    const icon = val === 'morph' ? '🌊' : (val === 'gooey' ? '💧' : (val === 'burn' ? '🔥' : '⚡'));
     return `<option value="${escapeAttr(val)}" ${isSelected}>${icon} ${escapeAttr(eff.name)}</option>`;
   }).join('\n');
 
@@ -1206,13 +1233,16 @@ ${projected.html}
       if (vKey === '--bg') document.body.style.backgroundColor = vVal;
     }
 
-    // 5. Sincroniza DOM Copy
-    document.querySelectorAll('#hero .wm h1, #nav .wm, #hero h1').forEach(el => {
+    // 5. Sincroniza DOM Copy & Preços
+    document.querySelectorAll('#hero .wm h1, #nav .wm, #hero h1, #close .cta h2, #close h2, #flip .plate .langs b').forEach(el => {
       el.textContent = cfg.copy.brand;
+    });
+    document.querySelectorAll('#close .cta .k b, #nav .btn .price, #close .acts .price').forEach(el => {
+      el.textContent = cfg.copy.price;
     });
     const claimEl = document.querySelector('#hero .claim');
     if (claimEl) claimEl.textContent = cfg.copy.claim;
-    const specsEl = document.querySelector('#strip .specs');
+    const specsEl = document.querySelector('#strip .specs, #strip .cap .k');
     if (specsEl) specsEl.textContent = cfg.copy.specs;
 
     // 6. Atualiza UI dos botões de preset no HUD
@@ -1234,20 +1264,31 @@ ${projected.html}
   window.OPXY_APPLY_PRESET = applyPreset;
 
   window.OPXY_SET_TRANSITION_STYLE = function(style) {
+    const s = style || 'morph';
     const strip = document.getElementById('strip');
     if (strip) {
-      strip.setAttribute('data-transition-style', style || 'morph');
+      strip.setAttribute('data-transition-style', s);
+    }
+    const engines = document.getElementById('engines');
+    if (engines) {
+      engines.setAttribute('data-transition-style', s);
     }
     const sel = document.getElementById('dna-transition-style-select');
-    if (sel && sel.value !== style) {
-      sel.value = style;
+    if (sel && sel.value !== s) {
+      sel.value = s;
     }
     hud.querySelectorAll('.dna-effect-tuning-group').forEach(grp => {
       const effId = grp.getAttribute('data-effect-controls');
-      const isMatch = (style === 'morph' && effId === 'morph-text') || (style === 'gooey' && effId === 'gooey-droplets');
+      const isMatch = (s === 'morph' && effId === 'morph-text') || 
+                      (s === 'gooey' && effId === 'gooey-droplets') || 
+                      (s === 'burn' && effId === 'burn-text');
       grp.style.display = isMatch ? 'block' : 'none';
     });
+    if (window.ENG && window.ENG.active >= 0 && typeof window.setEngine === 'function') {
+      window.setEngine(window.ENG.active, false);
+    }
   };
+  window.OPXY_SET_TRANSITION_STYLE('morph');
 
   // Accordion Lens Collapse Handler
   hud.querySelectorAll('.dna-hud-lens-title').forEach(titleEl => {

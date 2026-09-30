@@ -169,6 +169,7 @@
   ],
   "effects": [
     "morph-text",
+    "scroll-burn-text",
     "gooey-droplets",
     "classic-slide"
   ],
