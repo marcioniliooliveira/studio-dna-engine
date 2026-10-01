@@ -36,7 +36,19 @@ async function scheduleBlueprint(source, executeTask, options = {}) {
         const dependencies = Object.fromEntries((task.dependsOn || []).map(id => [id, outputs[id]]));
         const output = await executeTask(task, { blueprint, dependencies, clientScope: blueprint.clientScope });
         if (options.verifyTask) {
-          const verified = await options.verifyTask(task, output, { blueprint, dependencies, clientScope: blueprint.clientScope });
+          const verifierActorId = options.verifierActorId || (options.verifyContext && options.verifyContext.actorId);
+          if (task.actorId && verifierActorId && task.actorId === verifierActorId) {
+            const error = new Error(`DAG task "${task.id}" violated verifier segregation: actor "${task.actorId}" cannot verify its own task`);
+            error.code = 'DAG_VERIFIER_SEGREGATION_VIOLATION';
+            error.taskId = task.id;
+            throw error;
+          }
+          const verified = await options.verifyTask(task, output, {
+            blueprint,
+            dependencies,
+            clientScope: blueprint.clientScope,
+            verifierActorId
+          });
           if (verified !== true) {
             const error = new Error(`DAG task "${task.id}" failed verification`);
             error.code = 'DAG_VERIFICATION_FAILED';
@@ -48,7 +60,7 @@ async function scheduleBlueprint(source, executeTask, options = {}) {
         return { task, output };
       } catch (cause) {
         record({ taskId: task.id, status: 'failed', error: { name: cause.name || 'Error', message: cause.message || String(cause) } });
-        if (cause && (cause.code === 'DAG_VERIFICATION_FAILED' || cause.code === 'DAG_TASK_FAILED')) throw cause;
+        if (cause && (cause.code === 'DAG_VERIFICATION_FAILED' || cause.code === 'DAG_TASK_FAILED' || cause.code === 'DAG_VERIFIER_SEGREGATION_VIOLATION')) throw cause;
         const error = new Error(`DAG task "${task.id}" failed: ${cause.message}`, { cause });
         error.code = 'DAG_TASK_FAILED';
         error.taskId = task.id;

@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 
 const VERSION = 1;
 
@@ -110,6 +111,57 @@ class ExecutionLedger {
     return clone(next);
   }
 
+  appendChainedEvent(runId, event) {
+    if (typeof runId !== 'string' || runId.trim() === '') throw new TypeError('runId must be a non-empty string');
+    if (event === undefined) throw new TypeError('event must be JSON-safe');
+    if (!event || typeof event !== 'object' || Array.isArray(event)) throw new TypeError('event must be an object and JSON-safe');
+    assertJsonSafe(event);
+    const current = this._runs.get(runId);
+    if (!current) throw new Error(`unknown runId: ${runId}`);
+
+    const lastEvent = current.events[current.events.length - 1];
+    const prevHash = (lastEvent && lastEvent._chain && lastEvent._chain.hash)
+      ? lastEvent._chain.hash
+      : 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+
+    const rawPayload = JSON.stringify({ prevHash, payload: event });
+    const hash = 'sha256:' + crypto.createHash('sha256').update(rawPayload).digest('hex');
+
+    const chainedEvent = {
+      ...clone(event),
+      _chain: {
+        prevHash,
+        hash,
+        timestamp: Date.now()
+      }
+    };
+
+    const next = clone({ ...current, events: [...current.events, chainedEvent] });
+    this._runs.set(runId, next);
+    return clone(next);
+  }
+
+  verifyEventChain(runId) {
+    const run = this._runs.get(runId);
+    if (!run) throw new Error(`unknown runId: ${runId}`);
+    let expectedPrevHash = 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+    for (let i = 0; i < run.events.length; i++) {
+      const ev = run.events[i];
+      if (!ev._chain) continue;
+      if (ev._chain.prevHash !== expectedPrevHash) {
+        return { valid: false, brokenIndex: i, reason: `prevHash mismatch at event index ${i}` };
+      }
+      const clonePayload = { ...ev };
+      delete clonePayload._chain;
+      const expectedHash = 'sha256:' + crypto.createHash('sha256').update(JSON.stringify({ prevHash: expectedPrevHash, payload: clonePayload })).digest('hex');
+      if (ev._chain.hash !== expectedHash) {
+        return { valid: false, brokenIndex: i, reason: `hash tampered at event index ${i}` };
+      }
+      expectedPrevHash = ev._chain.hash;
+    }
+    return { valid: true, eventCount: run.events.length };
+  }
+
   updateRun(runId, patch) {
     if (typeof runId !== 'string' || runId.trim() === '') throw new TypeError('runId must be a non-empty string');
     if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw new TypeError('run patch must be an object');
@@ -121,6 +173,23 @@ class ExecutionLedger {
     const current = this._runs.get(runId);
     if (!current) throw new Error(`unknown runId: ${runId}`);
     const next = clone({ ...current, ...patch, events: current.events });
+    validateRun(next);
+    this._runs.set(runId, next);
+    return clone(next);
+  }
+
+  recordTokenUsage(runId, deltaInput = 0, deltaOutput = 0) {
+    if (typeof runId !== 'string' || runId.trim() === '') throw new TypeError('runId must be a non-empty string');
+    assertNonNegativeInteger(deltaInput, 'deltaInput');
+    assertNonNegativeInteger(deltaOutput, 'deltaOutput');
+    const current = this._runs.get(runId);
+    if (!current) throw new Error(`unknown runId: ${runId}`);
+    const next = clone({
+      ...current,
+      inputTokens: current.inputTokens + deltaInput,
+      outputTokens: current.outputTokens + deltaOutput,
+      events: current.events
+    });
     validateRun(next);
     this._runs.set(runId, next);
     return clone(next);

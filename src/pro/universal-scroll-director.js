@@ -160,6 +160,8 @@ class UniversalScrollDirector {
         sq.style.transformOrigin = 'center center';
         sq.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)';
         sq.style.opacity = '1';
+        sq.style.backfaceVisibility = 'hidden';
+        sq.style.webkitBackfaceVisibility = 'hidden';
         sq.style.transition = 'opacity 0.5s ease, filter 0.5s ease, transform 0.3s ease-out';
         sq.style.pointerEvents = 'auto';
 
@@ -173,64 +175,86 @@ class UniversalScrollDirector {
 
       let currentRotation = 0;
       let targetRotation = 0;
+      let velocity = 0;
+      let lastX = 0;
       let isDragging = false;
-      let startX = 0;
       let autoSpinSpeed = 0.15;
 
       function updateSpinnerTransform() {
-        currentRotation += (targetRotation - currentRotation) * 0.08;
         spinnerContainer.style.transform = 'rotateX(-5deg) rotateY(' + currentRotation + 'deg)';
 
-        // Aplica foco e iluminação dinâmica nos itens voltados para a frente
+        // Aplica culling de VRAM (zf <= -0.2), acessibilidade (inert) e iluminação dinâmica
         squares.forEach(function(sq, i) {
           const itemAngle = (i * angleStep + currentRotation) % 360;
           const normalizedAngle = (itemAngle + 360) % 360;
           const distToFront = Math.min(normalizedAngle, 360 - normalizedAngle);
-          const brightness = Math.max(0.35, 1 - (distToFront / 180) * 0.7);
-          sq.style.filter = 'brightness(' + brightness + ')';
-          sq.style.zIndex = Math.round(100 - distToFront);
+          const rad = (normalizedAngle * Math.PI) / 180;
+          const zf = Math.cos(rad);
+
+          // Culling estrito de cards traseiros para poupar VRAM no WebKit e sanitizar a11y
+          if (zf <= -0.2) {
+            sq.style.visibility = 'hidden';
+            sq.style.pointerEvents = 'none';
+            sq.setAttribute('inert', '');
+            sq.setAttribute('aria-hidden', 'true');
+          } else {
+            sq.style.visibility = 'visible';
+            sq.style.pointerEvents = 'auto';
+            sq.removeAttribute('inert');
+            sq.removeAttribute('aria-hidden');
+            const brightness = Math.max(0.35, 1 - (distToFront / 180) * 0.7);
+            sq.style.filter = 'brightness(' + brightness + ')';
+            sq.style.zIndex = Math.round(100 - distToFront);
+          }
         });
       }
 
-      // Interação por Scroll
+      // Interação por Scroll com transferência de momentum
       window.addEventListener('scroll', function() {
         const scrollY = window.pageYOffset || window.scrollY || 0;
         targetRotation = scrollY * 0.22;
+        velocity += (targetRotation - currentRotation) * 0.05;
       }, { passive: true });
 
       // Interação por Mouse Drag
       const spinnerParent = spinnerContainer.parentElement || spinnerContainer;
       spinnerParent.addEventListener('mousedown', function(e) {
         isDragging = true;
-        startX = e.clientX;
+        lastX = e.clientX;
+        velocity = 0;
       });
       window.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
-        const delta = e.clientX - startX;
-        targetRotation += delta * 0.35;
-        startX = e.clientX;
+        const delta = e.clientX - lastX;
+        lastX = e.clientX;
+        velocity = delta * 0.35;
+        currentRotation += velocity;
       });
       window.addEventListener('mouseup', function() { isDragging = false; });
 
-      // Touch para mobile
+      // Touch para mobile (desacoplado com passividade)
       spinnerParent.addEventListener('touchstart', function(e) {
         if (e.touches && e.touches[0]) {
           isDragging = true;
-          startX = e.touches[0].clientX;
+          lastX = e.touches[0].clientX;
+          velocity = 0;
         }
       }, { passive: true });
       window.addEventListener('touchmove', function(e) {
         if (!isDragging || !e.touches || !e.touches[0]) return;
-        const delta = e.touches[0].clientX - startX;
-        targetRotation += delta * 0.45;
-        startX = e.touches[0].clientX;
+        const delta = e.touches[0].clientX - lastX;
+        lastX = e.touches[0].clientX;
+        velocity = delta * 0.45;
+        currentRotation += velocity;
       }, { passive: true });
       window.addEventListener('touchend', function() { isDragging = false; });
 
-      // Loop de Rotação 60FPS
+      // Loop de Rotação 60FPS com Decaimento Analítico Puro (vel * 0.94)
       function spinnerLoop() {
         if (!isDragging) {
-          targetRotation += autoSpinSpeed;
+          velocity *= 0.94; // Decaimento cinético puro
+          if (Math.abs(velocity) < 0.002) velocity = 0;
+          currentRotation += velocity + autoSpinSpeed;
         }
         updateSpinnerTransform();
         requestAnimationFrame(spinnerLoop);

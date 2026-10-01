@@ -18,6 +18,7 @@ test('Smart CDN Whitelisting allows trusted media CDNs and blocks trackers', () 
   assert.equal(isAllowedAssetUrl('https://unpkg.com/three@0.186.0/build/three.module.js', targetHost), true);
   assert.equal(isAllowedAssetUrl('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/photo.jpg', targetHost), true);
   assert.equal(isAllowedAssetUrl('https://assets.webflow.com/img/hero.webp', targetHost), true);
+  assert.equal(isAllowedAssetUrl('https://www.datocms-assets.com/223669/1786435410-share.webp', targetHost), true);
 
   // Blocked telemetry & trackers
   assert.equal(isAllowedAssetUrl('https://www.google-analytics.com/analytics.js', targetHost), false);

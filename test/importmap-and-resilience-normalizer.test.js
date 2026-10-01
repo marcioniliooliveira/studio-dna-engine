@@ -67,3 +67,45 @@ test('Universal Normalization: auto-hydrates iframe data-src into src when src i
   const normalized = normalizer.hydrateLazyIframes(rawHtml);
   assert.ok(normalized.includes('src="https://example.com/gallery.html"'), 'Iframe src must be hydrated from data-src');
 });
+
+test('Universal Normalization: checkMp4FastStart validates progressive streaming layout (moov before mdat)', () => {
+  function makeAtom(type, size) {
+    const b = Buffer.alloc(size);
+    b.writeUInt32BE(size, 0);
+    b.write(type, 4, 4, 'ascii');
+    return b;
+  }
+
+  // FastStart: ftyp -> moov -> mdat
+  const validFastStartMp4 = Buffer.concat([
+    makeAtom('ftyp', 16),
+    makeAtom('moov', 32),
+    makeAtom('mdat', 64)
+  ]);
+
+  const resultValid = UniversalAssetNormalizer.checkMp4FastStart(validFastStartMp4);
+  assert.equal(resultValid.isMp4, true);
+  assert.equal(resultValid.fastStart, true);
+  assert.ok(resultValid.moovOffset < resultValid.mdatOffset);
+
+  // Non-FastStart: ftyp -> mdat -> moov (streaming hostile)
+  const nonFastStartMp4 = Buffer.concat([
+    makeAtom('ftyp', 16),
+    makeAtom('mdat', 64),
+    makeAtom('moov', 32)
+  ]);
+
+  const resultInvalid = UniversalAssetNormalizer.checkMp4FastStart(nonFastStartMp4);
+  assert.equal(resultInvalid.isMp4, true);
+  assert.equal(resultInvalid.fastStart, false);
+  assert.ok(resultInvalid.reason.includes('mdat atom precedes moov atom'));
+
+  // Corrupted / No moov
+  const corruptedMp4 = Buffer.concat([
+    makeAtom('ftyp', 16),
+    makeAtom('free', 16)
+  ]);
+  const resultCorrupted = UniversalAssetNormalizer.checkMp4FastStart(corruptedMp4);
+  assert.equal(resultCorrupted.fastStart, false);
+});
+

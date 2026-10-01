@@ -45,7 +45,8 @@ function isAllowedAssetUrl(url, targetHost) {
       /\.amazonaws\.com/i,
       /assets\.webflow\.com/i,
       /framerusercontent\.com/i,
-      /cdn\.prod\.website-files\.com/i
+      /cdn\.prod\.website-files\.com/i,
+      /datocms-assets\.com/i
     ];
     return allowedCdnPatterns.some(pat => pat.test(urlObj.hostname));
   } catch (e) {

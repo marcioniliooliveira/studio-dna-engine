@@ -1206,6 +1206,107 @@ class UniversalAssetNormalizer {
       }
     } catch (e) {}
   }
+
+  /**
+   * Inspeciona se um arquivo ou buffer MP4 possui a flag FastStart (átomo 'moov' antes de 'mdat').
+   * Essencial para streaming HTTP 206 progressivo sem bloqueio de carregamento no Safari iOS e Edge CDN.
+   * @param {string|Buffer} filePathOrBuffer Caminho do arquivo ou Buffer
+   * @returns {{ isMp4: boolean, fastStart: boolean, moovOffset?: number, mdatOffset?: number, reason?: string }}
+   */
+  static checkMp4FastStart(filePathOrBuffer) {
+    let fd = null;
+    try {
+      let buffer;
+      if (Buffer.isBuffer(filePathOrBuffer)) {
+        buffer = filePathOrBuffer;
+      } else {
+        if (!fs.existsSync(filePathOrBuffer)) {
+          return { isMp4: false, fastStart: false, reason: 'File does not exist' };
+        }
+        fd = fs.openSync(filePathOrBuffer, 'r');
+        const stat = fs.fstatSync(fd);
+        const readSize = Math.min(stat.size, 256 * 1024);
+        buffer = Buffer.alloc(readSize);
+        fs.readSync(fd, buffer, 0, readSize, 0);
+      }
+
+      let offset = 0;
+      let moovFound = false;
+      let mdatFound = false;
+      let moovOffset = -1;
+      let mdatOffset = -1;
+
+      while (offset + 8 <= buffer.length) {
+        const size = buffer.readUInt32BE(offset);
+        const type = buffer.toString('ascii', offset + 4, offset + 8);
+
+        if (type === 'moov' && !moovFound) {
+          moovFound = true;
+          moovOffset = offset;
+        } else if (type === 'mdat' && !mdatFound) {
+          mdatFound = true;
+          mdatOffset = offset;
+        }
+
+        // If mdat was found before moov, definitely NOT FastStart
+        if (mdatFound && !moovFound) {
+          return { isMp4: true, fastStart: false, moovOffset: -1, mdatOffset, reason: 'mdat atom precedes moov atom' };
+        }
+
+        // If both found and moov before mdat, definitely FastStart
+        if (moovFound && mdatFound) {
+          return { isMp4: true, fastStart: true, moovOffset, mdatOffset };
+        }
+
+        let atomSize = size;
+        if (atomSize === 1) {
+          if (offset + 16 > buffer.length) break;
+          const high = buffer.readUInt32BE(offset + 8);
+          const low = buffer.readUInt32BE(offset + 12);
+          atomSize = high * 2 ** 32 + low;
+        } else if (atomSize === 0) {
+          break;
+        }
+
+        if (atomSize <= 0) break;
+        offset += atomSize;
+      }
+
+      if (moovFound && (!mdatFound || moovOffset < mdatOffset)) {
+        return { isMp4: true, fastStart: true, moovOffset, mdatOffset };
+      }
+      return { isMp4: moovFound || mdatFound, fastStart: false, moovOffset, mdatOffset, reason: 'moov atom missing or after mdat' };
+    } catch (err) {
+      return { isMp4: false, fastStart: false, reason: err.message };
+    } finally {
+      if (fd !== null) {
+        try { fs.closeSync(fd); } catch (e) {}
+      }
+    }
+  }
+
+  /**
+   * Executa auditoria de FastStart em todos os vídeos MP4 dentro de um diretório
+   * @param {string} dirPath
+   * @returns {Array<{ file: string, fastStart: boolean, reason?: string }>}
+   */
+  static auditMediaFastStart(dirPath) {
+    const results = [];
+    if (!fs.existsSync(dirPath)) return results;
+
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        results.push(...UniversalAssetNormalizer.auditMediaFastStart(fullPath));
+      } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.mp4')) {
+        const check = UniversalAssetNormalizer.checkMp4FastStart(fullPath);
+        results.push({ file: fullPath, ...check });
+      }
+    }
+    return results;
+  }
+
 }
 
 module.exports = {

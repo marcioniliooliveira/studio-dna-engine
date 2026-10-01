@@ -32,4 +32,64 @@ function resolveViewportCameraRig(aspectRatio, baseFov = 24, baseDistance = 2.4)
   };
 }
 
-module.exports = { resolveViewportCameraRig };
+/**
+ * C6 Constraint: Collection Cardinality ↔ Layout Geometry & Scroll Budget
+ * Adapts grid layout, scroll pin multiplier and pagination mode when item counts
+ * deviate from static archetype benchmarks without compromising DOM immutability.
+ *
+ * @param {number} cardinality Quantidade de itens na coleção (ex: 1 a 50)
+ * @param {number} [archetypeMax=3] Benchmark de itens máximos para grid estático de um viewport
+ * @returns {{
+ *   cardinality: number,
+ *   layoutMode: 'static-grid' | 'horizontal-slider' | 'paginated-virtual-slider',
+ *   columns: number,
+ *   scrollPinMultiplier: number,
+ *   paginationRequired: boolean,
+ *   pages: number
+ * }}
+ */
+function resolveCollectionGeometry(cardinality, archetypeMax = 3) {
+  const count = Math.max(1, Math.floor(Number(cardinality) || 1));
+
+  if (count <= archetypeMax) {
+    return {
+      cardinality: count,
+      layoutMode: 'static-grid',
+      columns: count,
+      scrollPinMultiplier: 1.0,
+      paginationRequired: false,
+      pages: 1
+    };
+  }
+
+  if (count <= 8) {
+    // 4 a 8 itens: trilho horizontal animado por ScrollTrigger (horizontal pin)
+    // Cada item adicional aloca scroll budget suave sem inflar reflow vertical
+    const pinMultiplier = Number((1.0 + (count - archetypeMax) * 0.35).toFixed(2));
+    return {
+      cardinality: count,
+      layoutMode: 'horizontal-slider',
+      columns: count,
+      scrollPinMultiplier: pinMultiplier,
+      paginationRequired: false,
+      pages: 1
+    };
+  }
+
+  // > 8 itens: slider paginado/virtualizado para proteger stamina de scroll e VRAM
+  const pageSize = 4;
+  const pages = Math.ceil(count / pageSize);
+  return {
+    cardinality: count,
+    layoutMode: 'paginated-virtual-slider',
+    columns: pageSize,
+    scrollPinMultiplier: 3.0,
+    paginationRequired: true,
+    pages
+  };
+}
+
+module.exports = {
+  resolveViewportCameraRig,
+  resolveCollectionGeometry
+};

@@ -5,7 +5,7 @@
 const { DependencyGraph } = require('./graph.js');
 const { resolveTypographySafeArea } = require('./typography.js');
 const { resolveBackgroundProductContrast } = require('./contrast.js');
-const { resolveViewportCameraRig } = require('./geometry.js');
+const { resolveViewportCameraRig, resolveCollectionGeometry } = require('./geometry.js');
 const { resolveMotionReducedScaling } = require('./motion.js');
 const { resolvePerformanceFpsTier } = require('./performance.js');
 
@@ -68,6 +68,19 @@ class ConstraintEngine {
       derivedCompensations['postprocessing.bloom.active'] = perfRes.bloomActive;
     }
 
+    // 6. Check Collection Cardinality ↔ Layout Geometry Constraint if present
+    for (const [key, val] of Object.entries(resolvedDelta)) {
+      if (key === 'collection.cardinality' || key.endsWith('.cardinality') || key === 'collection.items.count') {
+        const count = Number(val);
+        const collRes = resolveCollectionGeometry(count);
+        derivedCompensations['collection.layoutMode'] = collRes.layoutMode;
+        derivedCompensations['collection.columns'] = collRes.columns;
+        derivedCompensations['collection.scrollPinMultiplier'] = collRes.scrollPinMultiplier;
+        derivedCompensations['collection.paginationRequired'] = collRes.paginationRequired;
+        derivedCompensations['collection.pages'] = collRes.pages;
+      }
+    }
+
     return {
       valid: errors.length === 0,
       resolvedDelta,
@@ -82,6 +95,7 @@ module.exports = {
   resolveTypographySafeArea,
   resolveBackgroundProductContrast,
   resolveViewportCameraRig,
+  resolveCollectionGeometry,
   resolveMotionReducedScaling,
   resolvePerformanceFpsTier
 };

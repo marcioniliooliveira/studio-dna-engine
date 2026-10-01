@@ -104,6 +104,8 @@ temp-*/
 .temp/
 scratch/
 .tempmediaStorage/
+*-report.json
+*_analysis.json
 
 # ── Arquivos HTML soltos na raiz de copias (clone dumps antigos) ──────────────
 copias/*.html
