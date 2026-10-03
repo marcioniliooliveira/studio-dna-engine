@@ -67,7 +67,7 @@
       height: 100%;
       object-fit: cover;
       z-index: 0;
-      background: #121820 url('https://cdn.prod.website-files.com/69372e47ab695bf5546b46ec/69610a0c261bf5a0d9012dd6_hero%203%20%281%29_poster.0000000.jpg') center/cover no-repeat;
+      background: #121820 url('./assets/hero-poster.webp') center/cover no-repeat;
       filter: saturate(.78) contrast(1.02);
     }
     .hero-overlay {
@@ -653,25 +653,69 @@
       position: fixed;
       z-index: 110;
       left: 50%;
-      bottom: 22px;
+      bottom: 24px;
       display: none;
-      gap: 18px;
+      gap: 16px;
       align-items: center;
-      transform: translateX(-50%);
-      padding: 12px 14px 12px 18px;
-      background: var(--ink);
-      color: var(--dark);
-      font: 11px 'Space Mono', monospace;
-      box-shadow: 0 10px 30px rgba(0,0,0,.5);
+      transform: translateX(-50%) translateY(16px);
+      padding: 10px 18px;
+      background: #161B22;
+      color: var(--ink);
+      font: 500 12px 'Inter', sans-serif;
+      border: 1px solid var(--green);
+      border-radius: 4px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
     }
-    .bar.show { display: flex; }
-    .bar button {
-      min-height: 40px;
+    .bar.show {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .bar span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .bar span strong {
+      color: var(--green-light);
+      font-weight: 700;
+    }
+    .bar button#compare {
+      min-height: 38px;
       border: 0;
       background: var(--green);
       color: #fff;
-      padding: 0 15px;
-      font-weight: 700;
+      padding: 0 16px;
+      font: 700 11px 'Space Mono', monospace;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .bar button#compare:hover {
+      background: var(--green-light);
+      transform: translateY(-1px);
+    }
+    .bar button.bar-close {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-size: 16px;
+      padding: 4px 6px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+    }
+    .bar button.bar-close:hover {
+      color: #fff;
     }
     :is(a, button, input, select, [tabindex]):focus-visible {
       outline: 2px solid var(--green-light);
@@ -711,7 +755,7 @@
          SESSÃO 01: HERO COM VÍDEO & NAVBAR
          ======================================================================== -->
     <section class="hero" id="inicio" aria-label="Apresentação Negocia Bem">
-      <video autoplay muted loop playsinline preload="metadata" poster="https://cdn.prod.website-files.com/69372e47ab695bf5546b46ec/69610a0c261bf5a0d9012dd6_hero%203%20%281%29_poster.0000000.jpg" aria-label="Vídeo de uma residência contemporânea integrada à natureza" class="hero-video">
+      <video autoplay muted loop playsinline preload="metadata" poster="./assets/hero-poster.webp" aria-label="Vídeo de uma residência contemporânea integrada à natureza" class="hero-video">
         <source src="https://cdn.prod.website-files.com/69372e47ab695bf5546b46ec/69610a0c261bf5a0d9012dd6_hero%203%20%281%29_mp4.mp4" type="video/mp4">
       </video>
       <div class="hero-overlay" style="color: rgb(231, 237, 242);"></div>
@@ -769,9 +813,18 @@
     <section aria-labelledby="sessao-02-title" class="overflow-x-clip bg-[#0D1117] text-white font-[Inter]" id="sessao-02">
       <div class="mx-auto max-w-[1440px] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div class="mb-16 grid grid-cols-1 gap-8 border-t border-white/12 pt-5 lg:grid-cols-[minmax(180px,0.42fr)_minmax(0,1fr)] lg:mb-24">
-          <p class="text-[10px] uppercase tracking-[0.3em] text-white/50">
-            (O valor de um sonho)
-          </p>
+          <div class="flex flex-col justify-between h-full py-1">
+            <div>
+              <p class="font-['Space_Mono'] text-[10px] font-semibold uppercase tracking-[0.28em] text-[#8bc7a4]">
+                02 // PROPÓSITO & JORNADA
+              </p>
+              <div class="mt-4 mb-6 h-px w-9 bg-[#3E9B67]/60"></div>
+            </div>
+            <div class="space-y-1 text-[10px] font-['Space_Mono'] uppercase tracking-[0.16em] text-white/40">
+              <p>CRECI 9314-J · CONSULTORIA HUMANIZADA</p>
+              <p>PAIÇANDU · MARINGÁ E REGIÃO</p>
+            </div>
+          </div>
           <div class="max-w-3xl">
             <h2 class="font-[Plus_Jakarta_Sans] text-3xl font-light leading-tight tracking-[-0.035em] text-white sm:text-4xl lg:text-5xl" id="sessao-02-title">
               Toda conquista começa com um desejo.
@@ -784,19 +837,21 @@
         <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:gap-20">
           <div class="s02-pin sticky top-8 h-fit">
             <figure class="s02-media relative h-[calc(100vh-64px)] min-h-[640px] overflow-hidden border border-white/12 bg-[#161B22]">
-              <img alt="Casal sorrindo na sala iluminada de uma casa contemporânea" class="h-[112%] w-full object-cover brightness-[.78] saturate-[.85]" decoding="async" id="s02-image" loading="eager" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=900&q=80"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-[#0D1117]/90 via-transparent to-[#0D1117]/10"></div>
-              <figcaption class="absolute bottom-7 left-7 right-7 flex items-end justify-between gap-5">
+              <img id="s02-img-1" alt="Casa contemporânea iluminada com jardim em Paiçandu" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-100" decoding="async" loading="eager" src="./assets/s02-casa-propria.webp"/>
+              <img id="s02-img-2" alt="Empreendimento imobiliário contemporâneo e sustentável" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-0" decoding="async" loading="lazy" src="./assets/s02-investimento.webp"/>
+              <img id="s02-img-3" alt="Ambiente residencial confortável e pronto para locação" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-0" decoding="async" loading="lazy" src="./assets/s02-aluguel.webp"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0D1117]/90 via-transparent to-[#0D1117]/10 pointer-events-none"></div>
+              <figcaption class="absolute bottom-7 left-7 right-7 z-10 flex items-end justify-between gap-5">
                 <div>
-                  <span class="block text-[10px] uppercase tracking-[0.28em] text-[#4EBA7E]">
+                  <span id="s02-caption-tag" class="block text-[10px] uppercase tracking-[0.28em] text-[#4EBA7E]">
                     (Com você em cada etapa)
                   </span>
-                  <span class="mt-3 block max-w-xs font-[Plus_Jakarta_Sans] text-xl font-light leading-snug">
+                  <span id="s02-caption-title" class="mt-3 block max-w-xs font-[Plus_Jakarta_Sans] text-xl font-light leading-snug">
                     Um lugar para viver o que importa.
                   </span>
                 </div>
-                <span class="mb-1 text-xs text-white/45">
-                  02 / 03
+                <span id="s02-counter" class="mb-1 text-xs text-white/45 font-['Space_Mono']">
+                  01 / 03
                 </span>
               </figcaption>
             </figure>
@@ -814,6 +869,14 @@
               <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
                 A primeira chave nas mãos carrega histórias inteiras. A Negocia Bem cuida de cada detalhe para sua família encontrar segurança, clareza e um endereço que tenha a sua cara — com acolhimento desde a primeira conversa.
               </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Space_Mono'] uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-casas" type="button">
+                  EXPLORAR CASAS DISPONÍVEIS <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Casas prontas para morar a partir de R$ 249 mil · Financiamento Minha Casa Minha Vida
+                </p>
+              </div>
             </article>
             <article aria-labelledby="s02-heading-2" class="s02-story flex min-h-[700px] flex-col justify-center border-b border-white/12 bg-[#161B22] py-20 lg:min-h-[85vh] lg:-mx-8 lg:px-8">
               <div class="s02-reveal mb-12 flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-white/45">
@@ -827,6 +890,14 @@
               <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
                 Investir também é cuidar do futuro. A gente apresenta oportunidades reais, explica cada cenário com transparência e acompanha a escolha para que seu patrimônio cresça com tranquilidade.
               </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Space_Mono'] uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-terrenos" type="button">
+                  VER TERRENOS & LOTES PARA INVESTIR <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Loteamentos residenciais com alto potencial de valorização em Paiçandu e Maringá
+                </p>
+              </div>
             </article>
             <article aria-labelledby="s02-heading-3" class="s02-story flex min-h-[700px] flex-col justify-center border-b border-white/12 py-20 lg:min-h-[85vh]">
               <div class="s02-reveal mb-12 flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-white/45">
@@ -840,6 +911,14 @@
               <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
                 Da curadoria do imóvel ao contrato, você conta com suporte próximo e explicações simples. Menos burocracia, mais confiança para começar uma nova fase com leveza.
               </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Space_Mono'] uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="alugar-imoveis" type="button">
+                  CONSULTAR IMÓVEIS PARA LOCAÇÃO <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Processo ágil e descomplicado · Atendimento humanizado direto pelo WhatsApp
+                </p>
+              </div>
             </article>
             <div class="s02-reveal flex min-h-[300px] flex-col justify-center py-16">
               <span class="text-[10px] uppercase tracking-[0.3em] text-[#4EBA7E]">
@@ -1000,16 +1079,16 @@
         </div>
         <div class="relative grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-start sm:gap-7 lg:gap-12">
           <figure class="nb-image nb-image-center order-1 h-[58vh] min-h-[360px] max-h-[620px] border border-[#4EBA7E]/45 sm:order-2 sm:h-[70vh]">
-            <img alt="Interior de uma residência contemporânea" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=800&q=80"/>
+            <img alt="Conexão metropolitana arborizada entre Maringá e Paiçandu" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/perto-de-tudo-center.webp"/>
             <figcaption class="absolute bottom-4 left-4 z-10 text-[9px] uppercase tracking-[.22em] text-white/65">
               Conexão que aproxima
             </figcaption>
           </figure>
           <figure class="nb-image nb-image-side order-2 mt-0 h-[26vh] min-h-[190px] border border-white/10 sm:order-1 sm:mt-[12vh] sm:h-[52vh]">
-            <img alt="Fachada de uma residência contemporânea" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&w=700&q=80"/>
+            <img alt="Fachada residencial contemporânea em bairro planejado" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/perto-de-tudo-side-1.webp"/>
           </figure>
           <figure class="nb-image nb-image-side order-3 mt-0 h-[26vh] min-h-[190px] border border-white/10 sm:mt-[12vh] sm:h-[52vh]">
-            <img alt="Espaço de convivência em uma casa contemporânea" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&w=700&q=80"/>
+            <img alt="Espaço de convivência e lazer integrado" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/perto-de-tudo-side-2.webp"/>
           </figure>
           <div class="nb-desktop-title pointer-events-none absolute left-1/2 top-[28%] z-20 w-[96%] -translate-x-1/2 text-center">
             <h2 class="nb-display text-[clamp(2.5rem,5.5vw,5.35rem)] font-extrabold uppercase leading-[.92] tracking-[-.075em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,.5)]">
@@ -1094,31 +1173,31 @@
               </div>
             </div>
             <div class="relative h-[min(72vh,720px)] min-h-[520px]">
-              <div class="absolute right-0 top-0 h-full w-[70%] overflow-hidden bg-[#1a2521]">
+              <div id="oportunidades-main-photos" class="absolute right-0 top-0 h-full w-[70%] overflow-hidden bg-[#1a2521]">
                 <div class="nb-photo active">
-                  <img alt="Interior acolhedor de uma casa contemporânea" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=900&q=80"/>
+                  <img alt="Interior acolhedor de uma casa contemporânea" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="./assets/oportunidades-casas-main.webp"/>
                 </div>
                 <div class="nb-photo">
-                  <img alt="Lote em paisagem residencial em expansão" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&w=900&q=80"/>
+                  <img alt="Lote em paisagem residencial em expansão" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="./assets/oportunidades-terrenos-main.webp"/>
                 </div>
                 <div class="nb-photo">
-                  <img alt="Sala de apartamento pronta para morar" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&w=900&q=80"/>
+                  <img alt="Sala de apartamento pronta para morar" class="h-full w-full object-cover brightness-[.78]" decoding="async" loading="eager" src="./assets/oportunidades-aluguel-main.webp"/>
                 </div>
               </div>
-              <div class="absolute bottom-[9%] left-0 h-[52%] w-[44%] overflow-hidden border-[6px] border-[#0D1117] bg-[#26352c]">
+              <div id="oportunidades-accent-photos" class="absolute bottom-[9%] left-0 h-[52%] w-[44%] overflow-hidden border-[6px] border-[#0D1117] bg-[#26352c]">
                 <div class="nb-photo active">
-                  <img alt="Casa residencial com jardim" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&w=650&q=80"/>
+                  <img alt="Casa residencial com jardim" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/oportunidades-casas-accent.webp"/>
                 </div>
                 <div class="nb-photo">
-                  <img alt="Lote amplo pronto para construção" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&w=650&q=80"/>
+                  <img alt="Lote amplo pronto para construção" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/oportunidades-terrenos-accent.webp"/>
                 </div>
                 <div class="nb-photo">
-                  <img alt="Detalhe de imóvel confortável para alugar" class="h-full w-full object-cover" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&w=650&q=80"/>
+                  <img alt="Detalhe de imóvel confortável para alugar" class="h-full w-full object-cover" decoding="async" loading="eager" src="./assets/oportunidades-aluguel-accent.webp"/>
                 </div>
               </div>
               <div class="absolute -right-10 top-1/2 flex -translate-y-1/2 items-center gap-4">
                 <div class="h-44 w-px bg-white/15">
-                  <div class="h-1/3 w-full origin-top bg-[#3E9B67]" id="progress-bar"></div>
+                  <div class="h-full w-full origin-top scale-y-0 bg-[#3E9B67] transition-transform duration-75 ease-out" id="progress-bar"></div>
                 </div>
                 <div class="flex h-44 flex-col justify-between text-[10px] tracking-[.15em] text-white/40">
                   <span class="progress-num text-white">01</span>
@@ -1143,7 +1222,7 @@
           <article class="border-t border-white/15 pt-7">
             <p class="text-[10px] tracking-[.2em] text-white/40">(01) CASAS</p>
             <h2 class="nb-serif mt-5 text-5xl leading-[.95]">Um lugar para chamar de seu</h2>
-            <img alt="Interior acolhedor de uma casa contemporânea" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=700&q=80"/>
+            <img alt="Interior acolhedor de uma casa contemporânea" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="./assets/oportunidades-casas-main.webp"/>
             <p class="mt-6 text-sm leading-6 text-white/65">Quer encontrar uma casa para começar uma nova fase? A gente te acompanha desde a primeira conversa até as chaves.</p>
             <button class="mt-6 inline-flex border border-[#3E9B67] px-5 py-3 text-[10px] tracking-widest text-[#9bd2b2]" data-route="comprar-casas" type="button">
               VER CASAS ↗
@@ -1152,7 +1231,7 @@
           <article class="border-t border-white/15 pt-7">
             <p class="text-[10px] tracking-[.2em] text-white/40">(02) TERRENOS</p>
             <h2 class="nb-serif mt-5 text-5xl leading-[.95]">Espaço para o que vem depois</h2>
-            <img alt="Lote em paisagem residencial em expansão" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&w=700&q=80"/>
+            <img alt="Lote em paisagem residencial em expansão" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="./assets/oportunidades-terrenos-main.webp"/>
             <p class="mt-6 text-sm leading-6 text-white/65">Se você prefere escolher com calma e construir no seu tempo, vamos olhar juntos os terrenos que fazem sentido para o seu plano.</p>
             <button class="mt-6 inline-flex border border-[#3E9B67] px-5 py-3 text-[10px] tracking-widest text-[#9bd2b2]" data-route="comprar-terrenos" type="button">
               VER TERRENOS ↗
@@ -1161,7 +1240,7 @@
           <article class="border-t border-white/15 pt-7">
             <p class="text-[10px] tracking-[.2em] text-white/40">(03) ALUGUEL</p>
             <h2 class="nb-serif mt-5 text-5xl leading-[.95]">Morar bem, sem complicar</h2>
-            <img alt="Sala de apartamento pronta para morar" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&w=700&q=80"/>
+            <img alt="Sala de apartamento pronta para morar" class="mt-7 h-[62vw] max-h-[440px] w-full object-cover brightness-75" decoding="async" loading="eager" src="./assets/oportunidades-aluguel-main.webp"/>
             <p class="mt-6 text-sm leading-6 text-white/65">Precisa alugar e quer resolver tudo com mais leveza? Te ajudamos a encontrar um lugar que combine com a sua rotina.</p>
             <button class="mt-6 inline-flex border border-[#3E9B67] px-5 py-3 text-[10px] tracking-widest text-[#9bd2b2]" data-route="alugar-imoveis" type="button">
               VER IMÓVEIS PARA ALUGAR ↗
@@ -1334,42 +1413,9 @@
          SESSÃO 07: FOOTER & CTA PRINCIPAL — FALE COM A NEGOCIA BEM
          ======================================================================== -->
     <section class="nb-body relative z-10 overflow-clip bg-[var(--nb-ink)] text-[var(--nb-paper)]" id="negocia-footer" aria-label="Atendimento e contato Negocia Bem">
-      <div class="relative min-h-[600px] border-b border-white/10">
-        <img alt="Casa contemporânea iluminada ao entardecer" class="nb-footer-reveal absolute inset-0 h-full w-full object-cover" decoding="async" loading="lazy" src="./assets/693881d5049ac7d72bb5f18f_cta-img--d.avif"/>
-        <div class="absolute inset-0 bg-[var(--nb-ink)]/68"></div>
-        <div class="relative z-10 flex min-h-[600px] items-start justify-between px-7 py-9 sm:px-12 sm:py-12 lg:px-16">
-          <div class="max-w-[270px]">
-            <p class="nb-brand text-[10px] font-semibold tracking-[.28em] text-white/70">
-              CONVERSE COM A NEGOCIA BEM
-            </p>
-            <p class="mt-5 max-w-[235px] text-[14px] leading-6 text-white/75">
-              Para encontrar seu próximo lugar, comece por uma conversa.
-            </p>
-            <div class="mt-20 hidden h-px w-12 bg-[#3E9B67] sm:block"></div>
-            <p class="mt-4 hidden text-[11px] tracking-[.08em] text-white/45 sm:block">
-              PAIÇANDU · MARINGÁ E REGIÃO
-            </p>
-          </div>
-          <div class="nb-footer-reveal relative mt-24 flex w-full max-w-[720px] translate-x-0 items-center justify-center bg-[var(--nb-panel)] px-7 py-16 text-center sm:mt-28 sm:px-12 lg:mr-[-16px] lg:min-h-[390px] lg:translate-x-0 lg:px-16">
-            <div>
-              <p class="nb-brand text-[10px] font-semibold tracking-[.24em] text-[#c1d2c8]">
-                ATENDIMENTO HUMANO · CRECI 9314-J
-              </p>
-              <h2 class="nb-display mt-7 text-[clamp(2.75rem,5.1vw,5.4rem)] leading-[.9] tracking-[-.045em] text-white">
-                VAMOS ENCONTRAR<br/>
-                <em>SEU PRÓXIMO LUGAR</em>
-              </h2>
-              <p class="mx-auto mt-8 max-w-[390px] text-[14px] leading-6 text-white/70">
-                A gente responde e acompanha você com calma.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="grid border-b border-white/10 lg:grid-cols-2">
         <div class="relative min-h-[430px] bg-[radial-gradient(circle_at_68%_28%,#425b57_0%,#182521_42%,#0D1117_78%)] lg:min-h-[850px]">
-          <img alt="Fachada de uma casa contemporânea com grandes janelas" class="nb-footer-reveal absolute inset-0 h-full w-full object-cover" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=1200&q=80&fit=crop"/>
+          <img alt="Fachada acolhedora de residência contemporânea ao entardecer" class="nb-footer-reveal absolute inset-0 h-full w-full object-cover" decoding="async" loading="eager" src="./assets/footer-night-house.webp"/>
           <div class="absolute inset-0 bg-[var(--nb-ink)]/62"></div>
           <div class="absolute inset-x-7 bottom-8 flex items-end justify-between sm:inset-x-12 sm:bottom-12 lg:inset-x-16">
             <div>
@@ -1495,12 +1541,12 @@
 
       <div class="catalog">
         <aside class="rail">
-            <figure class="media">
-            <img id="image" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=1000&q=80&fit=crop" alt="Casa Jardim Imperial">
+          <figure class="media">
+            <img id="image" src="./assets/oportunidades-casas-main.webp" alt="Casa Jardim Bela Vista" class="h-full w-full object-cover" loading="eager">
             <figcaption class="caption">
               <div>
-                <strong id="captionName">Casa Jardim Imperial</strong>
-                <p id="captionCopy">Arquitetura contemporânea com jardim amplo e acabamento fino.</p>
+                <strong id="captionName">Casa Jardim Bela Vista</strong>
+                <p id="captionCopy">Casa nova com espaço nos fundos, excelente ventilação e acabamento de qualidade no Jardim Bela Vista.</p>
               </div>
               <span class="counter" id="counter">01 / 03</span>
             </figcaption>
@@ -1516,19 +1562,20 @@
         <button class="clear mt-4 underline" id="emptyClear" type="button">Limpar filtros</button>
       </div>
 
+      <!-- Barra Flutuante de Comparação de Imóveis (exibida apenas quando há imóveis selecionados no modal) -->
+      <div class="bar" id="bar" role="status" aria-live="polite">
+        <span id="bar-text"><strong id="selected">0</strong> selecionados para comparação</span>
+        <button id="compare" type="button">Comparar agora ↗</button>
+        <button id="bar-close" class="bar-close" type="button" aria-label="Limpar e fechar comparação">✕</button>
+      </div>
+
       <div class="disclaimer">
         <span><b>✓</b> Disponibilidade e documentação conferidas</span>
-        <span><b>i</b> Valores sujeitos a atualização</span>
+        <span><b>i</b> Valores balizadores sujeitos a atualização</span>
         <span><b>CRECI:</b> 9314-J · Paiçandu e Maringá - PR</span>
       </div>
     </div>
   </section>
-
-  <!-- Barra Fixa de Comparação de Imóveis -->
-  <div class="bar" id="bar">
-    <span><strong id="selected">0</strong> selecionados para comparação</span>
-    <button id="compare" type="button">Comparar agora</button>
-  </div>
 
   <!-- Botão Flutuante do WhatsApp -->
   <a aria-label="Falar no WhatsApp" class="whatsapp" href="https://wa.me/554438016654" rel="noreferrer" target="_blank">
@@ -1552,9 +1599,51 @@
         copy: 'Encontre casas prontas em Paiçandu e região. Compare preço, espaço e condições antes de falar com um corretor.',
         result: 'casas encontradas',
         items: [
-          ['Casa Jardim Imperial', 'Paiçandu, PR', 'Pronta para morar', 'R$ 389 mil', '118 m²', '3 · 1 suíte', '2', '2', 'Financiamento disponível', 'Arquitetura contemporânea com jardim amplo e acabamento fino.', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=1000&q=80&fit=crop'],
-          ['Residencial Horizonte', 'Maringá, PR', 'Disponível', 'R$ 249 mil', '68 m²', '2', '1', '1', 'MCMV possível', 'Uma primeira casa com espaços bem resolvidos e condomínio tranquilo.', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&w=1000&q=80&fit=crop'],
-          ['Casa Alameda Norte', 'Maringá, PR', 'Disponível', 'R$ 479 mil', '142 m²', '3 · 1 suíte', '2', '2', 'Financiamento disponível', 'Espaço para a família crescer com conforto, churrasqueira e varanda.', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&w=1000&q=80&fit=crop']
+          [
+            'Casa Jardim Bela Vista',
+            'Paiçandu, PR',
+            'Pronta para morar',
+            'R$ 265 mil',
+            '74 m²',
+            '2 quartos',
+            '1',
+            '1 vaga',
+            'MCMV e FGTS',
+            'Casa nova com espaço nos fundos, excelente ventilação e acabamento de qualidade no Jardim Bela Vista.',
+            './assets/oportunidades-casas-main.webp',
+            'A partir de R$ 26.500 (FGTS / MCMV)',
+            'Aprox. R$ 1.150 / mês (Caixa)'
+          ],
+          [
+            'Casa Jardim Pioneiro',
+            'Paiçandu, PR',
+            'Disponível',
+            'R$ 349 mil',
+            '108 m²',
+            '3 · 1 suíte',
+            '2',
+            '2 vagas',
+            'Financiamento Caixa',
+            'Arquitetura contemporânea com suíte ampla, varanda gourmet e acabamento refinado no Pioneiro.',
+            './assets/s02-casa-propria.webp',
+            'A partir de R$ 45.000 (FGTS aceito)',
+            'Aprox. R$ 1.820 / mês (SBPE Caixa)'
+          ],
+          [
+            'Residencial Jardim Canadá',
+            'Paiçandu / Maringá, PR',
+            'Disponível',
+            'R$ 449 mil',
+            '138 m²',
+            '3 · 1 suíte',
+            '2',
+            '2 vagas',
+            'Financiamento facilitado',
+            'Imóvel moderno com área gourmet integrada, pé direito duplo e excelente localização próxima a Maringá.',
+            './assets/oportunidades-casas-accent.webp',
+            'A partir de R$ 68.000',
+            'Aprox. R$ 2.450 / mês'
+          ]
         ]
       },
       'alugar-imoveis': {
@@ -1563,9 +1652,51 @@
         copy: 'Encontre opções para alugar em Maringá e região. Compare aluguel, espaço e condições antes de agendar uma visita.',
         result: 'imóveis para alugar',
         items: [
-          ['Apartamento Vila Operária', 'Maringá, PR', 'Disponível agora', 'R$ 2.180', '68 m²', '2', '1', '1', 'Pets: consultar', 'Planta iluminada, sacada e localização próxima a serviços e comércio.', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&w=1000&q=80&fit=crop'],
-          ['Casa Jardim Alvorada', 'Maringá, PR', 'Visitas abertas', 'R$ 2.750', '112 m²', '3 · 1 suíte', '2', '2', 'Mobiliado: não', 'Casa térrea com quintal, excelente ventilação e luz natural.', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&w=1000&q=80&fit=crop'],
-          ['Sobrado Parque Ingá', 'Sarandi, PR', 'Disponível em 15 dias', 'R$ 3.100', '142 m²', '3 · 1 suíte', '2', '2', 'Pets: aceitos', 'Sobrado amplo em rua tranquila e arborizada com vaga coberta.', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&w=1000&q=80&fit=crop']
+          [
+            'Apartamento Zona 07',
+            'Maringá, PR',
+            'Disponível agora',
+            'R$ 1.950',
+            '64 m²',
+            '2 quartos',
+            '1',
+            '1 vaga',
+            'Sem fiador · Caução facilitada',
+            'Planta iluminada, sacada e localização privilegiada próxima a comércio e serviços.',
+            './assets/oportunidades-aluguel-main.webp',
+            'Parcelada em até 3x (ou CredPago)',
+            'R$ 320 / mês (taxa condominial)'
+          ],
+          [
+            'Casa Jardim Alvorada',
+            'Maringá, PR',
+            'Visitas abertas',
+            'R$ 2.650',
+            '115 m²',
+            '3 · 1 suíte',
+            '2',
+            '2 vagas',
+            'Análise cadastral rápida',
+            'Casa térrea com quintal amplo, churrasqueira e excelente iluminação natural.',
+            './assets/s02-aluguel.webp',
+            'Seguro-fiança facilitado',
+            'Isento (Casa residencial de rua)'
+          ],
+          [
+            'Sobrado Centro',
+            'Paiçandu, PR',
+            'Disponível',
+            'R$ 2.200',
+            '124 m²',
+            '3 · 1 suíte',
+            '2',
+            '2 vagas',
+            'Contrato descomplicado',
+            'Sobrado confortável e funcional no centro de Paiçandu com fácil acesso a Maringá.',
+            './assets/oportunidades-aluguel-accent.webp',
+            'Parcelada em até 3x',
+            'Isento (Sem taxa de condomínio)'
+          ]
         ]
       },
       'comprar-terrenos': {
@@ -1574,9 +1705,51 @@
         copy: 'Compare localização, metragem, infraestrutura e documentação antes de reservar seu terreno.',
         result: 'terrenos disponíveis',
         items: [
-          ['Lote Jardim Imperial', 'Paiçandu, PR', 'Disponível agora', 'R$ 189.000', '360 m²', '12 m', 'Plano', 'Completa', 'Documentação regular', 'Um lote plano, com asfalto e água, ideal para começar sua obra.', 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&w=1000&q=80&fit=crop'],
-          ['Terreno Reserva Norte', 'Maringá, PR', 'Últimas unidades', 'R$ 248.000', '450 m²', '15 m', 'Plano', 'Completa', 'Escritura pronta', 'Esquina ampla em loteamento planejado com infraestrutura completa.', 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&w=1000&q=80&fit=crop'],
-          ['Lote Parque das Águas', 'Sarandi, PR', 'Documentação em análise', 'R$ 142.000', '300 m²', '10 m', 'Aclive leve', 'Água e energia', 'Em conferência', 'Aclive leve em região em forte valorização e crescimento metropolitano.', 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&w=1000&q=80&fit=crop']
+          [
+            'Lote Loteamento Jardim Itália',
+            'Paiçandu, PR',
+            'Disponível agora',
+            'R$ 138.000',
+            '300 m²',
+            '12 m',
+            'Plano',
+            'Completa',
+            'Escriturado e registrado',
+            'Lote 100% plano com asfalto, água e esgoto, pronto para iniciar sua construção.',
+            './assets/oportunidades-terrenos-main.webp',
+            'A partir de R$ 13.800 (10% facilitada)',
+            'A partir de R$ 890 / mês (até 180x)'
+          ],
+          [
+            'Terreno Jardim Monte Rey',
+            'Paiçandu, PR',
+            'Últimas unidades',
+            'R$ 165.000',
+            '360 m²',
+            '12 m',
+            'Plano',
+            'Completa',
+            'Liberado para financiar obra',
+            'Excelente testada em bairro planejado em plena expansão e valorização.',
+            './assets/s02-investimento.webp',
+            'A partir de R$ 16.500',
+            'A partir de R$ 1.050 / mês (plano direto)'
+          ],
+          [
+            'Lote Residencial Cidade Alta',
+            'Paiçandu / Maringá, PR',
+            'Oportunidade',
+            'R$ 210.000',
+            '420 m²',
+            '14 m',
+            'Aclive suave',
+            'Completa',
+            'Documentação regular',
+            'Lote amplo de esquina em localização estratégica com alto potencial comercial e residencial.',
+            './assets/oportunidades-terrenos-accent.webp',
+            'A partir de R$ 25.000',
+            'A partir de R$ 1.350 / mês'
+          ]
         ]
       }
     };
@@ -1587,14 +1760,24 @@
     const $ = s => document.querySelector(s);
     const modal = $('#modal');
     const mainContent = $('#main-content');
-    const floatingControls = [$('#bar'), $('.whatsapp')].filter(Boolean);
+    const floatingControls = [$('.whatsapp')].filter(Boolean);
     let mode = 'comprar-casas', active = 0, lastFocus = null, selected = new Set(), busy = false;
     let query = '', sortMode = 'relevance', activeFilters = new Set();
+    let modalObserver = null;
 
     function resetComparison() {
       selected.clear();
-      $('#selected').textContent = '0';
-      $('#bar').classList.remove('show');
+      const selEl = document.getElementById('selected');
+      const barEl = document.getElementById('bar');
+      const barText = document.getElementById('bar-text');
+      if (selEl) selEl.textContent = '0';
+      if (barText) barText.innerHTML = '<strong>0</strong> selecionados para comparação';
+      if (barEl) barEl.classList.remove('show');
+      document.querySelectorAll('.compare').forEach(btn => {
+        btn.classList.remove('on');
+        btn.textContent = '+ Comparar';
+        btn.setAttribute('aria-pressed', 'false');
+      });
     }
 
     function render(key) {
@@ -1633,11 +1816,11 @@
             </div>
             <div class="price">
               <span>${key === 'alugar-imoveis' ? 'Caução estimada' : 'Entrada estimada'}</span>
-              <strong class="green">${key === 'alugar-imoveis' ? 'Consultar' : 'Consulte'}</strong>
+              <strong class="green">${x[11] || (key === 'alugar-imoveis' ? 'Parcelada em até 3x' : key === 'comprar-terrenos' ? 'A partir de R$ 13.800' : 'A partir de R$ 35 mil (FGTS)')}</strong>
             </div>
             <div class="price">
-              <span>${key === 'comprar-terrenos' ? 'Parcelas' : 'Parcela estimada'}</span>
-              <strong class="green">Consultar</strong>
+              <span>${key === 'comprar-terrenos' ? 'Parcelas' : key === 'alugar-imoveis' ? 'Condomínio' : 'Parcela estimada'}</span>
+              <strong class="green">${x[12] || (key === 'alugar-imoveis' ? 'Isento / Baixo custo' : key === 'comprar-terrenos' ? 'A partir de R$ 890/mês' : 'Aprox. R$ 1.250 (MCMV)')}</strong>
             </div>
           </div>
           <div class="facts">
@@ -1674,12 +1857,13 @@
 
       $('#thumbs').innerHTML = d.items.map((x, i) => `
         <button class="thumb ${i ? '' : 'active'}" data-i="${i}" type="button">
-          <img src="${x[10].replace('w=1000', 'w=400')}" alt="${x[0]}">
+          <img src="${x[10]}" alt="${x[0]}">
           <span>0${i+1} · ${x[0]}</span>
         </button>
       `).join('');
 
       bindModalInteractions();
+      setupModalScrollObserver();
       selectItem(0);
     }
 
@@ -1699,6 +1883,30 @@
         e.setAttribute('aria-selected', n === i);
       });
       document.querySelectorAll('.thumb').forEach((e, n) => e.classList.toggle('active', n === i));
+    }
+
+    function setupModalScrollObserver() {
+      if (modalObserver) modalObserver.disconnect();
+      const modalEl = document.getElementById('modal');
+      const storyEls = document.querySelectorAll('#stories .story');
+      if (!modalEl || !storyEls.length) return;
+
+      modalObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = [...storyEls].indexOf(entry.target);
+            if (idx !== -1 && idx !== active) {
+              selectItem(idx);
+            }
+          }
+        });
+      }, {
+        root: modalEl,
+        threshold: 0.45,
+        rootMargin: '-15% 0px -15% 0px'
+      });
+
+      storyEls.forEach(s => modalObserver.observe(s));
     }
 
     function bindModalInteractions() {
@@ -1734,19 +1942,31 @@
           b.setAttribute('aria-pressed', on);
           if (!key) return;
           if (on) selected.add(key); else selected.delete(key);
-          $('#selected').textContent = selected.size;
-          $('#bar').classList.toggle('show', selected.size > 0);
+          
+          const selEl = document.getElementById('selected');
+          const barEl = document.getElementById('bar');
+          const barText = document.getElementById('bar-text');
+          if (selected.size > 0) {
+            if (selEl) selEl.textContent = selected.size;
+            if (barText) {
+              barText.innerHTML = selected.size === 1
+                ? '<strong>1</strong> selecionado · selecione mais 1 para comparar'
+                : `<strong>${selected.size}</strong> selecionados para comparação`;
+            }
+            if (barEl) barEl.classList.add('show');
+          } else {
+            resetComparison();
+          }
         });
       });
 
       document.querySelectorAll('[data-action]').forEach(b => {
         b.addEventListener('click', () => {
-          const msg = mode === 'comprar-terrenos'
-            ? 'Vamos conectar você ao corretor para agendar a visita e cuidar da reserva do seu terreno.'
-            : mode === 'alugar-imoveis'
-            ? 'Vamos conectar você ao corretor para cuidar da locação deste imóvel.'
-            : 'Vamos conectar você ao corretor para agendar a visita desta casa.';
-          alert(msg);
+          const story = b.closest('.story');
+          const name = story?.dataset.name || 'Imóvel';
+          const city = story?.dataset.city || 'Paiçandu/Maringá';
+          const text = `Olá, Negocia Bem! Gostaria de mais informações e agendar visita para "${name}" em ${city}.`;
+          window.open(`https://wa.me/554438016654?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
         });
       });
     }
@@ -1774,6 +1994,7 @@
 
     function closeModal({ syncHistory = true } = {}) {
       if (busy) return;
+      resetComparison();
       busy = true;
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
@@ -1892,7 +2113,20 @@
     });
     $('#emptyClear').addEventListener('click', () => $('#clear').click());
     $('#compare').addEventListener('click', () => {
-      alert('Comparação preparada para as oportunidades selecionadas.');
+      if (selected.size === 0) return;
+      const selectedNames = [...selected].map(key => {
+        const [m, idx] = key.split(':');
+        return DATA[m]?.items[Number(idx)]?.[0];
+      }).filter(Boolean).join(' e ');
+      const text = `Olá, Negocia Bem! Gostaria de comparar e entender melhor as seguintes oportunidades que selecionei no site: ${selectedNames}.`;
+      window.open(`https://wa.me/554438016654?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+      resetComparison();
+    });
+    $('#bar-close')?.addEventListener('click', resetComparison);
+
+    // Sumir barra ao trocar de sessão ou âncora de navegação
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', resetComparison);
     });
 
     // Menu Mobile
@@ -1944,7 +2178,62 @@
             scrollTrigger: { trigger: story, start: 'top 72%', end: 'top 34%', scrub: 1 }
           });
         });
-        gsap.to('#s02-image', {
+        const s02Data = [
+          {
+            tag: '(Com você em cada etapa)',
+            title: 'Um lugar para viver o que importa.',
+            counter: '01 / 03'
+          },
+          {
+            tag: '(Patrimônio e segurança)',
+            title: 'Decisões sólidas para o seu futuro.',
+            counter: '02 / 03'
+          },
+          {
+            tag: '(Agilidade e respeito)',
+            title: 'Seu novo espaço sem complicação.',
+            counter: '03 / 03'
+          }
+        ];
+
+        const slideImages = [
+          document.querySelector('#s02-img-1'),
+          document.querySelector('#s02-img-2'),
+          document.querySelector('#s02-img-3')
+        ];
+        const tagEl = document.getElementById('s02-caption-tag');
+        const titleEl = document.getElementById('s02-caption-title');
+        const counterEl = document.getElementById('s02-counter');
+
+        function setS02Slide(index) {
+          slideImages.forEach((img, i) => {
+            if (!img) return;
+            if (i === index) {
+              img.classList.remove('opacity-0');
+              img.classList.add('opacity-100');
+            } else {
+              img.classList.remove('opacity-100');
+              img.classList.add('opacity-0');
+            }
+          });
+          if (s02Data[index]) {
+            if (tagEl) tagEl.textContent = s02Data[index].tag;
+            if (titleEl) titleEl.textContent = s02Data[index].title;
+            if (counterEl) counterEl.textContent = s02Data[index].counter;
+          }
+        }
+
+        gsap.utils.toArray('.s02-story').forEach((story, idx) => {
+          ScrollTrigger.create({
+            trigger: story,
+            start: 'top 55%',
+            end: 'bottom 55%',
+            onEnter: () => setS02Slide(idx),
+            onEnterBack: () => setS02Slide(idx)
+          });
+        });
+
+        gsap.to('.s02-slide-img', {
           yPercent: -8,
           ease: 'none',
           scrollTrigger: {
@@ -2013,15 +2302,19 @@
     (function initSession05() {
       const section = document.querySelector('#oportunidades');
       const states = [...document.querySelectorAll('.nb-desktop .nb-state')];
-      const photos = [...document.querySelectorAll('.nb-desktop .nb-photo')];
+      const mainPhotos = [...document.querySelectorAll('#oportunidades-main-photos .nb-photo')];
+      const accentPhotos = [...document.querySelectorAll('#oportunidades-accent-photos .nb-photo')];
       const bar = document.querySelector('#progress-bar');
       const nums = [...document.querySelectorAll('.progress-num')];
 
-      function activate(i) {
+      function activate(i, progress) {
         states.forEach((el, n) => el.classList.toggle('active', n === i));
-        photos.forEach((el, n) => el.classList.toggle('active', n === i));
+        mainPhotos.forEach((el, n) => el.classList.toggle('active', n === i));
+        accentPhotos.forEach((el, n) => el.classList.toggle('active', n === i));
         nums.forEach((el, n) => el.classList.toggle('text-white', n === i));
-        if (bar) bar.style.transform = 'scaleY(' + ((i + 1) / 3) + ')';
+        if (bar && typeof progress === 'number') {
+          bar.style.transform = `scaleY(${Math.max(0, Math.min(1, progress))})`;
+        }
       }
 
       if (window.matchMedia('(min-width: 768px)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -2029,10 +2322,10 @@
           trigger: section,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1,
+          scrub: true,
           onUpdate: self => {
             const i = Math.min(2, Math.floor(self.progress * 3));
-            activate(i);
+            activate(i, self.progress);
           }
         });
       }

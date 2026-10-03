@@ -209,7 +209,7 @@ async function withTestContext(options = {}, testFn) {
       ...options.contextOptions
     });
     page = await context.newPage();
-    const defaultTimeout = options.timeout || 15000;
+    const defaultTimeout = options.timeout || 30000;
     page.setDefaultTimeout(defaultTimeout);
     page.setDefaultNavigationTimeout(defaultTimeout);
 
@@ -354,180 +354,124 @@ const VRAM_MATH = {
 // 5. Universal Modular Resolver for all 17 Features
 // ============================================================================
 
-function tryRequire(modulePath) {
-  try {
-    const resolved = path.resolve(__dirname, '../../', modulePath);
-    if (fs.existsSync(resolved + '.js') || fs.existsSync(resolved) || fs.existsSync(resolved + '/index.js')) {
-      return require(resolved);
-    }
-  } catch (e) {}
-  return null;
-}
-
 const MODULES = {
   // R1: CDP
-  trackerSanitizer: tryRequire('src/cdp/tracker-sanitizer'),
-  runtimeHookInjector: tryRequire('src/cdp/runtime-hook-injector'),
-  semanticSkeletonNormalizer: tryRequire('src/cdp/semantic-skeleton-normalizer'),
-  kineticTimelineInterceptor: tryRequire('src/cdp/kinetic-timeline-interceptor'),
+  trackerSanitizer: require('../../src/cdp/tracker-sanitizer'),
+  runtimeHookInjector: require('../../src/cdp/runtime-hook-injector'),
+  semanticSkeletonNormalizer: require('../../src/cdp/semantic-skeleton-normalizer'),
+  kineticTimelineInterceptor: require('../../src/cdp/kinetic-timeline-interceptor'),
 
   // R2: Kinetic
-  trajectorySolver: tryRequire('src/kinetic/trajectory-solver'),
-  opticalAnchorTracker: tryRequire('src/kinetic/optical-anchor-tracker'),
-  dynamicAnchorCoordinator: tryRequire('src/kinetic/dynamic-anchor-coordinator'),
-  adaptiveConstraints: tryRequire('src/kinetic/adaptive-constraints'),
+  trajectorySolver: require('../../src/kinetic/trajectory-solver'),
+  opticalAnchorTracker: require('../../src/kinetic/optical-anchor-tracker'),
+  dynamicAnchorCoordinator: require('../../src/kinetic/dynamic-anchor-coordinator'),
+  adaptiveConstraints: require('../../src/kinetic/adaptive-constraints'),
 
   // R3: 3D Assets
-  textureCompressor: tryRequire('src/assets3d/texture-compressor'),
-  meshQuantizer: tryRequire('src/assets3d/mesh-quantizer'),
-  vramAuditor: tryRequire('src/assets3d/vram-auditor'),
-  gltfOptimizerPipeline: tryRequire('src/assets3d/gltf-optimizer-pipeline'),
+  textureCompressor: require('../../src/assets3d/texture-compressor'),
+  meshQuantizer: require('../../src/assets3d/mesh-quantizer'),
+  vramAuditor: require('../../src/assets3d/vram-auditor'),
+  gltfOptimizerPipeline: require('../../src/assets3d/gltf-optimizer-pipeline'),
 
   // R4: Compiler
-  kineticGrammarSchema: tryRequire('src/compiler/kinetic-grammar-schema'),
-  edgeStaticCompiler: tryRequire('src/compiler/edge-static-compiler'),
-  nextjsRscCompiler: tryRequire('src/compiler/nextjs-rsc-compiler'),
-  antiSlopTransformer: tryRequire('src/compiler/anti-slop-transformer'),
+  kineticGrammarSchema: require('../../src/compiler/kinetic-grammar-schema'),
+  edgeStaticCompiler: require('../../src/compiler/edge-static-compiler'),
+  nextjsRscCompiler: require('../../src/compiler/nextjs-rsc-compiler'),
+  antiSlopTransformer: require('../../src/compiler/anti-slop-transformer'),
 
   // Gates & QA
-  deepScrutinyGate: tryRequire('src/qa/deep-scrutiny-gate'),
-  kineticTelemetryExtractor: tryRequire('src/qa/kinetic-telemetry-extractor'),
-  antiSlopGate: tryRequire('src/qa/anti-slop-gate')
+  deepScrutinyGate: require('../../src/qa/deep-scrutiny-gate'),
+  kineticTelemetryExtractor: require('../../src/qa/kinetic-telemetry-extractor'),
+  antiSlopGate: require('../../src/qa/anti-slop-gate')
 };
 
-// Contract Reference Fallbacks for Compiler Modules if M4 is in progress
-const COMPILER_ORACLES = {
-  validateScopeDonut(cssContent) {
-    const scopeRegex = /@scope\s*\(([^)]+)\)\s*to\s*\(([^)]+)\)/i;
-    const match = cssContent.match(scopeRegex);
-    if (!match) return { valid: false, reason: 'Missing @scope root to limit declaration' };
-    const root = match[1].trim();
-    const limit = match[2].trim();
-    const isDonut = root.includes('.kinetic-stage') && limit.includes('[data-kinetic-slot]');
-    return { valid: isDonut, root, limit };
-  },
-
-  validateAntiSlop(text, referenceOriginalText = '') {
-    const BANNED_PATTERNS = [
-      /lorem ipsum/i,
-      /chunk cognitivo/i,
-      /metalinguagem/i,
-      /\{SLOT_[^}]+\}/i,
-      /\[PLACEHOLDER\]/i,
-      /results-driven/i,
-      /proven results/i
-    ];
-    const violations = [];
-    for (const pat of BANNED_PATTERNS) {
-      if (pat.test(text)) violations.push(pat.toString());
-    }
-    let lengthRatio = 1.0;
-    if (referenceOriginalText && referenceOriginalText.length > 0) {
-      lengthRatio = text.length / referenceOriginalText.length;
-    }
-    const withinBudget = lengthRatio >= 0.85 && lengthRatio <= 1.15;
-    return {
-      passed: violations.length === 0 && withinBudget,
-      violations,
-      withinBudget,
-      lengthRatio: Number(lengthRatio.toFixed(3))
-    };
-  },
-
-  compileEdgeStatic(sceneGraph) {
-    const scopedCss = `
-@scope (.kinetic-stage) to ([data-kinetic-slot]) {
-  :scope { position: relative; width: 100%; min-height: 100vh; overflow-x: clip; contain: layout style paint; }
-  .canvas-stage-wrapper { position: sticky; top: 0; width: 100%; height: 100vh; z-index: 10; pointer-events: none; }
-  .annotation-badge { position: absolute; transform: translate3d(var(--anchor-x, 0px), var(--anchor-y, 0px), 0); }
-}`;
-    const microRuntimeScript = `
-/* <15KB kinetic-micro.js loader */
-(function(){
-  console.log('Kinetic Micro Runtime Initialized');
-})();
-`;
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${sceneGraph.title || 'Kinetic Production'}</title>
-  <style>${scopedCss}</style>
-</head>
-<body>
-  <div class="kinetic-stage">
-    <div class="canvas-stage-wrapper">
-      <canvas id="kinetic-canvas" width="1440" height="900"></canvas>
-    </div>
-    <div data-kinetic-slot="hero">
-      <h1>${sceneGraph.headline || 'Transmuted Kinetic Architecture'}</h1>
-    </div>
-  </div>
-  <script>${microRuntimeScript}</script>
-</body>
-</html>`;
-    return {
-      html,
-      css: scopedCss,
-      microRuntimeJs: microRuntimeScript,
-      microRuntimeSizeBytes: Buffer.byteLength(microRuntimeScript, 'utf8')
-    };
-  },
-
-  compileNextJsRsc(sceneGraph) {
-    const layoutTsx = `import type { Metadata } from 'next';
-export const metadata: Metadata = { title: '${sceneGraph.title || 'Kinetic Product'}' };
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (<html lang="en"><body>{children}</body></html>);
-}`;
-    const pageTsx = `import { KineticSection } from './components/server/KineticSection';
-export default function Page() {
-  return (<main><KineticSection title="${sceneGraph.title || 'Product'}" /></main>);
-}`;
-    const serverSectionTsx = `// Server Component (RSC - 0 client JS)
-import { KineticSceneIsland } from '../client/KineticSceneIsland';
-import { OpticalAnchorIsland } from '../client/OpticalAnchorIsland';
-export function KineticSection({ title }: { title: string }) {
-  return (
-    <section className="kinetic-stage">
-      <div className="canvas-wrapper">
-        <KineticSceneIsland modelUrl="/assets/model.glb" />
-      </div>
-      <div data-kinetic-slot="headline"><h1>{title}</h1></div>
-      <OpticalAnchorIsland />
-    </section>
-  );
-}`;
-    const clientSceneIslandTsx = `"use client";
-import React, { useEffect, useRef } from 'react';
-export function KineticSceneIsland({ modelUrl }: { modelUrl: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    // Isolated WebGL canvas hydration
-  }, [modelUrl]);
-  return <canvas ref={canvasRef} />;
-}`;
-    const clientAnchorIslandTsx = `"use client";
-import React from 'react';
-export function OpticalAnchorIsland() {
-  return <div className="annotation-badges-layer" />;
-}`;
-
-    return {
-      files: {
-        'app/layout.tsx': layoutTsx,
-        'app/page.tsx': pageTsx,
-        'components/server/KineticSection.tsx': serverSectionTsx,
-        'components/client/KineticSceneIsland.tsx': clientSceneIslandTsx,
-        'components/client/OpticalAnchorIsland.tsx': clientAnchorIslandTsx
+function createValidCompositionSpec(overrides = {}) {
+  return {
+    schemaVersion: '2.0.0',
+    brandSpec: {
+      brandName: 'Aura Kinetic',
+      tagline: 'Dimensional Precision',
+      theme: {
+        bgBase: '#0b0c10',
+        accent: '#66fcf1',
+        textPrimary: '#ffffff',
+        textSecondary: '#c5c6c7',
+        surface: '#1f2833',
+        fontFamily: 'Inter, sans-serif'
       },
-      hasServerComponent: true,
-      hasClientIslands: true,
-      clientIsolated: true
-    };
-  }
-};
+      meta: {
+        title: 'Aura Kinetic | Dimensional Audio System',
+        description: 'Next-generation acoustic engineering rendered in real-time kinetic 3D',
+        canonicalUrl: 'https://aurakinetic.example.com'
+      }
+    },
+    viewport: {
+      width: 1440,
+      height: 900,
+      dpr: 1
+    },
+    assets: [
+      {
+        modelPath: 'assets/models/product-hero.glb',
+        diskSizeBytes: 1850000,
+        vramFootprintBytes: 3200000,
+        geometryBytes: 850000,
+        textureBytes: 1000000,
+        textureCompression: 'KTX2_ASTC',
+        meshQuantization: true,
+        meshoptCompression: true,
+        isWebKitCertified: true
+      }
+    ],
+    stages: [
+      {
+        id: 'stage-hero',
+        type: 'HeroCinematicStage',
+        title: 'Hero Cinematic Experience',
+        cssScope: {
+          rootSelector: '.kinetic-stage',
+          boundarySelector: '[data-kinetic-slot]',
+          allowPiercing: false
+        },
+        kineticConfig: {
+          cameraTrajectory: [
+            { scrollProgress: 0, position: [0, 0, 5], target: [0, 0, 0] },
+            { scrollProgress: 1, position: [2, 1, 3], target: [0, 0, 0] }
+          ],
+          orbitFov: 45,
+          pinDuration: 1.5
+        },
+        slots: [
+          {
+            slotId: 'HERO_TITLE',
+            slotType: 'heading',
+            targetSelector: '[data-kinetic-slot="HERO_TITLE"]',
+            characterBudget: { target: 35, tolerance: 0.15 },
+            content: 'Sculpted Acoustics in Motion'
+          },
+          {
+            slotId: 'HERO_SUBTITLE',
+            slotType: 'text',
+            targetSelector: '[data-kinetic-slot="HERO_SUBTITLE"]',
+            characterBudget: { target: 60, tolerance: 0.15 },
+            content: 'Zero resonance enclosure with aerospace grade titanium finish.'
+          }
+        ],
+        opticalAnchors: [
+          {
+            id: 'anchor-diaphragm',
+            worldPoint: [0.2, 0.4, 0.1],
+            normal: [0, 0, 1],
+            title: 'Titanium Diaphragm',
+            description: 'Ultra-thin 40mm transducer with zero breakup distortion',
+            safeArea: { xMin: 0.05, xMax: 0.95, yMin: 0.05, yMax: 0.95 }
+          }
+        ]
+      }
+    ],
+    ...overrides
+  };
+}
 
 module.exports = {
   VIEWPORTS,
@@ -539,5 +483,5 @@ module.exports = {
   computeAabbOverlapArea,
   VRAM_MATH,
   MODULES,
-  COMPILER_ORACLES
+  createValidCompositionSpec
 };

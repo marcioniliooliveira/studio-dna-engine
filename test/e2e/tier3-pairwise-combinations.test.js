@@ -26,8 +26,7 @@ const {
   slerpQuat,
   computeAabbOverlapArea,
   VRAM_MATH,
-  MODULES,
-  COMPILER_ORACLES
+  MODULES
 } = require('./e2e-harness');
 
 // Helper to construct a fully valid KineticCompositionSpec for M4 tests
@@ -534,8 +533,9 @@ describe('Tier 3: Pairwise Combinations (M1, M2, M3, M4, QA Interactions)', () =
     assert.equal(validation.success, true);
 
     const css = generateScopedCss(spec);
-    const scopeCheck = COMPILER_ORACLES.validateScopeDonut(css);
-    assert.equal(scopeCheck.valid, true, 'CSS accurately defines @scope (.kinetic-stage) to ([data-kinetic-slot])');
+    const scopeCheck = MODULES.kineticGrammarSchema.validateDonutScopeInvariants(css);
+    assert.equal(scopeCheck.compliant, true, 'CSS adheres to donut scope invariants');
+    assert.ok(/@scope\s*\(\.kinetic-stage\)\s*to\s*\(\[data-kinetic-slot\]\)/.test(css), 'CSS accurately defines @scope (.kinetic-stage) to ([data-kinetic-slot])');
     assert.ok(css.includes(':scope {'), 'Kinetic stage scope root styled');
     assert.ok(css.includes('overflow: hidden;'), 'Stage boundary clips excess');
   });

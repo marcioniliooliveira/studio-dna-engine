@@ -31,8 +31,7 @@ const {
   slerpQuat,
   computeAabbOverlapArea,
   VRAM_MATH,
-  MODULES,
-  COMPILER_ORACLES
+  MODULES
 } = require('./e2e-harness');
 
 // Helper to construct a canonical spec for compilation scenarios

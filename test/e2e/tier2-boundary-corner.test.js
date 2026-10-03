@@ -39,7 +39,7 @@ const {
   computeAabbOverlapArea,
   VRAM_MATH,
   MODULES,
-  COMPILER_ORACLES
+  createValidCompositionSpec
 } = require('./e2e-harness');
 
 // ============================================================================
@@ -68,8 +68,10 @@ describe('Boundary 1: CDP Ingestion & Session Manager', () => {
   });
 
   test('B1.3: CDP Interceptor handles invalid/unsupported easing curves with graceful fallback', () => {
-    const invalidEasing = 'cubic-bezier(99, -99, 99, -99)';
-    assert.ok(invalidEasing.includes('cubic-bezier'));
+    const { KineticTimelineInterceptor } = MODULES.kineticTimelineInterceptor;
+    const interceptor = new KineticTimelineInterceptor();
+    assert.ok(typeof interceptor.extractKineticTimelineIR === 'function', 'extractKineticTimelineIR is exposed');
+    assert.ok(typeof interceptor.attach === 'function', 'attach is exposed');
   });
 
   test('B1.4: CDP Interceptor handles missing element selector in seekAnimations without crashing', async () => {
@@ -125,16 +127,17 @@ describe('Boundary 2: In-Memory Kinetic Hook Injector', () => {
   });
 
   test('B2.3: Three.js hook handles null scene or camera in render call gracefully', () => {
-    assert.doesNotThrow(() => {
-      const fakeRenderer = { render: (scene, camera) => {} };
-      fakeRenderer.render(null, null);
-    });
+    const { RuntimeHookInjector } = MODULES.runtimeHookInjector;
+    const script = RuntimeHookInjector.getHookInjectionScript();
+    assert.ok(script.includes('hookThreeRenderer'), 'Hook script contains Three.js renderer hook logic');
+    assert.ok(script.includes('camera && camera.position'), 'Hook script guards against null camera');
   });
 
   test('B2.4: GSAP hook handles timelines with infinite repeat or negative stagger delays', () => {
-    const timelineDef = { repeat: -1, stagger: -0.05, duration: 1.0 };
-    assert.equal(timelineDef.repeat, -1);
-    assert.equal(timelineDef.stagger, -0.05);
+    const { RuntimeHookInjector } = MODULES.runtimeHookInjector;
+    const script = RuntimeHookInjector.getHookInjectionScript();
+    assert.ok(script.includes('hookGsapInstance'), 'Hook script contains GSAP timeline hook logic');
+    assert.ok(script.includes('hookData.gsap.tweens'), 'Hook records tweens into hookData');
   });
 
   test('B2.5: Injected script avoids collision when evaluated multiple times (idempotency guard)', () => {
@@ -734,42 +737,60 @@ describe('Boundary 11: VRAM & Disk Compliance Auditor', () => {
 // B12: Modular Kinetic Composition Grammar Boundary Cases
 // ============================================================================
 describe('Boundary 12: Modular Kinetic Composition Grammar', () => {
-  test('B12.1: Grammar validates stage with missing [data-kinetic-slot] boundary, reporting violation', () => {
-    const invalidCss = `@scope (.kinetic-stage) { :scope { color: red; } }`;
-    const check = COMPILER_ORACLES.validateScopeDonut(invalidCss);
-    assert.equal(check.valid, false, 'Rejects @scope without donut limit');
+  test('B12.1: Grammar detects piercing selector penetrating slot boundary', () => {
+    const { validateDonutScopeInvariants } = MODULES.kineticGrammarSchema;
+    const piercingCss = '@scope (.kinetic-stage) to ([data-kinetic-slot]) { [data-kinetic-slot] h1 { color: red; } }';
+    const check = validateDonutScopeInvariants(piercingCss);
+    assert.equal(check.compliant, false, 'Rejects selector that pierces donut slot boundary');
+    assert.ok(check.violations.some(v => v.includes('piercing')));
   });
 
   test('B12.2: Grammar validates multiple nested @scope donuts without CSS syntax conflict', () => {
+    const { validateDonutScopeInvariants } = MODULES.kineticGrammarSchema;
     const css1 = `@scope (.kinetic-stage) to ([data-kinetic-slot]) { :scope { opacity: 1; } }`;
     const css2 = `@scope (.card-stage) to ([data-card-slot]) { :scope { opacity: 1; } }`;
-    assert.ok(COMPILER_ORACLES.validateScopeDonut(css1).valid);
+    assert.ok(validateDonutScopeInvariants(css1).compliant);
     assert.ok(css2.includes('@scope (.card-stage) to ([data-card-slot])'));
   });
 
-  test('B12.3: Grammar handles stage with 10+ distinct kinetic slots', () => {
-    let slots = '';
-    for (let i = 0; i < 10; i++) {
-      slots += `<div data-kinetic-slot="slot-${i}">Slot ${i}</div>`;
+  test('B12.3: Grammar handles stage with 10+ distinct kinetic slots validating schema', () => {
+    const { KineticCompositionSpecSchema } = MODULES.kineticGrammarSchema;
+    const spec = createValidCompositionSpec();
+    const stage = spec.stages[0];
+    stage.slots = [];
+    for (let i = 0; i < 12; i++) {
+      stage.slots.push({
+        slotId: `slot-${i}`,
+        slotType: 'text',
+        targetSelector: `[data-kinetic-slot="slot-${i}"]`,
+        characterBudget: { target: 20, tolerance: 0.15 },
+        content: `Slot content ${i}`
+      });
     }
-    const html = `<div class="kinetic-stage">${slots}</div>`;
-    assert.ok(html.includes('slot-9'));
+    const parsed = KineticCompositionSpecSchema.safeParse(spec);
+    assert.equal(parsed.success, true, 'Schema validates stage with 12 distinct slots');
   });
 
   test('B12.4: Grammar validates slot containing complex interactive forms or tables', () => {
-    const html = `
-      <div class="kinetic-stage">
-        <div data-kinetic-slot="spec-sheet">
-          <table><tr><td>Titanium Grade 5</td></tr></table>
-        </div>
-      </div>
-    `;
-    assert.ok(html.includes('Titanium Grade 5'));
+    const { KineticCompositionSpecSchema } = MODULES.kineticGrammarSchema;
+    const spec = createValidCompositionSpec();
+    spec.stages[0].slots.push({
+      slotId: 'spec-sheet',
+      slotType: 'rich-text',
+      targetSelector: '[data-kinetic-slot="spec-sheet"]',
+      characterBudget: { target: 100, tolerance: 0.2 },
+      content: '<table><tr><td>Titanium Grade 5</td></tr></table>'
+    });
+    const parsed = KineticCompositionSpecSchema.safeParse(spec);
+    assert.equal(parsed.success, true, 'Custom rich-text slot with complex table content is valid');
   });
 
   test('B12.5: Grammar handles empty slot content without collapsing container bounds', () => {
-    const html = `<div class="kinetic-stage"><div data-kinetic-slot="hero-empty"></div></div>`;
-    assert.ok(html.includes('data-kinetic-slot="hero-empty"'));
+    const { KineticCompositionSpecSchema } = MODULES.kineticGrammarSchema;
+    const spec = createValidCompositionSpec();
+    spec.stages[0].slots[0].content = '';
+    const parsed = KineticCompositionSpecSchema.safeParse(spec);
+    assert.equal(parsed.success, true, 'Empty content in valid slot structure satisfies schema');
   });
 });
 
@@ -778,31 +799,50 @@ describe('Boundary 12: Modular Kinetic Composition Grammar', () => {
 // ============================================================================
 describe('Boundary 13: Edge CDN Static Compiler', () => {
   test('B13.1: Static compiler handles scene graph with zero 3D models (pure kinetic typography)', () => {
-    const compiled = COMPILER_ORACLES.compileEdgeStatic({ headline: 'Minimal Type Edition' });
-    assert.ok(compiled.html.includes('Minimal Type Edition'));
-    assert.ok(compiled.html.includes('kinetic-canvas'));
+    const { EdgeStaticCompiler } = MODULES.edgeStaticCompiler;
+    const spec = createValidCompositionSpec({ assets: [], brandSpec: { brandName: 'Minimal Type Edition', tagline: 'Precision', theme: { bgBase: '#000', accent: '#fff', textPrimary: '#fff', textSecondary: '#ccc', surface: '#111', fontFamily: 'Inter' }, meta: { title: 'Minimal Type Edition', description: 'desc', canonicalUrl: 'https://test.com' } } });
+    const compiled = new EdgeStaticCompiler().compile(spec);
+    assert.equal(compiled.success, true);
+    assert.ok(compiled.files['index.html'].includes('Minimal Type Edition'));
+    assert.ok(compiled.files['index.html'].includes('kinetic-canvas'));
   });
 
   test('B13.2: Static compiler enforces <15KB micro-runtime threshold rejecting bloated scripts', () => {
-    const compiled = COMPILER_ORACLES.compileEdgeStatic({});
-    assert.ok(compiled.microRuntimeSizeBytes < 15 * 1024, 'Bundle strictly under 15KB threshold');
+    const { EdgeStaticCompiler, MAX_MICRO_RUNTIME_BYTES } = MODULES.edgeStaticCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new EdgeStaticCompiler().compile(spec);
+    assert.ok(compiled.runtimeSizeBytes < MAX_MICRO_RUNTIME_BYTES, 'Bundle strictly under 15KB threshold');
   });
 
   test('B13.3: Static compiler handles special characters and quotes in headlines without XSS', () => {
+    const { EdgeStaticCompiler } = MODULES.edgeStaticCompiler;
     const specialTitle = 'Watch <Edition> & "Titanium" 2026';
-    const compiled = COMPILER_ORACLES.compileEdgeStatic({ headline: specialTitle });
-    assert.ok(compiled.html.includes('Watch <Edition> & "Titanium" 2026'));
+    const spec = createValidCompositionSpec({ brandSpec: { brandName: specialTitle, tagline: 'Precision', theme: { bgBase: '#000', accent: '#fff', textPrimary: '#fff', textSecondary: '#ccc', surface: '#111', fontFamily: 'Inter' }, meta: { title: specialTitle, description: 'desc', canonicalUrl: 'https://test.com' } } });
+    const compiled = new EdgeStaticCompiler().compile(spec);
+    assert.equal(compiled.success, true);
+    assert.ok(compiled.files['index.html'].includes('Watch <Edition> & "Titanium" 2026'));
   });
 
   test('B13.4: Static compiler generates valid HTML without external network font dependencies', () => {
-    const compiled = COMPILER_ORACLES.compileEdgeStatic({});
-    assert.ok(!compiled.html.includes('fonts.googleapis.com'));
+    const { EdgeStaticCompiler } = MODULES.edgeStaticCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new EdgeStaticCompiler().compile(spec);
+    assert.ok(!compiled.files['index.html'].includes('fonts.googleapis.com'));
   });
 
   test('B13.5: Static compiler handles HTTP HEAD and GET requests on preview server', async () => {
-    const compiled = COMPILER_ORACLES.compileEdgeStatic({});
-    await withTestContext({ routes: { '/': compiled.html } }, async ({ page, url }) => {
-      const response = await page.goto(url('/'));
+    const { EdgeStaticCompiler } = MODULES.edgeStaticCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new EdgeStaticCompiler().compile(spec);
+    await withTestContext({
+      routes: {
+        '/': compiled.files['index.html'],
+        '/styles.css': compiled.files['styles.css'],
+        '/runtime/kinetic-micro.js': compiled.files['runtime/kinetic-micro.js'],
+        '/assets/manifest.json': compiled.files['assets/manifest.json']
+      }
+    }, async ({ page, url }) => {
+      const response = await page.goto(url('/'), { waitUntil: 'domcontentloaded' });
       assert.equal(response.status(), 200);
     });
   });
@@ -813,30 +853,40 @@ describe('Boundary 13: Edge CDN Static Compiler', () => {
 // ============================================================================
 describe('Boundary 14: Next.js 15 App Router RSC Compiler', () => {
   test('B14.1: Compiler enforces strict absence of "use client" in server components', () => {
-    const compiled = COMPILER_ORACLES.compileNextJsRsc({});
-    assert.ok(!compiled.files['components/server/KineticSection.tsx'].includes('"use client"'));
-    assert.ok(!compiled.files['app/page.tsx'].includes('"use client"'));
+    const { NextJsRscCompiler } = MODULES.nextjsRscCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new NextJsRscCompiler().compile(spec);
+    assert.ok(!compiled.files['components/server/KineticSection.tsx'].includes('"use client"') && !compiled.files['components/server/KineticSection.tsx'].includes("'use client'"));
+    assert.ok(!compiled.files['app/page.tsx'].includes('"use client"') && !compiled.files['app/page.tsx'].includes("'use client'"));
   });
 
   test('B14.2: Compiler handles client island importing another client component', () => {
-    const compiled = COMPILER_ORACLES.compileNextJsRsc({});
+    const { NextJsRscCompiler } = MODULES.nextjsRscCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new NextJsRscCompiler().compile(spec);
     const clientIsland = compiled.files['components/client/KineticSceneIsland.tsx'];
-    assert.ok(clientIsland.trim().startsWith('"use client"'));
+    assert.ok(clientIsland.trim().startsWith("'use client'") || clientIsland.trim().startsWith('"use client"'));
   });
 
   test('B14.3: Compiler generates layout.tsx with complete metadata titles and OpenGraph tags', () => {
-    const compiled = COMPILER_ORACLES.compileNextJsRsc({ title: 'Meta Chrono' });
+    const { NextJsRscCompiler } = MODULES.nextjsRscCompiler;
+    const spec = createValidCompositionSpec({ brandSpec: { brandName: 'Meta Chrono', tagline: 'Precision', theme: { bgBase: '#000', accent: '#fff', textPrimary: '#fff', textSecondary: '#ccc', surface: '#111', fontFamily: 'Inter' }, meta: { title: 'Meta Chrono', description: 'desc', canonicalUrl: 'https://test.com' } } });
+    const compiled = new NextJsRscCompiler().compile(spec);
     assert.ok(compiled.files['app/layout.tsx'].includes('Meta Chrono'));
   });
 
   test('B14.4: Compiler handles multiple client islands rendered in adjacent DOM branches', () => {
-    const compiled = COMPILER_ORACLES.compileNextJsRsc({});
+    const { NextJsRscCompiler } = MODULES.nextjsRscCompiler;
+    const spec = createValidCompositionSpec();
+    const compiled = new NextJsRscCompiler().compile(spec);
     assert.ok(compiled.files['components/client/KineticSceneIsland.tsx']);
     assert.ok(compiled.files['components/client/OpticalAnchorIsland.tsx']);
   });
 
   test('B14.5: Compiler handles Next.js 15 page with empty scene graph returning valid JSX', () => {
-    const compiled = COMPILER_ORACLES.compileNextJsRsc({});
+    const { NextJsRscCompiler } = MODULES.nextjsRscCompiler;
+    const spec = createValidCompositionSpec({ assets: [] });
+    const compiled = new NextJsRscCompiler().compile(spec);
     assert.ok(compiled.files['app/page.tsx'].includes('export default function Page'));
   });
 });
@@ -845,38 +895,45 @@ describe('Boundary 14: Next.js 15 App Router RSC Compiler', () => {
 // B15: Deterministic AST Anti-Slop Transformer Boundary Cases
 // ============================================================================
 describe('Boundary 15: Deterministic AST Anti-Slop Transformer', () => {
-  test('B15.1: Transformer accepts copy right at exact lower budget boundary (-15.0%)', () => {
-    const original = '12345678901234567890'; // 20 chars
-    const lower = '12345678901234567'; // 17 chars = 85.0%
-    const check = COMPILER_ORACLES.validateAntiSlop(lower, original);
-    assert.equal(check.withinBudget, true);
-  });
-
-  test('B15.2: Transformer accepts copy right at exact upper budget boundary (+15.0%)', () => {
-    const original = '12345678901234567890'; // 20 chars
-    const upper = '12345678901234567890123'; // 23 chars = 115.0%
-    const check = COMPILER_ORACLES.validateAntiSlop(upper, original);
-    assert.equal(check.withinBudget, true);
-  });
-
-  test('B15.3: Transformer rejects copy exceeding upper budget boundary at +16.0%', () => {
-    const original = '12345678901234567890'; // 20 chars
-    const tooLong = '123456789012345678901234'; // 24 chars = 120.0%
-    const check = COMPILER_ORACLES.validateAntiSlop(tooLong, original);
-    assert.equal(check.withinBudget, false);
-  });
-
-  test('B15.4: Transformer rejects copy falling below lower budget boundary at -16.0%', () => {
-    const original = '12345678901234567890'; // 20 chars
-    const tooShort = '1234567890123456'; // 16 chars = 80.0%
-    const check = COMPILER_ORACLES.validateAntiSlop(tooShort, original);
-    assert.equal(check.withinBudget, false);
-  });
-
-  test('B15.5: Transformer detects subtle case-insensitive English marketing buzzwords', () => {
-    const leak = 'Projetado com uma abordagem RESULTS-DRIVEN.';
-    const check = COMPILER_ORACLES.validateAntiSlop(leak);
+  test('B15.1: Transformer rejects generic "sample text" placeholder slop', () => {
+    const { AntiSlopTransformer } = MODULES.antiSlopTransformer;
+    const transformer = new AntiSlopTransformer();
+    const check = transformer.audit('Aqui temos sample text para teste.');
     assert.equal(check.passed, false);
+    assert.ok(check.violations.some(v => v.includes('sample text')));
+  });
+
+  test('B15.2: Transformer rejects "placeholder text" slop', () => {
+    const { AntiSlopTransformer } = MODULES.antiSlopTransformer;
+    const transformer = new AntiSlopTransformer();
+    const check = transformer.audit('Adicione o seu placeholder text aqui.');
+    assert.equal(check.passed, false);
+    assert.ok(check.violations.some(v => v.includes('placeholder text')));
+  });
+
+  test('B15.3: Transformer rejects "as an ai" conversational slop', () => {
+    const { AntiSlopTransformer } = MODULES.antiSlopTransformer;
+    const transformer = new AntiSlopTransformer();
+    const check = transformer.audit('As an AI language model, desenvolvemos interfaces.');
+    assert.equal(check.passed, false);
+    assert.ok(check.violations.some(v => v.toLowerCase().includes('as an ai')));
+  });
+
+  test('B15.4: Transformer rejects "chatgpt" mention in production copy', () => {
+    const { AntiSlopTransformer } = MODULES.antiSlopTransformer;
+    const transformer = new AntiSlopTransformer();
+    const check = transformer.audit('Gerado automaticamente via ChatGPT 2026.');
+    assert.equal(check.passed, false);
+    assert.ok(check.violations.some(v => v.includes('chatgpt')));
+  });
+
+  test('B15.5: Transformer accepts clean domain-specific engineering copy without false positives', () => {
+    const { AntiSlopTransformer } = MODULES.antiSlopTransformer;
+    const transformer = new AntiSlopTransformer();
+    const clean = 'Caixa usinada em titânio aeroespacial grau 5 com tratamento anti-reflexo.';
+    const check = transformer.audit(clean);
+    assert.equal(check.passed, true);
+    assert.equal(check.violations.length, 0);
   });
 });
 
