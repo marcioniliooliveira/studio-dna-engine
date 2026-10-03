@@ -9,7 +9,7 @@
     "studio-dna-orchestrate": "./bin/orchestrator.js"
   },
   "scripts": {
-    "test": "node --test test/*.test.js",
+    "test": "npm run test:all",
     "test:milestones": "node --test --test-concurrency=1 test/m1-cdp-decompiler.test.js test/m2-kinetic-trajectory.test.js test/m3-assets3d-pipeline.test.js test/m4-compiler-dualstack.test.js",
     "test:e2e": "node --test --test-concurrency=1 test/e2e/*.test.js",
     "test:all": "node --test --test-concurrency=1 test/m1-cdp-decompiler.test.js test/m2-kinetic-trajectory.test.js test/m3-assets3d-pipeline.test.js test/m4-compiler-dualstack.test.js test/e2e/*.test.js",

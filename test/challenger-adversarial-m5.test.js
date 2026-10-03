@@ -558,25 +558,24 @@ test.describe('Suite 4 [Challenger]: CSS @scope Donut Scoping & Piercing Attacks
     // Verify @scope rule exists and wraps .kinetic-stage to [data-kinetic-slot]
     assert.ok(css.includes('@scope (.kinetic-stage) to ([data-kinetic-slot])'), 'Must include exact donut scoping rule');
     assert.ok(css.includes('@supports not (scope: default)'), 'Must include non-@scope fallback');
+
+    // Invariant validation: compiler generated CSS passes clean check
+    const validation = validateDonutScopeInvariants(css);
+    assert.equal(validation.compliant, true, 'Compiler generated styles.css must be compliant');
   });
 
-  test('4.2 Piercing Bug Investigation: Compiler CSS contains comment triggering false positive in validator', () => {
-    const compiler = new EdgeStaticCompiler();
-    const result = compiler.compile(compliantSpec);
-    const css = result.files['styles.css'];
+  test('4.2 Invariant Validator Linter: verifies comment-stripping behavior on inline comments', () => {
+    // When cleanCss strips comments, inline references to [data-kinetic-slot] */ are safely ignored
+    const cssWithComment = `
+      /* Invariant check: styles do not pierce [data-kinetic-slot] */
+      @scope (.kinetic-stage) to ([data-kinetic-slot]) {
+        .inner { color: red; }
+      }
+    `;
 
-    // Line 331 of edge-static-compiler.js contains:
-    // "/* Donut Scope Invariant: Styles inside .kinetic-stage do not pierce into [data-kinetic-slot] */"
-    // Because validateDonutScopeInvariants does not strip comments, "[data-kinetic-slot] */" is matched as "[data-kinetic-slot] *"
-    const rawValidation = validateDonutScopeInvariants(css);
-    assert.equal(rawValidation.compliant, false, 'Raw CSS triggers false-positive violation due to inline comment');
-    assert.ok(rawValidation.violations.some(v => v.includes("[data-kinetic-slot] *")), 'Identifies false-positive match on comment close');
-
-    // When CSS comments are properly stripped, the actual CSS rules are completely compliant
-    const strippedCss = css.replace(/\/\*[\s\S]*?\*\//g, '');
-    const cleanValidation = validateDonutScopeInvariants(strippedCss);
-    assert.equal(cleanValidation.compliant, true, 'Stripped CSS rules are 100% compliant with zero piercing');
-    assert.equal(cleanValidation.violations.length, 0);
+    const validation = validateDonutScopeInvariants(cssWithComment);
+    assert.equal(validation.compliant, true, 'Comments must not trigger false-positive piercing violation');
+    assert.equal(validation.violations.length, 0);
   });
 
   test('4.3 Penetration attack: descendant selector attempting to pierce slot boundary', () => {
