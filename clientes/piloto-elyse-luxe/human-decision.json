@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
   "contractKind": "human-decision",
-  "decisionId": "dec-1790887983626",
+  "decisionId": "dec-1791017012752",
   "clientSlug": "piloto-elyse-luxe",
   "selectedDirection": "A",
   "approver": "architect-lead",
-  "timestamp": "2026-10-01T20:53:03.626Z",
+  "timestamp": "2026-10-03T08:43:32.752Z",
   "signedPayloadSha256": "c2ea13bbbd896967dfa4a1420e097b5737a7d2cf8869b0f1cd51e1b01a78fdc4",
   "status": "approved-frozen"
 }

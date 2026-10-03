@@ -30,3 +30,5 @@
 - [portfolio-webdev] **Web Developer Portfolio Reference** (ref `copias/likova-space/`): Referência pura mantida 100% intacta.
 - [ref-21oaks] **21Oaks Reference** (`copias/21oaks-org/`): Referência pura com reveals funcionais restaurados via SplitText nativo universal.
 - [ref-aircenter] **AIR Center Reference** (`copias/aircenter-space/`): Referência pura com 3D ribbon e matriz de mobilidade.
+- [jumpflex-home-evolution] **Jumpflex Home Evolution** (`clientes/jumpflex-home-evolution/`): Design System Kinetic Toybox (`#2976C7`, `#FF562D`, `#181B2D`), DNA Live Tuning HUD adaptado, simulador de quintal ABNT, física de molas de Hooke e dual-funnel B2C/B2B.
+

@@ -38,9 +38,9 @@ A experiência equilibra desejo, clareza de produto e velocidade de compra. A ci
 | A animação preferida é scroll-driven com telemetria reversível | **observed** | Nó `#var_b9f8748b1348` (scroll progress 48%, sem pin bloqueante) |
 | O projeto atende varejo e atacado com funis paralelos | **documented** | Seções 01, 04 e 06 com CTAs dedicados (`VIEW RANGE` e `BUY IN QUANTITY`) |
 | A hero não deve exibir preço | **documented** | Preços mantidos exclusivamente nas coleções e na matriz |
-| Tokens finais de marca, copy aprovada e preços em reais/dólar | **unverified** | Slots marcados como `[PENDENTE]` no canvas |
-| Licenciamento definitivo das imagens de fundo e stock | **unverified** | A base usa mídia de referência; validar antes de produção |
-| Implementação final no diretório de runtime `clientes/` | **unverified** | Canvas e handoff consolidados; código de produção em validação |
+| Tokens de design oficiais Kinetic Toybox | **observed** | `c:\Users\wd\Downloads\DESIGN.md` integrado em `index.html` com HUD |
+| Licenciamento definitivo das imagens de fundo e stock | **unverified** | A base usa mídia vetorial e referências locais; validar antes de produção |
+| Implementação no diretório de runtime `clientes/` | **observed** | `clientes/jumpflex-home-evolution/index.html` validado via Playwright (0 erros) |
 | Aprovação para produção | **unverified** | O repositório permanece em maturidade `experimental` |
 
 **Protocolo de verdade:** runtime, testes e artefatos imutáveis prevalecem sobre este documento. Nenhum item marcado `unverified` pode ser tratado como requisito entregue.
