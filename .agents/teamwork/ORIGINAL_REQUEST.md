@@ -36,3 +36,42 @@ Substituir a rigidez de esqueletos fixos por uma gramática de primitivas modula
 ### Verificação Automatizada
 - [ ] Suíte de testes automatizados com 100% de aprovação via npm test e node --test.
 - [ ] Zero geração de strings livres de código ou HTML arbitrário por modelos de IA autorregressivos.
+
+
+## 2026-10-04T20:14:18Z
+
+Sistema de pesquisa, calibração e evolução do framework front-end autônomo studio-dna v2.5, integrando o motor determinístico de layout (AABB/VRAM), a suíte anti-slop do Impeccable e 8 frentes avançadas de cognição, estados finitos, física háptica e resiliência de hardware.
+
+Working directory: C:\Users\wd\Documents\playwright-scraper
+Integrity mode: development
+
+## Requirements
+
+### R1. Auditoria e Higienização de Anti-Padrões de Superfície (Taste & Craft Floor)
+Integrar a suíte do Impeccable (detect-antipatterns.mjs) como Quality Gate (Tier 4) e higienizar cirurgicamente as telas ativas (JumpPlay), eliminando os 17 anti-padrões identificados (dark-glow, nested-cards, overused-font, bounce-easing).
+
+### R2. Especificação e Prototipação de Primitivas de Estado (FSM) para Formulários
+Pesquisar e projetar uma camada de Máquinas de Estado Finitas (baseada nos princípios de Zag.js/XState) para fluxos de checkout e cotação B2B/B2C, garantindo validação determinística inline, máscaras adaptativas, feedback de latência e recuperação de rascunhos.
+
+### R3. Motor de Física Háptica e Molas Analíticas (Spring Dynamics)
+Formular o modelo matemático de segunda ordem (\ddot{x} + 2\zeta\omega_n\dot{x} + \omega_n^2 x = 0) em vanilla JS ultraleve para interações táteis (arrasto, gavetas e feedback háptico via Vibration API), substituindo curvas de bezier estáticas e garantindo fallback estrito para prefers-reduced-motion.
+
+### R4. Pipeline de Texturas GPU (KTX2 / Basis Universal) & Auditoria de Saliência Visual
+Projetar o pipeline automatizado de transcodificação de assets 3D via gltf-transform para compressão KTX2/Basis e integrar oráculos de predição de saliência visual (atenção nos primeiros 500ms) para validação óptica do CTA e eliminação de distrações geradas por IA.
+
+### R5. Suíte de Testes de Estresse em Hardware Adverso
+Desenvolver cenários de teste automatizados via Playwright CDP simulando CPU throttled (6x), limitação de rAF a 30fps (Modo de Pouca Energia do Safari) e eventos de recuperação de contexto WebGL (webglcontextlost / webglcontextrestored).
+
+## Acceptance Criteria
+
+### Integridade Visual & Anti-Slop (Taste Floor)
+- [ ] 0 ocorrências de dark-glow, nested-cards, overused-font ou bounce-easing validadas via detect-antipatterns.mjs.
+- [ ] Remoção completa de halos radioativos e achatamento de contêineres aninhados na tela B2B do JumpPlay.
+
+### Estados Finitos & Acessibilidade
+- [ ] 100% dos estados de formulário cobertos sem transições impossíveis ou travamentos visuais.
+- [ ] Conformidade com WCAG 2.2 AA e navegação de teclado completa validada via @axe-core/playwright.
+
+### Física & Performance
+- [ ] Transições táteis com continuidade de velocidade e zero overshoot em prefers-reduced-motion.
+- [ ] Assets 3D com texturas KTX2 mantendo VRAM <= 16MB na GPU e zero quedas de frame superiores a 16.6ms.

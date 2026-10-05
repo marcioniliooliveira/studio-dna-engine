@@ -14,6 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const { AntiSlopGate } = require('./anti-slop-gate');
+const { runImpeccableGate, ZERO_TOLERANCE_RULES } = require('./impeccable-gate');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -296,13 +297,19 @@ class UnifiedQualityGate {
       const screenshotPath = path.join(reportsDir, 'verified-golden-preview.png');
       await page.screenshot({ path: screenshotPath, fullPage: false });
 
-      // 6. Avaliação Final dos Gates
+      // 6. Tier 4 Quality Gate: Impeccable Anti-Pattern Detection
+      const impeccableReport = await runImpeccableGate(page, {
+        zeroToleranceRules: ZERO_TOLERANCE_RULES
+      });
+
+      // 7. Avaliação Final dos Gates
       const passed = antiSlopReport.passed &&
                      jsErrors.length === 0 &&
                      networkFailures.length === 0 &&
                      domAudit.brokenImages.length === 0 &&
                      domAudit.readinessFailures.length === 0 &&
-                     scrollAudit.passed;
+                     scrollAudit.passed &&
+                     impeccableReport.passed;
 
       const report = {
         timestamp: new Date().toISOString(),
@@ -314,6 +321,18 @@ class UnifiedQualityGate {
             passed: antiSlopReport.passed,
             violations: antiSlopReport.violations,
             stats: antiSlopReport.stats
+          },
+          tier4AntiPatterns: {
+            passed: impeccableReport.passed,
+            violationsCount: impeccableReport.violations.length,
+            violations: impeccableReport.violations,
+            summary: impeccableReport.summary
+          },
+          impeccable: {
+            passed: impeccableReport.passed,
+            violationsCount: impeccableReport.violations.length,
+            violations: impeccableReport.violations,
+            summary: impeccableReport.summary
           },
           console: {
             passed: jsErrors.length === 0,
@@ -507,5 +526,6 @@ class UnifiedQualityGate {
 }
 
 module.exports = {
-  UnifiedQualityGate
+  UnifiedQualityGate,
+  runImpeccableGate
 };

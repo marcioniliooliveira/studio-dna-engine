@@ -1,205 +1,183 @@
-# Project: High-Fidelity Front-End Generation and Transmutation System
+# Project: studio-dna v2.5 Autonomous Front-End Framework Evolution
 
 ## Architecture
-The system is an automated, deterministic front-end generation and transmutation engine that ingests reference URLs from Awwwards and client brand specifications, producing kinetic, 3D websites with 0px² layout overlap, zero aesthetic degradation (anti-slop), guaranteed continuous 60fps rendering across desktop and mobile, and dual compilation to static Edge CDN HTML and Next.js 15 App Router RSC.
+studio-dna v2.5 is an autonomous, deterministic front-end framework evolution integrating mathematical layout integrity, Impeccable's anti-slop craft floor, finite state machines (Zag.js/XState), 2nd-order analytical spring dynamics, GPU texture compression (KTX2/Basis Universal), visual saliency cognitive vision, and adverse hardware resiliency under Playwright CDP.
 
 ```
-[Reference URL]
-       │
-       ▼ (CDP Interception & Sanitization)
-┌────────────────────────────────────────────────────────┐
-│ M1: src/cdp/                                           │
-│ • KineticTimelineInterceptor (Animation, DOM, CSS)     │
-│ • RuntimeHookInjector (RAF, GSAP, WebGL camera)        │
-│ • TrackerSanitizer (CDP network block + AST strip)     │
-│ • SemanticSkeletonNormalizer (unmask, local assets)    │
-└──────────────────────────┬─────────────────────────────┘
-                           │ Sanitized Skeleton & Kinetic IR
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ M2: src/kinetic/                                       │
-│ • TrajectorySolver (\vec{C}(s) Catmull-Rom / Squad)    │
-│ • OpticalAnchorTracker (NDC projection, BVH/Normal)    │
-│ • AnchorCoordinator (SVG leader lines, 0px² AABB)      │
-│ • AdaptiveConstraints (C3 Viewport FOV, C4 Motion)     │
-└──────────────────────────┬─────────────────────────────┘
-                           │ Trajectory Function & Anchor Points
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ M3: src/assets3d/                                      │
-│ • GltfOptimizerPipeline (@gltf-transform decimate)     │
-│ • TextureCompressor (KTX2 / ASTC_4x4 / ORM packed)     │
-│ • MeshQuantizer (KHR_mesh_quantization 14B/vertex)     │
-│ • VramAuditor (<4MB mesh VRAM, <3MB disk, Safari limit)│
-└──────────────────────────┬─────────────────────────────┘
-                           │ Optimized Assets (<1.7MB, <3.6MB VRAM)
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ M4: src/compiler/                                      │
-│ • KineticGrammarSchema (Zod stage & slot primitives)   │
-│ • EdgeStaticCompiler (CSS @scope + <15KB micro-runtime)│
-│ • NextJsRscCompiler (Next 15 RSC + "use client" island)│
-│ • AntiSlopTransformer (Deterministic AST, ±15% budget) │
-└──────────────────────────┬─────────────────────────────┘
-                           │ Dual Production Builds
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ M5: Final Milestone & Verification                     │
-│ • E2E Test Suite (Tiers 1-4: 100% pass via npm test)   │
-│ • DeepScrutinyGate (8 vectors, 0px² AABB, 0px bleed)   │
-│ • Tier 5 Adversarial Coverage Hardening                │
-│ • Forensic Integrity Audit (Zero cheating / clean)     │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ M1: Impeccable Quality Gate & Surface Sanitization (R1)      │
+│ • scripts/detect-antipatterns.mjs + browser evaluator        │
+│ • src/qa/impeccable-gate.js integrated into Tier 4 QA Gate   │
+│ • Sanitization of JumpPlay active screens (0 slop tells)     │
+│ • Flatten 26 nested-cards in #cotacao-b2b & remove halos    │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Clean Craft Floor & Gate [DONE]
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│ M2: Zag/XState FSM Form Primitives & A11y (R2)               │
+│ • src/fsm/core/machine.js (deterministic micro-statechart)   │
+│ • src/fsm/core/connect.js (Zag-style DOM ARIA bindings)      │
+│ • src/forms/b2b-quote-machine.js & checkout-machine.js       │
+│ • src/forms/masks.js (dynamic CNPJ/CPF modulo 11, CEP)       │
+│ • src/forms/draft-storage.js (localStorage with 24h TTL)     │
+│ • WCAG 2.2 AA & keyboard navigation compliance               │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Deterministic State Machine [DONE]
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│ M3: 2nd-Order Spring Dynamics & Haptic Physics (R3)          │
+│ • src/physics/spring-dynamics.js (\ddot{x}+2\zeta\omega_n\dot{x}+\omega_n^2x=0)│
+│ • Closed-form solutions (underdamped, critical, overdamped)   │
+│ • C¹ velocity continuity hand-off (v₀ = v_drag)              │
+│ • Prefers-reduced-motion strict 0px overshoot clamp (\zeta≥1)│
+│ • src/physics/haptic-engine.js (Vibration API pulses)        │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Analytical Motion & Tactile Feedback [DONE]
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│ M4: GPU Texture Pipeline & Visual Saliency Oracle (R4)       │
+│ • src/assets3d/texture-compressor.js (KTX2 UASTC/ETC1S)      │
+│ • VRAM compliance auditor (Total VRAM <= 16MB)               │
+│ • src/qa/visual-saliency-oracle.js (500ms glance attention)  │
+│ • Score_CTA >= 0.18 and DistractionRatio <= 0.35             │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Certified GPU Assets & Optical Prominence [DONE]
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│ M5: Adverse Hardware Stress Suite & Final Gate (R5)          │
+│ • test/stress/adverse-hardware-stress.test.js                │
+│ • CDP 6x CPU throttling (Emulation.setCPUThrottlingRate)     │
+│ • 30fps rAF clamping (Safari Low Power Mode simulation)      │
+│ • WebGL context loss/recovery (WEBGL_lose_context)           │
+│ • Full E2E & Unit Test Battery (100% pass)                   │
+│ • Forensic Integrity Audit (CLEAN - zero cheating)           │
+└──────────────────────────────────────────────────────────────┘
+                               │ Final Release Gate [PASSED]
 ```
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| 1 | CDP Ingestion & Session Manager | Intercepts Animation, DOM, CSS, Performance domains via CDP session | M1 | Survey R1 |
-| 2 | In-Memory Kinetic Hook Injector | Pre-injects RAF delta measurement, GSAP ticker hook, and WebGL camera matrix sniffer | M1 | Survey R1 |
-| 3 | 3-Tier Tracker Sanitizer | Strips analytics, trackers, pixels via CDP network block, global stubs, Cheerio/PostCSS AST | M1 | Survey R1 |
-| 4 | Semantic Skeleton Normalizer | Neutralizes hostile overflow, unmasks SplitText, strips preloader traps, localizes CDN assets | M1 | Survey R1 |
-| 5 | Orbital Camera Trajectory Solver | Computes continuous \vec{C}(s) via Centripetal Catmull-Rom C² splines & Squad C¹ quaternions | M2 | Survey R2 |
-| 6 | Dynamic Optical Anchor Tracker | Projects 3D world points to 2D NDC screen coordinates with normal back-face and BVH culling | M2 | Survey R2 |
-| 7 | Viewport & Motion Adaptation Rig | C3 mobile portrait FOV/distance compensation (+0.15m safe area) & C4 reduced motion damping | M2 | Survey R2 |
-| 8 | Dynamic SVG Leader Line Coordinator | Coordinates animated SVG paths and DOM annotation badges with AABB spring relaxation (0px² overlap) | M2 | Survey R2 |
-| 9 | 3D Mesh Decimator & Quantizer | Decimates geometry, welds coincident vertices, applies KHR_mesh_quantization (14B/vertex) & Meshopt | M3 | Survey R3 |
-| 10 | GPU Texture Compressor | Transcodes textures to KTX2 Basis Universal (ASTC_4x4 / UASTC 1B/px) & packs ORM (AO/Rough/Metal) | M3 | Survey R3 |
-| 11 | VRAM & Disk Compliance Auditor | Mathematically validates mesh VRAM < 4MB, disk < 3MB, and iOS WebKit peak scene <= 384MB | M3 | Survey R3 |
-| 12 | Modular Kinetic Composition Grammar | Defines declarative kinetic primitives schema with CSS @scope donut isolation to ([data-kinetic-slot]) | M4 | Survey R4 |
-| 13 | Edge CDN Static Compiler | Exports standalone HTML5 + scoped CSS + <15KB micro-runtime Three.js/KTX2 loader for Edge CDNs | M4 | Survey R4 |
-| 14 | Next.js 15 App Router RSC Compiler | Exports Next 15 App Router directory (layout.tsx, page.tsx, static RSC sections + client islands) | M4 | Survey R4 |
-| 15 | Deterministic AST Anti-Slop Transformer | Enforces zero AI slop, zero brand leaks, zero raw slot placeholders, and character budgets ±15% | M4 | Survey R4 |
-| 16 | E2E Test Harness & Unified Runner | Test runner with standalone preview server orchestration across 1440x900 & 390x844 viewports | E2E Track | Survey AC-3.1 |
-| 17 | Tiers 1-4 Test Suite | Feature coverage, BVA/edge cases, pairwise interactions, real-world application scenarios | E2E Track | Survey AC |
-| 18 | DeepScrutinyGate 3D Contract & Collision Gate | Evaluates AABB text overlap 0px², 0px horizontal bleed, and declared 3D front/back matrix3d pairs | M5 | Survey AC-1 |
-| 19 | Inertial Scroll Performance Profiler | Validates continuous >= 58fps inertial scroll with frame render duration <= 16.6ms | M5 | Survey AC-2 |
-| 20 | Tier 5 Adversarial Coverage Hardening | White-box source analysis, adversarial boundary tests, and zero-slop verification | M5 | Survey AC |
+| 1 | Impeccable Quality Gate Integration | Integrates `detect-antipatterns.mjs` as Tier 4 Quality Gate in `src/qa/` rejecting all 17 surface anti-patterns | M1 | Survey R1 |
+| 2 | JumpPlay Screen Sanitization | Surgically removes 26 nested-cards, radioactive halos, overused fonts, and pulsing dots from JumpPlay screens | M1 | Survey R1 |
+| 3 | Core Finite State Machine Engine | Pure vanilla JS hierarchical deterministic state machine engine (`src/fsm/core/machine.js`) | M2 | Survey R2 |
+| 4 | Zag.js-Style DOM A11y Connector | Connects FSM states and context to DOM attributes (`aria-invalid`, `aria-busy`, `disabled`, `data-state`) | M2 | Survey R2 |
+| 5 | B2B Quote & Checkout Form Machines | Complete statecharts for JumpPlay quotation and checkout with latency watchdog and submission control | M2 | Survey R2 |
+| 6 | Adaptive Input Masking Engine | Dynamic masking maintaining cursor position with modulo 11 check-digit verification for Brazilian CNPJ/CPF & CEP | M2 | Survey R2 |
+| 7 | LocalStorage Draft Persistence | Auto-saving form draft state with 24-hour TTL and seamless restoration upon page reload | M2 | Survey R2 |
+| 8 | WCAG 2.2 AA & Keyboard Navigation | Full keyboard operability (Tab order, focus rings $\ge 3:1$) and zero accessibility violations | M2 | Survey R2 / AC |
+| 9 | Analytical 2nd-Order Spring Dynamics | Closed-form ODE solution for damped physical harmonic motion across underdamped, critical, and overdamped modes | M3 | Survey R3 |
+| 10 | Velocity Continuity Hand-off | Transfers pointer drag velocity directly to initial spring velocity ($v_0 = v_{\text{drag}}$) ensuring $C^1$ continuity | M3 | Survey R3 |
+| 11 | Zero-Overshoot Reduced-Motion Clamp | Strictly clamps damping $\zeta \ge 1.0$ and guarantees $0\text{px}$ overshoot when `prefers-reduced-motion` is active | M3 | Survey R3 / AC |
+| 12 | Multi-Tier Vibration API Engine | Haptic pulses for detents (12ms), releases (8ms), limits (22ms), and errors (double buzz) via `navigator.vibrate` | M3 | Survey R3 |
+| 13 | KTX2 Basis Universal Texture Pipeline | Transcodes 3D textures to KTX2 UASTC/ETC1S, guaranteeing total GPU VRAM $\le 16\text{MB}$ | M4 | Survey R4 / AC |
+| 14 | 500ms Visual Saliency Attention Oracle | Simulates human ocular fixation in first 500ms, asserting $\text{Score}_{\text{CTA}} \ge 0.18$ and filtering AI distractions ($\le 0.35$) | M4 | Survey R4 |
+| 15 | 6x CPU Throttling Stress Scenario | Playwright CDP simulation of entry-level chipset via `Emulation.setCPUThrottlingRate`, ensuring latency $< 16.6\text{ms}$ | M5 | Survey R5 |
+| 16 | 30fps rAF Clamp Stress Scenario | Simulates Safari Low Power Mode by clamping rAF to 30Hz, verifying normalized $\Delta t$ settling parity | M5 | Survey R5 |
+| 17 | WebGL Context Lost & Restored Test | Simulates GPU eviction via `WEBGL_lose_context`, verifying zero crash, UI responsiveness, and automatic rehydration | M5 | Survey R5 / AC |
+| 18 | Unified Test Battery & Forensic Audit | Executes complete test suite (277 baseline + 106 v2.5 + 36 challenger tests) and independent forensic audit | M5 | Survey AC |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| M1 | CDP Semantic Decompiler & Sanitizer | R1: `src/cdp/` (interceptor, hook injector, sanitizer, normalizer) | none | DONE (11/11 unit tests pass) |
-| M2 | Kinetic Trajectory & Optical Anchors | R2: `src/kinetic/` (trajectory solver, anchor tracker, coordinator, adaptive rigs) | none | DONE (22/22 unit tests pass) |
-| M3 | Ultralight 3D Mobile Assets Pipeline | R3: `src/assets3d/` (gltf optimizer, texture compressor, quantizer, vram auditor) | none | DONE (16/16 unit tests pass) |
-| M4 | Kinetic Grammar & Dual-Stack Compiler | R4: `src/compiler/` (kinetic grammar, edge compiler, nextjs compiler, anti-slop) | M1, M2, M3 contracts | DONE (28/28 unit tests pass) |
-| E2E | E2E Testing Track | Test infra, runner, Tiers 1-4 test suite, `TEST_READY.md` publication | none | DONE (TEST_READY.md published, 196 E2E tests) |
-| M5 | Final Milestone: 100% E2E & Tier 5 Hardening | Phase 1: 100% E2E test pass; Phase 2: Tier 5 adversarial hardening + Forensic Audit | M1..M4, E2E Track | IN_PROGRESS |
+| M1 | Impeccable Quality Gate & JumpPlay Sanitization | R1: `scripts/detect-antipatterns.mjs`, `src/qa/impeccable-gate.js`, sanitization of JumpPlay screens | none | DONE (13/13 unit tests pass) |
+| M2 | Zag/XState FSM Form Primitives & Accessibility | R2: `src/fsm/core/machine.js`, `src/fsm/core/connect.js`, `src/forms/`, masks, draft storage, WCAG | none | DONE (26/26 unit tests pass) |
+| M3 | Analytical Spring Dynamics & Haptic Engine | R3: `src/physics/spring-dynamics.js`, `src/physics/haptic-engine.js`, closed-form ODE, reduced motion | none | DONE (35/35 unit tests pass) |
+| M4 | GPU Texture Pipeline & Visual Saliency Oracle | R4: `src/assets3d/texture-compressor.js`, `src/qa/visual-saliency-oracle.js`, VRAM <= 16MB | none | DONE (13/13 unit tests pass) |
+| M5 | Adverse Hardware Stress Suite & Final Verification | R5: `test/stress/adverse-hardware-stress.test.js`, CDP throttling, 30fps rAF, WebGL loss, Full Gate | M1..M4 | DONE (19/19 stress + 36/36 challenger pass) |
 
 ## Interface Contracts
 
-### M1 (CDP Decompiler) ↔ M2 (Kinetic Trajectory) & M4 (Compiler)
-- **KineticTimelineIR**:
-  ```ts
-  interface KineticTimelineIR {
-    sourceUrl: string;
-    viewport: { width: number; height: number; dpr: number };
-    cssAnimations: Array<{
-      id: string;
-      targetSelector: string;
-      type: 'CSSAnimation' | 'CSSTransition' | 'WebAnimation';
-      durationMs: number;
-      delayMs: number;
-      easing: string;
-      keyframes: Array<{ offset: number; properties: Record<string, string> }>;
-    }>;
-    gsapTimelines: Array<{
-      triggerSelector?: string;
-      startBound?: string;
-      endBound?: string;
-      scrub: boolean | number;
-      pin: boolean | string;
-      tweens: Array<{ targetSelector: string; duration: number; ease: string; vars: Record<string, any> }>;
-    }>;
-    webglRenders: Array<{
-      canvasSelector: string;
-      cameraFov: number;
-      cameraTrajectorySamples: Array<{
-        scrollProgress: number; // s in [0, 1]
-        position: [number, number, number];
-        target: [number, number, number];
-        quaternion: [number, number, number, number];
-      }>;
-    }>;
-    sanitizationReport: { blockedRequestsCount: number; strippedScriptsCount: number; isClean: boolean };
-  }
-  ```
+### M1 (Impeccable Gate) Contract
+```js
+interface ImpeccableGateResult {
+  passed: boolean;
+  violations: Array<{
+    antipattern: string;
+    category: 'slop' | 'quality';
+    snippet: string;
+    line?: number;
+    element?: string;
+  }>;
+  summary: { slopCount: number; qualityCount: number; totalCount: number };
+}
+```
 
-### M2 (Kinetic Trajectory) ↔ M4 (Compiler)
-- **Trajectory & Anchor Contract**:
-  ```ts
-  interface TrajectoryEvaluator {
-    evaluate(s: number): {
-      position: [number, number, number];
-      target: [number, number, number];
-      up: [number, number, number];
-      fov: number;
-    };
-  }
-  interface OpticalAnchor {
-    id: string;
-    worldPoint: [number, number, number];
-    normal: [number, number, number];
-    title: string;
-    description: string;
-    safeArea: { xMin: number; xMax: number; yMin: number; yMax: number };
-  }
-  ```
+### M2 (FSM Forms) Contract
+```js
+interface FormMachineInstance {
+  state: 'idle' | 'validating' | 'submitting' | 'error' | 'success';
+  context: {
+    values: Record<string, any>;
+    displayValues: Record<string, string>;
+    errors: Record<string, string>;
+    touched: Record<string, boolean>;
+    isValid: boolean;
+    isSubmitting: boolean;
+    latency: { startedAt: number | null; elapsedMs: number; isDelayed: boolean };
+  };
+  send(event: { type: string; [key: string]: any }): void;
+  subscribe(listener: (state: any) => void): () => void;
+}
+```
 
-### M3 (3D Pipeline) ↔ M4 (Compiler)
-- **Asset Manifest Contract**:
-  ```ts
-  interface OptimizedAssetManifest {
-    modelPath: string; // relative path to .glb
-    diskSizeBytes: number; // strictly < 3,145,728 bytes
-    vramFootprintBytes: number; // strictly < 4,194,304 bytes
-    geometryBytes: number;
-    textureBytes: number;
-    textureCompression: 'KTX2_ASTC' | 'KTX2_UASTC';
-    meshQuantization: boolean; // KHR_mesh_quantization: true
-    meshoptCompression: boolean; // KHR_meshopt_compression: true
-    isWebKitCertified: boolean;
-  }
-  ```
+### M3 (Spring Dynamics) Contract
+```js
+interface SpringDynamicsEvaluator {
+  evaluate(tSeconds: number): {
+    position: number;
+    velocity: number;
+    isSettled: boolean;
+  };
+}
+```
 
-### M4 (Compiler) ↔ Outputs
-- **Dual-Stack Targets**:
-  - `dist/edge-cdn/`: `index.html`, `styles.css` (enclosing `@scope (.kinetic-stage) to ([data-kinetic-slot])`), `runtime/kinetic-micro.js`, `assets/`.
-  - `dist/nextjs15/`: `app/layout.tsx`, `app/page.tsx`, `components/server/KineticSection.tsx` (RSC, 0 client JS), `components/client/KineticSceneIsland.tsx` ("use client"), `components/client/OpticalAnchorIsland.tsx` ("use client").
+### M4 (Visual Saliency) Contract
+```js
+interface SaliencyAnalysisResult {
+  scoreCta: number; // must be >= 0.18
+  distractionRatio: number; // must be <= 0.35
+  ctaAttentionRank: number; // must be <= 2
+  passed: boolean;
+}
+```
 
 ## Code Layout
 ```
 src/
-├── cdp/
-│   ├── kinetic-timeline-interceptor.js
-│   ├── runtime-hook-injector.js
-│   ├── tracker-sanitizer.js
-│   └── semantic-skeleton-normalizer.js
-├── kinetic/
-│   ├── trajectory-solver.js
-│   ├── optical-anchor-tracker.js
-│   ├── dynamic-anchor-coordinator.js
-│   └── adaptive-constraints.js
-├── assets3d/
-│   ├── gltf-optimizer-pipeline.js
-│   ├── texture-compressor.js
-│   ├── mesh-quantizer.js
-│   └── vram-auditor.js
-├── compiler/
-│   ├── kinetic-grammar-schema.js
-│   ├── edge-static-compiler.js
-│   ├── nextjs-rsc-compiler.js
-│   └── anti-slop-transformer.js
-├── qa/
-│   ├── deep-scrutiny-gate.js
-│   ├── kinetic-telemetry-extractor.js
-│   └── anti-slop-gate.js
-└── test/
-    ├── e2e/
-    │   ├── runner.js
-    │   ├── tier1-feature-coverage.test.js
-    │   ├── tier2-boundary-corner.test.js
-    │   ├── tier3-cross-feature.test.js
-    │   └── tier4-realworld-scenarios.test.js
-    └── ...
+├── cdp/                               # M1 CDP Decompiler & Sanitizer (baseline)
+├── kinetic/                           # M2 Kinetic Trajectory & Optical Anchors (baseline)
+├── assets3d/                          # M3 3D Assets Pipeline & KTX2 Transcoder (M4)
+├── compiler/                          # M4 Kinetic Grammar & Dual-Stack Compiler (baseline)
+├── fsm/                               # M2 Finite State Machine Architecture
+│   ├── core/
+│   │   ├── machine.js                 # Micro-FSM core engine
+│   │   └── connect.js                 # DOM ARIA connector
+├── forms/                             # M2 Form Flows & Validations
+│   ├── b2b-quote-machine.js           # JumpPlay B2B Quote state machine
+│   ├── checkout-machine.js            # In-site Checkout state machine
+│   ├── masks.js                       # Adaptive masks & Modulo 11 check digits
+│   └── draft-storage.js               # LocalStorage draft persistence manager
+├── physics/                           # M3 Analytical Physics Engine
+│   ├── spring-dynamics.js             # 2nd-order ODE analytical closed-form engine
+│   └── haptic-engine.js               # Multi-tier Vibration API coordinator
+├── qa/                                # Quality Gates & Oracles
+│   ├── unified-quality-gate.js        # Multi-tier Quality Gate orchestrator
+│   ├── anti-slop-gate.js              # Lexical anti-slop gate
+│   ├── impeccable-gate.js             # Tier 4 Impeccable anti-pattern detector
+│   └── visual-saliency-oracle.js      # 500ms ocular fixation & CTA attention oracle
+scripts/
+│   ├── detect-antipatterns.mjs        # Impeccable anti-pattern CLI
+│   └── detect-antipatterns-browser.js # Standalone browser anti-pattern bundle
+clientes/
+└── jumpflex-home-evolution/
+    └── JumpPlay — Family Reveal & Kinetic Range.html # Active JumpPlay screen
+test/
+├── m1-impeccable-sanitization.test.js  # M1 unit test suite (13 tests)
+├── m2-fsm-forms.test.js                # M2 unit test suite (26 tests)
+├── m3-spring-dynamics.test.js          # M3 unit test suite (35 tests)
+├── m4-gpu-saliency.test.js             # M4 unit test suite (13 tests)
+└── stress/
+    ├── adverse-hardware-stress.test.js # M5 adverse hardware stress suite (19 tests)
+    └── challenger-empirical.test.js    # Challenger 1 empirical test battery (21 tests)
 ```

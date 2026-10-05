@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-15T19:54:00.808Z",
+  "timestamp": "2026-10-04T20:20:18.659Z",
   "clientSlug": "negocia-bem",
   "passed": true,
   "status": "verified",
@@ -29,7 +29,15 @@
       "totalImages": 17,
       "brokenImagesCount": 0,
       "brokenImages": [],
+      "decodedImagesCount": 17,
+      "readinessFailuresCount": 0,
+      "readinessFailures": [],
       "sectionsCount": 14
+    },
+    "scrollDynamics": {
+      "passed": true,
+      "overlapsCount": 0,
+      "overlaps": []
     }
   },
   "artifacts": {

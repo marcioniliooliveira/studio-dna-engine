@@ -9,7 +9,7 @@
   <!-- Fontes Oficiais do Design System & Suíte Boutique Asymmetric Bento -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800..900&family=Barlow+Condensed:wght@700;800;900&family=Bebas+Neue&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800..900&family=Barlow+Condensed:wght@700;800;900&family=Bebas+Neue&family=Manrope:wght@500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
   
   <!-- Tailwind CSS CDN -->
@@ -51,15 +51,15 @@
             "headline-lg": ["'Bricolage Grotesque'", "'Barlow Condensed'", "sans-serif"],
             "headline-md": ["'Bricolage Grotesque'", "'Barlow Condensed'", "sans-serif"],
             "headline-sm": ["'Barlow Condensed'", "sans-serif"],
-            "body-lg": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
-            "body-md": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
+            "body-lg": ["'Manrope'", "sans-serif"],
+            "body-md": ["'Manrope'", "sans-serif"],
             "body-sm": ["'Manrope'", "sans-serif"],
             "label-lg": ["'Manrope'", "sans-serif"],
             "label-md": ["'Manrope'", "sans-serif"],
-            "label-mono": ["'Space Grotesk'", "monospace"],
+            "label-mono": ["'JetBrains Mono'", "monospace"],
             "caption": ["'Manrope'", "sans-serif"],
             "syne": ["'Syne'", "sans-serif"],
-            "jakarta": ["'Plus Jakarta Sans'", "sans-serif"],
+            "jakarta": ["'Manrope'", "sans-serif"],
             "mono-code": ["'JetBrains Mono'", "monospace"]
           },
           spacing: {
@@ -93,7 +93,7 @@
       --ease-snappy:   cubic-bezier(0.16, 1, 0.3, 1);
       --ease-smooth:   cubic-bezier(0.25, 1, 0.5, 1);
       --ease-dramatic: cubic-bezier(0.7, 0, 0.3, 1);
-      --ease-elastic:  cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-elastic:  cubic-bezier(0.16, 1, 0.3, 1);
       --ease-linear:   linear;
     }
     /* Shader Spotlight Tátil para Cartões Bento */
@@ -131,7 +131,7 @@
       display: none;
     }
     .jf-page {
-      font-family: 'Space Grotesk', 'Manrope', sans-serif;
+      font-family: 'Manrope', sans-serif;
       background: var(--navy);
       color: var(--white);
       min-height: 800px;
@@ -286,7 +286,7 @@
       display: flex; align-items: center; gap: 10px;
     }
     .drawer-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800; font-size: 1rem;
       color: #ffffff; letter-spacing: -0.01em;
     }
@@ -328,7 +328,7 @@
       height: 100%; width: 100%;
       background: linear-gradient(90deg, #1677FF 0%, #A9E52C 100%);
       border-radius: 9999px;
-      transition: width 0.4s ease;
+      transform-origin: left; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Drawer Body / Cart Items */
@@ -336,13 +336,7 @@
       flex: 1; overflow-y: auto; padding: 20px 22px;
       display: flex; flex-direction: column; gap: 16px;
     }
-    .drawer-item-card {
-      background: #0f1f2e; border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px; padding: 14px;
-      display: flex; gap: 12px; align-items: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      transition: border-color 0.18s ease;
-    }
+    .drawer-item-card { background: rgba(255, 255, 255, 0.02); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 14px 0; display: flex; gap: 12px; align-items: center; }
     .drawer-item-card:hover {
       border-color: rgba(169, 229, 44, 0.35);
     }
@@ -356,7 +350,7 @@
       flex: 1; min-width: 0;
     }
     .drawer-item-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800; font-size: 0.9rem;
       color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
@@ -429,7 +423,7 @@
     .drawer-total-row {
       display: flex; justify-content: space-between; align-items: baseline;
       padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
     .drawer-total-label {
       font-size: 0.85rem; font-weight: 700; color: #d8e3f6;
@@ -443,16 +437,16 @@
       width: 100%; padding: 15px 22px;
       background: #A9E52C; color: #081421;
       border: none; border-radius: 9999px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800; font-size: 0.95rem; letter-spacing: 0.02em;
       text-transform: uppercase;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      box-shadow: 0 4px 18px rgba(169, 229, 44, 0.35);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
       transition: all 0.18s ease;
     }
     .btn-checkout-jump:hover {
       background: #b8f63e; transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(169, 229, 44, 0.45);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
     .btn-checkout-jump:active {
       transform: translateY(1px);
@@ -505,7 +499,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .modal-head-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800; font-size: 1rem; color: #ffffff;
     }
     .modal-close-btn {
@@ -534,7 +528,7 @@
     }
     .step-title-wrap {
       display: flex; align-items: center; gap: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800; font-size: 0.9rem; color: #ffffff;
     }
     .step-num-circle {
@@ -548,13 +542,13 @@
       width: 100%; padding: 12px 14px;
       background: #081421; border: 1.5px solid rgba(255, 255, 255, 0.12);
       border-radius: 10px; color: #ffffff;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem;
+      font-family: 'Manrope', sans-serif; font-size: 0.85rem;
       outline: none; box-sizing: border-box;
       transition: border-color 0.16s ease, box-shadow 0.16s ease;
     }
     .modal-input:focus {
       border-color: #A9E52C;
-      box-shadow: 0 0 0 3px rgba(169, 229, 44, 0.15);
+      box-shadow: 0 0 0 2px #A9E52C;
     }
     .modal-input-readonly {
       background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.08); color: #8b90a0;
@@ -570,7 +564,7 @@
       cursor: pointer; text-align: left;
       display: flex; align-items: center; justify-content: space-between;
       transition: all 0.16s ease;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 0.86rem; font-weight: 700; color: #c1c6d7;
     }
     .pay-tab-btn.active {
@@ -639,15 +633,15 @@
       padding: 14px 28px; border-radius: 9999px;
       background: #A9E52C; color: #081421;
       border: none; cursor: pointer;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.95rem;
+      font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 0.95rem;
       text-transform: uppercase; letter-spacing: 0.02em;
       display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 18px rgba(169, 229, 44, 0.35);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
       transition: all 0.18s ease;
     }
     .btn-confirm-order:hover {
       background: #b8f63e; transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(169, 229, 44, 0.45);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
     .btn-confirm-order:active {
       transform: translateY(1px);
@@ -685,7 +679,7 @@
   <!-- 1. CART EXPEDITION DRAWER (JUMPPLAY DESIGN TOKENS)                 -->
   <!-- ================================================================= -->
   <div id="checkout-overlay" onclick="closeCheckoutDrawer()" aria-hidden="true"></div>
-  <aside id="checkout-drawer" role="dialog" aria-modal="true" aria-label="Seu Carrinho JumpPlay">
+  <aside id="checkout-drawer" class="drawer modal dialog" role="dialog" aria-modal="true" aria-label="Seu Carrinho JumpPlay">
 
     <!-- Header -->
     <div class="drawer-header">
@@ -948,7 +942,7 @@
         <div class="order-success-icon">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
         </div>
-        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.3rem;color:#ffffff;margin:0;">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.3rem;color:#ffffff;margin:0;">
           Pedido Confirmado com Sucesso!
         </h3>
         <p style="color:#c1c6d7;font-size:12px;font-family:'Manrope',sans-serif;max-width:440px;margin:0;">
@@ -1003,7 +997,7 @@
       <!-- ================================================================= -->
       <div class="flex min-h-[42px] items-center justify-center gap-3 bg-[var(--red)] px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[.14em] text-white sm:gap-5 sm:text-[11px] z-50 relative" id="sale-bar">
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-volt-lime animate-ping inline-block"></span>
+          <span class="w-2 h-2 rounded-full bg-volt-lime  inline-block"></span>
           <strong class="text-volt-lime">TABELA DIRETO DE FÁBRICA / ATACADO 2026</strong>
         </div>
         <span class="hidden h-3 w-px bg-white/50 sm:block"></span>
@@ -1043,7 +1037,7 @@
         <!-- Barra de Navegação Superior Integrada -->
         <header class="relative z-20 flex h-[78px] items-center justify-between border-b border-white/15 bg-[#081421]/80 px-5 backdrop-blur-md md:px-10">
           <a class="flex items-center gap-2.5 group" href="#range" onclick="trackEvent('nav_logo_clicked')">
-            <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+            <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-sm">
               <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">PLAY</span><sup class="text-[9px] text-volt-lime ml-0.5">™</sup></span>
             </div>
             <span class="hidden sm:inline font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest -ml-1">TRAMPOLINS DE ALTA RESISTÊNCIA</span>
@@ -1068,7 +1062,7 @@
               <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
               <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-kinetic-red text-white font-label-mono text-[9px] flex items-center justify-center font-bold">1</span>
             </button>
-            <a class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-[3px_3px_0px_#1677FF] hover:bg-secondary-fixed transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="#cotacao-b2b" onclick="trackEvent('header_quote_clicked')">
+            <a class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-sm hover:bg-secondary-fixed transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="#cotacao-b2b" onclick="trackEvent('header_quote_clicked')">
               <span class="hidden sm:inline">COMPRA NO ATACADO</span>
               <span class="sm:hidden">ATACADO</span>
               <span class="font-bold">↗</span>
@@ -1226,7 +1220,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 2: ASYMMETRIC BENTO GRID (65% RESIDENCIAL / 35% B2B FROTA)    -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-white/5" id="dual-flow">
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl " id="dual-flow">
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
           
           <div class="flex flex-col gap-space-xs text-center md:text-left">
@@ -1346,7 +1340,7 @@
             <!-- ================================================================= -->
       <!-- SEÇÃO: CATÁLOGO TRIPARTITE OFICIAL JUMPPLAY™ (COMPACT · MASTER · ARENA) -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-b border-white/5 relative" id="catalogo">
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl  relative" id="catalogo">
         
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl relative z-10">
           
@@ -1431,7 +1425,7 @@
                 </div>
 
                 <!-- Botão Pílula Volt-Lime Oficial -->
-                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_15px_rgba(169,229,44,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="openCheckoutDrawerWithModel('COMPACT')">
+                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="openCheckoutDrawerWithModel('COMPACT')">
                   <span>VER MODELO / COMPRAR</span>
                   <span class="text-sm font-black">↗</span>
                 </button>
@@ -1491,7 +1485,7 @@
                 </div>
 
                 <!-- Botão Pílula Volt-Lime Oficial -->
-                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_15px_rgba(169,229,44,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="openCheckoutDrawerWithModel('MASTER')">
+                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="openCheckoutDrawerWithModel('MASTER')">
                   <span>VER MODELO / COMPRAR</span>
                   <span class="text-sm font-black">↗</span>
                 </button>
@@ -1551,7 +1545,7 @@
                 </div>
 
                 <!-- Botão Pílula Volt-Lime Oficial -->
-                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_15px_rgba(169,229,44,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="selectModelAndScroll('3.66m')">
+                <button type="button" class="w-full py-4 px-6 bg-volt-lime hover:bg-secondary-fixed text-[#081421] font-jakarta font-extrabold text-xs uppercase tracking-wider rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" onclick="selectModelAndScroll('3.66m')">
                   <span>VER MODELO / COTAÇÃO B2B</span>
                   <span class="text-sm font-black">↗</span>
                 </button>
@@ -1606,7 +1600,7 @@
         .hspot:hover, .hspot.active {
           border-color:#A9E52C; background:rgba(169,229,44,.18);
           transform:translate(-50%,-50%) scale(1.18);
-          box-shadow: 0 0 20px rgba(169,229,44,0.4);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.38);
         }
         .hspot .dot {
           width:9px; height:9px; border-radius:50%; background:#A9E52C;
@@ -1630,7 +1624,7 @@
           border:1px solid rgba(169,229,44,.3); border-radius:12px;
           padding:12px 14px; pointer-events:none; opacity:0; z-index:30;
           backdrop-filter:blur(10px); box-shadow:0 8px 24px rgba(0,0,0,.6);
-          transition:opacity .24s cubic-bezier(.34,1.56,.64,1), transform .28s cubic-bezier(.34,1.56,.64,1);
+          transition:opacity .24s cubic-bezier(0.16, 1, 0.3, 1), transform .28s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hspot.flip-left .hspot-tip { left:auto; right:calc(100% + 10px); transform-origin:right center; }
         .hspot:hover .hspot-tip, .hspot.active .hspot-tip { opacity:1; transform:translateY(-50%) scale(1); }
@@ -1668,7 +1662,7 @@
           opacity: 1;
           transform: scale(1) translateX(8px);
           border-color: rgba(169, 229, 44, 0.6);
-          box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5), 0 0 32px rgba(169, 229, 44, 0.1);
+          box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.25);
         }
 
         .card-eyebrow-row {
@@ -1733,10 +1727,7 @@
           gap: 10px;
           margin-bottom: 20px;
         }
-        .spec-box {
-          background: #081421;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
+        .spec-box { background: rgba(255, 255, 255, 0.03); border: none; border-radius: 12px;
           padding: 10px 12px;
           display: flex;
           flex-direction: column;
@@ -1750,7 +1741,7 @@
           letter-spacing: 0.05em;
         }
         .spec-box-val {
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Manrope', sans-serif;
           font-size: 12px;
           font-weight: 800;
           color: #ffffff;
@@ -2169,7 +2160,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 6: CENTRAL DE COTAÇÃO B2B — HIGH-END REDESIGN               -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-white/5" id="cotacao-b2b">
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl " id="cotacao-b2b">
         <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start" id="b2b-grid">
 
           <!-- Coluna Esquerda (col-span-5): Editorial text column -->
@@ -2199,35 +2190,26 @@
             <!-- Trust metric row -->
             <div class="grid grid-cols-2 gap-3">
               <!-- Double-Bezel mini-card -->
-              <div class="p-[1px] rounded-2xl bg-gradient-to-br from-volt-lime/20 via-transparent to-transparent">
-                <div class="bg-[#0c1a28] rounded-[calc(1rem-1px)] p-4 flex flex-col gap-1 shadow-[inset_0_1px_1px_rgba(169,229,44,.08)]">
+              <div class="bg-[#0c1a28] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
                   <span class="font-display font-black text-[1.6rem] text-volt-lime leading-none">24H</span>
                   <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">Despacho nacional</span>
                 </div>
-              </div>
-              <div class="p-[1px] rounded-2xl bg-gradient-to-br from-electric-blue/20 via-transparent to-transparent">
-                <div class="bg-[#0c1a28] rounded-[calc(1rem-1px)] p-4 flex flex-col gap-1 shadow-[inset_0_1px_1px_rgba(22,119,255,.08)]">
+              <div class="bg-[#0c1a28] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
                   <span class="font-display font-black text-[1.6rem] text-electric-blue leading-none">25%</span>
                   <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">OFF em lotes ≥16 un.</span>
                 </div>
-              </div>
-              <div class="p-[1px] rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-transparent">
-                <div class="bg-[#0c1a28] rounded-[calc(1rem-1px)] p-4 flex flex-col gap-1 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)]">
+              <div class="bg-[#0c1a28] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
                   <span class="font-display font-black text-[1.6rem] text-on-surface leading-none">PJ</span>
                   <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">Fatura direto CNPJ</span>
                 </div>
-              </div>
-              <div class="p-[1px] rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-transparent">
-                <div class="bg-[#0c1a28] rounded-[calc(1rem-1px)] p-4 flex flex-col gap-1 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)]">
+              <div class="bg-[#0c1a28] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
                   <span class="font-display font-black text-[1.6rem] text-on-surface leading-none">&lt;15<span class="text-[1rem]">min</span></span>
                   <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">Retorno via WhatsApp</span>
                 </div>
-              </div>
             </div>
 
             <!-- Televendas card — hairline ring, no generic border -->
-            <div class="p-[1px] rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent">
-              <div class="bg-[#0c1a28] rounded-[calc(1rem-1px)] p-4 flex items-center justify-between gap-4 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)]">
+            <div class="bg-[#0c1a28] border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-xl bg-volt-lime/10 flex items-center justify-center flex-shrink-0">
                     <span class="material-symbols-outlined text-volt-lime text-[20px]">support_agent</span>
@@ -2235,7 +2217,6 @@
                   <div>
                     <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider block">Televendas B2B</span>
                     <div class="font-display font-black text-[1.1rem] text-on-surface leading-none mt-0.5">+55 11 4002-8922</div>
-                  </div>
                 </div>
                 <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-volt-lime/10 ring-1 ring-volt-lime/25 flex-shrink-0">
                   <span class="w-1.5 h-1.5 rounded-full bg-volt-lime block flex-shrink-0"></span>
@@ -2246,10 +2227,9 @@
           </div>
 
           <!-- Coluna Direita (col-span-7): Double-Bezel form card — dark glass, never white -->
-          <div class="lg:col-span-7 p-[1px] rounded-[1.75rem] bg-gradient-to-br from-volt-lime/15 via-white/5 to-electric-blue/10" id="bulk">
-            <div class="bg-[#0a1520] rounded-[calc(1.75rem-1px)] p-6 lg:p-8 flex flex-col gap-6 shadow-[inset_0_1px_1px_rgba(255,255,255,.07),0_24px_64px_rgba(0,0,0,.5)]">
+          <div class="lg:col-span-7 bg-[#0a1520] rounded-[1.75rem] p-6 lg:p-8 flex flex-col gap-6 border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,.5)]" id="bulk">
 
-              <!-- Card header — status indicator sem animate-ping genérico -->
+              <!-- Card header — status indicator sem  genérico -->
               <div class="flex items-center justify-between pb-5 border-b border-white/8">
                 <div>
                   <span class="font-label-mono text-[10px] uppercase tracking-[.22em] text-electric-blue font-bold block mb-1">CENTRAL DE COTAÇÃO</span>
@@ -2260,8 +2240,7 @@
                 <!-- Cleaner status: dot + label sem o badge de SaaS genérico -->
                 <div class="flex items-center gap-2 flex-shrink-0">
                   <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt-lime opacity-60"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-volt-lime"></span>
+                    <span class="inline-flex rounded-full h-2 w-2 bg-volt-lime"></span>
                   </span>
                   <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">Ao vivo</span>
                 </div>
@@ -2272,13 +2251,9 @@
                 <!-- Step 1: Segmento — Double-Bezel select -->
                 <div class="flex flex-col gap-2">
                   <label class="font-label-mono text-[10px] uppercase tracking-[.18em] text-on-surface-variant font-bold" for="b2bSegment">
-                    <span class="text-volt-lime mr-1">01</span>Segmento de Atuação
+                    Segmento de Atuação
                   </label>
-                  <!-- Outer shell -->
-                  <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/12 to-white/4">
-                    <!-- Inner core -->
-                    <div class="bg-[#0d1e2e] rounded-[calc(0.75rem-1px)] shadow-[inset_0_1px_1px_rgba(255,255,255,.07)]">
-                      <select class="w-full h-11 px-4 bg-transparent text-on-surface font-body-sm text-sm rounded-[calc(0.75rem-1px)] focus:outline-none focus:ring-2 focus:ring-volt-lime/50 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] cursor-pointer appearance-none" id="b2bSegment" required style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27%3E%3Cpath stroke=%27%23a9e52c%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m6 9 6 6 6-6%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:36px;">
+                  <select class="w-full h-11 px-4 bg-[#0d1e2e] border border-white/10 text-on-surface font-body-sm text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-volt-lime/50 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] cursor-pointer appearance-none" id="b2bSegment" required style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27%3E%3Cpath stroke=%27%23a9e52c%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m6 9 6 6 6-6%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:36px;">
                         <option disabled selected value="" style="background:#0d1e2e">Selecione sua atividade empresarial</option>
                         <option value="locacao" style="background:#0d1e2e">Locação de Brinquedos / Festas e Eventos</option>
                         <option value="buffet" style="background:#0d1e2e">Buffet Infantil / Espaço de Recreação</option>
@@ -2286,40 +2261,30 @@
                         <option value="escola" style="background:#0d1e2e">Colégio / Escola de Educação Infantil</option>
                         <option value="revenda" style="background:#0d1e2e">Revenda / Lojista Especializado</option>
                       </select>
-                    </div>
-                  </div>
                 </div>
 
                 <!-- Step 2: Modelo — pill-style selector cards, not bg-white -->
                 <div class="flex flex-col gap-2">
                   <label class="font-label-mono text-[10px] uppercase tracking-[.18em] text-on-surface-variant font-bold">
-                    <span class="text-volt-lime mr-1">02</span>Modelo Principal
+                    Modelo Principal
                   </label>
                   <div class="grid grid-cols-2 gap-2" id="modelSelectorGroup">
-                    <button class="model-opt group p-[1px] rounded-xl bg-gradient-to-br from-white/8 to-white/2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" data-model="2.44m" onclick="selectModel(this)" type="button">
-                      <div class="bg-[#0d1e2e] rounded-[calc(0.75rem-1px)] px-3.5 py-3 flex flex-col gap-0.5 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)] group-hover:bg-[#0f2336] transition-colors duration-300">
-                        <span class="font-label-mono text-xs font-bold text-on-surface">REDONDO 2,44M</span>
-                        <span class="text-on-surface-variant text-[10px]">Até 180 kg · Buffets &amp; Apês</span>
-                      </div>
-                    </button>
-                    <button class="model-opt group p-[1px] rounded-xl bg-gradient-to-br from-volt-lime/30 to-volt-lime/5 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ring-1 ring-volt-lime/40" data-model="3.05m" onclick="selectModel(this)" type="button">
-                      <div class="bg-[#0f2010] rounded-[calc(0.75rem-1px)] px-3.5 py-3 flex flex-col gap-0.5 shadow-[inset_0_1px_1px_rgba(169,229,44,.12)]">
-                        <span class="font-label-mono text-xs font-bold text-volt-lime">MASTER 3,05M</span>
-                        <span class="text-volt-lime/60 text-[10px]">Mais Vendido · Uso Familiar</span>
-                      </div>
-                    </button>
-                    <button class="model-opt group p-[1px] rounded-xl bg-gradient-to-br from-white/8 to-white/2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" data-model="3.66m" onclick="selectModel(this)" type="button">
-                      <div class="bg-[#0d1e2e] rounded-[calc(0.75rem-1px)] px-3.5 py-3 flex flex-col gap-0.5 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)] group-hover:bg-[#0f2336] transition-colors duration-300">
-                        <span class="font-label-mono text-xs font-bold text-on-surface">PRO COMERCIAL 3,66M</span>
-                        <span class="text-on-surface-variant text-[10px]">Alta Rentabilidade · Uso Comercial</span>
-                      </div>
-                    </button>
-                    <button class="model-opt group p-[1px] rounded-xl bg-gradient-to-br from-white/8 to-white/2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" data-model="4.27m" onclick="selectModel(this)" type="button">
-                      <div class="bg-[#0d1e2e] rounded-[calc(0.75rem-1px)] px-3.5 py-3 flex flex-col gap-0.5 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)] group-hover:bg-[#0f2336] transition-colors duration-300">
-                        <span class="font-label-mono text-xs font-bold text-on-surface">SUPER ARENA 4,27M</span>
-                        <span class="text-on-surface-variant text-[10px]">Uso Intenso · Frotas & Parques</span>
-                      </div>
-                    </button>
+                    <button class="model-opt group px-3.5 py-3 rounded-xl bg-[#0d1e2e] border border-white/10 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col gap-0.5 hover:bg-[#0f2336]" data-model="2.44m" onclick="selectModel(this)" type="button">
+  <span class="font-label-mono text-xs font-bold text-on-surface">REDONDO 2,44M</span>
+  <span class="text-on-surface-variant text-[10px]">Até 180 kg · Buffets &amp; Apês</span>
+</button>
+                    <button class="model-opt group px-3.5 py-3 rounded-xl bg-[#0f2010] border border-volt-lime/40 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col gap-0.5" data-model="3.05m" onclick="selectModel(this)" type="button">
+  <span class="font-label-mono text-xs font-bold text-volt-lime">MASTER 3,05M</span>
+  <span class="text-volt-lime/60 text-[10px]">Mais Vendido · Uso Familiar</span>
+</button>
+                    <button class="model-opt group px-3.5 py-3 rounded-xl bg-[#0d1e2e] border border-white/10 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col gap-0.5 hover:bg-[#0f2336]" data-model="3.66m" onclick="selectModel(this)" type="button">
+  <span class="font-label-mono text-xs font-bold text-on-surface">PRO COMERCIAL 3,66M</span>
+  <span class="text-on-surface-variant text-[10px]">Alta Rentabilidade · Uso Comercial</span>
+</button>
+                    <button class="model-opt group px-3.5 py-3 rounded-xl bg-[#0d1e2e] border border-white/10 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col gap-0.5 hover:bg-[#0f2336]" data-model="4.27m" onclick="selectModel(this)" type="button">
+  <span class="font-label-mono text-xs font-bold text-on-surface">SUPER ARENA 4,27M</span>
+  <span class="text-on-surface-variant text-[10px]">Uso Intenso · Frotas & Parques</span>
+</button>
                   </div>
                   <input id="selectedModelInput" type="hidden" value="3.05m"/>
                 </div>
@@ -2328,23 +2293,21 @@
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center justify-between">
                     <label class="font-label-mono text-[10px] uppercase tracking-[.18em] text-on-surface-variant font-bold" for="quantityRange">
-                      <span class="text-volt-lime mr-1">03</span>Quantidade Prevista
+                      Quantidade Prevista
                     </label>
                     <div class="p-[1px] rounded-full bg-gradient-to-r from-volt-lime/40 to-volt-lime/15">
                       <span class="font-label-mono text-[10px] px-3 py-0.5 rounded-full bg-[#0d1e2e] text-volt-lime uppercase font-bold block" id="tierDiscountBadge">18% DE DESCONTO B2B</span>
                     </div>
                   </div>
                   <!-- Double-Bezel qty control -->
-                  <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                    <div class="bg-[#0d1e2e] rounded-[calc(0.75rem-1px)] p-3 flex items-center gap-3 shadow-[inset_0_1px_1px_rgba(255,255,255,.06)]">
-                      <button class="w-9 h-9 rounded-lg bg-white/5 ring-1 ring-white/10 text-on-surface font-bold flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] flex-shrink-0 text-lg" onclick="adjustQty(-1)" type="button">−</button>
-                      <div class="flex-1 text-center">
-                        <span class="font-display font-black text-[2rem] text-on-surface leading-none" id="qtyDisplay">8</span>
-                        <span class="font-label-mono text-[10px] uppercase text-on-surface-variant block mt-0.5">unidades</span>
-                      </div>
-                      <button class="w-9 h-9 rounded-lg bg-white/5 ring-1 ring-white/10 text-on-surface font-bold flex items-center justify-center hover:bg-volt-lime/15 hover:text-volt-lime active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] flex-shrink-0 text-lg" onclick="adjustQty(1)" type="button">+</button>
-                    </div>
-                  </div>
+                  <div class="p-3 bg-white/5 rounded-xl flex items-center gap-3">
+  <button class="w-9 h-9 rounded-lg bg-white/5 ring-1 ring-white/10 text-on-surface font-bold flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] flex-shrink-0 text-lg" onclick="adjustQty(-1)" type="button">−</button>
+  <div class="flex-1 text-center">
+    <span class="font-display font-black text-[2rem] text-on-surface leading-none" id="qtyDisplay">8</span>
+    <span class="font-label-mono text-[10px] uppercase text-on-surface-variant block mt-0.5">unidades</span>
+  </div>
+  <button class="w-9 h-9 rounded-lg bg-white/5 ring-1 ring-white/10 text-on-surface font-bold flex items-center justify-center hover:bg-volt-lime/15 hover:text-volt-lime active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] flex-shrink-0 text-lg" onclick="adjustQty(1)" type="button">+</button>
+</div>
                   <!-- Slider com custom CSS vars em vez de accent-color -->
                   <input class="w-full cursor-pointer mt-1" id="quantityRange" max="50" min="1" type="range" value="8" style="appearance:none;height:3px;background:linear-gradient(to right,#A9E52C calc(var(--pct,16%)),rgba(255,255,255,.12) 0);border-radius:2px;outline:none;" oninput="this.style.setProperty('--pct',(this.value/50*100)+'%');syncQty(this.value)"/>
                   <div class="flex justify-between text-[9px] font-label-mono text-on-surface-variant/60 tracking-wider">
@@ -2355,32 +2318,20 @@
                 <!-- Step 4 + 5: Campos de contato — Double-Bezel inputs -->
                 <div class="flex flex-col gap-3">
                   <label class="font-label-mono text-[10px] uppercase tracking-[.18em] text-on-surface-variant font-bold">
-                    <span class="text-volt-lime mr-1">04</span>Dados de Entrega &amp; Empresa
+                    Dados de Entrega &amp; Empresa
                   </label>
                   <div class="grid grid-cols-2 gap-2">
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="cepInput" maxlength="9" onkeyup="maskCep(this)" placeholder="CEP 00000-000" required type="text"/>
-                    </div>
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="cityStateInput" placeholder="Cidade / UF" required type="text"/>
-                    </div>
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactName" placeholder="Nome do Responsável" required type="text"/>
-                    </div>
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactDoc" placeholder="CNPJ ou Razão Social" required type="text"/>
-                    </div>
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactPhone" placeholder="WhatsApp Comercial" required type="tel"/>
-                    </div>
-                    <div class="p-[1px] rounded-xl bg-gradient-to-br from-white/10 to-white/3">
-                      <input class="w-full h-10 px-3.5 bg-[#0d1e2e] text-on-surface text-sm rounded-[calc(0.75rem-1px)] placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactEmail" placeholder="E-mail Corporativo" required type="email"/>
-                    </div>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="cepInput" maxlength="9" onkeyup="maskCep(this)" placeholder="CEP 00000-000" required type="text"/>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="cityStateInput" placeholder="Cidade / UF" required type="text"/>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactName" placeholder="Nome do Responsável" required type="text"/>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactDoc" placeholder="CNPJ ou Razão Social" required type="text"/>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactPhone" placeholder="WhatsApp Comercial" required type="tel"/>
+                    <input class="w-full h-10 px-3.5 bg-[#0d1e2e] border border-white/10 text-on-surface text-sm rounded-xl placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-volt-lime/40 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] block" id="contactEmail" placeholder="E-mail Corporativo" required type="email"/>
                   </div>
                 </div>
 
                 <!-- CTA: Button-in-Button trailing icon architecture -->
-                <button class="group relative w-full flex items-center justify-between gap-3 px-5 py-4 bg-volt-lime text-surface-dark font-label-mono text-xs uppercase font-extrabold tracking-wider rounded-xl shadow-[0_8px_32px_rgba(169,229,44,.35)] hover:shadow-[0_12px_48px_rgba(169,229,44,.55)] active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]" type="submit">
+                <button class="group relative w-full flex items-center justify-between gap-3 px-5 py-4 bg-volt-lime text-surface-dark font-label-mono text-xs uppercase font-extrabold tracking-wider rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.45)] active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]" type="submit">
                   <span>SOLICITAR PROPOSTA B2B INSTANTÂNEA</span>
                   <!-- Button-in-Button trailing icon -->
                   <span class="w-8 h-8 rounded-lg bg-surface-dark/15 flex items-center justify-center flex-shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
@@ -2389,8 +2340,7 @@
                 </button>
 
                 <!-- Trust footer -->
-                <div class="flex items-start gap-2.5 p-[1px] rounded-xl bg-gradient-to-br from-white/8 to-transparent">
-                  <div class="bg-white/[.03] rounded-[calc(0.75rem-1px)] p-3 flex items-start gap-2.5 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,.04)]">
+                <div class="flex items-start gap-2.5 p-3 rounded-xl bg-white/[.03] w-full">
                     <div class="w-7 h-7 rounded-lg bg-electric-blue/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span class="material-symbols-outlined text-electric-blue text-[15px]">verified_user</span>
                     </div>
@@ -2398,19 +2348,16 @@
                       <strong class="text-on-surface">Retorno em &lt;15 minutos:</strong> Proposta com cálculo de frete negociado e catálogo técnico em PDF direto pelo WhatsApp.
                     </p>
                   </div>
-                </div>
 
               </form>
-            </div>
           </div>
-
         </div>
       </section>
 
       <!-- ================================================================= -->
       <!-- SEÇÃO 7: DEPOIMENTOS REAIS DE QUEM TRABALHA E USA (PROVA SOCIAL)  -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="depoimentos">
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl " id="depoimentos">
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
           <!-- Seção 7: sem eyebrow — aspas gigantes como elemento visual primário -->
           <div class="relative">
@@ -2553,7 +2500,7 @@
       <footer class="w-full bg-surface-container-lowest">
         
         <!-- Faixa de Selos de Confiança -->
-        <div class="w-full bg-surface-container-low py-space-lg px-margin-mobile lg:px-margin border-t border-outline-variant/20">
+        <div class="w-full bg-surface-container-low py-space-lg px-margin-mobile lg:px-margin">
           <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-space-md text-on-surface">
             <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
               <span class="material-symbols-outlined text-volt-lime text-[28px]">verified</span>
@@ -2592,7 +2539,7 @@
             
             <div class="lg:col-span-2 flex flex-col gap-space-md">
               <div class="flex items-center gap-2.5">
-                <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+                <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-sm">
                   <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">PLAY</span></span>
                 </div>
                 <span class="font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest">TRAMPOLINS DE ALTA RESISTÊNCIA</span>

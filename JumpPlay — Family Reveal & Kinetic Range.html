@@ -9,7 +9,7 @@
   <!-- Fontes Oficiais do Design System & Suíte Boutique Asymmetric Bento -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Bebas+Neue&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Bebas+Neue&family=Manrope:wght@500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
   
   <!-- Tailwind CSS CDN -->
@@ -50,15 +50,15 @@
             "headline-lg": ["'Barlow Condensed'", "sans-serif"],
             "headline-md": ["'Barlow Condensed'", "sans-serif"],
             "headline-sm": ["'Barlow Condensed'", "sans-serif"],
-            "body-lg": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
-            "body-md": ["'Manrope'", "'Space Grotesk'", "sans-serif"],
+            "body-lg": ["'Manrope'", "sans-serif"],
+            "body-md": ["'Manrope'", "sans-serif"],
             "body-sm": ["'Manrope'", "sans-serif"],
             "label-lg": ["'Manrope'", "sans-serif"],
             "label-md": ["'Manrope'", "sans-serif"],
-            "label-mono": ["'Space Grotesk'", "monospace"],
+            "label-mono": ["'JetBrains Mono'", "monospace"],
             "caption": ["'Manrope'", "sans-serif"],
             "syne": ["'Syne'", "sans-serif"],
-            "jakarta": ["'Plus Jakarta Sans'", "sans-serif"],
+            "jakarta": ["'Manrope'", "sans-serif"],
             "mono-code": ["'JetBrains Mono'", "monospace"]
           },
           spacing: {
@@ -97,7 +97,7 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(163, 230, 53, 0.12), transparent 40%);
+      background: transparent;
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
@@ -122,7 +122,7 @@
       display: none;
     }
     .jf-page {
-      font-family: 'Space Grotesk', 'Manrope', sans-serif;
+      font-family: 'Manrope', sans-serif;
       background: var(--navy);
       color: var(--white);
       min-height: 800px;
@@ -240,7 +240,7 @@
       <!-- ================================================================= -->
       <div class="flex min-h-[42px] items-center justify-center gap-3 bg-[var(--red)] px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[.14em] text-white sm:gap-5 sm:text-[11px] z-50 relative" id="sale-bar">
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-volt-lime animate-ping inline-block"></span>
+          <span class="w-2 h-2 rounded-full bg-volt-lime  inline-block"></span>
           <strong class="text-volt-lime">TABELA DIRETO DE FÁBRICA / ATACADO 2025</strong>
         </div>
         <span class="hidden h-3 w-px bg-white/50 sm:block"></span>
@@ -280,7 +280,7 @@
         <!-- Barra de Navegação Superior Integrada -->
         <header class="relative z-20 flex h-[78px] items-center justify-between border-b border-white/15 bg-[#111614]/80 px-5 backdrop-blur-md md:px-10">
           <a class="flex items-center gap-2.5 group" href="#range" onclick="trackEvent('nav_logo_clicked')">
-            <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+            <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-sm">
               <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">FLEX</span><sup class="text-[9px] text-volt-lime ml-0.5">®</sup></span>
             </div>
             <span class="hidden sm:inline font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest -ml-1">TRAMPOLINS DE ALTA RESISTÊNCIA</span>
@@ -305,7 +305,7 @@
               <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
               <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-kinetic-red text-white font-label-mono text-[9px] flex items-center justify-center font-bold">1</span>
             </a>
-            <a class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-[3px_3px_0px_#1677FF] hover:bg-secondary-fixed transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="#cotacao-b2b" onclick="trackEvent('header_quote_clicked')">
+            <a class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-sm hover:bg-secondary-fixed transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="#cotacao-b2b" onclick="trackEvent('header_quote_clicked')">
               <span class="hidden sm:inline">COMPRA NO ATACADO</span>
               <span class="sm:hidden">ATACADO</span>
               <span class="font-bold">↗</span>
@@ -464,7 +464,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 2: ASYMMETRIC BENTO GRID (65% RESIDENCIAL / 35% B2B FROTA)    -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="dual-flow">
+      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl " id="dual-flow">
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
           
           <div class="flex flex-col gap-space-xs text-center md:text-left">
@@ -687,7 +687,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 4: CATÁLOGO OFICIAL COMPARÁVEL (FLEX™ · HERO™ · MEGA™)      -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-space-2xl border-t border-b border-outline-variant/20" id="catalogo">
+      <section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-space-2xl " id="catalogo">
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
           
           <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
@@ -739,7 +739,7 @@
                   <p class="font-body-sm text-body-sm text-on-surface-variant">Ideal para quintais compactos, apartamentos com jardim ou garagens. Salto ágil e macio para crianças até 12 anos.</p>
                 </div>
                 
-                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t ">
                   <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">48 Molas Cônicas 13,5cm</strong></div>
                   <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">3 Pés Duplos Galvanizados</strong></div>
                   <div class="flex justify-between"><span>Altura chão à lona:</span> <strong class="text-on-surface">55 cm (Fácil acesso)</strong></div>
@@ -752,7 +752,7 @@
                     <span class="font-body-sm text-body-sm text-on-surface-variant">à vista (Pix)</span>
                   </div>
                   <span class="text-caption font-caption text-volt-lime">ou 10x de R$ 154,33 sem juros no cartão</span>
-                  <button class="mt-space-sm w-full py-space-sm bg-surface-container-highest hover:bg-volt-lime hover:text-surface-dark text-on-surface font-label-lg text-xs uppercase rounded transition-colors shadow-[2px_2px_0px_#1677FF] font-bold" onclick="selectModelAndScroll('2.44m')">
+                  <button class="mt-space-sm w-full py-space-sm bg-surface-container-highest hover:bg-volt-lime hover:text-surface-dark text-on-surface font-label-lg text-xs uppercase rounded transition-colors shadow-sm font-bold" onclick="selectModelAndScroll('2.44m')">
                     SOLICITAR PROPOSTA DO 2.44M
                   </button>
                 </div>
@@ -760,7 +760,7 @@
             </div>
 
             <!-- CARD 2: HERO 3.05m (BEST SELLER) -->
-            <div class="product-card flex flex-col bg-surface-card rounded-xl overflow-hidden transition-all hover:-translate-y-1 shadow-[8px_8px_0px_#1677FF] relative ring-2 ring-volt-lime" data-model="residencial locacao" id="hero">
+            <div class="product-card flex flex-col bg-surface-card rounded-xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg relative ring-2 ring-volt-lime" data-model="residencial locacao" id="hero">
               <div class="absolute top-0 right-0 bg-volt-lime text-surface-dark font-label-mono text-label-mono font-bold px-3 py-1 uppercase rounded-bl">
                 ★ MAIS VENDIDO BRASIL
               </div>
@@ -784,7 +784,7 @@
                   <p class="font-body-sm text-body-sm text-on-surface-variant">O diâmetro perfeito. Permite que pais e filhos pulem juntos com total estabilidade. O favorito de 90% das locadoras de eventos.</p>
                 </div>
                 
-                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t ">
                   <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">64 Molas Cônicas 14cm</strong></div>
                   <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">4 Pés Duplos Aço 1.5mm</strong></div>
                   <div class="flex justify-between"><span>Acessório Incluso:</span> <strong class="text-volt-lime font-bold">Escada 2 Degraus Largos</strong></div>
@@ -797,7 +797,7 @@
                     <span class="font-body-sm text-body-sm text-on-surface-variant">à vista (10% OFF no Pix)</span>
                   </div>
                   <span class="text-caption font-caption text-volt-lime">ou 10x de R$ 210,00 sem juros no cartão</span>
-                  <button class="mt-space-sm w-full py-space-sm bg-volt-lime text-surface-dark hover:bg-secondary-fixed font-label-lg text-xs uppercase rounded transition-colors shadow-[4px_4px_0px_#1677FF] font-bold" onclick="selectModelAndScroll('3.05m')">
+                  <button class="mt-space-sm w-full py-space-sm bg-volt-lime text-surface-dark hover:bg-secondary-fixed font-label-lg text-xs uppercase rounded transition-colors shadow-sm font-bold" onclick="selectModelAndScroll('3.05m')">
                     GARANTIR O MEU HERO 3.05M
                   </button>
                 </div>
@@ -826,7 +826,7 @@
                   <p class="font-body-sm text-body-sm text-on-surface-variant">Projetado para buffets infantis de alto fluxo, colégios, parques indoor e locadores de grandes eventos corporativos.</p>
                 </div>
                 
-                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t border-b border-outline-variant/15">
+                <div class="space-y-1.5 text-caption font-label-mono text-on-surface-variant py-2 border-t ">
                   <div class="flex justify-between"><span>Molas:</span> <strong class="text-on-surface">72 a 84 Molas Reforçadas</strong></div>
                   <div class="flex justify-between"><span>Pés em W:</span> <strong class="text-on-surface">4 a 6 Pés Aço 1.88mm</strong></div>
                   <div class="flex justify-between"><span>Tubo Estrutural:</span> <strong class="text-primary font-bold">Diâmetro 38mm x 1.88mm</strong></div>
@@ -920,7 +920,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 6: CENTRAL DE COTAÇÃO RÁPIDA B2B & SIMULADOR COM SLIDER    -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="cotacao-b2b">
+      <section class="w-full bg-surface-container-low px-margin-mobile lg:px-margin py-space-2xl " id="cotacao-b2b">
         <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
           
           <!-- Coluna Esquerda: Texto Comercial & Vantagens -->
@@ -966,14 +966,14 @@
           </div>
 
           <!-- Coluna Direita: Simulador B2B com Sombra Neo-Brutalista (Card Contrast) -->
-          <div class="lg:col-span-6 w-full bg-surface-contrast text-slate-900 p-6 lg:p-8 rounded-xl shadow-[10px_10px_0px_#1677FF] border border-outline-variant/30" id="bulk">
+          <div class="lg:col-span-6 w-full bg-surface-contrast text-slate-900 p-6 lg:p-8 rounded-xl shadow-xl border border-outline-variant/30" id="bulk">
             
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
               <span class="font-label-mono text-xs uppercase tracking-widest text-electric-blue font-bold">
                 CENTRAL DE COTAÇÃO RÁPIDA
               </span>
               <span class="flex items-center gap-1.5 px-2.5 py-0.5 bg-volt-lime text-slate-900 font-label-mono text-[10px] rounded uppercase font-bold">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-900 animate-ping inline-block"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-900  inline-block"></span>
                 VENDEDOR ONLINE
               </span>
             </div>
@@ -1008,7 +1008,7 @@
                   Modelo de Trampolim Principal *
                 </label>
                 <div class="grid grid-cols-2 gap-2" id="modelSelectorGroup">
-                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="2.44m" onclick="selectModel(this)" type="button">
+                  <button class="model-opt px-3 py-2 text-left rounded-lg bg-transparent font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-100 transition-colors border border-slate-300" data-model="2.44m" onclick="selectModel(this)" type="button">
                     <span class="font-bold">REDONDO 2,44M</span>
                     <span class="text-slate-500 text-[10px]">Até 180 kg • Buffets &amp; Apês</span>
                   </button>
@@ -1016,11 +1016,11 @@
                     <span class="font-bold text-volt-lime">MASTER 3,05M</span>
                     <span class="text-slate-300 text-[10px]">Mais Vendido • 380 kg</span>
                   </button>
-                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="3.66m" onclick="selectModel(this)" type="button">
+                  <button class="model-opt px-3 py-2 text-left rounded-lg bg-transparent font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-100 transition-colors border border-slate-300" data-model="3.66m" onclick="selectModel(this)" type="button">
                     <span class="font-bold">PRO COMERCIAL 3,66M</span>
                     <span class="text-slate-500 text-[10px]">Alta Rentabilidade • 450 kg</span>
                   </button>
-                  <button class="model-opt px-3 py-2 text-left rounded bg-slate-100 font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-200 transition-colors border border-slate-200" data-model="4.27m" onclick="selectModel(this)" type="button">
+                  <button class="model-opt px-3 py-2 text-left rounded-lg bg-transparent font-label-mono text-xs text-slate-900 flex flex-col hover:bg-slate-100 transition-colors border border-slate-300" data-model="4.27m" onclick="selectModel(this)" type="button">
                     <span class="font-bold">SUPER ARENA 4,27M</span>
                     <span class="text-slate-500 text-[10px]">Uso Intenso Frotas • 450 kg</span>
                   </button>
@@ -1038,7 +1038,7 @@
                     18% DE DESCONTO B2B
                   </span>
                 </div>
-                <div class="flex items-center gap-space-sm bg-slate-100 p-2.5 rounded border border-slate-200">
+                <div class="flex items-center gap-space-sm p-2.5">
                   <button class="w-9 h-9 rounded bg-white text-slate-900 font-headline-sm flex items-center justify-center hover:bg-slate-200 active:scale-95 shadow-sm border border-slate-300" onclick="adjustQty(-1)" type="button">-</button>
                   <div class="flex-1 text-center">
                     <span class="font-headline-md text-headline-md text-slate-900 leading-none" id="qtyDisplay">8</span>
@@ -1086,14 +1086,14 @@
 
               <!-- Botão de Envio de Cotação -->
               <div class="pt-2">
-                <button class="w-full h-13 py-3 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-[5px_5px_0px_#1677FF] hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 font-extrabold tracking-wider active:translate-x-0.5 active:translate-y-0.5" type="submit">
+                <button class="w-full h-13 py-3 bg-volt-lime text-surface-dark font-label-lg text-xs uppercase rounded shadow-md hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 font-extrabold tracking-wider active:translate-x-0.5 active:translate-y-0.5" type="submit">
                   <span>SOLICITAR PROPOSTA B2B INSTANTÂNEA</span>
                   <span class="text-lg">↗</span>
                 </button>
               </div>
 
               <!-- Garantia de Atendimento -->
-              <div class="flex items-center gap-2 bg-slate-100 p-2.5 rounded border border-slate-200">
+              <div class="flex items-center gap-2 p-2.5 text-slate-600">
                 <span class="material-symbols-outlined text-electric-blue text-[18px]">verified_user</span>
                 <p class="font-caption text-[11px] text-slate-600 leading-tight">
                   <strong>Retorno em menos de 15 minutos:</strong> Enviaremos proposta com cálculo de frete negociado e catálogo técnico em PDF diretamente pelo WhatsApp.
@@ -1110,7 +1110,7 @@
       <!-- ================================================================= -->
       <!-- SEÇÃO 7: DEPOIMENTOS REAIS DE QUEM TRABALHA E USA (PROVA SOCIAL)  -->
       <!-- ================================================================= -->
-      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl border-t border-outline-variant/20" id="depoimentos">
+      <section class="w-full bg-surface px-margin-mobile lg:px-margin py-space-2xl " id="depoimentos">
         <div class="max-w-[1440px] mx-auto flex flex-col gap-space-xl">
           <div class="flex flex-col gap-space-xs text-center">
             <span class="font-label-mono text-label-mono uppercase text-volt-lime tracking-widest font-bold">
@@ -1137,7 +1137,7 @@
                   "Tenho empresa de locação para festas há 8 anos em Curitiba. O modelo de 3,05m da JumpPlay é o mais resistente que já usei. Monto e desmonto todo fim de semana e os tubos de 1.5mm não entortam nunca."
                 </p>
               </div>
-              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+              <div class="flex items-center gap-3 pt-3 ">
                 <div class="w-10 h-10 rounded-full bg-volt-lime text-surface-dark flex items-center justify-center font-bold font-label-mono">RM</div>
                 <div>
                   <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Rodrigo Marcondes</div>
@@ -1160,7 +1160,7 @@
                   "Comprei o Hero de 3,05m para a chácara da família. Meus sobrinhos usam com intensidade todo sábado e a rede de segurança não cede nada. A escadinha com degraus largos evita qualquer susto."
                 </p>
               </div>
-              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+              <div class="flex items-center gap-3 pt-3 ">
                 <div class="w-10 h-10 rounded-full bg-electric-blue text-white flex items-center justify-center font-bold font-label-mono">PS</div>
                 <div>
                   <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Patrícia Silveira</div>
@@ -1183,7 +1183,7 @@
                   "Para nosso Buffet Infantil, laudo técnico e segurança são inegociáveis. A capacidade certificada de 380 kg nos deu tranquilidade total para os monitores e crianças brincarem juntos."
                 </p>
               </div>
-              <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+              <div class="flex items-center gap-3 pt-3 ">
                 <div class="w-10 h-10 rounded-full bg-safety-yellow text-surface-dark flex items-center justify-center font-bold font-label-mono">BF</div>
                 <div>
                   <div class="font-label-md text-label-md text-on-surface uppercase font-bold">Buffet Folia Encantada</div>
@@ -1214,7 +1214,7 @@
           </div>
 
           <div class="flex flex-col sm:flex-row items-center gap-space-sm w-full md:w-auto">
-            <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-space-md bg-surface-dark text-on-surface font-label-lg text-xs uppercase rounded shadow-[5px_5px_0px_#1677FF] hover:bg-surface-container-high transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="https://wa.me/551140028922?text=Olá!%20Gostaria%20de%20falar%20com%20a%20engenharia%20da%20JumpPlay." target="_blank">
+            <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-space-md bg-surface-dark text-on-surface font-label-lg text-xs uppercase rounded shadow-md hover:bg-surface-container-high transition-transform active:translate-x-0.5 active:translate-y-0.5 font-bold" href="https://wa.me/551140028922?text=Olá!%20Gostaria%20de%20falar%20com%20a%20engenharia%20da%20JumpPlay." target="_blank">
               <span class="material-symbols-outlined text-[18px] text-volt-lime">chat</span>
               <span>CONVERSAR NO WHATSAPP</span>
               <span>↗</span>
@@ -1229,7 +1229,7 @@
       <footer class="w-full bg-surface-container-lowest">
         
         <!-- Faixa de Selos de Confiança -->
-        <div class="w-full bg-surface-container-low py-space-lg px-margin-mobile lg:px-margin border-t border-outline-variant/20">
+        <div class="w-full bg-surface-container-low py-space-lg px-margin-mobile lg:px-margin ">
           <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-space-md text-on-surface">
             <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-card/60 border border-outline-variant/15">
               <span class="material-symbols-outlined text-volt-lime text-[28px]">verified</span>
@@ -1268,7 +1268,7 @@
             
             <div class="lg:col-span-2 flex flex-col gap-space-md">
               <div class="flex items-center gap-2.5">
-                <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-[3px_3px_0px_#1677FF]">
+                <div class="h-10 px-2.5 py-1 rounded bg-surface-card border border-outline-variant/30 flex items-center justify-center shadow-sm">
                   <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">JUMP<span class="text-volt-lime">PLAY</span></span>
                 </div>
                 <span class="font-label-mono text-[9px] text-on-surface-variant uppercase tracking-widest">TRAMPOLINS DE ALTA RESISTÊNCIA</span>
@@ -1325,7 +1325,7 @@
         </div>
 
         <!-- Copyright -->
-        <div class="w-full border-t border-outline-variant/20 py-space-md px-margin-mobile lg:px-margin">
+        <div class="w-full  py-space-md px-margin-mobile lg:px-margin">
           <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-space-sm text-caption font-caption text-on-surface-variant">
             <p>© 2025 JumpPlay / Jumpflex® Indústria e Comércio de Trampolins Ltda. CNPJ: 28.941.204/0001-83. Todos os direitos reservados.</p>
             <div class="flex items-center gap-space-md">
