@@ -1,0 +1,74 @@
+{
+  "id": "canvas-scroll-scrubber",
+  "name": "3D Product Frame Sequence Scrubber",
+  "category": "3d-canvas-scrubber",
+  "description": "Apple-style 3D product render sequence (120-200 transparent WebP frames) scrubbed fluidly on canvas via GSAP ScrollTrigger",
+  "source": "https://more-nutrition.webflow.io/#reviews",
+  "prerequisites": {
+    "libraries": [
+      {
+        "name": "gsap",
+        "version": "^3.12.0",
+        "plugins": ["ScrollTrigger"]
+      },
+      {
+        "name": "lenis",
+        "version": "^1.0.0"
+      }
+    ],
+    "cssTokens": {
+      "--sequence-canvas-max-width": "800px",
+      "--sequence-sticky-top": "0px"
+    }
+  },
+  "bindings": {
+    "targetAttribute": "data-sequence",
+    "attributeValue": "active",
+    "supportedSelectors": [
+      "[data-sequence]",
+      ".sequence-section",
+      "[data-sequence-canvas]"
+    ]
+  },
+  "canvasConfig": {
+    "stageCanvas": {
+      "selector": "[data-load-stage-canvas]",
+      "frameCount": 23,
+      "pathPattern": "seq_1_{index}.webp",
+      "mode": "loop-raf",
+      "decoding": "createImageBitmap"
+    },
+    "scrollSequence": {
+      "selector": "[data-sequence-canvas]",
+      "triggerSelector": "[data-sequence-trigger]",
+      "frameCount": 200,
+      "pathPattern": "seq_0_{index}.webp",
+      "mode": "scroll-scrub",
+      "scrollTrigger": {
+        "start": "top 60%",
+        "end": "bottom bottom+=25%",
+        "scrub": true
+      }
+    }
+  },
+  "controls": [
+    {
+      "id": "sequence.startOffset",
+      "label": "ScrollTrigger Start",
+      "type": "text",
+      "default": "top 60%"
+    },
+    {
+      "id": "sequence.endOffset",
+      "label": "ScrollTrigger End",
+      "type": "text",
+      "default": "bottom bottom+=25%"
+    },
+    {
+      "id": "sequence.scrubSmoothness",
+      "label": "Scrub Lag/Smoothness",
+      "type": "number",
+      "default": 1
+    }
+  ]
+}

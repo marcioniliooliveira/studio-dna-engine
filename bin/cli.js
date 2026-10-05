@@ -118,7 +118,8 @@ async function main() {
     if (portIndex !== -1 && args[portIndex + 1]) {
       port = parseInt(args[portIndex + 1], 10) || 4000;
     }
-    startPreviewServer({ port });
+    const enableMutations = !args.includes('--read-only');
+    startPreviewServer({ port, enableMutations });
     return;
   }
 

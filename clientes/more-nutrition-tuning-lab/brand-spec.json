@@ -1,0 +1,22 @@
+{
+  "clientName": "More Nutrition Tuning Lab",
+  "clientSlug": "more-nutrition-tuning-lab",
+  "version": "1.0.0",
+  "theme": {
+    "--brand-primary": "#2d5a27",
+    "--brand-accent": "#8bc34a",
+    "--brand-dark": "#0a1c08",
+    "--brand-light": "#fefbf4",
+    "--brand-canvas-bg": "#f4f6f0"
+  },
+  "typography": {
+    "--font-primary": "'Geist', 'Inter', -apple-system, sans-serif",
+    "--font-display": "'Syne', sans-serif"
+  },
+  "effects": {
+    "canvas-scroll-scrubber": true,
+    "sequence.fps": 30,
+    "sequence.scrubSmoothness": 1.2
+  },
+  "content": {}
+}

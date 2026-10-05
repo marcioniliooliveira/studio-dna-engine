@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studiodna.engine/schemas/component_certification.v1.json",
+  "title": "CertificationRecord",
+  "description": "Registro imutável de aprovação ou rejeição emitido pela suíte de Quality Gates.",
+  "type": "object",
+  "required": [
+    "certificateId",
+    "dnaRef",
+    "evaluatedAt",
+    "auditorAgent",
+    "gatesSummary",
+    "verdict"
+  ],
+  "properties": {
+    "certificateId": { "type": "string" },
+    "dnaRef": { "type": "string" },
+    "implementationRef": { "type": "string" },
+    "evaluatedAt": { "type": "string", "format": "date-time" },
+    "auditorAgent": { "type": "string" },
+    "gatesSummary": {
+      "type": "object",
+      "required": ["structural", "visual", "interaction", "motion", "antiSlop", "leakage"],
+      "properties": {
+        "structural": { "type": "boolean" },
+        "visual": { "type": "object" },
+        "interaction": { "type": "boolean" },
+        "motion": { "type": "object" },
+        "a11y": { "type": "object" },
+        "antiSlop": { "type": "boolean" },
+        "leakage": { "type": "boolean" }
+      }
+    },
+    "verdict": { "enum": ["CERTIFIED", "REJECTED", "CONDITIONAL"] }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studiodna.engine/schemas/component_archetype.v1.json",
+  "title": "ComponentArchetype",
+  "description": "Modelo canônico abstrato armazenado no design-vault/components/archetypes/.",
+  "type": "object",
+  "required": [
+    "archetypeId",
+    "purpose",
+    "canonicalAnatomy",
+    "stateContract",
+    "motionPrinciples",
+    "accessibilityStandard",
+    "knownImplementations",
+    "confidenceScore"
+  ],
+  "properties": {
+    "archetypeId": { "type": "string" },
+    "purpose": { "type": "string" },
+    "canonicalAnatomy": {
+      "type": "object",
+      "required": ["rootRole", "slots"],
+      "properties": {
+        "rootRole": { "type": "string" },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "optional"],
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "optional": { "type": "boolean" }
+            }
+          }
+        },
+        "hierarchyConstraints": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      }
+    },
+    "stateContract": {
+      "type": "object",
+      "required": ["initialState", "states", "transitions"],
+      "properties": {
+        "initialState": { "type": "string" },
+        "states": { "type": "array", "items": { "type": "string" } },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "trigger"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "trigger": { "type": "string" },
+              "guard": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "motionPrinciples": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": { "enum": ["spring", "cubic-bezier", "linear"] },
+          "stiffness": { "type": "number" },
+          "damping": { "type": "number" },
+          "mass": { "type": "number" },
+          "durationMs": { "type": "number" },
+          "params": { "type": "object" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "accessibilityStandard": {
+      "type": "object",
+      "required": ["ariaRole", "focusPolicy"],
+      "properties": {
+        "ariaRole": { "type": "string" },
+        "accessibleName": { "type": "string" },
+        "liveRegion": { "enum": ["off", "polite", "assertive"] },
+        "focusPolicy": { "type": "string" }
+      }
+    },
+    "knownImplementations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["provider", "dnaRef", "similarityScore"],
+        "properties": {
+          "provider": { "type": "string" },
+          "dnaRef": { "type": "string" },
+          "similarityScore": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "confidenceScore": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

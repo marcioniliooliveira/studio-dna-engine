@@ -45,7 +45,10 @@ function isAllowedAssetUrl(url, targetHost) {
       /\.amazonaws\.com/i,
       /assets\.webflow\.com/i,
       /framerusercontent\.com/i,
-      /cdn\.prod\.website-files\.com/i
+      /cdn\.prod\.website-files\.com/i,
+      /cdn\.sanity\.io/i,
+      /\.vercel\.app/i,
+      /\.dropboxusercontent\.com/i
     ];
     return allowedCdnPatterns.some(pat => pat.test(urlObj.hostname));
   } catch (e) {
@@ -54,13 +57,14 @@ function isAllowedAssetUrl(url, targetHost) {
 }
 
 /**
- * Checks if a file extension represents a modern web asset (3D, WASM, HDR textures, audio)
+ * Checks if a file extension represents a modern web asset (3D, WASM, HDR textures, video, sequence, audio)
  */
 function isModernAssetExtension(ext) {
   if (!ext || typeof ext !== 'string') return false;
   const normalized = ext.startsWith('.') ? ext.toLowerCase() : '.' + ext.toLowerCase();
   const modernExtensions = [
-    '.glb', '.gltf', '.bin', '.wasm', '.hdr', '.exr', '.obj', '.fbx', '.usdz', '.wav', '.mp3'
+    '.glb', '.gltf', '.bin', '.wasm', '.hdr', '.exr', '.obj', '.fbx', '.usdz',
+    '.webp', '.mp4', '.webm', '.ogg', '.wav', '.mp3'
   ];
   return modernExtensions.includes(normalized);
 }

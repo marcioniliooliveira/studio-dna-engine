@@ -1582,9 +1582,47 @@ ${projected.html}
     : html + runtimePayload;
 }
 
+/**
+ * Injeta o Universal HUD encapsulado em Shadow DOM sem contaminação global de CSS
+ */
+function injectUniversalHud(html, options = {}) {
+  if (!html || typeof html !== 'string') return html;
+
+  let generateScript;
+  try {
+    delete require.cache[require.resolve('../dev/universal-hud-component')];
+    generateScript = require('../dev/universal-hud-component').generateUniversalHudScript;
+  } catch(e) {
+    generateScript = () => '';
+  }
+
+  const script = generateScript(options);
+  const payload = `
+<!-- STUDIO DNA UNIVERSAL HUD (SHADOW DOM) -->
+<studio-dna-hud></studio-dna-hud>
+<script id="studio-dna-universal-hud-script">
+${script}
+</script>`.trim();
+
+  if (html.includes('id="studio-dna-universal-hud-script"')) {
+    return html.replace(/<script id="studio-dna-universal-hud-script">[\s\S]*?<\/script>/, `<script id="studio-dna-universal-hud-script">\n${script}\n</script>`);
+  }
+
+  if (html.includes('<studio-dna-hud')) {
+    return html.includes('</body>')
+      ? html.replace('</body>', `<script id="studio-dna-universal-hud-script">\n${script}\n</script>\n</body>`)
+      : `${html}\n<script id="studio-dna-universal-hud-script">\n${script}\n</script>`;
+  }
+
+  return html.includes('</body>')
+    ? html.replace('</body>', `${payload}\n</body>`)
+    : `${html}\n${payload}`;
+}
+
 module.exports = {
   projectHudFromDnaIr,
   generateHudMarkup: projectHudFromDnaIr,
   getGlassmorphicStyles,
-  injectDnaHud
+  injectDnaHud,
+  injectUniversalHud
 };

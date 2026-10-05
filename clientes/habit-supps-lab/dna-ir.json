@@ -1,0 +1,20 @@
+{
+  "clientSlug": "habit-supps-lab",
+  "clientName": "Habit Supps Lab",
+  "theme": {
+    "--dna-bg": "#F4F5F7",
+    "--dna-surface": "#FFFFFF",
+    "--dna-text": "#111118",
+    "--dna-text-muted": "#6B7280",
+    "--dna-primary": "#483A97",
+    "--dna-primary-hover": "#362976",
+    "--dna-accent": "#38E1C2",
+    "--dna-border": "rgba(0, 0, 0, 0.08)"
+  },
+  "typography": {
+    "primary": "Inter, -apple-system, sans-serif"
+  },
+  "effects": {
+    "canvas-scroll-scrubber": true
+  }
+}

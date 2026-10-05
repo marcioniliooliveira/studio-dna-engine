@@ -42,6 +42,17 @@ describe('Universal UI/UX Effect Registry & Dynamic Projection', () => {
 
     const transitions = registry.listByCategory('typography-transition');
     assert.ok(transitions.length >= 3, 'Must list at least 3 transitions');
+
+    // 3D & Brand Identity Effects
+    const mascotEffect = registry.getEffect('brand-mascot-slots');
+    assert.ok(mascotEffect, 'brand-mascot-slots must be registered');
+    assert.equal(mascotEffect.category, '3d-brand-identity');
+    assert.ok(Array.isArray(mascotEffect.slots), 'brand-mascot-slots must declare slots');
+
+    const scrubberEffect = registry.getEffect('canvas-scroll-scrubber');
+    assert.ok(scrubberEffect, 'canvas-scroll-scrubber must be registered');
+    assert.equal(scrubberEffect.category, '3d-canvas-scrubber');
+    assert.ok(scrubberEffect.canvasConfig?.scrollSequence, 'canvas-scroll-scrubber must declare scrollSequence');
   });
 
   it('Generates composite deduplicated SVG Defs for active effects', () => {

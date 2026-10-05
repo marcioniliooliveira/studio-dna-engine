@@ -1,0 +1,53 @@
+{
+  "name": "Habit Supps",
+  "slug": "habit-supps",
+  "archetype": "modern-apothecary",
+  "tagline": "Science-backed supplements for a healthier you",
+  "colors": {
+    "background": "#F4F5F7",
+    "surface": "#FFFFFF",
+    "text": "#111118",
+    "textMuted": "#6B7280",
+    "primary": "#483A97",
+    "primaryHover": "#362976",
+    "accent": "#38E1C2",
+    "border": "rgba(0, 0, 0, 0.08)"
+  },
+  "typography": {
+    "headlineFont": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    "bodyFont": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    "headlineTracking": "-0.03em"
+  },
+  "assets": {
+    "logo": "/copias/habitsupps-com/site/assets/_next/static/media/hbh-full-logo.b7717143.svg",
+    "logoIndigo": "/copias/habitsupps-com/site/assets/_next/static/media/hbh-indigo-logo.99398e7c.svg",
+    "heroVideo": "/copias/habitsupps-com/site/assets/vendor/cdn.sanity.io/files/iuz0iuzl/production/556dcceca85f3682957e4f9aff6f3cb020cce4df.mp4",
+    "mascotGif": "/copias/habitsupps-com/site/assets/_next/static/media/habit-character-popping-out-from-side-of-image.e4b794c0.gif",
+    "videos": {
+      "womensMulti": "/copias/habitsupps-com/site/assets/vendor/cdn.sanity.io/files/iuz0iuzl/production/8a5337a1a82da0b3e55ed399bf3d85f96f92f98b.mp4",
+      "collagen": "/copias/habitsupps-com/site/assets/vendor/cdn.sanity.io/files/iuz0iuzl/production/db4374d1e65a254e9a9efe49651fbcfd10b20880.mp4",
+      "energy": "/copias/habitsupps-com/site/assets/vendor/cdn.sanity.io/files/iuz0iuzl/production/dfc788785463732da5bec3e27f6180e85acebd74.mp4",
+      "metabolism": "/copias/habitsupps-com/site/assets/vendor/cdn.sanity.io/files/iuz0iuzl/production/9478ca5d0a28acea4ed2112043c75d04b9e9ea94.mp4"
+    }
+  },
+  "sections": [
+    "header-nav",
+    "hero-metrics",
+    "sticky-sequence-stage",
+    "key-ingredients-bento",
+    "clinical-specs-accordion",
+    "kinetic-marquee-ticker",
+    "layer-wellness-carousel",
+    "social-proof-reviews",
+    "where-to-buy-strip",
+    "apothecary-footer"
+  ],
+  "invariants": {
+    "headerHeight": "72px",
+    "safeZoneMaxHeight": "58vh",
+    "safeZoneBottomMargin": "8vh",
+    "mascotBoundingBox": "140px",
+    "bentoMinHeight": "280px",
+    "tickerKeyframePercent": "-50%"
+  }
+}

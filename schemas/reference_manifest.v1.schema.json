@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studiodna.engine/schemas/reference_manifest.v1.json",
+  "title": "ReferenceManifest",
+  "description": "Manifesto de capacidades e inventário de referências capturadas.",
+  "type": "object",
+  "required": ["provider", "version", "licenseClassification", "capabilities", "components"],
+  "properties": {
+    "provider": { "type": "string" },
+    "version": { "type": "string" },
+    "sourceUrl": { "type": "string", "format": "uri" },
+    "licenseClassification": {
+      "type": "string",
+      "enum": ["SOURCE_REUSABLE", "REFERENCE_ONLY", "VISUAL_ONLY"]
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["registry", "docs", "mcp", "gitSource", "browserRendered"],
+      "properties": {
+        "registry": { "type": "boolean" },
+        "docs": { "type": "boolean" },
+        "mcp": { "type": "boolean" },
+        "gitSource": { "type": "boolean" },
+        "browserRendered": { "type": "boolean" },
+        "authenticatedReference": { "type": "boolean" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["componentId", "name", "category", "targetUrl"],
+        "properties": {
+          "componentId": { "type": "string" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "targetUrl": { "type": "string" }
+        }
+      }
+    }
+  }
+}

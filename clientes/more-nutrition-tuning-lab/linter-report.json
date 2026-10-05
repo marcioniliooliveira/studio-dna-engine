@@ -1,0 +1,33 @@
+{
+  "auditTimestamp": "2026-10-02T18:20:51.591Z",
+  "siteSlug": "clientes/more-nutrition-tuning-lab/site",
+  "auditPassed": true,
+  "jsErrors": [],
+  "layoutBoxes": [
+    {
+      "index": 0,
+      "tag": "section",
+      "id": null,
+      "classes": "stage",
+      "top": 0,
+      "left": 0,
+      "width": 1440,
+      "height": 1441
+    },
+    {
+      "index": 1,
+      "tag": "section",
+      "id": null,
+      "classes": "flavour",
+      "top": 11185,
+      "left": 0,
+      "width": 1440,
+      "height": 1143
+    }
+  ],
+  "imagesSummary": {
+    "total": 175,
+    "valid": 175,
+    "broken": []
+  }
+}

@@ -379,6 +379,51 @@ function buildDashboardHtml(copias, clientes) {
 '</html>';
 }
 
+async function saveDnaMutation(payload = {}, options = {}) {
+  const rootDir = options.rootDir || path.resolve(__dirname, '../..');
+  const clientesDir = options.clientesDir || path.resolve(rootDir, 'clientes');
+
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Payload must be a valid JSON object');
+  }
+
+  const slug = assertSafeSlug(payload.slug);
+  const targetDir = path.join(clientesDir, slug);
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
+  }
+
+  const specPath = path.join(targetDir, 'brand-spec.json');
+  let spec = {};
+  if (fs.existsSync(specPath)) {
+    try {
+      spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
+    } catch (e) {
+      spec = {};
+    }
+  }
+
+  if (payload.theme) {
+    spec.theme = Object.assign(spec.theme || {}, payload.theme);
+  }
+  if (payload.colors) {
+    spec.colors = Object.assign(spec.colors || {}, payload.colors);
+    spec.theme = Object.assign(spec.theme || {}, payload.colors);
+  }
+  if (payload.typography) {
+    spec.typography = Object.assign(spec.typography || {}, payload.typography);
+  }
+  if (payload.effects) {
+    spec.effects = Object.assign(spec.effects || {}, payload.effects);
+  }
+  if (payload.content) {
+    spec.content = Object.assign(spec.content || {}, payload.content);
+  }
+
+  fs.writeFileSync(specPath, JSON.stringify(spec, null, 2), 'utf8');
+  return { success: true, specPath, spec };
+}
+
 function startPreviewServer(options = {}) {
   const opts = typeof options === 'number' ? { port: options } : (options || {});
   const config = loadConfig(opts);
@@ -564,6 +609,20 @@ function startPreviewServer(options = {}) {
       return;
     }
 
+    // ── API: Salvar DNA Mutation do Universal HUD (Shadow DOM) ───────────
+    if (pathname === '/api/save-dna-mutation' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        const result = await saveDnaMutation(data, { clientesDir, rootDir });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(result));
+      } catch (error) {
+        res.writeHead(error.statusCode || 500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: error.message }));
+      }
+      return;
+    }
+
     // ── Servir Arquivos Estáticos & Self-Healing Proxy ───────────────────
     let filePath;
     try {
@@ -721,17 +780,23 @@ function startPreviewServer(options = {}) {
         } catch(e) {}
         try {
           delete require.cache[require.resolve('../generators/hud-projector')];
-          const { injectDnaHud } = require('../generators/hud-projector');
+          delete require.cache[require.resolve('../dev/universal-hud-component')];
+          try { delete require.cache[require.resolve('../presets/preset-manager')]; } catch(e) {}
+          const { injectDnaHud, injectUniversalHud } = require('../generators/hud-projector');
           const clientRoot = path.dirname(path.dirname(filePath));
+          const clientSlug = path.basename(clientRoot);
           const dnaPath = path.join(clientRoot, 'dna-ir.json');
-          if (fs.existsSync(dnaPath)) {
-            const dnaIr = JSON.parse(fs.readFileSync(dnaPath, 'utf8'));
-            content = injectDnaHud(content, dnaIr);
-          } else {
-            delete require.cache[require.resolve('../dev/dev-hud')];
-            const { injectDevHud } = require('../dev/dev-hud');
-            content = injectDevHud(content);
+          const brandPath = path.join(clientRoot, 'brand-spec.json');
+          let clientOptions = {
+            clientSlug,
+            title: `${clientSlug} — Universal HUD`
+          };
+          if (fs.existsSync(brandPath)) {
+            try { clientOptions.brandSpec = JSON.parse(fs.readFileSync(brandPath, 'utf8')); } catch(e) {}
+          } else if (fs.existsSync(dnaPath)) {
+            try { clientOptions.brandSpec = JSON.parse(fs.readFileSync(dnaPath, 'utf8')); } catch(e) {}
           }
+          content = injectUniversalHud(content, clientOptions);
         } catch(e) {}
         res.end(content);
         return;
@@ -772,5 +837,6 @@ function startPreviewServer(options = {}) {
 
 module.exports = {
   startPreviewServer,
-  fetchAndSaveRemoteAsset
+  fetchAndSaveRemoteAsset,
+  saveDnaMutation
 };

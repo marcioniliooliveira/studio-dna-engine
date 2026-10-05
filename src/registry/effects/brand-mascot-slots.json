@@ -1,0 +1,85 @@
+{
+  "id": "brand-mascot-slots",
+  "name": "3D Brand Mascot Slot System",
+  "category": "3d-brand-identity",
+  "description": "Pre-rendered 3D mascot identity with transparent alpha channel slotted contextually across carousels, reviews, footers and empty states",
+  "source": "https://www.habitsupps.com/",
+  "prerequisites": {
+    "cssTokens": {
+      "--mascot-scale": "1",
+      "--mascot-offset-x": "0px",
+      "--mascot-offset-y": "0px",
+      "--mascot-z-index": "10"
+    }
+  },
+  "bindings": {
+    "targetAttribute": "data-mascot-slot",
+    "attributeValue": "active",
+    "supportedSelectors": [
+      "[data-mascot-slot='carousel']",
+      "[data-mascot-slot='reviews']",
+      "[data-mascot-slot='footer']",
+      "[data-mascot-slot='404']"
+    ]
+  },
+  "slots": [
+    {
+      "slotId": "carousel-companion",
+      "selector": ".carousel-mascot, [data-mascot-slot='carousel']",
+      "recommendedFormat": "image/webp (animated transparent) or image/gif",
+      "aspectRatio": "500x327",
+      "defaultPose": "pushing shopping cart with brand products",
+      "referenceAsset": "./assets/cdn.sanity.io/images/iuz0iuzl/production/5b0d53ac00d7f197f5db23d5d80be01a9fbbff5f-500x327.gif"
+    },
+    {
+      "slotId": "reviews-companion",
+      "selector": ".habit-character3, [data-mascot-slot='reviews']",
+      "recommendedFormat": "image/webp (animated transparent) or image/gif",
+      "aspectRatio": "500x774",
+      "defaultPose": "relaxed / listening / thumbs up beside reviews card",
+      "referenceAsset": "./assets/cdn.sanity.io/images/iuz0iuzl/production/53dea3834f2ce8dc6e4049e84b1dc6d3240a94c3-500x774.gif"
+    },
+    {
+      "slotId": "footer-peek",
+      "selector": ".footer-habit-character, [data-mascot-slot='footer']",
+      "recommendedFormat": "image/webp (animated transparent) or image/gif",
+      "aspectRatio": "variable",
+      "defaultPose": "peeking out from edge of screen",
+      "referenceAsset": "./assets/_next/static/media/habit-character-popping-out-from-side-of-image.e4b794c0.gif"
+    },
+    {
+      "slotId": "empty-state-or-404",
+      "selector": ".error-page__img, [data-mascot-slot='404']",
+      "recommendedFormat": "image/webp (animated transparent) or image/gif",
+      "aspectRatio": "500x747",
+      "defaultPose": "jumping rope or searching",
+      "referenceAsset": "./assets/_next/static/media/habit-character-jumprope.71946dee.gif"
+    }
+  ],
+  "controls": [
+    {
+      "id": "mascot.scale",
+      "label": "Mascot Scale",
+      "type": "range",
+      "cssProperty": "--mascot-scale",
+      "bounds": { "min": 0.5, "max": 2.0, "step": 0.05, "unit": "" },
+      "default": 1
+    },
+    {
+      "id": "mascot.offsetX",
+      "label": "Offset X",
+      "type": "range",
+      "cssProperty": "--mascot-offset-x",
+      "bounds": { "min": -100, "max": 100, "step": 1, "unit": "px" },
+      "default": 0
+    },
+    {
+      "id": "mascot.offsetY",
+      "label": "Offset Y",
+      "type": "range",
+      "cssProperty": "--mascot-offset-y",
+      "bounds": { "min": -100, "max": 100, "step": 1, "unit": "px" },
+      "default": 0
+    }
+  ]
+}

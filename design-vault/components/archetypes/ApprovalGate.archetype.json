@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "ApprovalGate",
+  "purpose": "Componente de governança interativa para autorização ou rejeição de execuções de ferramentas sensíveis por agentes autônomos, exibindo diff de ação e nível de risco.",
+  "confidenceScore": 0.96,
+  "canonicalAnatomy": {
+    "rootRole": "ApprovalCardRoot",
+    "slots": [
+      { "name": "headerSlot", "description": "Título da ferramenta e badge de criticidade", "optional": false },
+      { "name": "diffViewerSlot", "description": "Visualização do payload ou diff da mutação", "optional": false },
+      { "name": "decisionClusterSlot", "description": "Botões de ação para aprovar ou rejeitar", "optional": false }
+    ],
+    "hierarchyConstraints": [
+      { "parent": "ApprovalCardRoot", "child": "headerSlot", "relationship": "stacked-top" },
+      { "parent": "ApprovalCardRoot", "child": "diffViewerSlot", "relationship": "flex-grow-1" },
+      { "parent": "ApprovalCardRoot", "child": "decisionClusterSlot", "relationship": "pinned-bottom" }
+    ]
+  },
+  "stateContract": {
+    "initialState": "pending_review",
+    "states": [
+      "pending_review",
+      "inspecting_diff",
+      "approved",
+      "rejected"
+    ],
+    "transitions": [
+      { "from": "pending_review", "to": "inspecting_diff", "trigger": "TOGGLE_DIFF_VIEW" },
+      { "from": "pending_review", "to": "approved", "trigger": "CONFIRM_APPROVAL" },
+      { "from": "pending_review", "to": "rejected", "trigger": "CONFIRM_REJECTION" }
+    ]
+  },
+  "motionPrinciples": {
+    "cardEntrance": {
+      "type": "cubic-bezier",
+      "params": { "x1": 0.16, "y1": 1.0, "x2": 0.3, "y2": 1.0 },
+      "durationMs": 150,
+      "description": "Entrada rápida e assertiva para decisões críticas"
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "alertdialog",
+    "accessibleName": "Autorização de Ferramenta do Agente",
+    "liveRegion": "assertive",
+    "focusPolicy": "Captura o foco nos botões de decisão até resolução explícita"
+  },
+  "knownImplementations": [
+    { "provider": "beautiful-ui", "dnaRef": "bui-approval-card-01", "similarityScore": 0.96 }
+  ]
+}

@@ -22,6 +22,8 @@ Este diretório contém os esqueletos e clones de alta fidelidade brutos extraí
 | `acilav-webflow-io` | https://acilav.webflow.io/ | Webflow | ✅ Extraído | Animações Webflow IX2/IX3 |
 | `aircenter-space` | https://aircenter.space/ | HTML/CSS Puro + WebGL / Custom UI | ✅ 95% Extraído | **Referência Imobiliária High-End / Business Center / Plantas Interativas** |
 | `21oaks-org` | https://21oaks.org/ | Webflow + GSAP ScrollTrigger + Lenis | ✅ 95% Extraído | **Referência Multi-Family / Hotspots SVG / Dimerização de Luz / Scribble Underline** |
+| `habitsupps-com` | https://www.habitsupps.com/product/stress-relief-capsule | Next.js (SSR) + Sanity CMS | ✅ Extraído | **Referência D2C Wellness / 3D Brand Mascot Slot System / Ingredient Video Loops** |
+| `more-nutrition-webflow-io` | https://more-nutrition.webflow.io/#reviews | Webflow + Canvas 3D + GSAP + Lenis | ✅ 95% Extraído | **Referência D2C Matcha / 3D Product Frame Sequence Scrubber (200 frames) / UGC Video** |
 
 ---
 

@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studiodna.engine/schemas/component_dna.v1.json",
+  "title": "ComponentDNA",
+  "description": "Representação intermediária canônica de componentes desacoplada de DOM e framework.",
+  "type": "object",
+  "required": [
+    "dnaVersion",
+    "identity",
+    "provenance",
+    "epistemology",
+    "anatomy",
+    "geometryConstraints",
+    "tokens",
+    "stateMachine",
+    "motionDynamics",
+    "accessibilityContract",
+    "dependencies"
+  ],
+  "properties": {
+    "dnaVersion": { "type": "string", "const": "1.0.0" },
+    "identity": {
+      "type": "object",
+      "required": ["id", "semanticName", "suggestedArchetype"],
+      "properties": {
+        "id": { "type": "string" },
+        "semanticName": { "type": "string" },
+        "suggestedArchetype": { "type": "string" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["corpusHash", "sourceProvider", "sourceUrl", "capturedAt", "licensePolicy"],
+      "properties": {
+        "corpusHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "sourceProvider": { "type": "string" },
+        "sourceUrl": { "type": "string", "format": "uri" },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "licensePolicy": { "enum": ["SOURCE_REUSABLE", "REFERENCE_ONLY", "VISUAL_ONLY"] }
+      }
+    },
+    "epistemology": {
+      "type": "object",
+      "description": "Mapa de confiança epistemológica por nó ou propriedade.",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["OBSERVED", "DERIVED", "INFERRED", "UNKNOWN"]
+      }
+    },
+    "anatomy": {
+      "type": "object",
+      "required": ["rootRole", "subcomponents"],
+      "properties": {
+        "rootRole": { "type": "string" },
+        "subcomponents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnatomyNode"
+          }
+        }
+      }
+    },
+    "geometryConstraints": {
+      "type": "object",
+      "required": ["density", "layoutMode", "relations", "breakpoints"],
+      "properties": {
+        "density": { "enum": ["compact", "normal", "spacious"] },
+        "layoutMode": { "enum": ["flex-row", "flex-col", "grid", "anchored"] },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["sourceRole", "targetRole", "constraintType", "valueToken"],
+            "properties": {
+              "sourceRole": { "type": "string" },
+              "targetRole": { "type": "string" },
+              "constraintType": { "enum": ["stacked-below", "inline-after", "align-start", "align-center", "pin-bottom"] },
+              "valueToken": { "type": "string" }
+            }
+          }
+        },
+        "breakpoints": {
+          "type": "object",
+          "properties": {
+            "mobile": { "type": "object" },
+            "desktop": { "type": "object" }
+          }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "required": ["colorRoles", "spacingScale", "typographyHierarchy", "radius"],
+      "properties": {
+        "colorRoles": { "type": "object" },
+        "spacingScale": { "type": "array", "items": { "type": "number" } },
+        "typographyHierarchy": { "type": "object" },
+        "radius": { "type": "string" }
+      }
+    },
+    "stateMachine": {
+      "type": "object",
+      "required": ["initialState", "states", "transitions"],
+      "properties": {
+        "initialState": { "type": "string" },
+        "states": { "type": "array", "items": { "type": "string" } },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "trigger"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "trigger": { "type": "string" },
+              "guard": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "motionDynamics": {
+      "type": "object",
+      "required": ["transitions", "reducedMotionFallback"],
+      "properties": {
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["targetRole", "property", "curveType", "durationMs"],
+            "properties": {
+              "targetRole": { "type": "string" },
+              "property": { "type": "string" },
+              "curveType": { "enum": ["spring", "cubic-bezier", "linear"] },
+              "durationMs": { "type": "number" },
+              "curveParams": { "type": "object" }
+            }
+          }
+        },
+        "reducedMotionFallback": { "enum": ["instant", "fade-only", "none"] }
+      }
+    },
+    "accessibilityContract": {
+      "type": "object",
+      "required": ["ariaRole", "keyboardInteractions", "focusManagement"],
+      "properties": {
+        "ariaRole": { "type": "string" },
+        "keyboardInteractions": { "type": "object" },
+        "focusManagement": { "enum": ["roving-tabindex", "trap", "natural"] }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "classification"],
+        "properties": {
+          "name": { "type": "string" },
+          "classification": { "enum": ["essential", "replaceable", "decorative", "vendor-specific"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "AnatomyNode": {
+      "type": "object",
+      "required": ["role", "optional", "children"],
+      "properties": {
+        "role": { "type": "string" },
+        "optional": { "type": "boolean" },
+        "slotName": { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/AnatomyNode" }
+        }
+      }
+    }
+  }
+}

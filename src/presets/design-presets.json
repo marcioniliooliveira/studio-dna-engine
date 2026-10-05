@@ -1,0 +1,104 @@
+[
+  {
+    "id": "kinetic-pop",
+    "name": "Kinetic Pop Nutrition",
+    "archetype": "Energético, expressivo, alta densidade editorial e física elástica",
+    "colors": {
+      "background": "#E8EFE4",
+      "surface": "#FFFFFF",
+      "primary": "#335C30",
+      "accent": "#FF6B6B",
+      "text": "#1A2E19",
+      "muted": "#7A8C77"
+    },
+    "typography": {
+      "family": "\"Founders Grotesk Condensed\", -apple-system, sans-serif",
+      "tracking": "-4.5px",
+      "headingWeight": "600",
+      "bodyFamily": "-apple-system, BlinkMacSystemFont, sans-serif"
+    },
+    "motion": {
+      "scrub": 0.7,
+      "ease": "elastic-ease-out-soft",
+      "doodleStyle": "wiggle-handdrawn"
+    },
+    "stageDefaults": {
+      "defaultMode": "sequence",
+      "safeZoneHeight": 0.58,
+      "bottomMargin": 0.08,
+      "clayProps": {
+        "brandColor": "#335C30",
+        "labelText": "MORE PROTEIN",
+        "capFinish": "matte"
+      }
+    }
+  },
+  {
+    "id": "modern-apothecary",
+    "name": "Modern Clinical Apothecary",
+    "archetype": "Clínico-pop, científico transparente, diário, limpo com alto contraste",
+    "colors": {
+      "background": "#F4F5F7",
+      "surface": "#FFFFFF",
+      "primary": "#0D131A",
+      "accent": "#38E1C2",
+      "text": "#111827",
+      "muted": "#6B7280"
+    },
+    "typography": {
+      "family": "\"PP Neue Montreal\", \"Aeonik Pro\", -apple-system, sans-serif",
+      "tracking": "-1.5px",
+      "headingWeight": "600",
+      "bodyFamily": "-apple-system, BlinkMacSystemFont, sans-serif"
+    },
+    "motion": {
+      "scrub": 0.4,
+      "ease": "power2.out",
+      "doodleStyle": "technical-badges"
+    },
+    "stageDefaults": {
+      "defaultMode": "clay",
+      "safeZoneHeight": 0.55,
+      "bottomMargin": 0.10,
+      "clayProps": {
+        "brandColor": "#0D131A",
+        "labelText": "STRESS RELIEF",
+        "capFinish": "glass"
+      }
+    }
+  },
+  {
+    "id": "tactile-botanical",
+    "name": "Tactile Clean Botanical",
+    "archetype": "Sensorial, sereno, premium, atemporal com toques terrosos e orgânicos",
+    "colors": {
+      "background": "#F9F6F0",
+      "surface": "#FFFFFF",
+      "primary": "#1C2A20",
+      "accent": "#C5A880",
+      "text": "#222623",
+      "muted": "#8A8F87"
+    },
+    "typography": {
+      "family": "\"Editorial New\", \"Ogg\", Georgia, serif",
+      "tracking": "-2.0px",
+      "headingWeight": "400",
+      "bodyFamily": "-apple-system, BlinkMacSystemFont, sans-serif"
+    },
+    "motion": {
+      "scrub": 1.0,
+      "ease": "expo.out",
+      "doodleStyle": "botanical-stamps"
+    },
+    "stageDefaults": {
+      "defaultMode": "clay",
+      "safeZoneHeight": 0.52,
+      "bottomMargin": 0.12,
+      "clayProps": {
+        "brandColor": "#1C2A20",
+        "labelText": "ORGANIC EXTRACT",
+        "capFinish": "ceramic"
+      }
+    }
+  }
+]

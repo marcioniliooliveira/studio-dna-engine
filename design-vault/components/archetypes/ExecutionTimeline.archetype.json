@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "ExecutionTimeline",
+  "purpose": "Linha do tempo hierárquica de execução de agentes, com disclosure progressivo de chamadas de ferramentas, passos de raciocínio e status de execução em tempo real.",
+  "confidenceScore": 0.92,
+  "canonicalAnatomy": {
+    "rootRole": "TimelineContainer",
+    "slots": [
+      { "name": "stepListSlot", "description": "Lista ordenada de passos de execução e chamadas de ferramentas", "optional": false },
+      { "name": "disclosureSlot", "description": "Área expansível para logs detalhados e artefatos de saída", "optional": true }
+    ],
+    "hierarchyConstraints": [
+      { "parent": "TimelineContainer", "child": "stepListSlot", "relationship": "flex-col" }
+    ]
+  },
+  "stateContract": {
+    "initialState": "idle",
+    "states": [
+      "idle",
+      "running_step",
+      "step_expanded",
+      "completed",
+      "error_halted"
+    ],
+    "transitions": [
+      { "from": "idle", "to": "running_step", "trigger": "STEP_STARTED" },
+      { "from": "running_step", "to": "step_expanded", "trigger": "TOGGLE_STEP_DISCLOSURE" },
+      { "from": "running_step", "to": "completed", "trigger": "RUN_FINISHED" },
+      { "from": "running_step", "to": "error_halted", "trigger": "STEP_FAULT" }
+    ]
+  },
+  "motionPrinciples": {
+    "stepDisclosure": {
+      "type": "spring",
+      "stiffness": 240,
+      "damping": 20,
+      "mass": 1.0,
+      "description": "Abertura elástica de detalhes do passo sem deslocamento brusco"
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "log",
+    "accessibleName": "Linha do Tempo de Execução do Agente",
+    "liveRegion": "polite",
+    "focusPolicy": "Navegação sequencial por setas verticais entre os passos da execução"
+  },
+  "knownImplementations": [
+    { "provider": "arc", "dnaRef": "arc-agent-run-01", "similarityScore": 0.92 }
+  ]
+}
