@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "DraggableWidgetGrid",
+  "purpose": "Container bento grid modular com suporte a reordenação interativa (drag-and-drop via ponteiro e teclado), animação FLIP elástica, redimensionamento de spans (1x1, 2x1, 1x2, 2x2) e composição dinâmica de widgets de Generative UI no Hub.",
+  "confidenceScore": 0.96,
+  "canonicalAnatomy": {
+    "rootRole": "WidgetGridContainer",
+    "slots": [
+      { "name": "toolbarSlot", "description": "Controles de ativação de modo de edição, adição de widgets e reset de layout", "optional": true },
+      { "name": "cellSlot", "description": "Células arrastáveis do grid contendo handle de arraste, seletor de span e widget GenUI filho", "optional": false },
+      { "name": "placeholderSlot", "description": "Indicador visual da célula de destino durante o arraste ativo", "optional": false }
+    ],
+    "hierarchyConstraints": [
+      { "parent": "WidgetGridContainer", "child": "toolbarSlot", "relationship": "stacked-top" },
+      { "parent": "WidgetGridContainer", "child": "cellSlot", "relationship": "grid-auto-flow-dense" }
+    ]
+  },
+  "stateContract": {
+    "initialState": "idle_locked",
+    "states": [
+      "idle_locked",
+      "edit_mode_ready",
+      "dragging_active",
+      "reordering_layout",
+      "resizing_span",
+      "persisting_layout"
+    ],
+    "transitions": [
+      { "from": "idle_locked", "to": "edit_mode_ready", "trigger": "TOGGLE_EDIT_MODE" },
+      { "from": "edit_mode_ready", "to": "dragging_active", "trigger": "DRAG_START" },
+      { "from": "dragging_active", "to": "reordering_layout", "trigger": "DRAG_OVER_TARGET_CELL" },
+      { "from": "reordering_layout", "to": "persisting_layout", "trigger": "DROP_COMMIT" },
+      { "from": "dragging_active", "to": "edit_mode_ready", "trigger": "DRAG_CANCEL_ESC" },
+      { "from": "edit_mode_ready", "to": "resizing_span", "trigger": "SPAN_CHANGE_REQUEST" },
+      { "from": "resizing_span", "to": "persisting_layout", "trigger": "SPAN_COMMIT" },
+      { "from": "persisting_layout", "to": "edit_mode_ready", "trigger": "LAYOUT_SYNCED" },
+      { "from": "edit_mode_ready", "to": "idle_locked", "trigger": "LOCK_LAYOUT" }
+    ]
+  },
+  "motionPrinciples": {
+    "layoutReorderFlip": {
+      "type": "spring",
+      "stiffness": 300,
+      "damping": 28,
+      "mass": 0.8,
+      "description": "Transição FLIP fluida das células vizinhas ao reordenar o grid"
+    },
+    "dragElevation": {
+      "type": "spring",
+      "stiffness": 400,
+      "damping": 25,
+      "mass": 0.6,
+      "description": "Elevação tátil (scale 1.03 + shadow) ao capturar um widget"
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "grid",
+    "accessibleName": "Painel Modular de Widgets do Agente",
+    "liveRegion": "assertive",
+    "focusPolicy": "Roving tabindex entre handles de arraste; suporte a Space/Setas/Escape para reordenação completa via teclado"
+  },
+  "knownImplementations": [
+    { "provider": "21st.dev", "dnaRef": "carolinaraulino-draggable-widget-grid", "similarityScore": 0.96 }
+  ]
+}

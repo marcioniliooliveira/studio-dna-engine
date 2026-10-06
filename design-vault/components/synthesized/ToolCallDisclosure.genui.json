@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "hub.genui.v1",
+  "archetypeRef": "ToolCallDisclosure",
+  "layout": {
+    "type": "shell-stack",
+    "props": {
+      "density": "normal",
+      "dockedBottom": true
+    }
+  },
+  "slots": [
+    {
+      "role": "summaryBarSlot",
+      "optional": false,
+      "permittedWidgets": [
+        "markdown-stream",
+        "tool-call-card",
+        "diff-view",
+        "action-buttons"
+      ]
+    },
+    {
+      "role": "payloadInspectorSlot",
+      "optional": false,
+      "permittedWidgets": [
+        "markdown-stream",
+        "tool-call-card",
+        "diff-view",
+        "action-buttons"
+      ]
+    }
+  ],
+  "runtimeBinding": {
+    "streamStateTopic": "agent.run.stream",
+    "submitAction": "agent.user.prompt",
+    "approvalTopic": "agent.tool.request_approval"
+  }
+}

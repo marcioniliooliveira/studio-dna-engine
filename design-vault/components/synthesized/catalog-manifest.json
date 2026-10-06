@@ -1,0 +1,71 @@
+{
+  "catalogVersion": "1.0.0",
+  "generatedAt": "2026-10-06T12:58:11.703Z",
+  "totalComponents": 8,
+  "components": [
+    {
+      "archetypeId": "ApprovalGate",
+      "sourceDnaId": "bui-approval-card-01",
+      "statesCount": 4,
+      "slotsCount": 3,
+      "tsxFile": "design-vault/components/synthesized/ApprovalGate.tsx",
+      "genUiFile": "design-vault/components/synthesized/ApprovalGate.genui.json"
+    },
+    {
+      "archetypeId": "ArtifactPreview",
+      "sourceDnaId": "vault-artifactpreview",
+      "statesCount": 5,
+      "slotsCount": 4,
+      "tsxFile": "design-vault/components/synthesized/ArtifactPreview.tsx",
+      "genUiFile": "design-vault/components/synthesized/ArtifactPreview.genui.json"
+    },
+    {
+      "archetypeId": "ConversationalShell",
+      "sourceDnaId": "planes-ai-chat-01",
+      "statesCount": 5,
+      "slotsCount": 4,
+      "tsxFile": "design-vault/components/synthesized/ConversationalShell.tsx",
+      "genUiFile": "design-vault/components/synthesized/ConversationalShell.genui.json"
+    },
+    {
+      "archetypeId": "DraggableWidgetGrid",
+      "sourceDnaId": "carolinaraulino-draggable-widget-grid",
+      "statesCount": 6,
+      "slotsCount": 3,
+      "tsxFile": "design-vault/components/synthesized/DraggableWidgetGrid.tsx",
+      "genUiFile": "design-vault/components/synthesized/DraggableWidgetGrid.genui.json"
+    },
+    {
+      "archetypeId": "ExecutionTimeline",
+      "sourceDnaId": "arc-agent-run-01",
+      "statesCount": 5,
+      "slotsCount": 2,
+      "tsxFile": "design-vault/components/synthesized/ExecutionTimeline.tsx",
+      "genUiFile": "design-vault/components/synthesized/ExecutionTimeline.genui.json"
+    },
+    {
+      "archetypeId": "PromptComposer",
+      "sourceDnaId": "vault-promptcomposer",
+      "statesCount": 5,
+      "slotsCount": 3,
+      "tsxFile": "design-vault/components/synthesized/PromptComposer.tsx",
+      "genUiFile": "design-vault/components/synthesized/PromptComposer.genui.json"
+    },
+    {
+      "archetypeId": "ReasoningSummary",
+      "sourceDnaId": "vault-reasoningsummary",
+      "statesCount": 3,
+      "slotsCount": 2,
+      "tsxFile": "design-vault/components/synthesized/ReasoningSummary.tsx",
+      "genUiFile": "design-vault/components/synthesized/ReasoningSummary.genui.json"
+    },
+    {
+      "archetypeId": "ToolCallDisclosure",
+      "sourceDnaId": "vault-toolcalldisclosure",
+      "statesCount": 4,
+      "slotsCount": 2,
+      "tsxFile": "design-vault/components/synthesized/ToolCallDisclosure.tsx",
+      "genUiFile": "design-vault/components/synthesized/ToolCallDisclosure.genui.json"
+    }
+  ]
+}

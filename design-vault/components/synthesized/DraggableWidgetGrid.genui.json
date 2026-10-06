@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "hub.genui.v1",
+  "archetypeRef": "DraggableWidgetGrid",
+  "layout": {
+    "type": "bento-draggable-grid",
+    "props": {
+      "columns": 4,
+      "gapPx": 16,
+      "minRowHeightPx": 180,
+      "allowReorder": true,
+      "allowSpanResize": true,
+      "supportedSpans": [
+        "1x1",
+        "2x1",
+        "1x2",
+        "2x2"
+      ],
+      "springPhysics": {
+        "stiffness": 300,
+        "damping": 28,
+        "mass": 0.8
+      }
+    }
+  },
+  "slots": [
+    {
+      "role": "WidgetGridToolbar",
+      "optional": true,
+      "permittedWidgets": [
+        "ApprovalGate",
+        "ExecutionTimeline",
+        "ConversationalShell",
+        "ToolCallDisclosure",
+        "ReasoningSummary",
+        "ArtifactPreview",
+        "metric-card",
+        "markdown-stream"
+      ]
+    },
+    {
+      "role": "DraggableWidgetCell",
+      "optional": false,
+      "permittedWidgets": [
+        "ApprovalGate",
+        "ExecutionTimeline",
+        "ConversationalShell",
+        "ToolCallDisclosure",
+        "ReasoningSummary",
+        "ArtifactPreview",
+        "metric-card",
+        "markdown-stream"
+      ]
+    },
+    {
+      "role": "DropTargetPlaceholder",
+      "optional": false,
+      "permittedWidgets": [
+        "ApprovalGate",
+        "ExecutionTimeline",
+        "ConversationalShell",
+        "ToolCallDisclosure",
+        "ReasoningSummary",
+        "ArtifactPreview",
+        "metric-card",
+        "markdown-stream"
+      ]
+    }
+  ],
+  "runtimeBinding": {
+    "layoutStateTopic": "agent.genui.layout_state",
+    "reorderActionTopic": "agent.genui.layout_updated",
+    "resizeSpanActionTopic": "agent.genui.widget_resized",
+    "removeWidgetActionTopic": "agent.genui.widget_removed"
+  }
+}

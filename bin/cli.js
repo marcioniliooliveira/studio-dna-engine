@@ -63,7 +63,7 @@ async function promptInteractive() {
 
     if (initialChoice === '2') {
       rl.close();
-      startPreviewServer();
+      startPreviewServer({ rootDir: path.resolve(__dirname, '..') });
       return;
     }
 
@@ -119,7 +119,7 @@ async function main() {
       port = parseInt(args[portIndex + 1], 10) || 4000;
     }
     const enableMutations = !args.includes('--read-only');
-    startPreviewServer({ port, enableMutations });
+    startPreviewServer({ port, enableMutations, rootDir: path.resolve(__dirname, '..') });
     return;
   }
 

@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "schemaVersion": "1.0.0",
+  "archetypeId": "ArtifactPreview",
+  "category": "feedback",
+  "description": "Clean-room canonical archetype for live multi-tab code, markdown, and interactive preview panels with diff inspection.",
+  "sourceReferences": [
+    {
+      "referenceId": "arc-agent-run-v1",
+      "weight": 0.6
+    },
+    {
+      "referenceId": "planes-chat-v1",
+      "weight": 0.4
+    }
+  ],
+  "mandatorySlots": [
+    "artifactHeader",
+    "tabSwitcher",
+    "viewportCanvas",
+    "actionToolbar"
+  ],
+  "optionalSlots": [
+    "diffToggle",
+    "versionSelector",
+    "exportMenu"
+  ],
+  "canonicalStates": [
+    "idle",
+    "streaming",
+    "InteractivePreview",
+    "diffView",
+    "error"
+  ],
+  "canonicalTokens": {
+    "surface": "var(--surface-elevated)",
+    "border": "var(--border-subtle)",
+    "accent": "var(--accent-primary)",
+    "codeBg": "var(--surface-code)"
+  },
+  "motionEnvelope": {
+    "stiffnessRange": [260, 360],
+    "dampingRange": [24, 34],
+    "maxDurationMs": 260
+  },
+  "accessibilityContract": {
+    "role": "region",
+    "requiredAria": [
+      "aria-label",
+      "aria-live"
+    ],
+    "keyboardNavigation": [
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "Escape"
+    ]
+  },
+  "antiPatterns": [
+    "Unbounded iframe execution without sandbox attributes",
+    "Missing fallback view when code stream is incomplete"
+  ]
+}

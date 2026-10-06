@@ -14,6 +14,9 @@ const {
   readJsonBody,
   isMutationAuthorized
 } = require('./security');
+const { HubComponentCatalog } = require('../hub/component-catalog');
+const { HubAgentRuntime } = require('../runtime/hub-agent-runtime');
+const { ShadcnRegistryAdapter } = require('../acquisition/adapters/shadcn-registry-adapter');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -282,6 +285,7 @@ function buildDashboardHtml(copias, clientes) {
 '      <div class="logo"><span>&#127760;</span> Studio DNA PRO <span style="font-size:0.75rem;color:var(--text-muted);font-weight:500">v2.0 &bull; Awwwards Engine</span></div>\n' +
 '      <div class="nav-tabs">\n' +
 '        <button class="nav-btn active" onclick="showTab(\'tab-clients\')">&#127970; Projetos de Clientes</button>\n' +
+'        <button class="nav-btn" onclick="showTab(\'tab-hub-genui\')">&#129513; Hub GenUI &amp; Bento Grid</button>\n' +
 '        <button class="nav-btn" onclick="showTab(\'tab-vault\')">&#129516; Design Vault</button>\n' +
 '        <button class="nav-btn" onclick="showTab(\'tab-clones\')">&#128230; Esqueletos &amp; Copias</button>\n' +
 '        <button class="nav-btn" onclick="showTab(\'tab-extractor\')">&#9889; Deep Scraper</button>\n' +
@@ -304,6 +308,42 @@ function buildDashboardHtml(copias, clientes) {
 '      </div>\n' +
 '      <h3 style="font-size:1.2rem;margin-bottom:12px">&#128193; Projetos de Clientes Ativos (' + clientes.length + ')</h3>\n' +
 '      <div class="grid-cards">' + clientesCards + '</div>\n' +
+'    </section>\n' +
+'\n' +
+'    <section id="tab-hub-genui" class="view-section">\n' +
+'      <div class="form-panel">\n' +
+'        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">\n' +
+'          <div>\n' +
+'            <span class="badge badge-success">hub.genui.v1 &bull; Clean-Room Certified</span>\n' +
+'            <h2 style="margin-top:8px;font-size:1.4rem">&#129513; DraggableWidgetGrid (21st.dev) &amp; Hub Component Catalog</h2>\n' +
+'            <p style="color:var(--text-muted);font-size:0.9rem">Arraste widgets, alterne spans (1x1, 2x1, 1x2, 2x2) e inspecione os 8 componentes sintetizados (.tsx + .genui.json).</p>\n' +
+'          </div>\n' +
+'          <div style="display:flex;gap:8px">\n' +
+'            <button class="btn btn-secondary" onclick="toggleBentoEditMode()" id="bentoEditBtn">&#9998; Modo Edicao: ATIVO</button>\n' +
+'            <button class="btn btn-primary" onclick="loadHubCatalog()">&#128260; Sincronizar Runtime</button>\n' +
+'          </div>\n' +
+'        </div>\n' +
+'        <div id="bentoAuditBanner" style="font-family:monospace;font-size:0.78rem;color:#38bdf8;background:#05070a;padding:10px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:20px">\n' +
+'          Runtime Topic: agent.genui.layout_state | Aguardando interacao...\n' +
+'        </div>\n' +
+'        <div id="bentoGridCanvas" style="display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(150px,auto);gap:16px"></div>\n' +
+'      </div>\n' +
+'      <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:24px">\n' +
+'        <div class="form-panel">\n' +
+'          <h3 style="margin-bottom:12px">&#128218; 8 Componentes Canonicos Materializados</h3>\n' +
+'          <div id="hubCatalogList" style="display:flex;flex-direction:column;gap:10px"></div>\n' +
+'        </div>\n' +
+'        <div class="form-panel">\n' +
+'          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">\n' +
+'            <h3 id="inspectorTitle">&#128269; Inspector: Selecione um Componente</h3>\n' +
+'            <div style="display:flex;gap:6px">\n' +
+'              <button class="btn btn-secondary" style="padding:6px 12px;font-size:0.8rem" onclick="switchInspectorMode(\'tsx\')">React .TSX</button>\n' +
+'              <button class="btn btn-secondary" style="padding:6px 12px;font-size:0.8rem" onclick="switchInspectorMode(\'genui\')">Hub .GenUI.json</button>\n' +
+'            </div>\n' +
+'          </div>\n' +
+'          <pre style="max-height:420px;overflow:auto"><code id="inspectorCode">// Clique em um dos 8 componentes ao lado para inspecionar o codigo Clean-Room sintetizado.</code></pre>\n' +
+'        </div>\n' +
+'      </div>\n' +
 '    </section>\n' +
 '\n' +
 '    <section id="tab-vault" class="view-section">\n' +
@@ -335,11 +375,76 @@ function buildDashboardHtml(copias, clientes) {
 '  </main>\n' +
 '\n' +
 '  <script>\n' +
+'    var bentoEditMode = true;\n' +
+'    var bentoWidgets = [];\n' +
+'    var draggedWidgetId = null;\n' +
+'    var currentInspectedComp = null;\n' +
+'    var currentInspectorView = "tsx";\n' +
 '    function showTab(tabId) {\n' +
 '      document.querySelectorAll(".view-section").forEach(function(s) { s.classList.remove("active"); });\n' +
 '      document.querySelectorAll(".nav-btn").forEach(function(b) { b.classList.remove("active"); });\n' +
 '      document.getElementById(tabId).classList.add("active");\n' +
-'      event.target.classList.add("active");\n' +
+'      if (typeof event !== "undefined" && event && event.target) event.target.classList.add("active");\n' +
+'      if (tabId === "tab-hub-genui") loadHubCatalog();\n' +
+'    }\n' +
+'    function toggleBentoEditMode() {\n' +
+'      bentoEditMode = !bentoEditMode;\n' +
+'      var btn = document.getElementById("bentoEditBtn");\n' +
+'      if (btn) btn.textContent = bentoEditMode ? "Modo Edicao: ATIVO" : "Modo Edicao: BLOQUEADO";\n' +
+'      renderBentoGrid();\n' +
+'    }\n' +
+'    function renderBentoGrid() {\n' +
+'      var canvas = document.getElementById("bentoGridCanvas");\n' +
+'      if (!canvas) return;\n' +
+'      var spanMap = { "1x1": "grid-column: span 1; grid-row: span 1;", "2x1": "grid-column: span 2; grid-row: span 1;", "1x2": "grid-column: span 1; grid-row: span 2;", "2x2": "grid-column: span 2; grid-row: span 2;" };\n' +
+'      canvas.innerHTML = bentoWidgets.map(function(w) {\n' +
+'        var style = (spanMap[w.span] || spanMap["1x1"]) + "background:#0c101a;border:1px solid " + (w.locked ? "rgba(245,158,11,0.4)" : "rgba(56,189,248,0.25)") + ";border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;";\n' +
+'        return "<div draggable=\\"" + (bentoEditMode && !w.locked) + "\\" ondragstart=\\"onBentoDragStart(\'" + w.id + "\')\\" ondragover=\\"event.preventDefault()\\" ondrop=\\"onBentoDrop(\'" + w.id + "\')\\" style=\\"" + style + "\\">" +\n' +
+'          "<div style=\\"display:flex;justify-content:space-between;align-items:center\\"><strong>" + w.title + "</strong><span class=\\"badge\\">" + w.widgetType + " (" + w.span + ")</span></div>" +\n' +
+'          "<p style=\\"font-size:0.82rem;color:var(--text-muted);margin-top:10px\\">Slot GenUI (" + w.id + ")</p></div>";\n' +
+'      }).join("");\n' +
+'    }\n' +
+'    function onBentoDragStart(id) { draggedWidgetId = id; }\n' +
+'    function onBentoDrop(targetId) {\n' +
+'      if (!draggedWidgetId || draggedWidgetId === targetId) return;\n' +
+'      var sIdx = bentoWidgets.findIndex(function(w) { return w.id === draggedWidgetId; });\n' +
+'      var tIdx = bentoWidgets.findIndex(function(w) { return w.id === targetId; });\n' +
+'      if (sIdx < 0 || tIdx < 0 || bentoWidgets[sIdx].locked || bentoWidgets[tIdx].locked) return;\n' +
+'      var moved = bentoWidgets.splice(sIdx, 1)[0];\n' +
+'      bentoWidgets.splice(tIdx, 0, moved);\n' +
+'      document.getElementById("bentoAuditBanner").textContent = "Runtime Topic: agent.genui.layout_updated | Reordered: " + draggedWidgetId + " <-> " + targetId;\n' +
+'      draggedWidgetId = null;\n' +
+'      renderBentoGrid();\n' +
+'    }\n' +
+'    async function loadHubCatalog() {\n' +
+'      try {\n' +
+'        var res = await fetch("/api/hub/components");\n' +
+'        var data = await res.json();\n' +
+'        if (data.grid && data.grid.widgets) { bentoWidgets = data.grid.widgets; renderBentoGrid(); }\n' +
+'        var listEl = document.getElementById("hubCatalogList");\n' +
+'        if (listEl && data.components) {\n' +
+'          listEl.innerHTML = data.components.map(function(c) {\n' +
+'            return "<div style=\\"display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#07090e;border:1px solid var(--border);border-radius:10px\\">" +\n' +
+'              "<div><strong>" + c.archetypeId + "</strong><div style=\\"font-size:0.75rem;color:var(--text-muted)\\">States: " + c.statesCount + " | Slots: " + c.slotsCount + "</div></div>" +\n' +
+'              "<button class=\\"btn btn-secondary\\" style=\\"padding:6px 12px;font-size:0.8rem\\" onclick=\\"inspectHubComponent(\'" + c.archetypeId + "\')\\">Inspecionar</button></div>";\n' +
+'          }).join("");\n' +
+'          if (!currentInspectedComp && data.components.length > 0) inspectHubComponent("DraggableWidgetGrid");\n' +
+'        }\n' +
+'      } catch (e) {}\n' +
+'    }\n' +
+'    async function inspectHubComponent(archetypeId) {\n' +
+'      try {\n' +
+'        var res = await fetch("/api/hub/components/" + archetypeId);\n' +
+'        currentInspectedComp = await res.json();\n' +
+'        document.getElementById("inspectorTitle").textContent = "Inspector: " + archetypeId;\n' +
+'        switchInspectorMode(currentInspectorView);\n' +
+'      } catch (e) {}\n' +
+'    }\n' +
+'    function switchInspectorMode(mode) {\n' +
+'      currentInspectorView = mode;\n' +
+'      if (!currentInspectedComp) return;\n' +
+'      var codeEl = document.getElementById("inspectorCode");\n' +
+'      codeEl.textContent = mode === "tsx" ? (currentInspectedComp.reactTsx || "") : JSON.stringify(currentInspectedComp.genUiSpec || {}, null, 2);\n' +
 '    }\n' +
 '    async function generateClientProject() {\n' +
 '      var brandName = document.getElementById("clientBrandName").value.trim();\n' +
@@ -436,6 +541,16 @@ function startPreviewServer(options = {}) {
     enabled: opts.enableMutations === true,
     token: opts.mutationToken
   };
+
+  const hubCatalog = new HubComponentCatalog();
+  const hubRuntime = new HubAgentRuntime();
+  const shadcnAdapter = new ShadcnRegistryAdapter();
+  hubRuntime.initializeWidgetGrid('workspace-bento-default', [
+    { id: 'w-approval', title: 'Approval Gate', widgetType: 'ApprovalGate', span: '2x1', locked: false },
+    { id: 'w-timeline', title: 'Execution Timeline', widgetType: 'ExecutionTimeline', span: '1x2', locked: false },
+    { id: 'w-shell', title: 'Conversational Shell', widgetType: 'ConversationalShell', span: '2x2', locked: false },
+    { id: 'w-artifact', title: 'Artifact Preview', widgetType: 'ArtifactPreview', span: '1x1', locked: true }
+  ]);
 
   if (!fs.existsSync(copiasDir)) fs.mkdirSync(copiasDir, { recursive: true });
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
@@ -538,6 +653,81 @@ function startPreviewServer(options = {}) {
       } catch (e) {}
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ easings, typography }));
+      return;
+    }
+
+    // ── API: Hub Component Catalog & Bento Grid State ─────────────────────
+    if (pathname === '/api/hub/components' && req.method === 'GET') {
+      try {
+        const manifest = hubCatalog.materializeAllToDisk();
+        const grid = hubRuntime.widgetGrids.get('workspace-bento-default');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          totalComponents: manifest.totalComponents,
+          components: manifest.components,
+          grid,
+          runtimeState: hubRuntime.getRuntimeState()
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/api/hub/components/') && req.method === 'GET') {
+      try {
+        const archetypeId = pathname.replace('/api/hub/components/', '').trim();
+        if (!/^[A-Za-z0-9_-]+$/.test(archetypeId)) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Identificador de componente invalido' }));
+          return;
+        }
+        const component = hubCatalog.getComponent(archetypeId);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, ...component }));
+      } catch (err) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/api/hub/widget-grid' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        const gridId = data.gridId || 'workspace-bento-default';
+        const action = data.action;
+        let result;
+        if (action === 'reorder') {
+          result = hubRuntime.reorderWidgetGrid(gridId, data.sourceWidgetId, data.targetWidgetId, data.principalId || 'studio-operator');
+        } else if (action === 'resize') {
+          result = hubRuntime.resizeWidgetSpan(gridId, data.widgetId, data.newSpan, data.principalId || 'studio-operator');
+        } else if (action === 'remove') {
+          result = hubRuntime.removeWidgetFromGrid(gridId, data.widgetId, data.principalId || 'studio-operator');
+        } else {
+          throw new Error(`Acao de grid desconhecida: ${action}`);
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, ...result }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/api/hub/ingest-registry' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        const manifest = shadcnAdapter.ingestRegistryPayload(data.commandOrUrl || '', data.payload || {});
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, manifest }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
       return;
     }
 
