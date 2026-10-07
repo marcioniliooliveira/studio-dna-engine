@@ -68,6 +68,7 @@ projetos/**/site/assets/
 
 # Approved and rejected visual baselines are source evidence, not disposable screenshots
 !clientes/**/design/goldens/*.png
+!clientes/jumpflex-home-evolution/*.jpg
 
 # SCALEX runtime tests require these three immutable local review-card fixtures
 !clientes/flashtech-caso-04-growth/site/assets/
