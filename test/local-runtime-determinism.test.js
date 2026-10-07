@@ -166,7 +166,7 @@ test('reports only a newly injected external script outside an exact allowlist',
     t.after(() => browser.close());
     const page = await browser.newPage();
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const guard = installNoRemoteRuntimeGuard(page, origin, { allowedUrls: [allowedExternalUrl] });
+    const guard = await installNoRemoteRuntimeGuard(page, origin, { allowedUrls: [allowedExternalUrl] });
 
     await page.goto(`${origin}/index.html`);
 
@@ -193,12 +193,64 @@ test('reports a stale exact allowlist entry that was not blocked', async t => {
     t.after(() => browser.close());
     const page = await browser.newPage();
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const guard = installNoRemoteRuntimeGuard(page, origin, {
+    const guard = await installNoRemoteRuntimeGuard(page, origin, {
       allowedUrls: [observedExternalUrl, staleExternalUrl]
     });
 
     await page.goto(`${origin}/index.html`);
 
     assert.throws(() => guard.assertClean(), new RegExp(staleExternalUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  });
+});
+
+test('does not return a guard until route setup resolves', async () => {
+  let resolveRouteSetup;
+  const page = {
+    route() {
+      return new Promise(resolve => {
+        resolveRouteSetup = resolve;
+      });
+    }
+  };
+
+  const guardPromise = installNoRemoteRuntimeGuard(page, 'http://127.0.0.1:12345');
+  assert.equal(typeof guardPromise.then, 'function');
+
+  let resolved = false;
+  guardPromise.then(() => {
+    resolved = true;
+  });
+  await Promise.resolve();
+  assert.equal(resolved, false);
+
+  resolveRouteSetup();
+  const guard = await guardPromise;
+  assert.deepEqual(guard.blockedUrls, []);
+});
+
+test('reports a remote script injected after page activity completes', async t => {
+  await withTempDirectory(async fixtureRoot => {
+    const fixturePath = path.join(fixtureRoot, 'index.html');
+    const delayedExternalUrl = 'https://runtime.example.invalid/delayed-runtime.js';
+    await fs.writeFile(fixturePath, `<!doctype html><script>
+      setTimeout(() => {
+        const script = document.createElement('script');
+        script.src = '${delayedExternalUrl}';
+        document.head.append(script);
+      }, 50);
+    </script>`);
+
+    const server = await startFixtureServer(fixtureRoot);
+    t.after(() => new Promise(resolve => server.close(resolve)));
+    const browser = await chromium.launch({ headless: true });
+    t.after(() => browser.close());
+    const page = await browser.newPage();
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    const guard = await installNoRemoteRuntimeGuard(page, origin);
+
+    await page.goto(`${origin}/index.html`);
+    await page.waitForTimeout(100);
+
+    assert.throws(() => guard.assertClean(), new RegExp(delayedExternalUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   });
 });

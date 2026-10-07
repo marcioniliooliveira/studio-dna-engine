@@ -9,15 +9,16 @@ Increase observable design quality first, while building only the orchestration 
 ## Critical path
 
 ```text
-Baseline visual
+Truth baseline
+→ Motion evidence
+→ Jev shadow classification
+→ Jev-calibrated routing
 → Delegation kernel
-→ Reference discovery and qualification
-→ Reference grammar
+→ Qualified reference packet
 → Three approved directions
 → Gemini implementation
-→ Visual proof
-→ Design registry
-→ Review console
+→ Visual and motion proof
+→ Design registry and review console
 → Blind benchmark
 ```
 
@@ -29,10 +30,27 @@ Baseline visual
 - Record runtime, geometry, accessibility and current human assessment.
 - Hash content, contracts, screenshots and implementation artifacts.
 - Define the pairwise comparison sheet before V2 generates anything.
+- Require a fresh green test baseline before accepting new capability claims.
+- Label any preview endpoint, mocked metric or hard-coded direction as `prototype`, never as runtime evidence.
 
-**Exit gate:** the old pipeline can be rerun or its exact artifacts can be compared without ambiguity.
+**Exit gate:** the old pipeline can be rerun or its exact artifacts can be compared without ambiguity; no accepted baseline report contains simulated cost, diff, direction or approval data.
 
-## Milestone 1 — Surgical delegation kernel
+## Milestone 1 — Motion truth and Jev foundation
+
+**Perceptible impact:** preserves the behaviors that make a high-end reference feel intentional instead of retaining only its final screenshot.
+
+- Freeze raw DOM, CSS, JavaScript, assets and runtime state before any clone repair or normalization.
+- Replace generic motion cleanup with three explicit modes: immutable evidence capture, reversible preview recovery and contract-bound client compilation.
+- Extract deterministic motion candidates from DOM, CSS, runtime geometry, GSAP/Webflow/WAAPI state and declared interaction events.
+- Capture declared states: `initial`, `ready`, progress `0/25/50/75/100`, hover/focus where applicable and `prefers-reduced-motion`.
+- Introduce a hash-bound `motion-contract` containing target identity, trigger, trajectory, dependencies, criticality and preservation policy.
+- Introduce Jev as a structured classifier over those facts: `motionRole`, `criticality`, `captureState`, `preservationPolicy`, `confidenceRaw` and evidence IDs.
+- Run Jev in shadow mode: it may classify and route review, but cannot mutate, approve or discard motion evidence.
+- Record Jev prediction versus independent runtime outcome to calibrate each capability before it gains routing authority.
+
+**Exit gate:** two references with materially different reveals produce reproducible motion contracts; an intentionally removed reveal fails independently; an uncertain Jev result becomes `blocked` or `human-review-required`, never an invented repair.
+
+## Milestone 2 — Surgical delegation kernel
 
 **Perceptible impact:** fewer unintended changes and much closer first-pass implementation.
 
@@ -42,12 +60,13 @@ Baseline visual
 - Distinguish hard and soft enforcement.
 - Run Gemini IDE tasks only in isolated worktrees.
 - Pass only selected context slices to Gemini.
+- Require every implementation task that touches motion to consume the selected `motion-contract` and preserve its artifact hash.
 
 **Exit gate:** a deliberately ambiguous task is blocked before dispatch, and a result that edits one undeclared file is rejected independently of Gemini's self-report.
 
 Implementation plan: `docs/superpowers/plans/2026-09-16-surgical-delegation-kernel.md`.
 
-## Milestone 2A — Reference discovery and qualification
+## Milestone 3A — Reference discovery and qualification
 
 **Perceptible impact:** better raw material reaches the design process without asking the creator to curate the internet manually.
 
@@ -62,13 +81,14 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-surgical-delegation-kern
 
 Implementation plan: `docs/superpowers/plans/2026-09-16-reference-discovery-qualification.md`.
 
-## Milestone 2B — Reference intelligence and design grammar
+## Milestone 3B — Reference intelligence and design grammar
 
 **Perceptible impact:** stronger hierarchy, less generic composition and better understanding of why a reference works.
 
 - Compile source-specific provenance.
 - Extract layout, typography, materials, image strategy, motion and responsive behavior.
 - Build a role-scoped Reference Pack.
+- Include only Jev-classified, runtime-correlated motion evidence; never a generic reconstructed animation as if it came from the reference.
 - Introduce DTCG-compatible token layers.
 - Create the first framework-neutral design recipes.
 
@@ -76,7 +96,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-reference-discovery-qual
 
 Implementation plan: `docs/superpowers/plans/2026-09-16-reference-design-intelligence.md`.
 
-## Milestone 3 — Direction boards and approved goldens
+## Milestone 4 — Direction boards and approved goldens
 
 **Perceptible impact:** this is the first major visible quality jump.
 
@@ -84,11 +104,12 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-reference-design-intelli
 - Generate three structurally distinct directions in one architect pass.
 - Render two or three boards for each critical section.
 - Compare directions pairwise.
+- Make motion intent explicit: preserve, adapt, simplify or prohibit each motion role before implementation.
 - Freeze the selected intent golden and compile the implementation contract.
 
 **Exit gate:** the creator can point to visible, material differences between A/B/C and approve a direction without reading code or relying on adjectives.
 
-## Milestone 4 — Gemini vertical-slice implementation
+## Milestone 5 — Gemini vertical-slice implementation
 
 **Perceptible impact:** approved visual intent survives translation into browser code.
 
@@ -96,16 +117,18 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-reference-design-intelli
 - Dispatch the contract through the Gemini IDE bridge.
 - Reject out-of-scope changes.
 - Run geometry, token, responsive, motion and runtime checks.
+- Send Gemini the frozen design contract, motion-contract slice and acceptance IDs; never raw generic animation instructions.
 - Permit at most three total attempts using failure deltas.
 
 **Exit gate:** the selected hero is implemented with the same content, hierarchy and design tokens, and the verifier—not Gemini—proves the result.
 
-## Milestone 5 — Visual evidence and taste gate
+## Milestone 6 — Visual evidence and taste gate
 
 **Perceptible impact:** regressions and mediocre executions stop advancing.
 
 - Add interaction-state capture contracts.
 - Implement Pixelmatch, SSIM, region geometry and typography comparison.
+- Add motion replay comparison before global visual similarity: required targets must traverse their declared states and reduced-motion fallback must remain readable.
 - Separate intent golden from implementation golden.
 - Add advisory visual critique with localized findings.
 - Require human approval for the implementation golden.
@@ -114,7 +137,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-reference-design-intelli
 
 Implementation plan: `docs/superpowers/plans/2026-09-16-visual-proof-review-and-benchmark.md`.
 
-## Milestone 6 — Advanced UI/UX capability
+## Milestone 7 — Advanced UI/UX capability
 
 **Perceptible impact:** richer structures become reusable without forcing every client into the same visual system.
 
@@ -126,11 +149,12 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-visual-proof-review-and-
 
 **Exit gate:** at least three different client archetypes use shared engineering recipes while remaining visually distinguishable.
 
-## Milestone 7 — Review console and empirical benchmark
+## Milestone 8 — Review console and empirical benchmark
 
 **Perceptible impact:** creator and client understand, compare and approve results faster.
 
 - Present references, directions, viewports and diffs locally.
+- Read all directions, costs, visual metrics and approvals from hash-bound artifacts; the console must show `unavailable` rather than fabricated values.
 - Anchor comments to visual regions.
 - Generate signed decisions from the UI.
 - Run blind V1-versus-V2 comparisons.
@@ -148,5 +172,6 @@ Infrastructure work is admitted only when it unlocks one of the following observ
 4. fewer ambiguous repairs;
 5. stronger human preference;
 6. lower cost per approved result.
+7. preservation of verified interaction and motion behavior.
 
 Anything else remains outside this roadmap.
