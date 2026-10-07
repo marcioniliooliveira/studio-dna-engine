@@ -45,6 +45,13 @@ out/
 # ── Copias (Awwwards scrapes brutos e pesados) ─────────────────────────────────
 copias/*
 !copias/README.md
+!copias/azimuteresidencial-com-br/
+!copias/azimuteresidencial-com-br/**
+!copias/masters-residence-dviga/
+!copias/masters-residence-dviga/**
+!copias/jesperlandberg-com/
+!copias/jesperlandberg-com/**
+
 
 # ── Clientes de Produção & Projetos Customizados ──────────────────────────────
 # Manter arquivos estruturais e DNA, ignorar dumps de assets pesados e screenshots
@@ -68,6 +75,12 @@ projetos/**/site/assets/
 
 # Approved and rejected visual baselines are source evidence, not disposable screenshots
 !clientes/**/design/goldens/*.png
+!clientes/silvio-iwata-imobiliaria/mockups/**
+!clientes/jumpflex-home-evolution/*.jpg
+!copias/azimuteresidencial-com-br/**
+!copias/masters-residence-dviga/**
+!copias/jesperlandberg-com/**
+
 
 # SCALEX runtime tests require these three immutable local review-card fixtures
 !clientes/flashtech-caso-04-growth/site/assets/

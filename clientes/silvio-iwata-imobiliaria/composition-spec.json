@@ -1,46 +1,41 @@
 {
   "client": "silvio-iwata-imobiliaria",
-  "reference": "aircenter-21-oaks-balanced-adaptation",
-  "designIntent": "Uma narrativa cinematográfica de Maringá que transforma confiança e contexto em um próximo passo simples.",
+  "references": [
+    "mellem-ca-floating-drawer",
+    "azimuteresidencial-cinematic-hero",
+    "dviga-masters-split-stage",
+    "uiarc-dev-clean-room"
+  ],
+  "designIntent": "Experiência imobiliária serena, arquitetônica e cinematográfica de Maringá, unindo a autoridade da Silvio Iwata com layout contemporâneo.",
   "tokens": {
-    "background": "#ffffff",
-    "surface": "#f7faf8",
-    "ink": "#0d0f14",
-    "brand": "#055227",
+    "bgSand": "#F4F1E8",
+    "bgForest": "#0B2A1A",
+    "brandPrimary": "#055227",
     "brandDeep": "#005023",
-    "accent": "#8dbc2a",
-    "muted": "#8a95a8",
-    "line": "#e8edf4"
+    "accentLime": "#A6C83A",
+    "textInk": "#0D0F14",
+    "textWhite": "#FFFFFF",
+    "textMuted": "#6B7A6E"
   },
   "type": {
-    "display": "Plus Jakarta Sans",
-    "body": "Inter",
-    "scale": "cinematic-fluid",
-    "fallbacks": ["Arial", "sans-serif"]
+    "display": "Instrument Serif",
+    "body": "DM Sans",
+    "scale": "cinematic-editorial",
+    "fallbacks": ["Georgia", "sans-serif"]
   },
   "sections": [
-    "hero-scroll-story",
-    "reveal-context",
-    "property-format",
-    "regional-authority",
-    "maringa-region-map",
-    "property-slider",
-    "intermediary-contact",
-    "footer"
+    "floating-pill-header-drawer",
+    "hero-panoramic-maringa-search",
+    "flagships-masters-split-stage",
+    "curated-properties-catalog",
+    "maringa-neighborhoods-guide",
+    "regional-authority-trust",
+    "direct-specialist-contact",
+    "institutional-footer"
   ],
-  "scrollStory": {
-    "activation": "intersection-observer",
-    "motion": "requestAnimationFrame-css-variables",
-    "progress": "section-synchronized",
-    "mobileMode": "stacked-readable-flow",
-    "reducedMotion": "static-sections-manual-navigation"
-  },
   "constraints": {
-    "remoteRuntime": false,
-    "backend": false,
     "flashtechTokens": false,
-    "referenceAssets": false,
-    "demoDisclosure": true,
-    "externalFunnelLinks": false
+    "pureClientIsolation": true,
+    "cleanRoomComponents": true
   }
 }

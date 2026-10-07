@@ -1,19 +1,19 @@
 {
   "_meta": {
-    "extractedAt": "2026-09-21T12:59:00Z",
+    "extractedAt": "2026-10-06T08:41:00Z",
     "sourceUrl": "https://silvioiwata.com.br/",
-    "pipeline": "studio-dna-engine v2.0.0",
-    "status": "observed",
-    "dossie": "03",
-    "dossieName": "Imobiliária High-Ticket / Catálogo + Lead Capture"
+    "pipeline": "studio-dna-engine v2.5.0",
+    "status": "aligned",
+    "dossie": "portal-imobiliario-premium",
+    "dossieName": "Portal Imobiliário Regional de Alto Padrão / Flagships + Catálogo"
   },
   "client": {
     "id": "silvio-iwata-imobiliaria",
     "name": "Silvio Iwata Imobiliária",
     "fullName": "Imobiliária Silvio Iwata",
-    "tagline": "Imobiliária em Maringá PR",
+    "tagline": "A imobiliária de Maringá que transforma seu jeito de viver e investir.",
     "niche": "RealEstate",
-    "subNiche": "Imobiliária regional / Lançamentos residenciais",
+    "subNiche": "Portal imobiliário regional / Lançamentos de alto padrão",
     "location": "Maringá, Paraná, Brasil",
     "language": "pt-BR",
     "analytics": {
@@ -27,144 +27,117 @@
     }
   },
 
-  "_DESIGN_TOKEN_POLICY": "Os tokens P1 abaixo são IDENTIDADE DE MARCA — capturados como verdade da marca do cliente. A IMPLEMENTAÇÃO CSS/layout é descartada e reconstruída com padrão FlashTech premium. As cores P0 FlashTech (#02040A, #00F0FF, etc.) são adicionadas pela metodologia — NÃO estão no site original e isso é esperado.",
-
-  "colorsP1_brand": {
-    "_policy": "Cores observadas no site original com freq >= 3. Representam a identidade cromática do cliente. Serão usadas como P1 (variável de marca) no site demo FlashTech.",
-    "primary": {
+  "tokensP0": {
+    "bgSand": {
+      "hex": "#F4F1E8",
+      "role": "Background base claro institucional (Marfim Arquitetônico / Sand)"
+    },
+    "bgForest": {
+      "hex": "#0B2A1A",
+      "role": "Background profundo (Verde Floresta Noturno para Hero, Drawer e Painel Técnico)"
+    },
+    "brandPrimary": {
       "hex": "#055227",
-      "role": "Cor primária institucional — verde escuro Silvio Iwata",
-      "frequency": 35,
-      "observed": true,
-      "hslApprox": "hsl(148, 87%, 16%)",
-      "tone": "Verde floresta profundo — transmite estabilidade, confiança, natureza",
-      "FlashTechUsage": "Background de seções secundárias, badges de categoria, destaques institucionais"
+      "role": "Verde Institucional Tradição Silvio Iwata"
     },
-    "primaryDark": {
+    "brandDeep": {
       "hex": "#005023",
-      "role": "Variante escura da primária",
-      "frequency": 12,
-      "observed": true,
-      "FlashTechUsage": "Hover states, sombras de marca"
+      "role": "Verde escuro de apoio para hover states e contornos"
     },
-    "button": {
-      "hex": "#056d33",
-      "role": "Verde CTA original — tom mais saturado para botões",
-      "frequency": 20,
-      "observed": true,
-      "FlashTechUsage": "Descartado como CTA — substituído pelo gradiente FlashTech cyan P0. Pode ser usado em badges/tags secundárias"
+    "accentLime": {
+      "hex": "#A6C83A",
+      "role": "Lima Vibrante para badges de lançamento, tags ativas e micro-acessos"
     },
-    "accent": {
-      "hex": "#8dbc2a",
-      "role": "Verde lima / acento vibrante",
-      "frequency": 13,
-      "observed": true,
-      "hslApprox": "hsl(79, 63%, 45%)",
-      "tone": "Energético, contrastante com o verde escuro — evoca crescimento, valorização",
-      "FlashTechUsage": "Destaque de preços, badges de 'Lançamento', numerais de métricas"
+    "textInk": {
+      "hex": "#0D0F14",
+      "role": "Tipografia de alto contraste sobre fundo claro"
     },
-    "midGreen": {
-      "hex": "#2da152",
-      "role": "Verde médio de suporte",
-      "frequency": 3,
-      "observed": true,
-      "FlashTechUsage": "Ícones, separadores, micro-elementos"
+    "textWhite": {
+      "hex": "#FFFFFF",
+      "role": "Tipografia sobre verde escuro"
     },
-    "white": {
-      "hex": "#ffffff",
-      "role": "Branco para textos sobre fundo verde",
-      "frequency": 44,
-      "observed": true,
-      "FlashTechUsage": "Textos sobre seções escuras"
+    "textMuted": {
+      "hex": "#6B7A6E",
+      "role": "Metadados e textos secundários de apoio"
     }
   },
 
-  "colorsP0_flashtech": {
-    "_policy": "Tokens P0 da metodologia FlashTech. AUSENTES no site original — serão ADICIONADOS no site demo. São inegociáveis.",
-    "obsidian": "#02040A",
-    "cyan": "#00F0FF",
-    "blue": "#0072FF",
-    "cyanLight": "#64CEFB",
-    "ctaGradient": "linear-gradient(135deg, #64CEFB 0%, #0072FF 50%, #00F0FF 100%)"
-  },
-
-  "colorsToDiscard": {
-    "_policy": "Cores do site original que NÃO devem ser herdadas por serem genéricas ou de má qualidade.",
-    "genericBlack": "#000000",
-    "genericGray": "#898989",
-    "reason": "Substituídas por obsidian P0 (#02040A) e cinzas calibrados com personalidade"
-  },
-
-  "typography": {
-    "_policy": "FontOpen é uma fonte proprietária/desconhecida do sistema de gestão imobiliária. Descartamos a implementação. Preservamos o TOM: serifado humanista ou sans-serif de alta legibilidade.",
-    "original": {
-      "family": "FontOpen, sans-serif",
-      "status": "DESCARTADO",
-      "reason": "Fonte proprietária do CMS imobiliário — sem identidade própria, genérica para o segmento"
+  "typographyP0": {
+    "display": {
+      "family": "Instrument Serif",
+      "weights": [400],
+      "style": "italic",
+      "role": "Headlines editoriais de impacto e nomes de empreendimentos flagship",
+      "reference": "azimuteresidencial.com.br"
     },
-    "recommended": {
-      "display": {
-        "family": "Plus Jakarta Sans",
-        "weights": [600, 700, 800],
-        "role": "Headlines, nome do imóvel, títulos de seção",
-        "justification": "Tom de autoridade e modernidade sem ser fria. Premium para imobiliário de alto padrão em Maringá. Substitui FontOpen com elevação de qualidade."
-      },
-      "body": {
-        "family": "Inter",
-        "weights": [400, 500],
-        "role": "Corpo de texto, descrições, metadados de imóvel",
-        "justification": "Legibilidade máxima para listas de características de imóvel. Padrão de produto premium."
-      },
-      "data": {
-        "family": "JetBrains Mono",
-        "weights": [400, 600],
-        "role": "Preços, metragem, dados técnicos do imóvel",
-        "justification": "P0 FlashTech — credibilidade técnica em dados numéricos"
-      }
+    "body": {
+      "family": "DM Sans",
+      "weights": [400, 500, 600, 700],
+      "role": "Interface, menus, formulários, fichas técnicas e cards",
+      "reference": "mellem.ca / masters-residence"
     }
   },
 
-  "brandIdentity": {
-    "tone": "Confiável, estabelecida, regional forte",
-    "market": "Maringá PR — mercado imobiliário consolidado",
-    "categories": ["Locação", "Vendas", "Lançamentos", "Institucional"],
-    "projects": ["Reserva do Porto", "Residencial Martini", "Forte de Arundel"],
-    "tracking": {
-      "_note": "O cliente investe pesado em tracking (Google Ads, Meta, Hotjar, RD Station, Clarity). Isso indica sofisticação de marketing digital e ROI orientado.",
-      "signal": "Lead quente para proposta FlashTech — já usa múltiplas ferramentas de conversão"
+  "references": {
+    "navigationAndLayout": {
+      "url": "https://www.mellem.ca/en",
+      "aspects": "Floating pill header, mega-menu drawer arquitetônico em tela cheia, calma editorial"
+    },
+    "heroSection": {
+      "url": "https://azimuteresidencial.com.br/",
+      "aspects": "Fotografia panorâmica em golden hour sobre Maringá, tipografia Instrument Serif itálica, cápsula de busca em verde escuro"
+    },
+    "flagshipShowcase": {
+      "url": "https://dviga.marketing/masters-en#",
+      "aspects": "Stage split 50/50 alternado, galeria com abas numéricas, painel escuro com watermark arquitetônico e ficha técnica"
+    },
+    "components": {
+      "url": "https://uiarc.dev",
+      "mode": "clean-room-path-b",
+      "aspects": "Pills, drawers, tabs e cards construídos artesanalmente sob medida"
     }
   },
 
-  "siteStructure": {
-    "currentSections": [
-      "Nav com busca integrada (Locação/Vendas/Lançamentos)",
-      "Slider de imóveis em destaque (lançamentos)",
-      "Seção de artigos/blog imobiliário"
-    ],
-    "currentProblems": [
-      "Layout datado Bootstrap 3/jQuery — sem animações modernas",
-      "83 links externos no funil — dispersão total de atenção",
-      "Font genérica sem personalidade",
-      "Sem hero section com proposta de valor clara",
-      "Sem seção de métricas/credenciais (anos de mercado, imóveis vendidos)",
-      "Sem depoimentos estruturados",
-      "Zero micro-interações ou scroll animations"
-    ],
-    "demoSiteProposal": {
-      "structure": [
-        "Hero: Proposta + busca premium + CTA único",
-        "Trust metrics: anos de mercado, imóveis vendidos, clientes satisfeitos",
-        "Destaques: Lançamentos com cards premium animados",
-        "Diferenciais: Por que Silvio Iwata vs outras imobiliárias",
-        "CTA de conversão: WhatsApp / Agendar visita",
-        "Footer mínimo sem links de fuga"
-      ],
-      "dossiê": "03 — Site de captação de lead high-ticket"
+  "siteSections": [
+    {
+      "id": "header",
+      "name": "Floating Pill Header + Drawer",
+      "pattern": "mellem-drawer"
+    },
+    {
+      "id": "hero",
+      "name": "Panorâmica Maringá + Smart Search",
+      "pattern": "azimute-cinematic"
+    },
+    {
+      "id": "flagships",
+      "name": "Vitrine de Lançamentos Flagship Split 50/50",
+      "pattern": "masters-split-stage"
+    },
+    {
+      "id": "catalog",
+      "name": "Catálogo Curado de Imóveis (Venda / Aluguel)",
+      "pattern": "mellem-clean-cards"
+    },
+    {
+      "id": "neighborhoods",
+      "name": "Guia de Bairros de Maringá",
+      "pattern": "visual-region-guide"
+    },
+    {
+      "id": "authority",
+      "name": "Tradição 45+ Anos & Credenciais CRECI",
+      "pattern": "metrics-trust-grid"
+    },
+    {
+      "id": "contact",
+      "name": "Atendimento Direto & Corretores",
+      "pattern": "direct-consultant-cta"
+    },
+    {
+      "id": "footer",
+      "name": "Footer Institucional",
+      "pattern": "architectural-footer"
     }
-  },
-
-  "ux_p0_violations_original": {
-    "externalLinksInFunnel": 83,
-    "status": "CRÍTICO — 83 links externos dispersam completamente o funil"
-  }
+  ]
 }

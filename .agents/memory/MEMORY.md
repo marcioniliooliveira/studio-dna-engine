@@ -31,4 +31,6 @@
 - [ref-21oaks] **21Oaks Reference** (`copias/21oaks-org/`): Referência pura com reveals funcionais restaurados via SplitText nativo universal.
 - [ref-aircenter] **AIR Center Reference** (`copias/aircenter-space/`): Referência pura com 3D ribbon e matriz de mobilidade.
 - [jumpflex-home-evolution] **Jumpflex Home Evolution** (`clientes/jumpflex-home-evolution/`): Design System Kinetic Toybox (`#2976C7`, `#FF562D`, `#181B2D`), DNA Live Tuning HUD adaptado, simulador de quintal ABNT, física de molas de Hooke e dual-funnel B2C/B2B.
+- [silvio-iwata-imobiliaria] **Silvio Iwata Imobiliária** (`clientes/silvio-iwata-imobiliaria/`): Base `#F4F1E8` (Marfim) e `#0B2A1A` (Verde Floresta Profundo), Marca `#055227`, Acento `#A6C83A`, Tipografia `Instrument Serif` (Italic) + `DM Sans`, refs `copias/mellem-ca`, `copias/azimuteresidencial-com-br`, `copias/masters-residence-dviga`.
+
 
