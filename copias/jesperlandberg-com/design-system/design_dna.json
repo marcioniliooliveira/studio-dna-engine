@@ -1,0 +1,61 @@
+{
+  "colors": {
+    "variables": {},
+    "defaults": {
+      "backgroundColor": "rgb(0, 0, 0)",
+      "color": "rgb(255, 255, 255)"
+    }
+  },
+  "typography": {
+    "h1": {
+      "fontFamily": "sans, sans-serif",
+      "fontSize": "35.84px",
+      "fontWeight": "700",
+      "lineHeight": "50.176px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 255, 255)"
+    },
+    "h2": {
+      "fontFamily": "sans, sans-serif",
+      "fontSize": "26.88px",
+      "fontWeight": "700",
+      "lineHeight": "37.632px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 255, 255)"
+    },
+    "paragraph": {
+      "fontFamily": "sans, sans-serif",
+      "fontSize": "17.92px",
+      "fontWeight": "400",
+      "lineHeight": "25.088px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 255, 255)"
+    },
+    "button": {
+      "fontFamily": "sans, sans-serif",
+      "fontSize": "20.48px",
+      "fontWeight": "400",
+      "lineHeight": "28.672px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)"
+    }
+  },
+  "sections": [
+    {
+      "id": "main-1",
+      "tag": "main",
+      "classes": [
+        "fixed",
+        "inset-0",
+        "overflow-hidden"
+      ],
+      "approxHeight": 1080,
+      "summaryText": "Jesper Landberg — design engineer  Jesper Landberg, Swedish design engineer, named Awwwards Independ"
+    }
+  ],
+  "detectedScripts": [
+    "https://jesperlandberg.com/_nuxt/DZyj3ghP.js",
+    "https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495"
+  ],
+  "detectedCSS": []
+}

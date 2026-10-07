@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "completed",
+  "url": "https://jesperlandberg.com/",
+  "siteName": "jesperlandberg-com",
+  "mode": "all",
+  "startedAt": "2026-10-01T17:20:30.382Z",
+  "completedAt": "2026-10-01T17:23:10.101Z",
+  "stages": [
+    {
+      "name": "detect",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:20:30.385Z",
+      "completedAt": "2026-10-01T17:20:48.036Z"
+    },
+    {
+      "name": "clone",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:20:48.036Z",
+      "completedAt": "2026-10-01T17:21:39.146Z"
+    },
+    {
+      "name": "normalize-assets",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:21:39.147Z",
+      "completedAt": "2026-10-01T17:21:39.233Z"
+    },
+    {
+      "name": "extract-design-dna",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:21:39.234Z",
+      "completedAt": "2026-10-01T17:21:56.903Z"
+    },
+    {
+      "name": "generate-styleguide",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:21:56.904Z",
+      "completedAt": "2026-10-01T17:21:56.907Z"
+    },
+    {
+      "name": "extract-ui-ux",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:21:56.908Z",
+      "completedAt": "2026-10-01T17:23:09.992Z"
+    },
+    {
+      "name": "generate-master-spec",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:23:09.993Z",
+      "completedAt": "2026-10-01T17:23:10.087Z"
+    },
+    {
+      "name": "generate-asset-manifest",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:23:10.088Z",
+      "completedAt": "2026-10-01T17:23:10.096Z"
+    },
+    {
+      "name": "generate-prompt-catalog",
+      "status": "passed",
+      "startedAt": "2026-10-01T17:23:10.097Z",
+      "completedAt": "2026-10-01T17:23:10.100Z"
+    }
+  ]
+}

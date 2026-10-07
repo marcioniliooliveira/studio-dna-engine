@@ -1,0 +1,9 @@
+{
+  "url": "https://jesperlandberg.com/",
+  "framework": "Nuxt.js (SSR/SSG)",
+  "siteType": "SPA_SSR",
+  "cloneMode": "STRUCTURED_CLONE",
+  "estimatedFidelity": "65%",
+  "warning": "AVISO: Site Nuxt.js. Clone estrutural disponível, mas componentes Vue não são reproduzíveis.",
+  "detectedAt": "2026-10-01T17:20:48.035Z"
+}

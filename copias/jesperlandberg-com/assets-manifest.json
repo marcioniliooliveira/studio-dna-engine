@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-10-01T17:23:10.089Z",
+  "siteUrl": "https://jesperlandberg.com/",
+  "summary": {
+    "totalAssetsFound": 2,
+    "imageSequencesDetected": 0,
+    "heroBackgroundsDetected": 0,
+    "technicalSvgsDetected": 0,
+    "brandAssetsDetected": 0
+  },
+  "replacements": [
+    {
+      "id": "wasm_basis_transcoder",
+      "category": "DRACO_DECODER_WASM",
+      "originalFile": "assets/basis/basis_transcoder.wasm",
+      "recommendedStrategy": "VENDOR_STATIC_ASSET",
+      "rationale": "Decodificador de geometria comprimida Draco WebAssembly"
+    },
+    {
+      "id": "model3d_award",
+      "category": "THREE_3D_MODEL_GLB",
+      "originalFile": "assets/models/award.glb",
+      "recommendedStrategy": "THREEJS_3D_MODEL_OR_PROCEDURAL",
+      "rationale": "Modelo 3D Three.js em tempo real com iluminação e controles de cena",
+      "componentSuggestion": "Interactive3DViewer.tsx"
+    }
+  ]
+}
