@@ -1,44 +1,1551 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#055227" />
-    <meta name="description" content="Apresentação demonstrativa da Imobiliária Silvio Iwata em Maringá." />
-    <title>Silvio Iwata — imóveis em Maringá</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body data-client="silvio-iwata-imobiliaria"><a class="skip-link" href="#main-content">Pular para o conteúdo</a>
-    <header class="site-header" data-site-header>
-      <a class="wordmark" href="#main-content" aria-label="Silvio Iwata, voltar ao início">silvio iwata<span>·</span></a>
-      <nav class="top-nav" aria-label="Navegação principal"><a href="#story">A experiência</a><a href="#region">Maringá</a><a href="#intermediary-comprar" data-intent-link="comprar">Conversar</a></nav>
-      <a class="header-cta" href="#intermediary-comprar" data-intent-link="comprar">Agendar visita <span aria-hidden="true">↗</span></a>
-      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle><span></span><span></span></button>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silvio Iwata Imobiliária · Maringá/PR · Experiência Digital</title>
+  
+  <!-- Fontes Oficiais P0 (Instrument Serif + DM Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
-    <aside class="scroll-rail" aria-label="Progresso da narrativa" data-scroll-rail><span data-scroll-active>01</span><i></i><span>07</span></aside>
-    <main id="main-content" tabindex="-1">
-      <section class="hero-story scroll-section" id="story" data-scroll-section="hero" data-hero-story>
-        <div class="hero-story__sticky">
-          <div class="hero-story__media" aria-hidden="true"><img class="hero-story__image hero-story__image--current" data-hero-current src="assets/silvio-casa-01.svg" alt="" /><img class="hero-story__image hero-story__image--next" data-hero-next src="assets/silvio-casa-02.svg" alt="" /><div class="hero-story__scrim"></div></div>
-          <div class="hero-story__content page-shell"><p class="kicker" data-hero-eyebrow>ESCOLHA COM CLAREZA</p><h1 data-hero-title>Um imóvel pode ser o começo de uma vida com mais espaço para acontecer.</h1><p data-hero-description> percorra uma seleção demonstrativa e leve para a conversa o que realmente importa para você.</p><a class="button button--light" data-hero-cta href="#intermediary-comprar" data-intent-link="comprar">Explorar para comprar <span aria-hidden="true">↗</span></a></div>
-          <div class="hero-story__footer page-shell"><div class="intent-tabs" role="tablist" aria-label="Escolha a sua intenção"><button class="intent-tab is-active" type="button" role="tab" aria-selected="true" data-intent-button="0">Comprar</button><button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="1">Alugar</button><button class="intent-tab" type="button" role="tab" aria-selected="false" data-intent-button="2">Investir</button></div><div class="story-progress" aria-label="Progresso da apresentação"><span data-progress-current>01</span><span class="story-progress__track"><span data-progress-fill></span></span><span>03</span></div></div>
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & TOKENS P0 (SILVIO IWATA IMOBILIÁRIA)
+       Zero contaminação externa · Matte arquitetônico · Zero glow artificial
+       ========================================================================== */
+    :root {
+      /* Bases Cromáticas */
+      --bg-sand: #F4F1E8;
+      --bg-forest: #0B2A1A;
+      --bg-forest-card: #0F3522;
+      --bg-forest-dark: #071F13;
+      
+      /* Marca Silvio Iwata */
+      --brand-primary: #055227;
+      --brand-deep: #005023;
+      --accent-lime: #A6C83A;
+      --accent-lime-hover: #95B72F;
+
+      /* Tipografia & Textos */
+      --text-ink: #0D0F14;
+      --text-white: #FFFFFF;
+      --text-sand: #F4F1E8;
+      --text-muted: #6B7A6E;
+      --text-muted-dark: #8E9F91;
+
+      /* Linhas & Bordas Arquitetônicas */
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --border-dark-subtle: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(5, 82, 39, 0.12);
+      --border-light-strong: rgba(5, 82, 39, 0.22);
+
+      /* Tipografia */
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Transições */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-forest);
+      color: var(--text-sand);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a, button {
+      color: inherit;
+      text-decoration: none;
+      font-family: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    /* Utilitários Tipográficos */
+    .font-serif {
+      font-family: var(--font-display);
+    }
+    .font-serif-italic {
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    /* ==========================================================================
+       SEÇÃO 1: HEADER FLUTUANTE EM PÍLULA + DRAWER DE LANÇAMENTOS (MELLEM UX)
+       ========================================================================== */
+    .site-header {
+      position: fixed;
+      top: 24px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+      padding: 0 20px;
+      pointer-events: none;
+    }
+
+    .header-pill {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      background-color: rgba(11, 42, 26, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-dark);
+      padding: 8px 10px 8px 24px;
+      border-radius: 9999px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      color: var(--text-sand);
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      background: var(--text-sand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand-primary);
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-item {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-sand);
+      opacity: 0.88;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent-lime);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-pill-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dark);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-sand);
+      transition: all 0.2s ease;
+    }
+
+    .btn-pill-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Drawer de Lançamentos em Tela Cheia */
+    .mega-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(7, 31, 19, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s var(--ease-out);
+      display: flex;
+      flex-direction: column;
+      padding: 120px 48px 48px;
+    }
+
+    .mega-drawer.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 20px;
+    }
+
+    .drawer-title {
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--text-sand);
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .drawer-card {
+      background: var(--bg-forest-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s var(--ease-out), border-color 0.25s;
+    }
+
+    .drawer-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(166, 200, 58, 0.4);
+    }
+
+    .drawer-card-img {
+      height: 220px;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    .drawer-card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drawer-card-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(166, 200, 58, 0.15);
+      color: var(--accent-lime);
+    }
+
+    .drawer-card-name {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    .drawer-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted-dark);
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       SEÇÃO 2: HERO PANORÂMICA MARINGÁ + SMART SEARCH CAPSULE
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      height: 100vh;
+      min-height: 720px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 140px 48px 48px;
+      background-image: url('assets/hero-maringa.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7,31,19,0.35) 0%, rgba(7,31,19,0.1) 40%, rgba(7,31,19,0.7) 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 960px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-sand);
+      margin-bottom: 16px;
+      background: rgba(11, 42, 26, 0.5);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-dark);
+    }
+
+    .hero-eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+    }
+
+    .hero-headline {
+      font-size: clamp(3.2rem, 7vw, 6.2rem);
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--text-sand);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero-headline-italic {
+      font-family: var(--font-display);
+      font-style: italic;
+      text-transform: lowercase;
+      color: #F8ECD2;
+      display: inline-block;
+    }
+
+    .hero-subhead {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text-sand);
+      opacity: 0.92;
+      max-width: 540px;
+      line-height: 1.5;
+    }
+
+    /* Cápsula de Busca Inteligente (Smart Search) */
+    .hero-search-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-capsule {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--bg-forest);
+      border: 1px solid var(--border-dark);
+      padding: 6px 8px 6px 8px;
+      border-radius: 9999px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .capsule-toggle {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 9999px;
+      padding: 3px;
+    }
+
+    .capsule-tab {
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-sand);
+      opacity: 0.75;
+      transition: all 0.2s ease;
+    }
+
+    .capsule-tab.active {
+      opacity: 1;
+      background: var(--brand-primary);
+      color: var(--text-white);
+    }
+
+    .capsule-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border-dark);
+    }
+
+    .capsule-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+    }
+
+    .capsule-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-sand);
+      font-family: inherit;
+      font-size: 0.9rem;
+      min-width: 170px;
+    }
+
+    .capsule-input::placeholder {
+      color: var(--text-muted-dark);
+    }
+
+    .capsule-btn-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: transform 0.2s ease, background 0.2s;
+    }
+
+    .capsule-btn-circle:hover {
+      transform: scale(1.05);
+      background: var(--accent-lime-hover);
+    }
+
+    .btn-whatsapp-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-forest);
+      border: 1px solid var(--border-dark);
+      padding: 12px 22px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-sand);
+      transition: all 0.2s ease;
+    }
+
+    .btn-whatsapp-pill:hover {
+      border-color: var(--accent-lime);
+      color: var(--text-white);
+    }
+
+    /* ==========================================================================
+       SEÇÃO 3: PALCO FLAGSHIP SPLIT 50/50 — VERSÃO PRINCIPAL (ZORGE V2)
+       ========================================================================== */
+    .flagship-stage {
+      position: relative;
+      background-color: var(--bg-forest-dark);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--border-dark);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    /* Lado Esquerdo: Fotografia + Image Glide */
+    .stage-media-side {
+      position: relative;
+      overflow: hidden;
+      min-height: 640px;
+      background-color: #05140C;
+    }
+
+    .stage-main-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .stage-media-side:hover .stage-main-photo {
+      transform: scale(1.02);
+    }
+
+    /* Skecher UI Image Glide Thumbnails (Oculto até hover) */
+    .image-glide-tray {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      gap: 12px;
+      background: rgba(7, 31, 19, 0.88);
+      backdrop-filter: blur(16px);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border-dark);
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+      transition: all 0.35s var(--ease-out);
+    }
+
+    .stage-media-side:hover .image-glide-tray {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .glide-thumb {
+      flex: 1;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .glide-thumb.active, .glide-thumb:hover {
+      border-color: var(--accent-lime);
+    }
+
+    .glide-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .glide-thumb-label {
+      position: absolute;
+      bottom: 4px;
+      left: 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    /* Lado Direito: Painel Zorge v2 */
+    .stage-info-side {
+      background-color: var(--bg-forest);
+      padding: 56px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Topo do Painel */
+    .stage-top-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stage-hairline-progress {
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .stage-hairline-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 25%;
+      background: var(--text-sand);
+    }
+
+    .stage-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .stage-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stage-building-name {
+      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: var(--text-sand);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .stage-counter-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .stage-counter {
+      font-size: 0.95rem;
+      color: var(--text-sand);
+      opacity: 0.8;
+      letter-spacing: 0.1em;
+    }
+
+    .stage-badge-obras {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      border: 1px solid rgba(166, 200, 58, 0.35);
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    .stage-pills-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stage-nav-pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dark);
+      color: var(--text-sand);
+      transition: all 0.2s ease;
+    }
+
+    .stage-nav-pill.active {
+      background: var(--text-sand);
+      color: var(--bg-forest);
+      border-color: var(--text-sand);
+    }
+
+    /* Terço Inferior */
+    .stage-bottom-block {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-top: 40px;
+    }
+
+    .stage-room-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-sand);
+    }
+
+    .stage-room-desc {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-muted-dark);
+      max-width: 500px;
+    }
+
+    .stage-specs-cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-dark-subtle);
+    }
+
+    .specs-pill-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 18px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dark);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--text-sand);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-stage-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dark);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-sand);
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .btn-stage-cta:hover {
+      background: var(--text-sand);
+      color: var(--bg-forest);
+      border-color: var(--text-sand);
+    }
+
+    /* ==========================================================================
+       SEÇÃO 4: VITRINE DE CATÁLOGO CURADO (PADRÃO MELLEM + CÁPSULA AZIMUTE)
+       ========================================================================== */
+    .catalog-section {
+      background-color: var(--bg-sand);
+      color: var(--text-ink);
+      padding: 110px 48px;
+    }
+
+    .catalog-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .catalog-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .catalog-headline {
+      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--text-ink);
+      max-width: 520px;
+    }
+
+    .catalog-headline em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--brand-primary);
+    }
+
+    /* Cápsula Unificada de Filtro (Referência Hero Azimute) */
+    .catalog-filter-capsule {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--bg-forest);
+      color: var(--text-sand);
+      padding: 6px 8px 6px 6px;
+      border-radius: 9999px;
+      box-shadow: 0 10px 24px rgba(5, 82, 39, 0.15);
+      gap: 10px;
+    }
+
+    .filter-tab-active {
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .filter-tab-idle {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      color: var(--text-sand);
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+
+    .filter-tab-idle:hover {
+      opacity: 1;
+    }
+
+    .catalog-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Dropdown de Tipologia */
+    .dropdown-wrapper {
+      position: relative;
+    }
+
+    .btn-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-sand);
+      border-radius: 9999px;
+      transition: background 0.2s;
+    }
+
+    .btn-dropdown-trigger:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      background: var(--bg-forest);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 8px 0;
+      min-width: 200px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: all 0.25s var(--ease-out);
+      z-index: 50;
+    }
+
+    .dropdown-menu.is-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      color: var(--text-sand);
+      display: block;
+      width: 100%;
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-lime);
+    }
+
+    .btn-circle-lime {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-circle-lime:hover {
+      transform: scale(1.08);
+    }
+
+    .catalog-counter {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Grid de Imóveis (3 Colunas) */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px 28px;
+    }
+
+    .property-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      cursor: pointer;
+      group: card;
+    }
+
+    .card-media-wrap {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      background-color: #E2DDD2;
+    }
+
+    .card-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s var(--ease-out);
+    }
+
+    .property-card:hover .card-photo {
+      transform: scale(1.04);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(6px);
+      color: var(--brand-primary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      letter-spacing: -0.01em;
+    }
+
+    .card-location {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .card-specs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-light);
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    .card-specs {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .card-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .catalog-bottom-action {
+      display: flex;
+      justify-content: center;
+      padding-top: 24px;
+    }
+
+    .btn-explore-catalog {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-light-strong);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--brand-primary);
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .btn-explore-catalog:hover {
+      background: var(--brand-primary);
+      color: #fff;
+      border-color: var(--brand-primary);
+    }
+
+    /* Rodapé Provisório Simples para Fechamento de Layout */
+    .mini-footer {
+      background: var(--bg-forest-dark);
+      padding: 48px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted-dark);
+      border-top: 1px solid var(--border-dark);
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .flagship-stage {
+        grid-template-columns: 1fr;
+      }
+      .stage-info-side {
+        padding: 48px 32px;
+      }
+      .catalog-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-header {
+        padding: 0 12px;
+      }
+      .header-pill {
+        padding: 8px 16px;
+      }
+      .header-nav {
+        display: none;
+      }
+      .hero-section {
+        padding: 120px 24px 32px;
+      }
+      .catalog-section {
+        padding: 64px 20px;
+      }
+      .catalog-grid {
+        grid-template-columns: 1fr;
+      }
+      .catalog-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       SEÇÃO 1: HEADER FLUTUANTE EM PÍLULA + MEGA DRAWER (MELLEM UX)
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="header-pill">
+      <!-- Marca Silvio Iwata -->
+      <a href="#" class="brand-logo" aria-label="Silvio Iwata Página Inicial">
+        <div class="brand-mark">S</div>
+        <span>Silvio Iwata</span>
+      </a>
+
+      <!-- Menu de Navegação -->
+      <nav class="header-nav" aria-label="Navegação Principal">
+        <button class="nav-item active" id="btn-toggle-drawer" aria-expanded="false" aria-controls="mega-drawer">
+          <span>Lançamentos</span>
+          <span class="nav-badge-dot"></span>
+        </button>
+        <a href="#catalogo" class="nav-item">Comprar</a>
+        <a href="#catalogo" class="nav-item">Alugar</a>
+        <a href="#" class="nav-item">Institucional</a>
+      </nav>
+
+      <!-- Ações -->
+      <div class="header-actions">
+        <a href="#atendimento" class="btn-pill-outline">Área do cliente</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mega Drawer de Lançamentos em Tela Cheia -->
+  <div class="mega-drawer" id="mega-drawer" role="dialog" aria-modal="true" aria-label="Lançamentos Exclusivos">
+    <div class="drawer-inner">
+      <div class="drawer-header">
+        <h2 class="drawer-title font-serif">Lançamentos de Grife em Maringá</h2>
+        <button class="btn-pill-outline" id="btn-close-drawer">Fechar ✕</button>
+      </div>
+      <div class="drawer-grid">
+        <!-- Card 1: Lithos -->
+        <div class="drawer-card">
+          <img src="assets/palco-lithos.jpg" alt="Lithos Residencial" class="drawer-card-img">
+          <div class="drawer-card-body">
+            <span class="drawer-card-badge">Em Obras · 62%</span>
+            <h3 class="drawer-card-name">Lithos Residencial</h3>
+            <p class="drawer-card-desc">Zona 01 · 240 a 380 m² · Varandas suspensas e piscina privativa.</p>
+          </div>
         </div>
-      </section>
+        <!-- Card 2: La Vie Concept -->
+        <div class="drawer-card">
+          <img src="assets/catalogo-vitrine.jpg" alt="La Vie Concept" class="drawer-card-img">
+          <div class="drawer-card-body">
+            <span class="drawer-card-badge">Breve Lançamento</span>
+            <h3 class="drawer-card-name">La Vie Concept</h3>
+            <p class="drawer-card-desc">Novo Centro · 185 a 260 m² · Arquitetura biofílica e lazer nobre.</p>
+          </div>
+        </div>
+        <!-- Card 3: Reserva do Porto -->
+        <div class="drawer-card">
+          <img src="assets/fachada-azimute.webp" alt="Reserva do Porto" class="drawer-card-img">
+          <div class="drawer-card-body">
+            <span class="drawer-card-badge">Pronto para Morar</span>
+            <h3 class="drawer-card-name">Reserva do Porto</h3>
+            <p class="drawer-card-desc">Gleba Palhano · 320 m² · Vista infinita para o vale e privacidade.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <section class="reveal-section scroll-section" data-scroll-section="reveal"><div class="page-shell reveal-section__grid"><div class="reveal-section__visual"><img src="assets/silvio-casa-02.svg" alt="Imagem demonstrativa de um apartamento com vista" /><span class="image-note">imagem demonstrativa</span></div><div class="reveal-section__copy"><p class="kicker">O LUGAR ANTES DA DECISÃO</p><h2>Há uma diferença entre visitar um imóvel e imaginar a vida dentro dele.</h2><p>O percurso começa visual: primeiro o clima, depois as perguntas certas. A experiência foi desenhada para aproximar desejo, contexto e conversa.</p><span class="section-index">01 — revelar o contexto</span></div></div></section>
+  <!-- ========================================================================
+       SEÇÃO 2: HERO PANORÂMICA MARINGÁ + SMART SEARCH CAPSULE
+       ======================================================================== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-overlay"></div>
 
-      <section class="format-section scroll-section" data-scroll-section="format"><div class="page-shell"><div class="section-topline"><p class="kicker">UMA LEITURA MAIS HUMANA</p><span class="section-index">02 — escolher o formato</span></div><div class="format-section__grid"><h2>Comprar, alugar ou investir. A intenção muda o jeito de procurar.</h2><div class="format-section__copy"><p>Cada caminho pede um tipo de atenção. Por isso a navegação mantém o visitante em uma narrativa linear, com uma próxima ação clara em cada momento.</p><div class="counter-row"><span class="counter-row__number">03</span><span>frentes de conversa<br />na apresentação</span></div></div></div><div class="intent-cards"><button class="intent-card is-active" type="button" data-intent-button="0"><span>01</span><strong>Comprar</strong><em>para chamar de seu</em></button><button class="intent-card" type="button" data-intent-button="1"><span>02</span><strong>Alugar</strong><em>para viver agora</em></button><button class="intent-card" type="button" data-intent-button="2"><span>03</span><strong>Investir</strong><em>para olhar adiante</em></button></div></div></section>
+    <!-- Título & Identidade -->
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        <span>Maringá · Paraná</span>
+      </div>
+      <h1 class="hero-headline">
+        Seu próximo<br>
+        <span class="hero-headline-italic">horizonte.</span>
+      </h1>
+      <p class="hero-subhead">
+        Os lançamentos mais exclusivos e os melhores imóveis da história de Maringá reunidos em uma experiência serena.
+      </p>
+    </div>
 
-      <section class="authority section-pad scroll-section" data-scroll-section="authority"><div class="page-shell authority__grid"><div><p class="kicker">UMA PRESENÇA CONSTRUÍDA</p><h2>Experiência regional para decisões que atravessam o tempo.</h2></div><div class="authority__copy"><p>Esta apresentação parte da presença da Silvio Iwata em Maringá para criar uma experiência mais clara, sensorial e preparada para a próxima conversa.</p><div class="history-lockup"><strong>1976</strong><span>uma história que faz parte do contexto local</span></div></div></div></section>
+    <!-- Cápsula de Busca Inteligente (Smart Search) -->
+    <div class="hero-search-wrapper">
+      <div class="search-capsule">
+        <!-- Segmented Toggle -->
+        <div class="capsule-toggle">
+          <button class="capsule-tab active" data-search-type="comprar">Comprar</button>
+          <button class="capsule-tab" data-search-type="alugar">Alugar</button>
+          <button class="capsule-tab" data-search-type="lancamentos">Lançamentos</button>
+        </div>
 
-      <section class="map-section section-pad scroll-section" id="region" data-scroll-section="map"><div class="page-shell map-section__grid"><div class="map-section__copy"><p class="kicker">A CIDADE TAMBÉM ESCOLHE</p><h2>Maringá e região, em uma leitura que aproxima.</h2><p>Um mapa estático para situar o território da conversa. Não é uma navegação cartográfica ao vivo.</p><span class="map-label">Maringá e entorno</span></div><figure class="map-frame"><img src="assets/silvio-maringa-map.svg" alt="Mapa demonstrativo de Maringá e região" /><figcaption>Mapa demonstrativo de Maringá e região</figcaption></figure></div></section>
+        <div class="capsule-divider"></div>
 
-      <section class="property-slider section-pad scroll-section" data-scroll-section="properties" data-property-slider aria-labelledby="property-title"><div class="page-shell"><div class="section-topline"><div><p class="kicker">UMA CURADORIA DE PARTIDA</p><h2 id="property-title">O próximo endereço começa aqui.</h2></div><span class="section-index">03 — aproximar a escolha</span></div><div class="property-slider__viewport"><article class="property-slide is-active" data-property-slide="0"><div class="property-slide__image"><img src="assets/silvio-casa-01.svg" alt="Imagem demonstrativa de uma casa contemporânea" /><span>imagem demonstrativa</span></div><div class="property-slide__copy"><p class="card-meta">COMPRAR · MARINGÁ</p><h3>Casa Linha Verde</h3><p>04 dormitórios · 180 m² · consulte condições</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Conhecer a direção <span aria-hidden="true">↗</span></a></div></article><article class="property-slide" data-property-slide="1" hidden><div class="property-slide__image"><img src="assets/silvio-casa-02.svg" alt="Imagem demonstrativa de um apartamento com vista" /><span>imagem demonstrativa</span></div><div class="property-slide__copy"><p class="card-meta">ALUGAR · MARINGÁ</p><h3>Apartamento Horizonte</h3><p>02 dormitórios · 86 m² · consulte condições</p><a class="text-link" href="#intermediary-alugar" data-intent-link="alugar">Conhecer a direção <span aria-hidden="true">↗</span></a></div></article><article class="property-slide" data-property-slide="2" hidden><div class="property-slide__image"><img src="assets/silvio-casa-03.svg" alt="Imagem demonstrativa de volumes residenciais" /><span>imagem demonstrativa</span></div><div class="property-slide__copy"><p class="card-meta">INVESTIR · REGIÃO</p><h3>Endereço de Futuro</h3><p>Patrimônio · conversa inicial · sem promessa de rentabilidade</p><a class="text-link" href="#intermediary-investir" data-intent-link="investir">Abrir conversa <span aria-hidden="true">↗</span></a></div></article></div><div class="slider-controls"><div class="slider-dots" role="tablist" aria-label="Escolha uma apresentação"><button class="slider-dot is-active" type="button" aria-label="Ver Casa Linha Verde" data-slide-button="0"></button><button class="slider-dot" type="button" aria-label="Ver Apartamento Horizonte" data-slide-button="1"></button><button class="slider-dot" type="button" aria-label="Ver Endereço de Futuro" data-slide-button="2"></button></div><div class="slider-line"><span data-slider-fill></span></div><button class="slider-next" type="button" aria-label="Próxima apresentação" data-slider-next>Próximo <span aria-hidden="true">→</span></button></div></div></section>
+        <!-- Seletor de Bairro -->
+        <div class="capsule-input-group">
+          <input type="text" class="capsule-input" placeholder="Bairro ou referência...">
+        </div>
 
-      <section class="intermediary section-pad" id="intermediary" aria-labelledby="intermediary-title"><div class="page-shell intermediary__inner"><div><p class="kicker">PRÓXIMO PASSO</p><h2 id="intermediary-title">Qual movimento faz sentido agora?</h2><p>Escolha uma intenção para preparar uma conversa mais objetiva com a Silvio Iwata.</p></div><div class="intermediary__panel-wrap"><div class="intermediary__panel is-active" id="intermediary-comprar" data-intermediary-panel="comprar"><span class="panel-index">01 / COMPRAR</span><h3>Escolher com mais clareza.</h3><p>Uma conversa sobre localização, espaço e o que precisa acontecer para a decisão fazer sentido.</p><a class="button button--light" href="#intermediary-comprar" data-prepared-link="comprar">Continuar para atendimento <span aria-hidden="true">↗</span></a></div><div class="intermediary__panel" id="intermediary-alugar" data-intermediary-panel="alugar" hidden><span class="panel-index">02 / ALUGAR</span><h3>Encontrar o ritmo da sua rotina.</h3><p>Organize a busca por região, tipo de imóvel e o próximo passo para mudar.</p><a class="button button--light" href="#intermediary-alugar" data-prepared-link="alugar">Continuar para atendimento <span aria-hidden="true">↗</span></a></div><div class="intermediary__panel" id="intermediary-investir" data-intermediary-panel="investir" hidden><span class="panel-index">03 / INVESTIR</span><h3>Conversar sobre patrimônio com perspectiva.</h3><p>Uma primeira conversa sobre região e possibilidades, sem promessa de rentabilidade.</p><a class="button button--light" href="#intermediary-investir" data-prepared-link="investir">Continuar para atendimento <span aria-hidden="true">↗</span></a></div></div><p class="intermediary__disclosure">Esta é uma apresentação demonstrativa. Nenhuma mensagem é enviada por esta tela.</p></div></section>
-    </main>
-    <footer class="site-footer"><div class="page-shell site-footer__inner"><a class="wordmark" href="#main-content">silvio iwata<span>·</span></a><p>Maringá, Paraná · apresentação demonstrativa</p><a class="text-link" href="#intermediary-comprar" data-intent-link="comprar">Agendar visita <span aria-hidden="true">↗</span></a></div></footer>
-    <script src="interaction.js"></script>
-  </body>
+        <div class="capsule-divider"></div>
+
+        <!-- Busca por Código -->
+        <div class="capsule-input-group">
+          <input type="text" class="capsule-input" placeholder="Código ( / )" style="min-width: 110px;">
+        </div>
+
+        <!-- Botão de Ação -->
+        <button class="capsule-btn-circle" aria-label="Buscar Imóveis">→</button>
+      </div>
+
+      <!-- Ação Direta WhatsApp -->
+      <a href="https://wa.me/5544991000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-pill">
+        <span>Falar no WhatsApp</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SEÇÃO 3: PALCO FLAGSHIP SPLIT 50/50 — VERSÃO PRINCIPAL (ZORGE V2)
+       ======================================================================== -->
+  <section class="flagship-stage" id="flagships">
+    <!-- Lado Esquerdo: Fotografia + Skecher UI Image Glide -->
+    <div class="stage-media-side">
+      <img src="assets/palco-lithos.jpg" alt="Lithos Residencial Maringá" class="stage-main-photo" id="main-building-img">
+
+      <!-- Gaveta de Miniaturas Image Glide (Desliza no hover) -->
+      <div class="image-glide-tray">
+        <div class="glide-thumb active" data-img="assets/palco-lithos.jpg">
+          <img src="assets/palco-lithos.jpg" alt="Fachada">
+          <span class="glide-thumb-label">Fachada</span>
+        </div>
+        <div class="glide-thumb" data-img="assets/catalogo-vitrine.jpg">
+          <img src="assets/catalogo-vitrine.jpg" alt="Living Gourmet">
+          <span class="glide-thumb-label">Living</span>
+        </div>
+        <div class="glide-thumb" data-img="assets/fachada-azimute.webp">
+          <img src="assets/fachada-azimute.webp" alt="Rooftop">
+          <span class="glide-thumb-label">Rooftop</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lado Direito: Painel Zorge v2 -->
+    <div class="stage-info-side">
+      <!-- Topo do Painel -->
+      <div class="stage-top-bar">
+        <!-- Barra de Progresso Expansível Hairline -->
+        <div class="stage-hairline-progress">
+          <div class="stage-hairline-fill"></div>
+        </div>
+
+        <div class="stage-top-meta">
+          <div class="stage-title-block">
+            <h2 class="stage-building-name">L I T H O S</h2>
+            <div class="stage-counter-row">
+              <span class="stage-counter">1 — 4</span>
+              <span class="stage-badge-obras">Em Obras · 62%</span>
+            </div>
+          </div>
+
+          <!-- Pills de Navegação no Topo Direito -->
+          <div class="stage-pills-nav">
+            <button class="stage-nav-pill active">01 LITHOS</button>
+            <button class="stage-nav-pill">02 LA VIE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terço Inferior com Espaço Negativo Amplo no Centro -->
+      <div class="stage-bottom-block">
+        <div>
+          <h3 class="stage-room-title">LIVING GOURMET & SKY POOL</h3>
+          <p class="stage-room-desc">
+            Torre residencial de altíssimo padrão na Zona 01. Residências exclusivas com vista panorâmica definitiva para a copa das árvores de Maringá e privacidade inegociável.
+          </p>
+        </div>
+
+        <!-- Linha Inferior com Dados e CTA Alinhados -->
+        <div class="stage-specs-cta-row">
+          <div class="specs-pill-chip">
+            <span>240 – 380 M² · 4 SUÍTES · 4 VAGAS</span>
+          </div>
+          <button class="btn-stage-cta">
+            <span>CONHECER EMPREENDIMENTO →</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SEÇÃO 4: VITRINE DE CATÁLOGO CURADO (MELLEM UX + CÁPSULA AZIMUTE)
+       ======================================================================== -->
+  <section class="catalog-section" id="catalogo">
+    <div class="catalog-container">
+      <!-- Cabeçalho com Cápsula de Filtro Integrada -->
+      <div class="catalog-header">
+        <h2 class="catalog-headline">
+          Imóveis selecionados <em>para viver ou investir</em>
+        </h2>
+
+        <!-- Cápsula Integrada de Filtro Azimute -->
+        <div class="catalog-filter-capsule">
+          <button class="filter-tab-active" id="btn-comprar">Comprar</button>
+          <button class="filter-tab-idle" id="btn-alugar">Alugar</button>
+
+          <div class="catalog-divider"></div>
+
+          <!-- Componente Expansível de Tipologia -->
+          <div class="dropdown-wrapper">
+            <button class="btn-dropdown-trigger" id="btn-tipologia" aria-haspopup="true" aria-expanded="false">
+              <span id="selected-tipologia">Tipologia</span>
+              <span>▾</span>
+            </button>
+            <div class="dropdown-menu" id="menu-tipologia">
+              <button class="dropdown-item" data-value="todos">Todas as Tipologias</button>
+              <button class="dropdown-item" data-value="apartamentos">Apartamentos</button>
+              <button class="dropdown-item" data-value="casas">Casas em Condomínio</button>
+              <button class="dropdown-item" data-value="coberturas">Coberturas</button>
+              <button class="dropdown-item" data-value="comercial">Comerciais</button>
+            </div>
+          </div>
+
+          <!-- Botão Circular de Ação Rápida -->
+          <button class="btn-circle-lime" aria-label="Aplicar Filtros">→</button>
+        </div>
+
+        <!-- Contador Dinâmico -->
+        <div class="catalog-counter">
+          <span>142 imóveis disponíveis</span>
+        </div>
+      </div>
+
+      <!-- Grid de 6 Imóveis em 3 Colunas -->
+      <div class="catalog-grid">
+        <!-- Imóvel 1 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/catalogo-vitrine.jpg" alt="Edifício Clarina" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Edifício Clarina</h3>
+            <span class="card-location">Zona 01 · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">185 m² · 3 suítes · 2 vagas</span>
+              <strong class="card-price">R$ 1.850.000</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Imóvel 2 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/palco-lithos.jpg" alt="Luxras em Condomínio" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Mansão Condomínio Alphaville</h3>
+            <span class="card-location">Zona Sul · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">420 m² · 4 suítes · 4 vagas</span>
+              <strong class="card-price">R$ 4.200.000</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Imóvel 3 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/fachada-azimute.webp" alt="Terraces Boulevard" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Terraces Boulevard</h3>
+            <span class="card-location">Novo Centro · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">210 m² · 3 suítes · 3 vagas</span>
+              <strong class="card-price">R$ 2.450.000</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Imóvel 4 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/catalogo-vitrine.jpg" alt="Horizon Residence" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Horizon Residence</h3>
+            <span class="card-location">Zona 03 (Parque do Ingá) · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">160 m² · 3 suítes · 2 vagas</span>
+              <strong class="card-price">R$ 1.680.000</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Imóvel 5 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/palco-lithos.jpg" alt="Villa Splendore" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Villa Splendore</h3>
+            <span class="card-location">Gleba Palhano · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">280 m² · 4 suítes · 3 vagas</span>
+              <strong class="card-price">R$ 3.100.000</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Imóvel 6 -->
+        <article class="property-card">
+          <div class="card-media-wrap">
+            <img src="assets/fachada-azimute.webp" alt="Duplex Parque do Ingá" class="card-photo">
+            <span class="card-badge">Venda</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Cobertura Duplex Bosque</h3>
+            <span class="card-location">Zona 01 · Maringá</span>
+            <div class="card-specs-row">
+              <span class="card-specs">340 m² · 4 suítes · 4 vagas</span>
+              <strong class="card-price">R$ 3.890.000</strong>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Ação Final de Catálogo -->
+      <div class="catalog-bottom-action">
+        <button class="btn-explore-catalog">
+          <span>EXPLORAR TODO O CATÁLOGO (142) →</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rodapé Provisório Simples -->
+  <footer class="mini-footer" id="atendimento">
+    <p>© Silvio Iwata Imobiliária · Maringá/PR · Tradição e Excelência Imobiliária desde 1978 · CRECI J-1033</p>
+  </footer>
+
+  <!-- ========================================================================
+       JAVASCRIPT MODULAR / INTERATIVO
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Controle do Mega Drawer de Lançamentos
+      const btnToggleDrawer = document.getElementById('btn-toggle-drawer');
+      const btnCloseDrawer = document.getElementById('btn-close-drawer');
+      const megaDrawer = document.getElementById('mega-drawer');
+
+      function openDrawer() {
+        megaDrawer.classList.add('is-open');
+        btnToggleDrawer.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawer() {
+        megaDrawer.classList.remove('is-open');
+        btnToggleDrawer.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      btnToggleDrawer.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = megaDrawer.classList.contains('is-open');
+        if (isOpen) closeDrawer();
+        else openDrawer();
+      });
+
+      btnCloseDrawer.addEventListener('click', closeDrawer);
+
+      // Fechar com ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && megaDrawer.classList.contains('is-open')) {
+          closeDrawer();
+        }
+        // Atalho '/' para buscar código
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+          e.preventDefault();
+          const codeInput = document.querySelector('input[placeholder*="Código"]');
+          if (codeInput) codeInput.focus();
+        }
+      });
+
+      // 2. Image Glide Thumbnails (Palco Flagship)
+      const mainBuildingImg = document.getElementById('main-building-img');
+      const glideThumbs = document.querySelectorAll('.glide-thumb');
+
+      glideThumbs.forEach(thumb => {
+        thumb.addEventListener('mouseenter', () => {
+          glideThumbs.forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+          const newSrc = thumb.getAttribute('data-img');
+          if (newSrc && mainBuildingImg) {
+            mainBuildingImg.src = newSrc;
+          }
+        });
+      });
+
+      // 3. Dropdown de Tipologia no Catálogo
+      const btnTipologia = document.getElementById('btn-tipologia');
+      const menuTipologia = document.getElementById('menu-tipologia');
+      const selectedTipologiaSpan = document.getElementById('selected-tipologia');
+      const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+      btnTipologia.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuTipologia.classList.toggle('is-active');
+        const expanded = menuTipologia.classList.contains('is-active');
+        btnTipologia.setAttribute('aria-expanded', expanded);
+      });
+
+      dropdownItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const text = item.textContent.trim();
+          selectedTipologiaSpan.textContent = text === 'Todas as Tipologias' ? 'Tipologia' : text;
+          menuTipologia.classList.remove('is-active');
+          btnTipologia.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      document.addEventListener('click', () => {
+        menuTipologia.classList.remove('is-active');
+        btnTipologia.setAttribute('aria-expanded', 'false');
+      });
+
+      // 4. Toggle Comprar / Alugar no Catálogo
+      const btnComprar = document.getElementById('btn-comprar');
+      const btnAlugar = document.getElementById('btn-alugar');
+
+      btnComprar.addEventListener('click', () => {
+        btnComprar.className = 'filter-tab-active';
+        btnAlugar.className = 'filter-tab-idle';
+      });
+
+      btnAlugar.addEventListener('click', () => {
+        btnAlugar.className = 'filter-tab-active';
+        btnComprar.className = 'filter-tab-idle';
+      });
+
+      // 5. Toggle de busca na Hero
+      const heroTabs = document.querySelectorAll('.capsule-tab');
+      heroTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          heroTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
 </html>
