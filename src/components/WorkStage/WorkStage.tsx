@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Canvas } from '@react-three/fiber';
 import gsap from 'gsap';
-import { REFERENCE_PROJECTS, BRAND_TOKENS, ProjectSlot } from './referenceData';
+import { REFERENCE_PROJECTS, BRAND_TOKENS, JESPER_CANONICAL_ASSETS, ProjectSlot } from './referenceData';
 import { SHEET_CONSTANTS, clamp } from './math';
 import { RibbonCard } from './RibbonCard';
 import { FloorGrid } from './FloorGrid';
@@ -99,10 +99,12 @@ export const WorkStage: React.FC<WorkStageProps> = ({
         scrollVelocity: 0,
         activeProjectIndex: null,
         floorAlpha: 1.0,
+        assets: JESPER_CANONICAL_ASSETS,
         cards: initialCards,
       };
     } else {
       w.__WORK_STAGE__.webglReady = true;
+      w.__WORK_STAGE__.assets = JESPER_CANONICAL_ASSETS;
       if (!w.__WORK_STAGE__.phase) {
         w.__WORK_STAGE__.phase = initialPortalProgress >= 1 ? 'RIBBON_BROWSE' : 'PORTAL_EXPAND';
       }

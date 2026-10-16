@@ -77,3 +77,12 @@ export const REFERENCE_PROJECTS: ProjectSlot[] = [
     link: '#contact',
   },
 ];
+
+export const JESPER_CANONICAL_ASSETS = {
+  transcoder: './assets/jesper/basis_transcoder.wasm',
+  fontSans400: './assets/jesper/sans-400.bin',
+  fontSans500: './assets/jesper/sans-500.bin',
+  awardGlb: './assets/jesper/award.glb',
+  llamaGlb: './assets/jesper/llama.glb',
+} as const;
+
