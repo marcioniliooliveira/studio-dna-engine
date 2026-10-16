@@ -89,6 +89,17 @@ clientes/flashtech-caso-04-growth/site/assets/*
 !clientes/flashtech-caso-04-growth/site/assets/69d88c4d8f905c724ee05c1e_review_20card_20image_203.avif
 !clientes/flashtech-caso-04-growth/site/assets/69d88c4d9ea5b9163355470b_review_20card_20image_205.avif
 
+# Marcionilio Oliveira work-stage runtime scripts and isolated Jesper assets
+!clientes/marcionilio-oliveira/site/assets/
+clientes/marcionilio-oliveira/site/assets/*
+!clientes/marcionilio-oliveira/site/assets/jesper/
+!clientes/marcionilio-oliveira/site/assets/jesper/*
+!clientes/marcionilio-oliveira/site/assets/_astro/
+clientes/marcionilio-oliveira/site/assets/_astro/*
+!clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js
+!clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js
+!clientes/marcionilio-oliveira/site/assets/_astro/Loading.astro_astro_type_script_index_0_lang.zYvD-WGL.js
+
 design-vault/**/site/assets/
 
 # ── QA Reports & Screenshots de Auditoria ────────────────────────────────────

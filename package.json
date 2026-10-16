@@ -19,6 +19,9 @@
     "preview": "node bin/cli.js --preview --port 4000",
     "scrape": "node bin/cli.js",
     "orchestrate": "node bin/orchestrator.js",
+    "mcp": "node src/mcp-server.js",
+    "mcp:http": "node src/mcp-http.js",
+    "test:mcp": "node --test test/mcp-server.test.js test/mcp-http-server.test.js",
     "client": "node src/generators/client-factory.js",
     "transmute": "node src/pipeline/transmuter.js",
     "tokens": "node src/extractors/token-compiler.js",
@@ -30,6 +33,8 @@
     "clean:scratch": "node scripts/cleanup-scratch.js",
     "normalize": "node scripts/normalize-all-copies.js",
     "inject": "node src/generators/slot-injector.js",
+    "build:workstage": "vite build --config vite.bundle.config.mjs",
+    "test:workstage": "vitest run src/components/WorkStage/__tests__/math.spec.ts && playwright test tests/e2e/work-stage.spec.ts tests/e2e/challenger-viewport.spec.ts",
     "setup": "npx playwright install --with-deps chromium"
   },
   "engines": {
@@ -52,9 +57,17 @@
   "type": "commonjs",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "@react-three/drei": "^9.99.0",
+    "@react-three/fiber": "^8.15.16",
+    "@types/three": "^0.161.2",
     "cheerio": "^1.2.0",
+    "gsap": "^3.12.5",
     "playwright": "^1.41.0",
     "postcss": "^8.5.26",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.161.0",
+    "vitest": "^5.0.5",
     "zod": "^4.4.3"
   },
   "devDependencies": {
