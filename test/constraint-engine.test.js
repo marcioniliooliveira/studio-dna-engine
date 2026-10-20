@@ -9,7 +9,13 @@ const { resolveBackgroundProductContrast } = require('../src/constraints/contras
 const { resolveViewportCameraRig, resolveCollectionGeometry } = require('../src/constraints/geometry.js');
 const { resolveMotionReducedScaling } = require('../src/constraints/motion.js');
 const { resolvePerformanceFpsTier } = require('../src/constraints/performance.js');
-const { ConstraintEngine } = require('../src/constraints/engine.js');
+const {
+  ConstraintEngine,
+  calcAPCA,
+  searchMonotonicContrast,
+  fontLookupAPCA,
+  solveOptimalScrimOpacity
+} = require('../src/constraints/engine.js');
 
 test('DependencyGraph: builds DAG, detects dependencies and topological order', () => {
   const graph = new DependencyGraph();
@@ -152,4 +158,62 @@ test('ConstraintEngine: resolves full delta with dependency propagation and deri
   assert.equal(resolution.derivedCompensations['collection.layoutMode'], 'horizontal-slider');
   assert.equal(resolution.derivedCompensations['collection.columns'], 7);
   assert.ok(resolution.derivedCompensations['collection.scrollPinMultiplier'] > 1.0);
+});
+
+test('APCA 0.0.98G-4g: evaluates psychophysical contrast across polarities and black level glare', () => {
+  // W3C reference: black on white gives Lc ~ +106
+  const bow = calcAPCA('#000000', '#ffffff');
+  assert.ok(bow >= 105 && bow <= 107.5, `BoW contrast should be ~106, got ${bow}`);
+
+  // W3C reference: white on black gives Lc ~ -108
+  const wob = calcAPCA('#ffffff', '#000000');
+  assert.ok(wob <= -106.5 && wob >= -109.5, `WoB contrast should be ~-108, got ${wob}`);
+
+  // Low contrast glare / soft-clip
+  const lowContrast = calcAPCA('#777777', '#777777');
+  assert.equal(lowContrast, 0.0, 'Identical colors must evaluate to 0 contrast');
+});
+
+test('fontLookupAPCA: maps APCA contrast scores to compliant font sizes and weights', () => {
+  const fluent = fontLookupAPCA(78, 400);
+  assert.equal(fluent.compliant, true);
+  assert.equal(fluent.minFontSizePx, 16);
+  assert.equal(fluent.rating, 'fluent-body');
+
+  const headline = fontLookupAPCA(62, 700);
+  assert.equal(headline.compliant, true);
+  assert.equal(headline.minFontSizePx, 18);
+  assert.equal(headline.rating, 'sub-heading');
+
+  const fail = fontLookupAPCA(12, 400);
+  assert.equal(fail.compliant, false);
+  assert.equal(fail.rating, 'inadmissible');
+});
+
+test('solveOptimalScrimOpacity: computes minimal overlay opacity for white text on light backgrounds', () => {
+  // Light gray background #e5e5e5 with white text #ffffff has very poor contrast
+  const unassisted = Math.abs(calcAPCA('#ffffff', '#e5e5e5'));
+  assert.ok(unassisted < 25, `Unassisted contrast should be poor (got ${unassisted})`);
+
+  // Solve scrim with target Lc = 60
+  const scrim = solveOptimalScrimOpacity('#ffffff', '#e5e5e5', { targetLc: 60 });
+  assert.equal(scrim.solved, true);
+  assert.ok(scrim.opacity > 0.3 && scrim.opacity < 0.7, `Optimal opacity should be mid-range, got ${scrim.opacity}`);
+  assert.ok(scrim.achievedLc >= 60, `Achieved Lc (${scrim.achievedLc}) must meet or exceed target 60`);
+
+  // If text already has high contrast (e.g. white on #050505), opacity must be 0
+  const noScrim = solveOptimalScrimOpacity('#ffffff', '#050505', { targetLc: 60 });
+  assert.equal(noScrim.solved, true);
+  assert.equal(noScrim.opacity, 0.0);
+  assert.equal(noScrim.cssScrim, 'transparent');
+});
+
+test('searchMonotonicContrast: solves compliant text hex in OKLCH converging to target Lc', () => {
+  const darkBg = '#121214';
+  const targetLc = 75;
+  const result = searchMonotonicContrast(darkBg, targetLc, 'body');
+  assert.ok(result?.hex);
+
+  const achieved = Math.abs(calcAPCA(result.hex, darkBg));
+  assert.ok(Math.abs(achieved - targetLc) < 1.0, `Achieved Lc (${achieved}) must be within 1.0 of target`);
 });

@@ -528,7 +528,9 @@ function startPreviewServer(options = {}) {
     }
 
     let pathname;
+    let urlObj;
     try {
+      urlObj = new URL(req.url || '/', 'http://127.0.0.1:4000');
       const rawPathname = String(req.url || '/').split('?')[0];
       pathname = decodeURIComponent(rawPathname);
     } catch (error) {
@@ -540,6 +542,17 @@ function startPreviewServer(options = {}) {
     if (pathname.startsWith('/api/') && req.method !== 'GET' && !isMutationAuthorized(req, mutationOptions)) {
       res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ error: 'Mutation APIs are disabled or unauthorized' }));
+      return;
+    }
+
+    // ── Component Workbench Route ───────────────────────────────────────────
+    if (pathname === '/workbench') {
+      const client = (urlObj && urlObj.searchParams.get('client')) || 'marcionilio-oliveira';
+      const target = (urlObj && urlObj.searchParams.get('target')) || 'WorkStage';
+      res.writeHead(302, {
+        'Location': `/clientes/${encodeURIComponent(client)}/site/index.html?workbench=${encodeURIComponent(target)}&skipIntro=1`
+      });
+      res.end();
       return;
     }
 
@@ -908,6 +921,36 @@ function startPreviewServer(options = {}) {
             content = injectDevHud(content);
           }
         } catch(e) {}
+
+        // Component Workbench & skipIntro handling
+        const skipIntro = urlObj && urlObj.searchParams.get('skipIntro') === '1';
+        const workbenchTarget = urlObj && urlObj.searchParams.get('workbench');
+        if (skipIntro || workbenchTarget) {
+          const skipScript = `
+<script id="__DNA_WORKBENCH_SKIP_INTRO__">
+  window.__SKIP_INTRO__ = true;
+  window.__WORKBENCH_TARGET__ = ${JSON.stringify(workbenchTarget || '')};
+  document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.classList.remove('lenis-locked');
+    document.documentElement.style.overflow = '';
+    if (document.body) {
+      document.body.classList.remove('loading', 'preloader-active');
+      document.body.style.opacity = '1';
+    }
+    const preloader = document.querySelector('[data-preloader], .preloader, #preloader, [data-intro]');
+    if (preloader) {
+      preloader.style.display = 'none';
+    }
+  });
+</script>
+`;
+          if (content.includes('</head>')) {
+            content = content.replace('</head>', skipScript + '</head>');
+          } else {
+            content = skipScript + content;
+          }
+        }
+
         res.end(content);
         return;
       }

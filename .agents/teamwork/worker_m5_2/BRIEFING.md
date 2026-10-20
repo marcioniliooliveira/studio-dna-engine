@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-04T21:21:00Z
+# BRIEFING — 2026-10-20T16:25:00Z
 
 ## Mission
-Implement the Adverse Hardware Stress Suite (Scenario A: 6x CPU Throttling, Scenario B: 30fps rAF Clamping, Scenario C: WebGL Context Lost/Restored, Scenario D: End-to-End v2.5 Integration) and certify zero regressions across all suites.
+Verify implementation of infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displacement departure, inverted optical exit timeline (`scale: W -> 0`), and staggered card-to-sheet choreography ($Kp$) for Marcionilio Oliveira's "THE WORK" WebGL stage. Compile production bundle and execute/document complete automated verification across all gates (Vitest 8/8, Playwright work-stage.spec.ts, challenger-viewport.spec.ts).
 
 ## 🔒 My Identity
 - Archetype: implementer
@@ -9,6 +9,9 @@ Implement the Adverse Hardware Stress Suite (Scenario A: 6x CPU Throttling, Scen
 - Working directory: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2
 - Original parent: 55b2bb35-9b46-4caf-b378-9d5228026764
 - Milestone: M5
+- Subagent: worker_m5_2 (Lead Full-Stack WebGL & Motion Engineer, replacing worker_m5_1)
+- Current Parent: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
+- Active Milestone: M5 Implementation & Gate Verification (THE WORK WebGL Stage)
 
 ## 🔒 Key Constraints
 - Exclusive Write Ownership:
@@ -20,44 +23,55 @@ Implement the Adverse Hardware Stress Suite (Scenario A: 6x CPU Throttling, Scen
   - `node --test test/stress/adverse-hardware-stress.test.js`
   - `node --test test/m1-impeccable-sanitization.test.js test/m2-fsm-forms.test.js test/m3-spring-dynamics.test.js test/m4-gpu-saliency.test.js test/stress/adverse-hardware-stress.test.js`
   - `npm test` (277 baseline tests pass with zero regressions)
+- Exclusive Write Ownership (M5 THE WORK):
+  - `src/components/WorkStage/math.ts`
+  - `src/components/WorkStage/WorkStage.tsx`
+  - `src/components/WorkStage/RibbonCard.tsx`
+  - `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`
+  - `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js`
+- Mandatory Integrity Warning: DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work.
+- Build production bundle with `npm run build:workstage` before testing.
+- Must verify all gates: Vitest math.spec.ts (8/8 pass), Playwright work-stage.spec.ts, and challenger-viewport.spec.ts.
 
 ## Current Parent
-- Conversation ID: 55b2bb35-9b46-4caf-b378-9d5228026764
-- Updated: 2026-10-04T21:21:00Z
+- Conversation ID: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
+- Updated: 2026-10-20T16:25:00Z
 
 ## Task Summary
-- **What to build**: Adverse Hardware Stress Suite (`test/stress/adverse-hardware-stress.test.js`) and stress harness (`test/stress/stress-harness.js`).
-- **Scenario A**: 6x CPU Throttling via Playwright CDP (`Emulation.setCPUThrottlingRate: 6`). Measure adaptive mask keystroke latency (<16.6ms), FSM state stability under load, and spring motion computation.
-- **Scenario B**: 30fps rAF Clamping simulating Safari Low Power Mode. Analytical ODE evaluates continuous time $t$ with identical settling time ($\pm 10\text{ms}$) and zero numerical divergence compared to 60fps.
-- **Scenario C**: WebGL context lost & restored via `WEBGL_lose_context` extension. Clean graceful pause, 0 unhandled errors, full DOM responsiveness during outage, automatic recovery on restore.
-- **Scenario D**: End-to-end integration across all studio-dna v2.5 modules (Impeccable gate, Zag FSM form, analytical spring dynamics, KTX2 VRAM budget $\le 16\text{MB}$).
-- **Success criteria**: 100% tests pass on M5 stress suite, full milestone battery (M1-M5), and npm test baseline.
-- **Interface contracts**: PROJECT.md & TEST_INFRA.md
-- **Code layout**: PROJECT.md § Code Layout
+- **What to build**:
+  - WP-1: Infinite ribbon wrap in `math.ts`, `RibbonCard.tsx`, and `WorkStage.tsx` with analytical DOM proxy perspective projection.
+  - WP-2: Cinematic HUD with cumulative scroll accumulator ($\ge 1200\text{px}$) and departure pill button advancing to Chapter III.
+  - WP-3: Inverted optical exit timeline (`scale: W -> 0`, texts `Y -> C`, `j -> H`) and symmetric clip polygon in `initHorizontalScroll.LNLCK81L.js`.
+  - WP-4: Staggered card-to-sheet choreography ($Kp$) with GSAP timeline replacing `setTimeout(900ms)`.
+  - WP-5: Production bundle build and automated verification of all test gates.
+- **Success criteria**: All automated tests pass (Vitest 8/8, Playwright work-stage.spec.ts Gates 2-6, Challenger 6/6), bundle built and synced, 5-component handoff report delivered.
+- **Interface contracts**: `ORIGINAL_REQUEST.md`, `referenceData.ts`, `math.ts`.
+- **Code layout**: `src/components/WorkStage/`, `clientes/marcionilio-oliveira/site/assets/_astro/`.
 
 ## Key Decisions Made
-- Architecture for stress testing utilizes Playwright Chromium CDP session with EphemeralPreviewServer, real browser context, real DOM events, real WebGL canvas with `WEBGL_lose_context`.
-- Built standalone client bundle generator embedding exact production modules in test fixture for 100% fidelity.
-- Analytical spring dynamics compares 60fps against 30fps continuous evaluation, proving $0\text{px}$ numerical divergence compared to forward Euler numerical instability.
+- Carry forward worker_m5_1 implementation: $L=128.0$ periodic modular wrap, imperative DOM proxy synchronization in updateLoop, symmetric GSAP exit animation in initHorizontalScroll, staggered card-to-sheet sequence.
+- Compile bundle via `npm run build:workstage` and run tests.
 
 ## Artifact Index
-- `test/stress/adverse-hardware-stress.test.js` — Core M5 hardware stress test suite (19 tests)
-- `test/stress/stress-harness.js` — Helper harness for CDP throttling, rAF clamping, and WebGL loss simulation
-- `package.json` — Wired scripts for `"test:stress"` and `"test:v2.5"`
-- `.agents/teamwork/worker_m5_2/handoff.md` — Final handoff report
+- `src/components/WorkStage/math.ts` — math functions for wrap and proxy projection
+- `src/components/WorkStage/RibbonCard.tsx` — wrapped card mesh positioning
+- `src/components/WorkStage/WorkStage.tsx` — infinite ribbon, HUD, proxy sync, detail modal
+- `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js` — optical exit timeline
+- `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js` — compiled production bundle
+- `.agents/teamwork/worker_m5_2/handoff.md` — final handoff report
 
 ## Change Tracker
-- **Files modified**:
-  - `test/stress/stress-harness.js` — Created stress harness, server, browser lifecycle, client bundle, and integrated HTML.
-  - `test/stress/adverse-hardware-stress.test.js` — Created 19 automated stress and integration tests across 4 suites.
-  - `package.json` — Wired `"test:stress"` and `"test:v2.5"`.
-- **Build status**: PASS (19/19 stress tests, 106/106 v2.5 milestone battery tests, 277/277 baseline tests).
+- **Files modified**: none yet in m5_2 turn (evaluating m5_1 changes)
+- **Build status**: pending build
 - **Pending issues**: none
 
 ## Quality Status
-- **Build/test result**: PASS (100% green across all batteries).
-- **Lint status**: 0 violations.
-- **Tests added/modified**: 19 new stress and integration tests added in `test/stress/adverse-hardware-stress.test.js`.
+- **Build/test result**: pending verification
+- **Lint status**: pending
+- **Tests added/modified**: pending
 
 ## Loaded Skills
-- none
+- **awwwards-motion-engine**: mathematical motion physics, easing, GSAP timelines, inertial scroll.
+- **clean-code**: concise, direct, minimal change principle.
+- **testing-patterns**: Playwright E2E and Vitest unit testing.
+- **verify-changes**: proving code works through live execution and test runs.

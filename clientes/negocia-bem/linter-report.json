@@ -1,38 +1,937 @@
 {
-  "timestamp": "2026-10-04T20:20:18.659Z",
+  "timestamp": "2026-10-15T19:33:33.593Z",
   "clientSlug": "negocia-bem",
-  "passed": true,
-  "status": "verified",
+  "passed": false,
+  "status": "failed",
   "gates": {
     "antiSlop": {
-      "passed": true,
-      "violations": [],
+      "passed": false,
+      "violations": [
+        "[Anti-Slop] Metalinguagem ou placeholder proibido detectado: \"Lorem ipsum\""
+      ],
       "stats": {
-        "slopMatches": 0,
+        "slopMatches": 1,
         "residualMatches": 0,
         "unfilledSlots": 0,
         "budgetWarnings": 0
       }
     },
-    "console": {
+    "tier4AntiPatterns": {
       "passed": true,
-      "errorsCount": 0,
-      "errors": []
+      "violationsCount": 0,
+      "violations": [],
+      "summary": {
+        "totalFindings": 42,
+        "zeroToleranceViolations": 0,
+        "breakdown": {
+          "tight-leading": 34,
+          "layout-transition": 1,
+          "heading-rhythm": 2,
+          "gradient-text": 1,
+          "organic-clip-path": 4
+        },
+        "findings": [
+          {
+            "selector": "div.global-css.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.hover-focus-active.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.hero-anim-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.faq-dropdown-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.amenities-scroll-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.modal-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.nav-line",
+            "type": "layout-transition",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "transition: width",
+            "name": "Layout property animation",
+            "description": "Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations."
+          },
+          {
+            "selector": "div.about-text-box > p.b1:nth-of-type(1)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.about-text-box > p.b1:nth-of-type(2)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.stats-box.stats-box-2 > p.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.stats-box-4-text > p.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.our-beliefs-text-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#w-node-d88d786b-358f-44e1-a1ef-46994c97ead0-546b46eb > p.b1:nth-of-type(1)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#w-node-d88d786b-358f-44e1-a1ef-46994c97ead0-546b46eb > p.b1:nth-of-type(2)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-0 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-1 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-2 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-3 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.heading.cta-heading > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.error-msg-box > div.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(8)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(9)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(10)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(11)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(12)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(13)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(14)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(15)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(16)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(17)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(18)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(19)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(20)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(21)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#universal-scroll-director",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-toggle-1 > h3.h6",
+            "type": "heading-rhythm",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "h3 \"What makes Elyse Residence unique?\" has 24px above vs 47px below — it reads as bound to the block above (2 headings on page)",
+            "name": "Heading crowded against the previous block",
+            "description": "A heading binds to the content it introduces, so the rendered space above it should exceed the space below it. When headings across a page sit as close or closer to the block above than to their own content, every section reads as if it captions the previous one. Open up the space above each heading."
+          },
+          {
+            "selector": "#faq-toggle-3 > h3.h6",
+            "type": "heading-rhythm",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "h3 \"How private and secure is the community?\" has 24px above vs 137px below — it reads as bound to the block above (2 headings on page)",
+            "name": "Heading crowded against the previous block",
+            "description": "A heading binds to the content it introduces, so the rendered space above it should exceed the space below it. When headings across a page sit as close or closer to the block above than to their own content, every section reads as if it captions the previous one. Open up the space above each heading."
+          },
+          {
+            "selector": "body",
+            "type": "gradient-text",
+            "category": "slop",
+            "severity": "warning",
+            "detail": "background-clip: text + gradient",
+            "name": "Gradient text",
+            "description": "Gradient text is decorative rather than meaningful — a common AI tell, especially on headings and metrics. Use solid colors for text."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          }
+        ]
+      }
+    },
+    "impeccable": {
+      "passed": true,
+      "violationsCount": 0,
+      "violations": [],
+      "summary": {
+        "totalFindings": 42,
+        "zeroToleranceViolations": 0,
+        "breakdown": {
+          "tight-leading": 34,
+          "layout-transition": 1,
+          "heading-rhythm": 2,
+          "gradient-text": 1,
+          "organic-clip-path": 4
+        },
+        "findings": [
+          {
+            "selector": "div.global-css.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.hover-focus-active.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.hero-anim-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.faq-dropdown-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.amenities-scroll-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.modal-code.w-embed > style",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.nav-line",
+            "type": "layout-transition",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "transition: width",
+            "name": "Layout property animation",
+            "description": "Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations."
+          },
+          {
+            "selector": "div.about-text-box > p.b1:nth-of-type(1)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.about-text-box > p.b1:nth-of-type(2)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.stats-box.stats-box-2 > p.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.stats-box-4-text > p.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.our-beliefs-text-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#w-node-d88d786b-358f-44e1-a1ef-46994c97ead0-546b46eb > p.b1:nth-of-type(1)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#w-node-d88d786b-358f-44e1-a1ef-46994c97ead0-546b46eb > p.b1:nth-of-type(2)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-0 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-1 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-2 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-dropdown-3 > div.faq-dropdown-box > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.heading.cta-heading > p.b1",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "div.error-msg-box > div.b1.mob-b4",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.25x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(8)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(9)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(10)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(11)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(12)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(13)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(14)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(15)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(16)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(17)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(18)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(19)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(20)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "script:nth-of-type(21)",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#universal-scroll-director",
+            "type": "tight-leading",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "line-height 1.00x (need >=1.3)",
+            "name": "Tight line height",
+            "description": "Line height below 1.3x the font size makes multi-line text hard to read. Use 1.5 to 1.7 for body text so lines have room to breathe."
+          },
+          {
+            "selector": "#faq-toggle-1 > h3.h6",
+            "type": "heading-rhythm",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "h3 \"What makes Elyse Residence unique?\" has 24px above vs 47px below — it reads as bound to the block above (2 headings on page)",
+            "name": "Heading crowded against the previous block",
+            "description": "A heading binds to the content it introduces, so the rendered space above it should exceed the space below it. When headings across a page sit as close or closer to the block above than to their own content, every section reads as if it captions the previous one. Open up the space above each heading."
+          },
+          {
+            "selector": "#faq-toggle-3 > h3.h6",
+            "type": "heading-rhythm",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "h3 \"How private and secure is the community?\" has 24px above vs 137px below — it reads as bound to the block above (2 headings on page)",
+            "name": "Heading crowded against the previous block",
+            "description": "A heading binds to the content it introduces, so the rendered space above it should exceed the space below it. When headings across a page sit as close or closer to the block above than to their own content, every section reads as if it captions the previous one. Open up the space above each heading."
+          },
+          {
+            "selector": "body",
+            "type": "gradient-text",
+            "category": "slop",
+            "severity": "warning",
+            "detail": "background-clip: text + gradient",
+            "name": "Gradient text",
+            "description": "Gradient text is decorative rather than meaningful — a common AI tell, especially on headings and metrics. Use solid colors for text."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          },
+          {
+            "selector": "body",
+            "type": "organic-clip-path",
+            "category": "quality",
+            "severity": "warning",
+            "detail": "clip-path: polygon() with 95 vertices approximating an organic contour",
+            "name": "Organic contour drawn as clip-path",
+            "description": "A clip-path polygon with many arbitrary vertices, or a curved clip-path path(), is CSS approximating a torn edge, blob, or silhouette. It reads as the cheap version of the effect and is usually a produced or photographic material replaced with code. Derive an alpha matte from the real image, or ship the shape as a cut-out raster; keep clip-path for geometry (cut corners, diagonals, hexagons)."
+          }
+        ]
+      }
+    },
+    "console": {
+      "passed": false,
+      "errorsCount": 1,
+      "errors": [
+        "Loading chunk 258 failed.\n(error: http://127.0.0.1:50727/assets/webflow.achunk.65add74e46fe5245.js)"
+      ]
     },
     "network": {
-      "passed": true,
-      "failedRequestsCount": 0,
-      "failures": []
+      "passed": false,
+      "failedRequestsCount": 16,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.65add74e46fe5245.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.ad6dcd2fc75b294c.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.64873797e35e968c.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.22b66e874d42861f.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.db80639074bc0296.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.496d56dd8c063ec0.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.5959ac50b3c857f1.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.d1d07b60531802bb.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.589f6b5d360f7e74.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.778b1a6248836936.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.bec7a721722e4644.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.e8e7e6855b442808.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.43f4d187dbb3f1f5.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.7a15e72921c0ea82.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.a05a70dc064fe75f.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50727/assets/webflow.achunk.b2d4fa44d0f47718.js",
+          "status": 404
+        }
+      ]
     },
     "structural": {
-      "passed": true,
-      "totalImages": 17,
-      "brokenImagesCount": 0,
-      "brokenImages": [],
-      "decodedImagesCount": 17,
-      "readinessFailuresCount": 0,
-      "readinessFailures": [],
-      "sectionsCount": 14
+      "passed": false,
+      "totalImages": 27,
+      "brokenImagesCount": 3,
+      "brokenImages": [
+        {
+          "src": "http://127.0.0.1:50727/assets/693881bfdfb07f671238f951_beliefs-img--mob.avif",
+          "alt": "Modern living room with gray sectional sofa, textured cushions, a throw blanket, glass side table, and large floor-to-ceiling windows."
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881bf041520f6c9ca8770_beliefs-img-2--mob.avif",
+          "alt": "Modern living room with a beige sofa, vertical wood panel accent wall, a glass coffee table, and a side table with books and a small lamp."
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881c82316816e1085777d_cta-img--mob.avif",
+          "alt": "Modern house with large glass windows illuminated at night, surrounded by trees and garden."
+        }
+      ],
+      "decodedImagesCount": 21,
+      "readinessFailuresCount": 6,
+      "readinessFailures": [
+        {
+          "src": "http://127.0.0.1:50727/assets/693881b0422731c7d2c5fcac_livings-img-2--d.avif",
+          "state": "unresolved"
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881b0a57115d8cd3a12c2_livings-img-1--d.avif",
+          "state": "unresolved"
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881b00e2082f46e0752ce_livings-img-3--d.avif",
+          "state": "unresolved"
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881bfdfb07f671238f951_beliefs-img--mob.avif",
+          "state": "unresolved"
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881bf041520f6c9ca8770_beliefs-img-2--mob.avif",
+          "state": "unresolved"
+        },
+        {
+          "src": "http://127.0.0.1:50727/assets/693881c82316816e1085777d_cta-img--mob.avif",
+          "state": "unresolved"
+        }
+      ],
+      "sectionsCount": 11
     },
     "scrollDynamics": {
       "passed": true,

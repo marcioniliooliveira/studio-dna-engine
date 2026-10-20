@@ -3,7 +3,7 @@
 const { validateTaskContractV2 } = require('./task-contract-v2');
 
 const BLUEPRINT_KEYS = new Set(['version', 'runId', 'clientScope', 'tasks', 'budget', 'allowedTools', 'allowedGates']);
-const TASK_KEYS = new Set(['id', 'dependsOn', 'budget', 'allowedTools', 'allowedGates', 'input', 'actorId', 'role', 'requiredVerifierRole']);
+const TASK_KEYS = new Set(['id', 'dependsOn', 'budget', 'allowedTools', 'allowedGates', 'input', 'actorId', 'role', 'requiredVerifierRole', 'writeAllowlist']);
 const BUDGET_KEYS = new Set(['maxRetries']);
 
 function isPlainObject(value) {
@@ -97,6 +97,7 @@ function validateBlueprint(input) {
     if (task.actorId !== undefined) assertString(task.actorId, `${path}.actorId`);
     if (task.role !== undefined) assertString(task.role, `${path}.role`);
     if (task.requiredVerifierRole !== undefined) assertString(task.requiredVerifierRole, `${path}.requiredVerifierRole`);
+    if (task.writeAllowlist !== undefined) assertStringArray(task.writeAllowlist, `${path}.writeAllowlist`);
   }
   for (const task of input.tasks) {
     for (const dependency of task.dependsOn || []) {

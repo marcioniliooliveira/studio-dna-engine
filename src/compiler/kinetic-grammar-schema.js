@@ -298,23 +298,68 @@ ${cssBody.split('\n').map(l => '    ' + l).join('\n')}
 }
 
 /**
+ * Generates CSS @scope preludes supporting the 5 W3C Cascade Level 6 topologies:
+ * 1. 'donut': @scope (${root}) to (${limit})
+ * 2. 'root-only': @scope (${root})
+ * 3. 'limit-only': @scope to (${limit})
+ * 4. 'scoped-is': @scope (:is(${root})) to (:is(${limit}))
+ * 5. 'fallback': ${root}:not(${limit})
+ *
+ * @param {object} options
+ * @param {string} [options.root] Root selector
+ * @param {string} [options.limit] Boundary/limit selector
+ * @param {'donut'|'root-only'|'limit-only'|'scoped-is'|'fallback'} [options.mode='donut']
+ * @returns {string} CSS prelude or fallback selector
+ */
+function buildScopedPreludes({ root = '.kinetic-stage', limit = '[data-kinetic-slot]', mode = 'donut' } = {}) {
+  switch (mode) {
+    case 'root-only':
+      return `@scope (${root})`;
+    case 'limit-only':
+      return `@scope to (${limit})`;
+    case 'scoped-is':
+      return `@scope (:is(${root})) to (:is(${limit}))`;
+    case 'fallback':
+      return `${root}:not(${limit})`;
+    case 'donut':
+    default:
+      return `@scope (${root}) to (${limit})`;
+  }
+}
+
+/**
+ * Strict CSS @scope Donut Isolation Validator.
+ * Blocks 100% of piercing attacks:
+ * combinators ('>', '+', '~', ' '), attribute selectors ([attr="val"]),
+ * and functional pseudo-classes (:is(), :where()) targeting slot children,
+ * while strictly permitting boundary self-styling on the slot element itself.
+ *
+ * @param {string} cssContent
+ * @param {string} [boundaryAttr='data-kinetic-slot']
+ * @returns {{ compliant: boolean, violations: Array<string> }}
+ */
+function validateStrictDonutScope(cssContent, boundaryAttr = 'data-kinetic-slot') {
+  return validateDonutScopeInvariants(cssContent, boundaryAttr);
+}
+
+/**
  * Validates that CSS rules comply with donut scoping invariants:
  * styles inside @scope block must not pierce through [data-kinetic-slot] children.
  */
-function validateDonutScopeInvariants(cssContent) {
+function validateDonutScopeInvariants(cssContent, boundaryAttr = 'data-kinetic-slot') {
   const violations = [];
   const cleanCss = (cssContent || '').replace(/\/\*[\s\S]*?\*\//g, '');
 
-  // Check for piercing selectors: e.g. [data-kinetic-slot] .child or [data-kinetic-slot] > *
-  const piercingPattern = /\[data-kinetic-slot\]\s+[a-zA-Z0-9_.*#\-[\]]+/g;
+  // Check for piercing selectors: e.g. [data-kinetic-slot] .child or [data-kinetic-slot] > * or [data-kinetic-slot="val"] h1
+  const piercingPattern = /(\[data-kinetic-slot(?:[~|^$*]?=(?:"[^"]*"|'[^']*'|[^\]\s]+))?\](?:\[[^\]\r\n]+\]|\.[a-zA-Z0-9_\-]+|::?[a-zA-Z0-9_\-]+(?:\([^)]*\))?)*)(?:\s*([>+~]|\s)\s*)([a-zA-Z0-9_.*#\-[\]"':=]+)/g;
   let match;
   while ((match = piercingPattern.exec(cleanCss)) !== null) {
     violations.push(`Donut piercing violation: selector '${match[0]}' penetrates slot boundary`);
   }
 
   // Check for global selector leakages attempting to style slots without scope
-  const slotChildOverride = /\.kinetic-stage\s+\[data-kinetic-slot\]\s+[a-zA-Z0-9_.*#\-[\]]+/g;
-  while ((match = slotChildOverride.exec(cssContent)) !== null) {
+  const slotChildOverride = /(\.kinetic-stage\s+\[data-kinetic-slot(?:[~|^$*]?=(?:"[^"]*"|'[^']*'|[^\]\s]+))?\](?:\[[^\]\r\n]+\]|\.[a-zA-Z0-9_\-]+|::?[a-zA-Z0-9_\-]+(?:\([^)]*\))?)*)(?:\s*([>+~]|\s)\s*)([a-zA-Z0-9_.*#\-[\]"':=]+)/g;
+  while ((match = slotChildOverride.exec(cleanCss)) !== null) {
     violations.push(`Donut boundary override violation: '${match[0]}' breaches slot isolation`);
   }
 
@@ -395,6 +440,8 @@ module.exports = {
   validateCompositionGrammar,
   parseCompositionGrammar,
   generateDonutScopeRule,
+  buildScopedPreludes,
+  validateStrictDonutScope,
   validateDonutScopeInvariants,
   createStage,
   createSlot

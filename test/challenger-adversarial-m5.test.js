@@ -605,9 +605,8 @@ test.describe('Suite 4 [Challenger]: CSS @scope Donut Scoping & Piercing Attacks
     assert.equal(validation.compliant, false, 'Must flag compound selector penetration');
   });
 
-  test('4.5 Validator Blind Spot 1: Direct child combinator (>) is NOT caught by current validator regex', () => {
+  test('4.5 Validator Blind Spot 1: Direct child combinator (>) is caught and flagged as piercing', () => {
     // Attack using direct child: [data-kinetic-slot] > h1
-    // The current regex /[data-kinetic-slot]\s+[a-zA-Z0-9_.*#\-[\]]+/ does not contain '>' in the class
     const childAttackCss = `
       [data-kinetic-slot] > h1 {
         transform: rotate(45deg);
@@ -615,12 +614,11 @@ test.describe('Suite 4 [Challenger]: CSS @scope Donut Scoping & Piercing Attacks
     `;
 
     const validation = validateDonutScopeInvariants(childAttackCss);
-    // EMPIRICAL FINDING: The validator fails to detect direct child combinator piercing!
-    assert.equal(validation.compliant, true, 'CONFIRMED VULNERABILITY: validator blind spot on child combinator (>)');
-    assert.equal(validation.violations.length, 0);
+    assert.equal(validation.compliant, false, 'Must flag direct child combinator (>) piercing');
+    assert.ok(validation.violations.length > 0);
   });
 
-  test('4.6 Validator Blind Spot 2: Attribute value selector ([data-kinetic-slot="val"] h1) is NOT caught', () => {
+  test('4.6 Validator Blind Spot 2: Attribute value selector ([data-kinetic-slot="val"] h1) is caught and flagged', () => {
     // Attack using attribute value: [data-kinetic-slot="hero-title"] h1
     const attrAttackCss = `
       [data-kinetic-slot="hero-title"] h1 {
@@ -629,9 +627,8 @@ test.describe('Suite 4 [Challenger]: CSS @scope Donut Scoping & Piercing Attacks
     `;
 
     const validation = validateDonutScopeInvariants(attrAttackCss);
-    // EMPIRICAL FINDING: The validator fails to detect attribute value piercing!
-    assert.equal(validation.compliant, true, 'CONFIRMED VULNERABILITY: validator blind spot on attribute values');
-    assert.equal(validation.violations.length, 0);
+    assert.equal(validation.compliant, false, 'Must flag attribute value selector piercing');
+    assert.ok(validation.violations.length > 0);
   });
 
   test('4.7 Valid slot self-styling is permitted and does not penetrate children', () => {

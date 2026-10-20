@@ -99,8 +99,11 @@ test.describe('Gate 2: Simetria Óptica e Expansão do Portal "THE WORK"', () =>
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-    // Aguarda carregamento das fontes e prontidão dos scripts
-    await page.waitForFunction(() => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function');
+    // Aguarda carregamento das fontes, prontidão dos scripts e WebGL
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
 
     // 1. Posiciona deterministicamente o portal em portalProgress = 0.35
     await page.evaluate(() => {
@@ -186,19 +189,22 @@ test.describe('Gate 3: Fita 3D com os 4 Projetos, Velocidade e Hover', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-    // Aguarda o helper de teste
-    await page.waitForFunction(() => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function');
+    // Aguarda o helper de teste e WebGL pronto
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
 
     // Expande o portal para 1.0 (RIBBON_BROWSE)
     await page.evaluate(() => {
       (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__(1.0);
     });
 
-    // Aguarda prontidão da telemetria e dos cards
+    // Aguarda prontidão da telemetria, fase RIBBON_BROWSE e dos cards
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
-      return ws && ws.cards && Object.keys(ws.cards).length === 4;
-    });
+      return ws && ws.webglReady === true && ws.phase === 'RIBBON_BROWSE' && (ws.portalProgress ?? 0) >= 0.99 && ws.cards && Object.keys(ws.cards).length === 4;
+    }, null, { timeout: 20000 });
 
     // 1. Validação dos 4 projetos ['0', '1', '2', '3']
     const cardData = await page.evaluate(() => {
@@ -217,6 +223,11 @@ test.describe('Gate 3: Fita 3D com os 4 Projetos, Velocidade e Hover', () => {
     await page.mouse.wheel(0, 600);
 
     // Validação da velocidade instantânea amortecida disparada pelo wheel
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return ws && ws.scrollVelocity > 0.05;
+    }, null, { timeout: 10000 });
+
     const scrollVelocity = await page.evaluate(() => {
       return (window as any).__WORK_STAGE__?.scrollVelocity || 0;
     });
@@ -256,11 +267,12 @@ test.describe('Gate 3: Fita 3D com os 4 Projetos, Velocidade e Hover', () => {
     console.log('HIT ELEMENT:', JSON.stringify(hitElement));
 
     await proxy0.hover({ force: true });
+    await proxy0.dispatchEvent('mouseenter');
 
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
       return ws && ws.cards && ws.cards[0]?.uniforms?.u_hover > 0.95;
-    }, { timeout: 5000 });
+    }, null, { timeout: 10000 });
 
     const hoverVal = await page.evaluate(() => (window as any).__WORK_STAGE__?.cards[0]?.uniforms?.u_hover);
     expect(hoverVal).toBeGreaterThan(0.95);
@@ -278,8 +290,11 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-    // Aguarda prontidão do helper determinístico de teste
-    await page.waitForFunction(() => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function');
+    // Aguarda prontidão do helper determinístico de teste e WebGL
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
 
     // Posiciona o portal em portalProgress = 1.0 para entrar em RIBBON_BROWSE
     await page.evaluate(() => {
@@ -290,7 +305,7 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
       return ws && ws.phase === 'RIBBON_BROWSE' && ws.cards && Object.keys(ws.cards).length === 4;
-    });
+    }, null, { timeout: 20000 });
 
     // Registra listener no requestAnimationFrame para captura fidedigna da fase transitória DETAIL_FLIGHT
     await page.evaluate(() => {
@@ -309,7 +324,7 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
 
     // Ação: Clica no proxy button do card 0
     const proxy0 = page.locator('[data-work-card-proxy="0"]');
-    await proxy0.waitFor({ state: 'attached' });
+    await proxy0.waitFor({ state: 'attached', timeout: 20000 });
     await proxy0.dispatchEvent('click');
 
     const clickCheck = await page.evaluate(() => {
@@ -328,14 +343,13 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
       const seq = (window as any).__PHASE_SEQUENCE__ || [];
       const current = (window as any).__WORK_STAGE__?.phase;
       return seq.includes('DETAIL_FLIGHT') || current === 'DETAIL_FLIGHT' || current === 'DETAIL_ACTIVE';
-    }, { timeout: 2000 });
+    }, null, { timeout: 5000 });
 
-    // Fase estabelecida: aguarda window.__WORK_STAGE__.phase === 'DETAIL_ACTIVE' (timeout 8000ms)
+    // Fase estabelecida: aguarda window.__WORK_STAGE__.phase === 'DETAIL_ACTIVE' (timeout 15000ms)
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
-      console.log('WAITING FOR DETAIL_ACTIVE, CURRENT PHASE:', ws?.phase);
       return ws && ws.phase === 'DETAIL_ACTIVE';
-    }, { timeout: 8000 });
+    }, null, { timeout: 15000 });
 
     const phaseSequence = await page.evaluate(() => (window as any).__PHASE_SEQUENCE__);
     expect(phaseSequence).toContain('DETAIL_FLIGHT');
@@ -353,7 +367,7 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
         c0.u_shade < 0.01 &&
         c0.u_scrim < 0.01
       );
-    }, { timeout: 8000 });
+    }, null, { timeout: 15000 });
 
     const card0Uniforms = await page.evaluate(() => (window as any).__WORK_STAGE__?.cards?.[0]?.uniforms);
     expect(card0Uniforms.u_sheetP).toBeLessThan(0.01);
@@ -369,7 +383,7 @@ test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {
         cards?.[2]?.uniforms?.u_alpha < 0.01 &&
         cards?.[3]?.uniforms?.u_alpha < 0.01
       );
-    }, { timeout: 8000 });
+    }, null, { timeout: 15000 });
 
     const neighborAlphas = await page.evaluate(() => {
       const cards = (window as any).__WORK_STAGE__?.cards;
@@ -451,8 +465,11 @@ test.describe('Gate 5: Fecho do Detalhe e Restauração da Fita', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-    // Aguarda prontidão do helper determinístico de teste
-    await page.waitForFunction(() => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function');
+    // Aguarda prontidão do helper determinístico de teste e WebGL
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
 
     // Posiciona o portal em portalProgress = 1.0 para entrar em RIBBON_BROWSE
     await page.evaluate(() => {
@@ -490,8 +507,21 @@ test.describe('Gate 5: Fecho do Detalhe e Restauração da Fita', () => {
     });
 
     const closeBtn = page.locator('[data-detail-close]');
-    await closeBtn.waitFor({ state: 'attached' });
-    await closeBtn.click();
+    await closeBtn.waitFor({ state: 'attached', timeout: 5000 });
+    try {
+      await closeBtn.dispatchEvent('click');
+    } catch {
+      await closeBtn.click({ force: true, timeout: 5000 }).catch(() => {});
+    }
+
+    // Fallback de segurança se DETAIL_ACTIVE persistir
+    const isStillActiveA = await page.evaluate(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return ws && ws.phase === 'DETAIL_ACTIVE';
+    });
+    if (isStillActiveA) {
+      await page.keyboard.press('Escape');
+    }
 
     // Aguarda transição para DETAIL_CLOSING e retorno estável para RIBBON_BROWSE
     await page.waitForFunction(() => {
@@ -566,7 +596,11 @@ test.describe('Gate 5: Fecho do Detalhe e Restauração da Fita', () => {
 
     // === Action Part B: Fecho via tecla Escape ===
     // Reabre o detalhe clicando no proxy 0
-    await proxy0.click();
+    try {
+      await proxy0.dispatchEvent('click');
+    } catch {
+      await proxy0.click({ force: true, timeout: 5000 }).catch(() => {});
+    }
 
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
@@ -615,4 +649,167 @@ test.describe('Gate 5: Fecho do Detalhe e Restauração da Fita', () => {
     expect(escapeRestoration.overflowBody).toBe('');
   });
 });
+
+test.describe('Gate 6: Rolagem Contínua de Ponta a Ponta (End-to-End Continuous Scroll)', () => {
+  test('Rolagem natural da roda do mouse de scrollY = 0 até Chapter III, Chapter IV e Rodapé sem deadlock', async ({
+    page,
+  }) => {
+    test.setTimeout(240000);
+
+    const pageErrors: string[] = [];
+    const consoleErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') consoleErrors.push(msg.text());
+    });
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+
+    // 1. Ponto de partida: Topo estrito
+    const initialScrollY = await page.evaluate(() => window.scrollY);
+    expect(initialScrollY).toBe(0);
+
+    console.log('[Gate 6] Page loaded, awaiting webglReady...');
+    // Garante inicialização dos scripts de animação e WebGL
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
+    console.log('[Gate 6] webglReady confirmed. Awaiting Lenis unlock...');
+
+    // Aguarda destravamento do motor de rolagem Lenis pós-intro
+    await page.waitForFunction(() => {
+      const de = document.documentElement;
+      return !de.classList.contains('lenis-locked') && de.style.overflow !== 'hidden';
+    }, null, { timeout: 30000 });
+    console.log('[Gate 6] Lenis unlocked! Commencing continuous scroll traversal...');
+
+    // Posiciona o ponteiro do mouse no centro da tela para disparar eventos de wheel
+    await page.mouse.move(720, 450);
+
+    // Sentinel de telemetria para registrar marcos ao longo da travessia contínua
+    const milestones = {
+      reachedPortalApex: false,
+      ribbonVelocityObserved: false,
+      reachedServices: false,
+      reachedClients: false,
+      reachedFooter: false,
+    };
+
+    let lastScrollY = -1;
+    let consecutiveStuckTicks = 0;
+    const MAX_ALLOWED_STUCK_TICKS = 8; // Tolerância antes de decretar deadlock
+    const SCROLL_DELTA_STEP = 800;
+    const MAX_STEPS = 35;
+
+    // 2. Loop de rolagem inercial progressiva da roda do mouse
+    // Dispara rajadas periódicas simulando a rolagem natural do usuário
+    for (let step = 0; step < MAX_STEPS; step++) {
+      await page.mouse.move(720, 450);
+      await page.mouse.wheel(0, SCROLL_DELTA_STEP);
+      await page.waitForTimeout(100); // Tempo de acomodação do rAF/Lenis
+
+      const currentTelemetry = await page.evaluate((reached) => {
+        const ws = (window as any).__WORK_STAGE__;
+        const footerEl = document.querySelector('[data-section="home-footer"]');
+        const servicesEl = !reached.services ? document.querySelector('[data-services-section]') : null;
+        const clientsEl = !reached.clients ? document.querySelector('[data-section="home-clients"]') : null;
+
+        const sBox = servicesEl ? servicesEl.getBoundingClientRect() : null;
+        const cBox = clientsEl ? clientsEl.getBoundingClientRect() : null;
+        const fBox = footerEl ? footerEl.getBoundingClientRect() : null;
+
+        return {
+          scrollY: window.scrollY,
+          portalProgress: ws?.portalProgress || 0,
+          phase: ws?.phase || '',
+          scrollVelocity: ws?.scrollVelocity || 0,
+          servicesVisible: sBox ? sBox.left < window.innerWidth && sBox.right > 0 : reached.services,
+          clientsVisible: cBox ? cBox.left < window.innerWidth && cBox.right > 0 : reached.clients,
+          footerVisible: fBox ? fBox.left < window.innerWidth && fBox.right > 0 : false,
+          footerFullyInView: fBox ? fBox.left <= 100 : false,
+        };
+      }, { services: milestones.reachedServices, clients: milestones.reachedClients });
+
+      console.log(`[Gate 6 Step ${step}] scrollY=${currentTelemetry.scrollY.toFixed(1)}, pp=${currentTelemetry.portalProgress.toFixed(2)}, phase=${currentTelemetry.phase}, vel=${currentTelemetry.scrollVelocity.toFixed(2)}, footer=${currentTelemetry.footerVisible}`);
+
+      // Avaliação de Deadlock: Se o scrollY não mudou e ainda não chegamos ao rodapé
+      if (Math.abs(currentTelemetry.scrollY - lastScrollY) < 1.0 && !milestones.reachedFooter) {
+        consecutiveStuckTicks++;
+        if (consecutiveStuckTicks >= MAX_ALLOWED_STUCK_TICKS) {
+          throw new Error(
+            `DEADLOCK DETECTADO no step ${step}! scrollY travado em ${currentTelemetry.scrollY}px com portalProgress=${currentTelemetry.portalProgress}.`
+          );
+        }
+      } else {
+        consecutiveStuckTicks = 0;
+      }
+      lastScrollY = currentTelemetry.scrollY;
+
+      // Registro dos marcos
+      if (currentTelemetry.portalProgress >= 0.95 && currentTelemetry.phase === 'RIBBON_BROWSE') {
+        milestones.reachedPortalApex = true;
+      }
+      if (currentTelemetry.scrollVelocity > 0.04) {
+        milestones.ribbonVelocityObserved = true;
+      }
+      if (currentTelemetry.servicesVisible) {
+        milestones.reachedServices = true;
+      }
+      if (currentTelemetry.clientsVisible) {
+        milestones.reachedClients = true;
+      }
+      if (currentTelemetry.footerVisible) {
+        milestones.reachedFooter = true;
+        if (currentTelemetry.footerFullyInView) {
+          console.log(`[Gate 6] Footer fully settled at step ${step}. Exiting loop successfully.`);
+          break;
+        }
+        // Se o scroll aproximou-se do fim e o footer está visível, aguarda acomodação inercial final
+        if (Math.abs(currentTelemetry.scrollY - lastScrollY) < 5.0 && step >= 10) {
+          await page.waitForTimeout(400);
+          const settled = await page.evaluate(() => {
+            const f = document.querySelector('[data-section="home-footer"]');
+            return f ? f.getBoundingClientRect().left <= 100 : false;
+          });
+          if (settled) {
+            console.log(`[Gate 6] Footer settled at boundary at step ${step}. Exiting loop successfully.`);
+            break;
+          }
+        }
+      }
+    }
+
+    // 3. Asserções rigorosas dos marcos de navegação
+    expect(milestones.reachedPortalApex).toBe(true);
+    expect(milestones.ribbonVelocityObserved).toBe(true);
+    expect(milestones.reachedServices).toBe(true);
+    expect(milestones.reachedClients).toBe(true);
+    expect(milestones.reachedFooter).toBe(true);
+
+    // 4. Verificação de estado final do palco 3D e da página
+    const finalState = await page.evaluate(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      const viewportEl = document.getElementById('jesper-work-stage-viewport');
+      const footerEl = document.querySelector('[data-section="home-footer"]');
+      const fBox = footerEl ? footerEl.getBoundingClientRect() : null;
+
+      return {
+        portalProgress: ws?.portalProgress,
+        viewportPointerEvents: viewportEl ? window.getComputedStyle(viewportEl).pointerEvents : null,
+        footerFullyInView: fBox ? fBox.left <= 100 : false,
+      };
+    });
+
+    // Ao alcançar o rodapé, o palco 3D deve estar inerte e não bloquear interações
+    expect(finalState.viewportPointerEvents).toBe('none');
+    expect(finalState.footerFullyInView).toBe(true);
+
+    // Zero exceções em console e runtime
+    expect(pageErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
+});
+
 

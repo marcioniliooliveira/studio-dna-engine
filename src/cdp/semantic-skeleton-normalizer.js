@@ -359,6 +359,33 @@ class SemanticSkeletonNormalizer {
 
     return result;
   }
+
+  /**
+   * Precompiles text elements into static SplitText wrappers (.gsap_split_word, .gsap_split_char)
+   */
+  static precompileSplitText(htmlContent, selector = '.hero-display-text-1, .hero-display-text-2, [data-split-chars]') {
+    if (!htmlContent || typeof htmlContent !== 'string') return htmlContent;
+    const $ = cheerio.load(htmlContent, { decodeEntities: false });
+
+    $(selector).each((_, elem) => {
+      const $elem = $(elem);
+      if ($elem.find('.gsap_split_char').length > 0) return;
+      const text = $elem.text().trim();
+      if (!text) return;
+
+      const words = text.split(/\s+/);
+      const wordsHtml = words.map(word => {
+        const charsHtml = Array.from(word).map(c =>
+          `<span class="gsap_split_char" style="display: inline-block; opacity: 1;">${c}</span>`
+        ).join('');
+        return `<span class="gsap_split_word" style="overflow: hidden; display: inline-block;">${charsHtml}</span>`;
+      }).join(' ');
+
+      $elem.html(wordsHtml);
+    });
+
+    return $.html();
+  }
 }
 
 module.exports = {

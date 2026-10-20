@@ -15,17 +15,20 @@ export const BRAND_TOKENS = {
   bgBase: '#262220',
   bgSurface: '#FAF9F6',
   bgPanel: '#EDEAE6',
-  bgDark: '#1F1D1B',
+  bgDark: '#000000',
   textLight: '#F3EEE8',
   textDark: '#2E2B28',
   headerBg: '#3A3632',
   headerBorderLight: '#b8b3ac',
   // Cor normalizada [R, G, B] de #FAF9F6 (bgSurface) para o uniforme u_wash
   washRgb: [250 / 255, 249 / 255, 246 / 255] as [number, number, number],
-  // Cores base do piso (shader_8.frag) baseadas em bgDark (#1F1D1B) e bgBase (#262220)
-  floorC0: [31 / 255, 29 / 255, 27 / 255] as [number, number, number],
-  floorC1: [38 / 255, 34 / 255, 32 / 255] as [number, number, number],
+  // Cores base do piso (shader_8.frag) baseadas em pure black (#000000)
+  floorC0: [0.0, 0.0, 0.0] as [number, number, number],
+  floorC1: [0.0, 0.0, 0.0] as [number, number, number],
 } as const;
+
+export const RIBBON_STRIDE = 32.0;
+export const CARD_PLANE_SIZE: [number, number] = [28.8, 18.0];
 
 export const REFERENCE_PROJECTS: ProjectSlot[] = [
   {

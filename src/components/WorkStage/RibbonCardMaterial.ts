@@ -29,7 +29,7 @@ const float SHEET_WAVE_F = 0.8;
 const float SHEET_WAVE_PH = 0.35;
 const float SHEET_REAR_Y = 0.1;
 const float SHEET_REAR_Z = 0.2;
-const float SHEET_VTWIST = 1.8;
+const float SHEET_VTWIST = 0.55;
 const float SHEET_TAIL = 1.0;
 const float SHEET_SHIFT = -0.2;
 
@@ -306,14 +306,14 @@ export const RibbonCardMaterial = shaderMaterial(
     u_scrim: 0.85,
     u_leanA: 2.2,
     u_leanW: 22.0,
-    u_sheetW: 22.0,
-    u_sheetD: 3.2,
+    u_sheetW: 34.0,
+    u_sheetD: 12.0,
     u_sheetT: 0.9,
     u_sheetC: 1.0,
     u_sheetP: 1.0,
     u_sheetV: 0.0,
     u_hover: 0.0,
-    u_dent: 0.12,
+    u_dent: 0.10,
     u_bulgeA: 0.0,
     u_bulgeH: 0.0,
   },

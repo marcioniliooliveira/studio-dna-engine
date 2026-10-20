@@ -1,42 +1,45 @@
-# BRIEFING — 2026-10-03T07:25:00Z
+# BRIEFING — 2026-10-15T19:55:00Z
 
 ## Mission
-Survey the existing workspace at C:\Users\wd\Documents\playwright-scraper to inventory architecture, dependencies, scripts, runtime capabilities, and gap analysis against ORIGINAL_REQUEST.md.
+Survey and audit existing implementation in `src/components/WorkStage/`, client workspace, scroll/header scripts, GLSL equations, and 5 Hard Guardrails conformance.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: explorer, survey
-- Working directory: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_1
-- Original parent: 7f17d6be-3ed5-4772-a1bc-f856778ab425
-- Milestone: Step 0 Survey
+- Roles: explorer, synthesis
+- Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_1
+- Original parent: d8887735-ed06-4d7f-8ad1-4b456af057d8
+- Milestone: WorkStage Survey & Conformance Audit
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Survey existing workspace in C:\Users\wd\Documents\playwright-scraper
-- Map directory structure, dependencies, configs, runtime capabilities, what exists vs needed
-- Document all findings in handoff.md and report to parent via send_message
+- Write only to .agents/teamwork/teamwork_preview_explorer_survey_1
+- Adhere to truth protocol: label material conclusions as observed, inferred, documented, or unverified
+- Check against 5 Hard Guardrails:
+  1. Sem <ScrollControls>
+  2. Equações GLSL Intactas
+  3. Contrato de Dados e Tokens (evo-money, plant-tag, swisshaus, betahaus)
+  4. Header Lateral Astro (data-work-detail-panel, data-header-bg="#FAF9F6", data-header-text="#2E2B28", data-header-border="#b8b3ac")
+  5. Telemetria Global window.__WORK_STAGE__
 
 ## Current Parent
-- Conversation ID: 7f17d6be-3ed5-4772-a1bc-f856778ab425
-- Updated: 2026-10-03T07:25:00Z
+- Conversation ID: d8887735-ed06-4d7f-8ad1-4b456af057d8
+- Updated: not yet
 
 ## Investigation State
-- **Explored paths**: `package.json`, `index.js`, `bin/`, `src/core/`, `src/pro/`, `src/pipeline/`, `src/qa/`, `src/constraints/`, `src/evaluators/`, `src/execution/`, `src/generators/`, `src/orchestration/`, `src/runtime/`, `src/server/`, `design-vault/`, `copias/`, `clientes/`, `icm/`, `test/`, `scripts/`
+- **Explored paths**: `src/components/WorkStage/*`, `clientes/marcionilio-oliveira/*`, `tests/e2e/work-stage.spec.ts`, `vite.bundle.config.mjs`
 - **Key findings**:
-  - Runtime: Node v24.15.0, npm 11.12.1, Playwright 1.61.1. CommonJS package `studio-dna-engine` v2.0.0.
-  - Mature foundation exists: DeepScrutinyGate (7 vectors), UnifiedQualityGate, KineticTelemetryExtractor, ConstraintEngine, AST Transmuter, Design Vault, Preview Server with HTTP 206 + Self-Healing Proxy, MCP Server.
-  - Gap against R1: Cloner and CDP listeners exist, but need end-to-end automated semantic reference decompiler pipeline.
-  - Gap against R2: Discrete camera rigs exist, but continuous orbital camera trajectory function $\vec{C}(s)$ extraction and dynamic optical tracking of HTML annotations to 3D anchors are missing.
-  - Gap against R3: 3D hardware specimen exists (`opxy.glb` 3.73MB), but automated geometric optimization (<3MB) and VRAM gate (<4MB) need creation.
-  - Gap against R4: Static HTML transmutation exists, but `@scope` modular grammar and Next.js 15 App Router RSC dual-stack compiler are completely missing.
-  - Test suite status: Core falsifiability, kinetic telemetry, transmuter, and unified quality gate pass 100%. `vault-integrity.test.js` fails due to missing `tokens.json` in `op-xy-76-aura-build`. Concurrency in Node 24 requires `--test-concurrency=1` for full suite.
-- **Unexplored areas**: None for Step 0 survey; workspace fully mapped.
+  - Gate 1 passes 7/7 (Vitest).
+  - Gate 2 passes (Playwright).
+  - Gate 3 fails due to DOM proxy scale corruption (box.x = -1277.8px) from nesting inside `[data-more-work-rect]`; needs `createPortal(..., document.body)`.
+  - Gate 4/5 tests are missing in `tests/e2e/work-stage.spec.ts`.
+  - Guardrail 4 requires `createPortal` for detail panel with `left: 0` to cover the lateral header (`x = 32px`).
+- **Unexplored areas**: None within assigned survey scope.
 
 ## Key Decisions Made
-- Completed comprehensive survey and gap analysis against R1-R4 and acceptance criteria.
-- Compiled exhaustive 5-component handoff report at `handoff.md`.
+- Concluded full survey and authored comprehensive handoff report.
 
 ## Artifact Index
-- DISPATCH.md — Incoming dispatch instructions
-- progress.md — Liveness heartbeat and progress tracking
-- handoff.md — Comprehensive survey handoff report
+- DISPATCH.md — Task assignment from orchestrator
+- BRIEFING.md — Persistent working memory
+- progress.md — Heartbeat and step tracking
+- handoff.md — Complete 5-component handoff report

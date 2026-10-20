@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "createdAt": "2026-08-28T19:36:49.111Z",
+  "createdAt": "2026-10-15T19:30:52.375Z",
   "refSlug": "elyse-residence-dev-webflow-io",
   "brandName": "Negocia Bem Consultoria Imobiliária",
   "theme": {
@@ -14,6 +14,10 @@
     "textMuted": "#8B949E"
   },
   "meta": {},
+  "seo": {},
+  "client": {},
+  "colors": {},
+  "copyOverrides": {},
   "slots": {
     "BRAND_NAME": "NEGOCIABEM",
     "PAGE_TITLE": "Negocia Bem Consultoria Imobiliária | Paiçandu & Maringá (CRECI 9314-J)",
@@ -71,11 +75,15 @@
     "FORM_HEADING": "Fale com a Negocia Bem",
     "FORM_SUBHEADING": "Nossa equipe entrará em contato via WhatsApp em instantes.",
     "MODAL_DESC": "Atendimento personalizado com assessoria imobiliária completa para Paiçandu e região de Maringá.",
-    "FOOTER_COPYRIGHT": "© 2026 Negocia Bem Consultoria Imobiliária (CRECI 9314-J). Todos os direitos reservados."
+    "FOOTER_COPYRIGHT": "© 2026 Negocia Bem Consultoria Imobiliária (CRECI 9314-J). Todos os direitos reservados.",
+    "DATA_REGION_TITLE": "Maringá e o Noroeste do Paraná em movimento",
+    "DATA_REGION_SOURCE_NOTE": "Os recortes territoriais não são idênticos: PR — Noroeste segue a definição publicada pelo Sebrae; FIEP e Sinduscon seguem seus próprios recortes institucionais. Dados consultados em fontes públicas; anos e datas de referência aparecem junto de cada indicador.",
+    "DATA_REGION_SOURCES": "IBGE Censos 2010 e 2022 e Estimativas 2024; Observatório Sebrae PR — Noroeste 2025; FIEP — Construção no Noroeste; Sinduscon-PR/Noroeste — levantamento de Maringá até junho de 2026."
   },
   "options": {
     "enforceBudget": true,
     "enforceAntiSlop": true,
-    "tolerance": 0.15
+    "tolerance": 0.15,
+    "injectSeo": false
   }
 }

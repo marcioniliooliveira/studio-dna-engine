@@ -1,51 +1,52 @@
-# DISPATCH — worker_m5_2
+# Dispatch Record — Worker m5_2 (Replacement)
 
-## Task Assignment
-- Role: Adverse Hardware Stress Suite & Integration Worker
-- Working directory: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2
-- Workspace root: C:\Users\wd\Documents\playwright-scraper
-- Authoritative Request: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md (specifically read ## 2026-10-04T20:14:18Z, Requirement R5)
-- Project Scope: C:\Users\wd\Documents\playwright-scraper\PROJECT.md
-- Test Infrastructure: C:\Users\wd\Documents\playwright-scraper\TEST_INFRA.md
-- Survey Reference: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_survey_2_2\handoff.md (Section 2.4)
-- Previous Milestones Handoffs:
-  - M1: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m1_2\handoff.md
-  - M2: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2\handoff.md
-  - M3: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m3_2\handoff.md
-  - M4: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m4_2\handoff.md
+**Agent**: `worker_m5_2` (Lead Full-Stack WebGL & Motion Engineer)
+**Predecessor**: `worker_m5_1` (interrupted by TLS timeout during test runs)
+**Working Directory**: `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2`
+**Authoritative Request**: `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md` (read header `## 2026-10-20T15:19:36Z`)
+**Predecessor Progress**: `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_1\progress.md`
 
-## Mandatory Integrity Warning
+## Exclusive Write Ownership:
+- `src/components/WorkStage/math.ts`
+- `src/components/WorkStage/WorkStage.tsx`
+- `src/components/WorkStage/RibbonCard.tsx`
+- `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`
+- `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js`
+
+## MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-## Exclusive Write Ownership
-You exclusively own and may edit or create ONLY these files:
-- `test/stress/adverse-hardware-stress.test.js`
-- `package.json` (to wire `"test:stress"` or `"test:v2.5"`)
-- `test/stress/stress-harness.js` (if needed)
+## Context & Interruption Point:
+`worker_m5_1` completed code modifications for WP-1, WP-2, WP-3, and WP-4, compiled `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js` (1,309.25 kB), and confirmed Gate 1 Vitest passed 8/8. It was executing Playwright tests when an external TLS timeout terminated its session.
 
-## Objectives
-1. **Adverse Hardware Stress Suite (`test/stress/adverse-hardware-stress.test.js`)**:
-   - Implement comprehensive automated test scenarios using Playwright CDP and Node native test runner (`node:test`):
-     - **Scenario A: 6x CPU Throttling**:
-       Use `const cdp = await context.newCDPSession(page); await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });`.
-       Test that under 6x CPU throttling:
-       - Form input typing with adaptive masks (CPF/CNPJ) remains responsive (keystroke latency < 16.6ms per character, zero input dropping).
-       - State machine transitions (idle -> validating -> submitting) execute cleanly.
-       - Spring analytical motion computes continuous positions without freezing.
-     - **Scenario B: 30fps rAF Clamping (Safari Low Power Mode)**:
-       Simulate 30fps rAF clamping via page init script or delta time measurement.
-       Test that analytical spring dynamics evaluates $x(t)$ with normalized continuous time $t$, achieving identical settling time ($t_{\text{settle}} \pm 10\text{ms}$) with zero numerical explosion or velocity divergence compared to 60fps.
-     - **Scenario C: WebGL Context Loss and Restoration**:
-       Simulate WebGL context loss via `WEBGL_lose_context` extension (`loseContext()` & `restoreContext()`).
-       Assert that:
-       - Context loss event is handled gracefully with `e.preventDefault()`, halting draw calls with 0 uncaught errors.
-       - Upon `restoreContext()`, resources rehydrate cleanly and rendering resumes.
-       - All DOM controls, forms, and buttons remain fully responsive throughout the GPU outage.
-     - **Scenario D: Full v2.5 Integration Verification**:
-       - Verify that all M1, M2, M3, M4 modules work harmoniously together.
-2. **Execute and Verify**:
-   - Run `node --test test/stress/adverse-hardware-stress.test.js`.
-   - Run the full milestone battery:
-     `node --test test/m1-impeccable-sanitization.test.js test/m2-fsm-forms.test.js test/m3-spring-dynamics.test.js test/m4-gpu-saliency.test.js test/stress/adverse-hardware-stress.test.js`
-   - Run `npm test` to confirm 0 baseline regressions.
-3. Report all test results and file paths in `C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2\handoff.md`.
+## Tasks for Worker m5_2:
+1. Verify the current implementation across `math.ts`, `WorkStage.tsx`, `RibbonCard.tsx`, and `initHorizontalScroll.LNLCK81L.js`. Ensure syntax and types are clean.
+2. Ensure bundle is compiled and up-to-date: `npm run build:workstage`.
+3. Execute and document actual test outputs for:
+   - `npx vitest run src/components/WorkStage/__tests__/math.spec.ts` (8/8)
+   - `npx playwright test tests/e2e/work-stage.spec.ts`
+   - `npx playwright test tests/e2e/challenger-viewport.spec.ts`
+4. If any test requires minor adjustment or fine-tuning (e.g. scroll step, timing, selector), fix it cleanly and recompile bundle.
+5. Write full 5-component `handoff.md` with raw terminal evidence and send completion message back to parent.
+
+
+## 2026-10-20T16:24:36Z
+
+You are Worker m5_2 (Lead Full-Stack WebGL & Motion Engineer), replacing Worker m5_1 who experienced an external TLS timeout.
+Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2
+Authoritative user request: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md (under header ## 2026-10-20T15:19:36Z)
+Read your dispatch file at c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_2\DISPATCH.md and predecessor progress at c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_1\progress.md.
+
+Predecessor completed code modifications for WP-1 to WP-4, compiled the bundle, and passed Gate 1.
+Your task:
+1. Verify implementation across `src/components/WorkStage/math.ts`, `WorkStage.tsx`, `RibbonCard.tsx`, and `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`.
+2. Compile bundle: `npm run build:workstage` to ensure `workStage.bundle.js` is fresh.
+3. Run and document actual terminal outputs for:
+   - `npx vitest run src/components/WorkStage/__tests__/math.spec.ts`
+   - `npx playwright test tests/e2e/work-stage.spec.ts`
+   - `npx playwright test tests/e2e/challenger-viewport.spec.ts`
+4. If any test failure occurs, diagnose, fix cleanly, recompile bundle, and re-verify.
+5. Deliver complete 5-component `handoff.md` and report completion back via send_message.
+
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.

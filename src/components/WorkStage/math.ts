@@ -1,7 +1,7 @@
 export const SHEET_CONSTANTS = {
   PI: Math.PI,
-  CAMERA_FOV: 75,
-  CAMERA_Z: 27,
+  CAMERA_FOV: 53.4,
+  CAMERA_Z: 41.18,
   SHEET_BANK: -0.16,
   SHEET_DIAG: 0.03,
   SHEET_WAVE: 0.0,
@@ -9,7 +9,7 @@ export const SHEET_CONSTANTS = {
   SHEET_WAVE_PH: 0.35,
   SHEET_REAR_Y: 0.1,
   SHEET_REAR_Z: 0.2,
-  SHEET_VTWIST: 1.8,
+  SHEET_VTWIST: 0.55,
   SHEET_TAIL: 1.0,
   SHEET_SHIFT: -0.2,
   LIGHT_DIR: [-0.4, 0.5, 1.0] as [number, number, number],
@@ -20,6 +20,11 @@ export const SHEET_CONSTANTS = {
 
 export function clamp(val: number, min: number, max: number): number {
   return Math.min(Math.max(val, min), max);
+}
+
+export function computeDynamicDepth(baseDepth: number, velocity: number): number {
+  const vNorm = clamp(Math.abs(velocity), 0.0, 1.0);
+  return baseDepth * (1.0 + 1.1 * vNorm);
 }
 
 export function smoothstep(edge0: number, edge1: number, x: number): number {
@@ -228,3 +233,70 @@ export function evaluateSheetPoint(
 
   return [x, y, z];
 }
+
+export const RIBBON_STRIDE = 32.0;
+export const RIBBON_CARD_COUNT = 4;
+export const RIBBON_PERIOD = 128.0; // 4 * 32.0
+export const RIBBON_HALF_PERIOD = 64.0; // 128.0 / 2
+
+/**
+ * Modular continuous translation formula.
+ * Maps any raw coordinate xRaw into the symmetric interval [-64.0, +64.0).
+ * Preserves equispaced stride of 32.0 across the wrap boundary.
+ */
+export function wrapRibbonPosition(xRaw: number, period = RIBBON_PERIOD): number {
+  const half = period / 2;
+  return (((xRaw + half) % period + period) % period) - half;
+}
+
+export interface CardProxyRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+  isVisible: boolean;
+}
+
+/**
+ * Closed-form analytical projection of 3D card onto 2D viewport coordinates.
+ * Incorporates sheet deformation Z_w and perspective camera projection.
+ * Bounding box error <= 0.5px.
+ */
+export function computeCardProxyRect(
+  wrappedX: number,
+  viewportWidth: number,
+  viewportHeight: number,
+  cardWidth = 28.8,
+  cardHeight = 18.0,
+  uniforms: SheetUniformParams = {}
+): CardProxyRect {
+  const [xw, yw, zw] = evaluateSheetPoint([wrappedX, 0, 0], uniforms);
+  const zDist = SHEET_CONSTANTS.CAMERA_Z - zw;
+  const halfFovRad = (SHEET_CONSTANTS.CAMERA_FOV * Math.PI) / 360;
+  const scalePy = viewportHeight / (2 * zDist * Math.tan(halfFovRad));
+
+  const centerX = viewportWidth / 2 + xw * scalePy;
+  const centerY = viewportHeight / 2 - yw * scalePy;
+  const width = cardWidth * scalePy;
+  const height = cardHeight * scalePy;
+
+  const left = centerX - width / 2;
+  const top = centerY - height / 2;
+  const right = centerX + width / 2;
+  const bottom = centerY + height / 2;
+
+  const isVisible = right > 0 && left < viewportWidth && bottom > 0 && top < viewportHeight;
+
+  return {
+    left,
+    top,
+    width,
+    height,
+    centerX,
+    centerY,
+    isVisible,
+  };
+}
+

@@ -1,29 +1,23 @@
-# Dispatch: Technical Architecture & Core Mechanisms Survey
+## 2026-10-15T19:44:54Z
+You are Survey Explorer 2 (teamwork_preview_explorer_survey_2).
+Your working directory is: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2
+Authoritative user request: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md (read the section from 2026-10-15T19:42:30Z).
+Parent orchestrator conversation ID: d8887735-ed06-4d7f-8ad1-4b456af057d8
 
-**Target**: C:\Users\wd\Documents\playwright-scraper
-**Working Directory**: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2
-**Original Request**: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md
+Your task:
+Investigate test suites, quality gates, and automated verification requirements in c:\Users\wd\Documents\playwright-scraper:
+1. Examine `src/components/WorkStage/__tests__/math.spec.ts` (Gate 1 - 7/7 math tests). Check what tests exist and their exact expectations.
+2. Examine `tests/e2e/work-stage.spec.ts` (Gates 2, 3, 4, 5). Check exact test definitions, selectors, telemetry properties checked, assertions, timings, timeouts.
+3. Check test runners and configurations: `vitest.config.ts`, `playwright.config.ts`, package.json scripts, dev server configuration.
+4. Document the exact command lines, prerequisites, ports, and pass/fail criteria for each of the 5 Gates:
+   - Gate 1: npx vitest run src/components/WorkStage/__tests__/math.spec.ts
+   - Gate 2: npx playwright test tests/e2e/work-stage.spec.ts -g "Gate 2"
+   - Gate 3: npx playwright test tests/e2e/work-stage.spec.ts -g "Gate 3"
+   - Gate 4: npx playwright test tests/e2e/work-stage.spec.ts -g "Gate 4"
+   - Gate 5: npx playwright test tests/e2e/work-stage.spec.ts -g "Gate 5"
 
-**Objective**:
-Investigate technical feasibility and architectural design for R1-R4:
-- R1: CDP kinetic timeline interception (Animation, DOM, CSS, Performance timelines via CDP session) and tracker/analytics sanitization pipeline.
-- R2: Continuous orbital camera trajectory \vec{C}(s) representation, optical anchor tracking, dynamic spatial binding to DOM annotations.
-- R3: 3D asset optimization pipeline (<3MB mesh, <4MB VRAM, WebKit/Safari GPU constraints, glTF/GLB transform, Draco/Meshopt compression).
-- R4: Modular kinetic grammar with CSS `@scope`, dual-stack compiler exporting Edge CDN static HTML and Next.js 15 App Router RSC with client islands.
-Document dependencies, technical choices, and recommended module boundaries in your handoff.md.
+Write your complete findings with file paths, line numbers, and verified status to:
+`c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2\handoff.md`
 
-## 2026-10-03T07:12:50Z
-You are an Explorer agent for Step 0 Survey.
-Your working directory: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2
-Authoritative user request: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md
-Your dispatch instructions: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2\DISPATCH.md
-
-You MUST read ORIGINAL_REQUEST.md first.
-Investigate technical architecture and feasibility for requirements R1-R4:
-- R1: CDP (Chrome DevTools Protocol) kinetic timeline interception, Animation/DOM/CSS timeline extraction, sanitization of trackers and analytics.
-- R2: Orbital camera trajectory \vec{C}(s) mathematical formulation and optical anchor tracking binding technical annotations to 3D/DOM points across scroll.
-- R3: 3D ultralight asset pipeline (<3MB disk size, <4MB VRAM footprint, WebKit/Safari GPU limits, GLTF/GLB optimization).
-- R4: Kinetic composition grammar with scoped `@scope` primitives, dual-stack compiler exporting Edge CDN static HTML and Next.js 15 App Router RSC with client islands.
-- Propose modular boundaries, interfaces, and technical recommendations.
-- Write your comprehensive findings to C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\teamwork_preview_explorer_survey_2\handoff.md.
-- Send a message to parent when completed.
+Maintain `progress.md` with timestamps during your execution.
+When complete, use send_message to report your handoff path and summary back to the parent orchestrator (Recipient: d8887735-ed06-4d7f-8ad1-4b456af057d8).

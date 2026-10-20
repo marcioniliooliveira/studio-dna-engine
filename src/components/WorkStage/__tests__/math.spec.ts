@@ -11,6 +11,7 @@ import {
   uvCover,
   roundedBox,
   sheetLit,
+  computeDynamicDepth,
   SHEET_CONSTANTS,
 } from '../math';
 
@@ -91,5 +92,23 @@ describe('Gate 1: Matemática Pura na CPU (CPU Twin of GLSL Shaders)', () => {
     expect(lit[0]).toBeGreaterThan(0);
     expect(lit[1]).toBeGreaterThan(0);
     expect(lit[2]).toBeGreaterThan(0);
+  });
+
+  it('computeDynamicDepth escala a amplitude da onda S de profundidade proporcionalmente a (1 + 1.1 * V)', () => {
+    const baseDepth = 12.0;
+    // Em repouso (V = 0), a profundidade é exatamente a base (12.0)
+    expect(computeDynamicDepth(baseDepth, 0.0)).toBeCloseTo(12.0, 6);
+
+    // No pico de velocidade (V = 1.0), a profundidade aumenta em +110% (12.0 * 2.1 = 25.2)
+    expect(computeDynamicDepth(baseDepth, 1.0)).toBeCloseTo(25.2, 6);
+
+    // Em velocidade intermediária (V = 0.5)
+    expect(computeDynamicDepth(baseDepth, 0.5)).toBeCloseTo(18.6, 6);
+
+    // Velocidades negativas utilizam valor absoluto
+    expect(computeDynamicDepth(baseDepth, -0.8)).toBeCloseTo(baseDepth * (1.0 + 1.1 * 0.8), 6);
+
+    // Saturação além de 1.0 não explode além de 25.2
+    expect(computeDynamicDepth(baseDepth, 2.5)).toBeCloseTo(25.2, 6);
   });
 });

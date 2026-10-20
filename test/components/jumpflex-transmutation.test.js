@@ -19,10 +19,10 @@ const {
   runDeterministicTransmutation
 } = require('../../src/pipeline/transmuter');
 
-test('Jumpflex Transmutation: executes deterministic slot and brand transmutation', async () => {
+test('Jumpflex Transmutation: executes deterministic slot and brand transmutation', async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'jumpflex-test-'));
-  const skeletonPath = path.resolve(__dirname, '../../copias/jumpflex-com/jumpflex-com.html');
-  assert.ok(fs.existsSync(skeletonPath), 'Esqueleto copias/jumpflex-com/jumpflex-com.html deve existir');
+  const skeletonPath = path.resolve(__dirname, '../../design-vault/jumpflex-com/skeleton.html');
+  assert.ok(fs.existsSync(skeletonPath), 'Esqueleto design-vault/jumpflex-com/skeleton.html deve existir');
 
   const outputPath = path.join(tmpDir, 'site', 'index.html');
 
@@ -106,6 +106,9 @@ test('Jumpflex Transmutation: executes deterministic slot and brand transmutatio
 
   // 4. Validar Renderização no Chromium
   const browser = await chromium.launch({ headless: true });
+  t.after(() => browser.close());
+  t.after(() => fs.rmSync(tmpDir, { recursive: true, force: true }));
+
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto('file:///' + outputPath.replace(/\\/g, '/'));
   await page.waitForTimeout(500);
@@ -113,9 +116,6 @@ test('Jumpflex Transmutation: executes deterministic slot and brand transmutatio
   const heroVisible = await page.locator('main h1.brand__heading').isVisible();
   assert.ok(heroVisible, 'H1 da Hero transmutada deve estar visível');
 
-  const navBrandVisible = await page.locator('header .brand__logo').isVisible();
+  const navBrandVisible = await page.locator('header .brand__logo').first().isVisible();
   assert.ok(navBrandVisible, 'Logo/Marca transmutada na Navbar deve estar visível');
-
-  await browser.close();
-  fs.rmSync(tmpDir, { recursive: true, force: true });
 });

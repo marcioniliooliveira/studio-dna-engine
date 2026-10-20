@@ -2,6 +2,66 @@
 
 const { validateBlueprint } = require('./blueprint');
 
+function normalizePath(p) {
+  if (typeof p !== 'string') return '';
+  return p.replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
+}
+
+function pathsIntersect(p1, p2) {
+  if (p1 === p2) return true;
+  const n1 = normalizePath(p1);
+  const n2 = normalizePath(p2);
+  if (n1 === n2) return true;
+
+  const isGlob1 = n1.endsWith('/**') || n1.endsWith('/*');
+  const isGlob2 = n2.endsWith('/**') || n2.endsWith('/*');
+
+  const base1 = n1.endsWith('/**') ? n1.slice(0, -3) : (n1.endsWith('/*') ? n1.slice(0, -2) : n1);
+  const base2 = n2.endsWith('/**') ? n2.slice(0, -3) : (n2.endsWith('/*') ? n2.slice(0, -2) : n2);
+
+  if (!isGlob1 && !isGlob2) {
+    return false;
+  }
+
+  if (isGlob1) {
+    if (base1 === '' || base1 === '.') return true;
+    if (base2 === base1 || base2.startsWith(base1 + '/')) return true;
+  }
+
+  if (isGlob2) {
+    if (base2 === '' || base2 === '.') return true;
+    if (base1 === base2 || base1.startsWith(base2 + '/')) return true;
+  }
+
+  return false;
+}
+
+function getTaskWriteLocks(task) {
+  if (!task) return [];
+  if (task.mutatesWorkspace === false) return [];
+  if (Array.isArray(task.writeAllowlist)) return task.writeAllowlist;
+  if (Array.isArray(task.writeLocks)) return task.writeLocks;
+  if (Array.isArray(task.writes)) return task.writes;
+  if (task.input && task.input.mutatesWorkspace === false) return [];
+  if (task.input && Array.isArray(task.input.writeAllowlist)) return task.input.writeAllowlist;
+  if (task.input && Array.isArray(task.input.writeLocks)) return task.input.writeLocks;
+  if (task.input && Array.isArray(task.input.writes)) return task.input.writes;
+  if (typeof task.writeScope === 'string') return [task.writeScope];
+  return [];
+}
+
+function tasksConflict(taskA, taskB) {
+  const locksA = getTaskWriteLocks(taskA);
+  const locksB = getTaskWriteLocks(taskB);
+  if (!locksA.length || !locksB.length) return false;
+  for (const pA of locksA) {
+    for (const pB of locksB) {
+      if (pathsIntersect(pA, pB)) return true;
+    }
+  }
+  return false;
+}
+
 /** Execute a validated blueprint in deterministic, dependency-aware batches. */
 async function scheduleBlueprint(source, executeTask, options = {}) {
   if (typeof executeTask !== 'function') throw new TypeError('executeTask must be a function');
@@ -29,7 +89,14 @@ async function scheduleBlueprint(source, executeTask, options = {}) {
       error.code = 'DAG_BLOCKED';
       throw error;
     }
-    const batch = ready.map(id => tasks.get(id));
+    const batch = [];
+    for (const id of ready) {
+      const candidateTask = tasks.get(id);
+      const conflictsWithBatch = batch.some(batchedTask => tasksConflict(candidateTask, batchedTask));
+      if (!conflictsWithBatch) {
+        batch.push(candidateTask);
+      }
+    }
     const results = await Promise.all(batch.map(async task => {
       try {
         record({ taskId: task.id, status: 'started' });
@@ -76,4 +143,4 @@ async function scheduleBlueprint(source, executeTask, options = {}) {
   return { runId: blueprint.runId, clientScope: blueprint.clientScope, completed, outputs };
 }
 
-module.exports = { scheduleBlueprint };
+module.exports = { scheduleBlueprint, pathsIntersect, tasksConflict, getTaskWriteLocks };

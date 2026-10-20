@@ -60,7 +60,6 @@
         "referenceCard": "REFERENCE_CARD.md"
       }
     },
-
     {
       "slug": "khanhnguyen-design",
       "name": "Khanh Nguyen Portfolio (Awwwards Horizontal Editorial)",
@@ -110,31 +109,6 @@
         "brandSpecTemplate": "brand-spec.template.json",
         "referenceCard": "REFERENCE_CARD.md"
       }
-    },
-    {
-      "slug": "khanhnguyen-design",
-      "name": "Khanh Nguyen (Horizontal Editorial Portfolio / Pin Scroll)",
-      "path": "design-vault/khanhnguyen-design",
-      "status": "candidate",
-      "provenance": "copias/khanhnguyen-design",
-      "archetype": "Horizontal Editorial Portfolio / Pin Scroll",
-      "palette": {
-        "bg": "#262220",
-        "card": "#FAF9F6",
-        "accent": "#3A3632",
-        "text": "#F3EEE8"
-      },
-      "stack": ["HTML5", "Astro SSG", "Tailwind CSS", "GSAP ScrollTrigger", "Lenis"],
-      "artifacts": {
-        "skeleton": "skeleton.html",
-        "contentSlots": "content-slots.template.json",
-        "compositionSpec": "composition-spec.template.json",
-        "tokens": "tokens.json",
-        "tailwindConfig": "tailwind.config.js",
-        "brandSpecTemplate": "brand-spec.template.json",
-        "referenceCard": "REFERENCE_CARD.md"
-      }
     }
   ]
 }
-

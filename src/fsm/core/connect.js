@@ -450,7 +450,144 @@ function bindToDOM(formElement, machine) {
   };
 }
 
+/**
+ * Binds micro-FSM state changes to Lenis scroll controller and wheel event lifecycle.
+ * Prevents wheel event swallowing in modals, ensures overscroll-behavior: contain,
+ * and eliminates brittle !important css overrides (e.g. html.lenis-stopped).
+ * 
+ * @param {object} machine Micro-FSM instance with subscribe and state
+ * @param {object} [options={}]
+ * @param {object} [options.lenis] Real or mock Lenis scroller instance ({ stop, start })
+ * @param {object} [options.doc] Document reference (defaults to global document)
+ * @param {Array<string>} [options.modalStates=['DETAIL_FLIGHT', 'open', 'modal']]
+ * @param {Array<string>} [options.browseStates=['RIBBON_BROWSE', 'idle', 'browse', 'closed']]
+ * @param {HTMLElement} [options.modalElement] Target element receiving data-lenis-prevent
+ * @returns {Function} Cleanup unbind function
+ */
+function bindLenisScrollLifecycle(machine, options = {}) {
+  const lenis = options.lenis || null;
+  const doc = options.doc || (typeof document !== 'undefined' ? document : null);
+  const modalStates = options.modalStates || ['DETAIL_FLIGHT', 'open', 'modal'];
+  const browseStates = options.browseStates || ['RIBBON_BROWSE', 'idle', 'browse', 'closed'];
+  const currentTargetEl = options.modalElement || null;
+
+  const onWheelCapture = (e) => {
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
+  };
+
+  let isLocked = false;
+
+  const handleStateChange = (stateSnapshot) => {
+    const currentState = stateSnapshot?.value || stateSnapshot?.state || (typeof stateSnapshot === 'string' ? stateSnapshot : null);
+    if (!currentState) return;
+
+    if (modalStates.includes(currentState) && !isLocked) {
+      isLocked = true;
+      if (lenis && typeof lenis.stop === 'function') {
+        lenis.stop();
+      }
+      if (doc && doc.body) {
+        doc.body.style.overflow = 'hidden';
+      }
+      if (currentTargetEl) {
+        if (typeof currentTargetEl.setAttribute === 'function') {
+          currentTargetEl.setAttribute('data-lenis-prevent', 'true');
+        }
+        if (currentTargetEl.style) {
+          currentTargetEl.style.overscrollBehavior = 'contain';
+        }
+        if (typeof currentTargetEl.addEventListener === 'function') {
+          currentTargetEl.addEventListener('wheel', onWheelCapture, { passive: false });
+        }
+      }
+    } else if (browseStates.includes(currentState) && isLocked) {
+      isLocked = false;
+      if (lenis && typeof lenis.start === 'function') {
+        lenis.start();
+      }
+      if (doc && doc.body) {
+        doc.body.style.overflow = '';
+      }
+      if (currentTargetEl) {
+        if (typeof currentTargetEl.removeAttribute === 'function') {
+          currentTargetEl.removeAttribute('data-lenis-prevent');
+        }
+        if (currentTargetEl.style) {
+          currentTargetEl.style.overscrollBehavior = '';
+        }
+        if (typeof currentTargetEl.removeEventListener === 'function') {
+          currentTargetEl.removeEventListener('wheel', onWheelCapture);
+        }
+      }
+    }
+  };
+
+  // Immediate evaluation
+  const initialSnapshot = typeof machine.getSnapshot === 'function' ? machine.getSnapshot() : { state: machine.state };
+  handleStateChange(initialSnapshot);
+
+  // Subscription
+  const unsubscribe = typeof machine.subscribe === 'function' ? machine.subscribe(handleStateChange) : () => {};
+
+  return function unbind() {
+    unsubscribe();
+    if (currentTargetEl && typeof currentTargetEl.removeEventListener === 'function') {
+      currentTargetEl.removeEventListener('wheel', onWheelCapture);
+    }
+    if (isLocked) {
+      if (lenis && typeof lenis.start === 'function') lenis.start();
+      if (doc && doc.body) doc.body.style.overflow = '';
+    }
+  };
+}
+
+/**
+ * Universal Telemetry Bus: window.__DNA_TELEMETRY__
+ * Exposes a standardized reactive interface for diagnostics, HUD projectors, and automated gates.
+ * 
+ * @param {string} scopeId Unique identifier for the telemetry module/section (e.g. 'work-stage', 'fsm-quote')
+ * @param {Function|object} stateGetter Function returning the telemetry state or static object
+ * @returns {Function} Unregister function
+ */
+function registerTelemetryScope(scopeId, stateGetter) {
+  const globalObj = typeof window !== 'undefined' ? window : globalThis;
+  if (!globalObj.__DNA_TELEMETRY__) {
+    globalObj.__DNA_TELEMETRY__ = {};
+  }
+
+  if (typeof stateGetter === 'function') {
+    Object.defineProperty(globalObj.__DNA_TELEMETRY__, scopeId, {
+      configurable: true,
+      enumerable: true,
+      get: stateGetter
+    });
+  } else {
+    globalObj.__DNA_TELEMETRY__[scopeId] = stateGetter;
+  }
+
+  return function unregister() {
+    if (globalObj.__DNA_TELEMETRY__) {
+      delete globalObj.__DNA_TELEMETRY__[scopeId];
+    }
+  };
+}
+
+/**
+ * Reads telemetry for a registered scope
+ * @param {string} scopeId
+ * @returns {any}
+ */
+function getTelemetry(scopeId) {
+  const globalObj = typeof window !== 'undefined' ? window : globalThis;
+  return globalObj.__DNA_TELEMETRY__?.[scopeId];
+}
+
 module.exports = {
   connect,
-  bindToDOM
+  bindToDOM,
+  bindLenisScrollLifecycle,
+  registerTelemetryScope,
+  getTelemetry
 };

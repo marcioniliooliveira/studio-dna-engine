@@ -4,6 +4,8 @@
 - [project] Always create a new dedicated branch for major code changes → project-conventions.md
 - [project] Playwright cloning conventions for high-fidelity layouts → project-conventions.md
 - [project] Always create dual versions (HTML static + Next.js) when copying websites → project-conventions.md
+- [project] WebGL & Awwwards Motion Interaction Protocol (Llama Engine & 4-Phase Arc) → project-conventions.md
+- [workflow] Forensic Invariant Workflow (FIW): Análise Forense, Locking de Invariáveis, Viabilização & TDD Gates → .agents/skills/forensic-invariant-workflow/SKILL.md
 
 ## Interpretable Context Methodology (ICM) & Client Isolation
 - [project] ICM significa Interpretable Context Methodology; não confundir com o pipeline de transmutação → strategic-alignment.md

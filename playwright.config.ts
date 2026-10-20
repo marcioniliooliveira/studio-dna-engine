@@ -14,6 +14,13 @@ export default defineConfig({
     headless: true,
     actionTimeout: 10000,
     trace: 'off',
+    launchOptions: {
+      args: [
+        '--max-active-webgl-contexts=64',
+        '--enable-webgl',
+        '--disable-gpu-process-crash-limit',
+      ],
+    },
   },
   projects: [
     {

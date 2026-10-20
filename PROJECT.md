@@ -1,183 +1,114 @@
-# Project: studio-dna v2.5 Autonomous Front-End Framework Evolution
+# Project: Studio DNA PRO v2.6 Deep Research and Architectural Specification
 
 ## Architecture
-studio-dna v2.5 is an autonomous, deterministic front-end framework evolution integrating mathematical layout integrity, Impeccable's anti-slop craft floor, finite state machines (Zag.js/XState), 2nd-order analytical spring dynamics, GPU texture compression (KTX2/Basis Universal), visual saliency cognitive vision, and adverse hardware resiliency under Playwright CDP.
+Studio DNA PRO v2.6 expands the autonomous front-end engine (`studio-dna-engine`) by linking existing Pillars 1–5 to new Pillars 6–11 with zero external dependencies outside `package-lock.json` (Node.js 24+ CommonJS).
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│ M1: Impeccable Quality Gate & Surface Sanitization (R1)      │
-│ • scripts/detect-antipatterns.mjs + browser evaluator        │
-│ • src/qa/impeccable-gate.js integrated into Tier 4 QA Gate   │
-│ • Sanitization of JumpPlay active screens (0 slop tells)     │
-│ • Flatten 26 nested-cards in #cotacao-b2b & remove halos    │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ Clean Craft Floor & Gate [DONE]
-                               ▼
-┌──────────────────────────────────────────────────────────────┐
-│ M2: Zag/XState FSM Form Primitives & A11y (R2)               │
-│ • src/fsm/core/machine.js (deterministic micro-statechart)   │
-│ • src/fsm/core/connect.js (Zag-style DOM ARIA bindings)      │
-│ • src/forms/b2b-quote-machine.js & checkout-machine.js       │
-│ • src/forms/masks.js (dynamic CNPJ/CPF modulo 11, CEP)       │
-│ • src/forms/draft-storage.js (localStorage with 24h TTL)     │
-│ • WCAG 2.2 AA & keyboard navigation compliance               │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ Deterministic State Machine [DONE]
-                               ▼
-┌──────────────────────────────────────────────────────────────┐
-│ M3: 2nd-Order Spring Dynamics & Haptic Physics (R3)          │
-│ • src/physics/spring-dynamics.js (\ddot{x}+2\zeta\omega_n\dot{x}+\omega_n^2x=0)│
-│ • Closed-form solutions (underdamped, critical, overdamped)   │
-│ • C¹ velocity continuity hand-off (v₀ = v_drag)              │
-│ • Prefers-reduced-motion strict 0px overshoot clamp (\zeta≥1)│
-│ • src/physics/haptic-engine.js (Vibration API pulses)        │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ Analytical Motion & Tactile Feedback [DONE]
-                               ▼
-┌──────────────────────────────────────────────────────────────┐
-│ M4: GPU Texture Pipeline & Visual Saliency Oracle (R4)       │
-│ • src/assets3d/texture-compressor.js (KTX2 UASTC/ETC1S)      │
-│ • VRAM compliance auditor (Total VRAM <= 16MB)               │
-│ • src/qa/visual-saliency-oracle.js (500ms glance attention)  │
-│ • Score_CTA >= 0.18 and DistractionRatio <= 0.35             │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ Certified GPU Assets & Optical Prominence [DONE]
-                               ▼
-┌──────────────────────────────────────────────────────────────┐
-│ M5: Adverse Hardware Stress Suite & Final Gate (R5)          │
-│ • test/stress/adverse-hardware-stress.test.js                │
-│ • CDP 6x CPU throttling (Emulation.setCPUThrottlingRate)     │
-│ • 30fps rAF clamping (Safari Low Power Mode simulation)      │
-│ • WebGL context loss/recovery (WEBGL_lose_context)           │
-│ • Full E2E & Unit Test Battery (100% pass)                   │
-│ • Forensic Integrity Audit (CLEAN - zero cheating)           │
-└──────────────────────────────────────────────────────────────┘
-                               │ Final Release Gate [PASSED]
+               [Studio DNA PRO v2.6 Architecture]
+                              │
+     ┌────────────────────────┼────────────────────────┐
+     │                        │                        │
+[Pillars 1–5: Core Engine] [Pillars 6–8: Extraction & Virtualization] [Pillars 9–11: Perception & MCP]
+- CDP Decompiler (P1)      - Scene-to-Capsule Slicing (P6)            - OKLCH Synthesis (P9)
+- Kinetic Trajectory (P2)  - Universal <dna-capsule> Envelope (P7)    - APCA 0.0.98G-4g & Typo (P10)
+- 3D Assets (P3)           - WebGL Scissor Multiplexer (P8)           - Dual HUD & MCP Server (P11)
+- Kinetic Grammar (P4)
+- AABB/VRAM Safety (P5)
+                              │
+                              ▼
+            [Zero-Dependency Core Micro-Engines]
+- Pure JS 2D R-Tree (spatial-rtree.js)
+- PostCSS Selector AST & Donut Scope Guard (css-selector-ast.js)
+- Native zlib PNG RGBA Decoder & Saliency (png-codec.js)
+- Binary TrueType Slug Font Compiler (slug-font-compiler.js)
+- DAG Concurrency Write-Lock Scheduler & CSS Normalizer Repair
 ```
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| 1 | Impeccable Quality Gate Integration | Integrates `detect-antipatterns.mjs` as Tier 4 Quality Gate in `src/qa/` rejecting all 17 surface anti-patterns | M1 | Survey R1 |
-| 2 | JumpPlay Screen Sanitization | Surgically removes 26 nested-cards, radioactive halos, overused fonts, and pulsing dots from JumpPlay screens | M1 | Survey R1 |
-| 3 | Core Finite State Machine Engine | Pure vanilla JS hierarchical deterministic state machine engine (`src/fsm/core/machine.js`) | M2 | Survey R2 |
-| 4 | Zag.js-Style DOM A11y Connector | Connects FSM states and context to DOM attributes (`aria-invalid`, `aria-busy`, `disabled`, `data-state`) | M2 | Survey R2 |
-| 5 | B2B Quote & Checkout Form Machines | Complete statecharts for JumpPlay quotation and checkout with latency watchdog and submission control | M2 | Survey R2 |
-| 6 | Adaptive Input Masking Engine | Dynamic masking maintaining cursor position with modulo 11 check-digit verification for Brazilian CNPJ/CPF & CEP | M2 | Survey R2 |
-| 7 | LocalStorage Draft Persistence | Auto-saving form draft state with 24-hour TTL and seamless restoration upon page reload | M2 | Survey R2 |
-| 8 | WCAG 2.2 AA & Keyboard Navigation | Full keyboard operability (Tab order, focus rings $\ge 3:1$) and zero accessibility violations | M2 | Survey R2 / AC |
-| 9 | Analytical 2nd-Order Spring Dynamics | Closed-form ODE solution for damped physical harmonic motion across underdamped, critical, and overdamped modes | M3 | Survey R3 |
-| 10 | Velocity Continuity Hand-off | Transfers pointer drag velocity directly to initial spring velocity ($v_0 = v_{\text{drag}}$) ensuring $C^1$ continuity | M3 | Survey R3 |
-| 11 | Zero-Overshoot Reduced-Motion Clamp | Strictly clamps damping $\zeta \ge 1.0$ and guarantees $0\text{px}$ overshoot when `prefers-reduced-motion` is active | M3 | Survey R3 / AC |
-| 12 | Multi-Tier Vibration API Engine | Haptic pulses for detents (12ms), releases (8ms), limits (22ms), and errors (double buzz) via `navigator.vibrate` | M3 | Survey R3 |
-| 13 | KTX2 Basis Universal Texture Pipeline | Transcodes 3D textures to KTX2 UASTC/ETC1S, guaranteeing total GPU VRAM $\le 16\text{MB}$ | M4 | Survey R4 / AC |
-| 14 | 500ms Visual Saliency Attention Oracle | Simulates human ocular fixation in first 500ms, asserting $\text{Score}_{\text{CTA}} \ge 0.18$ and filtering AI distractions ($\le 0.35$) | M4 | Survey R4 |
-| 15 | 6x CPU Throttling Stress Scenario | Playwright CDP simulation of entry-level chipset via `Emulation.setCPUThrottlingRate`, ensuring latency $< 16.6\text{ms}$ | M5 | Survey R5 |
-| 16 | 30fps rAF Clamp Stress Scenario | Simulates Safari Low Power Mode by clamping rAF to 30Hz, verifying normalized $\Delta t$ settling parity | M5 | Survey R5 |
-| 17 | WebGL Context Lost & Restored Test | Simulates GPU eviction via `WEBGL_lose_context`, verifying zero crash, UI responsiveness, and automatic rehydration | M5 | Survey R5 / AC |
-| 18 | Unified Test Battery & Forensic Audit | Executes complete test suite (277 baseline + 106 v2.5 + 36 challenger tests) and independent forensic audit | M5 | Survey AC |
+| F1 | Pillar 6: Scene-to-Capsule Subtree Slicing | Closed CDP CSS extraction, inherited custom property closure, AST ancestor prefix pruning `@scope`, associative kinetic slicing | M1 | survey (spec_miner_survey_2) |
+| F2 | Pillar 7: Universal `<dna-capsule>` & ScrollBus | UniversalScrollBus piecewise affine mapping, Five Physical Laws of `<dna-capsule>`, sub-pixel NDC projection $\mathbf{M}_{\text{VP}}$ ($\epsilon \le 0.5\text{px}$) | M1 | survey (spec_miner_survey_2) |
+| F3 | Pillar 8: WebGL Context Virtualization | Dual rendering architecture: rAF hibernation + shared canvas scissor multiplexer with Y-inverted coordinates | M1 | survey (spec_miner_survey_2) |
+| F4 | Pillars 9 & 10: OKLCH & APCA Contrast | Bidirectional $s\text{RGB} \leftrightarrow \text{OKLCH}$ matrices, full APCA `0.0.98G-4g`, monotonic binary search, fluid scaling regression + lexical damping $\kappa_{\text{copy}}$ | M1 | survey (spec_miner_survey_3) |
+| F5 | Pillar 11: Dual HUD & Section MCP Server | Byte-exact static delivery route, wrapper route with `__DNA_LIVE_BUS__`, agnostic HUD projector, SQLite WAL schema, MCP tools & resources | M1 | survey (spec_miner_survey_3) |
+| F6 | Zero-Dependency Engine Chapter | Comprehensive documentation of pure JS micro-engines, proofs, and zero-dependency guarantees | M1 | survey (spec_miner_survey_3) |
+| F7 | L5 Repair: Asset Normalizer CSS | Clean replacement of lines 142–174 in `src/pro/universal-asset-normalizer.js` removing syntax corruption | M2 | survey (explorer_survey_1) |
+| F8 | L7 Repair: Donut Scope Validator | Implement boundary combinator enforcement in `src/compiler/kinetic-grammar-schema.js` resolving Tests 4.5 and 4.6 | M2 | survey (explorer_survey_1) |
+| F9 | L8 Repair: DAG Scheduler Write-Locks | Implement write-lock intersection algorithm in `src/orchestration/dag-scheduler.js` and extend `blueprint.js` | M2 | survey (explorer_survey_1) |
+| F10 | R6.1 Engine: Pure JS 2D R-Tree | Complete CommonJS implementation in `docs/research/v2.6/reference/spatial-rtree.js` with quadratic split and typographic energy | M3 | survey (spec_miner_survey_3) |
+| F11 | R6.2 Engine: PostCSS Selector AST | Complete CommonJS implementation in `docs/research/v2.6/reference/css-selector-ast.js` parsing selector AST over PostCSS | M3 | survey (spec_miner_survey_3) |
+| F12 | R6.3 Engine: Native PNG Codec | Complete CommonJS implementation in `docs/research/v2.6/reference/png-codec.js` with `node:zlib` and 5 scanline filters | M3 | survey (spec_miner_survey_3) |
+| F13 | R6.4 Engine: Slug Font Compiler | Complete CommonJS implementation in `docs/research/v2.6/reference/slug-font-compiler.js` parsing TTF tables and packing buffers | M3 | survey (spec_miner_survey_3) |
+| F14 | E2E & Unit Test Suite Creation | Executable test suite in `test/v2.6/` covering all micro-engines and contrast/projection mathematics | Test Track | survey (ORIGINAL_REQUEST) |
+| F15 | Final Verification & Hardening | Pass 100% of test suite in `test/v2.6/` + adversarial coverage hardening + forensic integrity audit | M4 | survey (ORIGINAL_REQUEST) |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| M1 | Impeccable Quality Gate & JumpPlay Sanitization | R1: `scripts/detect-antipatterns.mjs`, `src/qa/impeccable-gate.js`, sanitization of JumpPlay screens | none | DONE (13/13 unit tests pass) |
-| M2 | Zag/XState FSM Form Primitives & Accessibility | R2: `src/fsm/core/machine.js`, `src/fsm/core/connect.js`, `src/forms/`, masks, draft storage, WCAG | none | DONE (26/26 unit tests pass) |
-| M3 | Analytical Spring Dynamics & Haptic Engine | R3: `src/physics/spring-dynamics.js`, `src/physics/haptic-engine.js`, closed-form ODE, reduced motion | none | DONE (35/35 unit tests pass) |
-| M4 | GPU Texture Pipeline & Visual Saliency Oracle | R4: `src/assets3d/texture-compressor.js`, `src/qa/visual-saliency-oracle.js`, VRAM <= 16MB | none | DONE (13/13 unit tests pass) |
-| M5 | Adverse Hardware Stress Suite & Final Verification | R5: `test/stress/adverse-hardware-stress.test.js`, CDP throttling, 30fps rAF, WebGL loss, Full Gate | M1..M4 | DONE (19/19 stress + 36/36 challenger pass) |
+| M1 | Architectural Research Chapters | `docs/research/v2.6/pilar-06-scene-to-capsule.md` through `pilar-11-dual-hud-mcp.md` and `zero-dependency-engines.md` | Survey complete | DONE |
+| M2 | Core Codebase Repairs | Repaired blocks for `universal-asset-normalizer.js` (L5), `kinetic-grammar-schema.js` (L7), `dag-scheduler.js` (L8) and `blueprint.js` | none | DONE |
+| M3 | Reference Micro-Engines | Self-contained CommonJS implementations in `docs/research/v2.6/reference/` (`spatial-rtree.js`, `css-selector-ast.js`, `png-codec.js`, `slug-font-compiler.js`) | M1, M2 | DONE |
+| Test Track | E2E Test Suite Creation | Test runner, fixtures, and comprehensive tests in `test/v2.6/` (Tiers 1–4) publishing `TEST_READY.md` | none | DONE |
+| M4 | Final Milestone & Verification | 100% pass of `test/v2.6/` suite, adversarial stress-testing, and forensic integrity audit | M1, M2, M3, Test Track | DONE |
 
 ## Interface Contracts
 
-### M1 (Impeccable Gate) Contract
-```js
-interface ImpeccableGateResult {
-  passed: boolean;
-  violations: Array<{
-    antipattern: string;
-    category: 'slop' | 'quality';
-    snippet: string;
-    line?: number;
-    element?: string;
-  }>;
-  summary: { slopCount: number; qualityCount: number; totalCount: number };
-}
-```
+### 1. Pure JS 2D R-Tree (`spatial-rtree.js`)
+- `class SpatialRTree(maxEntries = 9)`
+  - `insert(item)`: Item `{ minX, minY, maxX, maxY, [id, data] }`
+  - `load(items)`: Bulk load items
+  - `search(bbox)`: Returns items intersecting `{ minX, minY, maxX, maxY }`
+  - `collides(bbox)`: Returns boolean indicating intersection
+  - `all()`: Returns all leaf items
 
-### M2 (FSM Forms) Contract
-```js
-interface FormMachineInstance {
-  state: 'idle' | 'validating' | 'submitting' | 'error' | 'success';
-  context: {
-    values: Record<string, any>;
-    displayValues: Record<string, string>;
-    errors: Record<string, string>;
-    touched: Record<string, boolean>;
-    isValid: boolean;
-    isSubmitting: boolean;
-    latency: { startedAt: number | null; elapsedMs: number; isDelayed: boolean };
-  };
-  send(event: { type: string; [key: string]: any }): void;
-  subscribe(listener: (state: any) => void): () => void;
-}
-```
+### 2. PostCSS Selector AST (`css-selector-ast.js`)
+- `function parseSelectorAst(selectorString)`: Returns structured AST node
+- `function validateDonutSelector(selectorString, boundaryAttr = 'data-kinetic-slot')`:
+  - Returns `{ compliant: boolean, violations: string[] }`
+  - Compliant for boundary self-selectors (`[data-kinetic-slot]`, `[data-kinetic-slot="val"]`)
+  - Non-compliant for descendant penetration (`[data-kinetic-slot] h1`, `[data-kinetic-slot] > h1`, `[data-kinetic-slot="val"] .inner`)
 
-### M3 (Spring Dynamics) Contract
-```js
-interface SpringDynamicsEvaluator {
-  evaluate(tSeconds: number): {
-    position: number;
-    velocity: number;
-    isSettled: boolean;
-  };
-}
-```
+### 3. Native PNG Codec (`png-codec.js`)
+- `function decodePng(buffer)`:
+  - Input: Node.js `Buffer` containing valid PNG data
+  - Returns: `{ width: number, height: number, data: Uint8Array, channels: number, colorType: number }`
+  - Handles filter types: 0 (None), 1 (Sub), 2 (Up), 3 (Average), 4 (Paeth) via `node:zlib.inflateSync`
 
-### M4 (Visual Saliency) Contract
-```js
-interface SaliencyAnalysisResult {
-  scoreCta: number; // must be >= 0.18
-  distractionRatio: number; // must be <= 0.35
-  ctaAttentionRank: number; // must be <= 2
-  passed: boolean;
-}
-```
+### 4. Binary TrueType Slug Font Compiler (`slug-font-compiler.js`)
+- `class SlugFontCompiler`
+  - `constructor(ttfBuffer)`: Takes Node.js `Buffer` of TrueType font
+  - `parseTables()`: Parses `head`, `hhea`, `hmtx`, `cmap`, `loca`, `glyf`
+  - `compileGlyph(charCode)`: Returns `{ curves: Float32Array, bands: Uint16Array, advanceWidth, bounds }`
+
+### 5. UniversalScrollBus Contract
+- Global scroll $s \in [0, U]$ maps to $(p_{\text{portal}}, p_{\text{ribbon}}, \phi_k, v_k)$
+- $\mu_{\text{expand}} = 1.0, \mu_{\text{hold}} = 2.5, \mu_{\text{exit}} = 1.0$ defined in `dna-ir.json`
 
 ## Code Layout
-```
-src/
-├── cdp/                               # M1 CDP Decompiler & Sanitizer (baseline)
-├── kinetic/                           # M2 Kinetic Trajectory & Optical Anchors (baseline)
-├── assets3d/                          # M3 3D Assets Pipeline & KTX2 Transcoder (M4)
-├── compiler/                          # M4 Kinetic Grammar & Dual-Stack Compiler (baseline)
-├── fsm/                               # M2 Finite State Machine Architecture
-│   ├── core/
-│   │   ├── machine.js                 # Micro-FSM core engine
-│   │   └── connect.js                 # DOM ARIA connector
-├── forms/                             # M2 Form Flows & Validations
-│   ├── b2b-quote-machine.js           # JumpPlay B2B Quote state machine
-│   ├── checkout-machine.js            # In-site Checkout state machine
-│   ├── masks.js                       # Adaptive masks & Modulo 11 check digits
-│   └── draft-storage.js               # LocalStorage draft persistence manager
-├── physics/                           # M3 Analytical Physics Engine
-│   ├── spring-dynamics.js             # 2nd-order ODE analytical closed-form engine
-│   └── haptic-engine.js               # Multi-tier Vibration API coordinator
-├── qa/                                # Quality Gates & Oracles
-│   ├── unified-quality-gate.js        # Multi-tier Quality Gate orchestrator
-│   ├── anti-slop-gate.js              # Lexical anti-slop gate
-│   ├── impeccable-gate.js             # Tier 4 Impeccable anti-pattern detector
-│   └── visual-saliency-oracle.js      # 500ms ocular fixation & CTA attention oracle
-scripts/
-│   ├── detect-antipatterns.mjs        # Impeccable anti-pattern CLI
-│   └── detect-antipatterns-browser.js # Standalone browser anti-pattern bundle
-clientes/
-└── jumpflex-home-evolution/
-    └── JumpPlay — Family Reveal & Kinetic Range.html # Active JumpPlay screen
-test/
-├── m1-impeccable-sanitization.test.js  # M1 unit test suite (13 tests)
-├── m2-fsm-forms.test.js                # M2 unit test suite (26 tests)
-├── m3-spring-dynamics.test.js          # M3 unit test suite (35 tests)
-├── m4-gpu-saliency.test.js             # M4 unit test suite (13 tests)
-└── stress/
-    ├── adverse-hardware-stress.test.js # M5 adverse hardware stress suite (19 tests)
-    └── challenger-empirical.test.js    # Challenger 1 empirical test battery (21 tests)
-```
+- Research Documentation: `docs/research/v2.6/`
+  - `pilar-06-scene-to-capsule.md`
+  - `pilar-07-universal-envelope-scrollbus.md`
+  - `pilar-08-webgl-virtualization.md`
+  - `pilar-09-oklch-color-synthesis.md`
+  - `pilar-10-apca-fluid-typography.md`
+  - `pilar-11-dual-hud-mcp.md`
+  - `zero-dependency-engines.md`
+- Reference Implementations: `docs/research/v2.6/reference/`
+  - `spatial-rtree.js`
+  - `css-selector-ast.js`
+  - `png-codec.js`
+  - `slug-font-compiler.js`
+  - `apca-contrast.js`
+- Core Codebase Repairs:
+  - `src/pro/universal-asset-normalizer.js` (L5)
+  - `src/compiler/kinetic-grammar-schema.js` (L7)
+  - `src/orchestration/dag-scheduler.js` (L8)
+  - `src/orchestration/blueprint.js`
+- Test Suite: `test/v2.6/`
+  - `spatial-rtree.test.js`
+  - `css-selector-ast.test.js`
+  - `png-codec.test.js`
+  - `slug-font-compiler.test.js`
+  - `apca-contrast.test.js`
+  - `repairs-regression.test.js`

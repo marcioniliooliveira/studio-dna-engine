@@ -15,7 +15,13 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { createMachine, assign } = require('../src/fsm/core/machine');
-const { connect, bindToDOM } = require('../src/fsm/core/connect');
+const {
+  connect,
+  bindToDOM,
+  bindLenisScrollLifecycle,
+  registerTelemetryScope,
+  getTelemetry
+} = require('../src/fsm/core/connect');
 const {
   validateCPF,
   validateCNPJ,
@@ -784,5 +790,92 @@ test('Checkout Machine: navigation boundaries and step hopping', () => {
   machine.send({ type: 'RESET' });
   assert.equal(machine.context.currentStep, 'customer');
   assert.equal(machine.context.values.fullName, '');
+});
+
+test('TASK-C2: bindLenisScrollLifecycle synchronizes modal state with Lenis scroller and wheel isolation', () => {
+  let lenisStopped = false;
+  let lenisStarted = false;
+  const mockLenis = {
+    stop: () => { lenisStopped = true; lenisStarted = false; },
+    start: () => { lenisStarted = true; lenisStopped = false; }
+  };
+
+  const mockDoc = {
+    body: { style: { overflow: '' } }
+  };
+
+  const attributes = {};
+  const listeners = {};
+  const mockModalEl = {
+    style: {},
+    setAttribute: (k, v) => { attributes[k] = v; },
+    removeAttribute: (k) => { delete attributes[k]; },
+    addEventListener: (evt, cb) => { listeners[evt] = cb; },
+    removeEventListener: (evt) => { delete listeners[evt]; }
+  };
+
+  const machine = createMachine({
+    id: 'modal-flow',
+    initial: 'RIBBON_BROWSE',
+    states: {
+      RIBBON_BROWSE: { on: { OPEN_CARD: 'DETAIL_FLIGHT' } },
+      DETAIL_FLIGHT: { on: { CLOSE: 'RIBBON_BROWSE' } }
+    }
+  });
+
+  const unbind = bindLenisScrollLifecycle(machine, {
+    lenis: mockLenis,
+    doc: mockDoc,
+    modalElement: mockModalEl,
+    modalStates: ['DETAIL_FLIGHT'],
+    browseStates: ['RIBBON_BROWSE']
+  });
+
+  // Initially in browse state
+  assert.equal(mockDoc.body.style.overflow, '');
+  assert.equal(lenisStopped, false);
+
+  // Transition to DETAIL_FLIGHT (modal state)
+  machine.send({ type: 'OPEN_CARD' });
+  assert.equal(machine.state, 'DETAIL_FLIGHT');
+  assert.equal(lenisStopped, true, 'Must call lenis.stop() on modal entry');
+  assert.equal(mockDoc.body.style.overflow, 'hidden', 'Must lock body overflow to hidden');
+  assert.equal(attributes['data-lenis-prevent'], 'true', 'Must set data-lenis-prevent="true"');
+  assert.equal(mockModalEl.style.overscrollBehavior, 'contain');
+  assert.ok(listeners['wheel'], 'Must attach wheel listener');
+
+  // Verify wheel propagation cancellation
+  let propagationStopped = false;
+  listeners['wheel']({ stopPropagation: () => { propagationStopped = true; } });
+  assert.equal(propagationStopped, true, 'Wheel event must not propagate to page scroller');
+
+  // Transition back to RIBBON_BROWSE (browse state)
+  machine.send({ type: 'CLOSE' });
+  assert.equal(machine.state, 'RIBBON_BROWSE');
+  assert.equal(lenisStarted, true, 'Must call lenis.start() on exit');
+  assert.equal(mockDoc.body.style.overflow, '', 'Must restore body overflow');
+  assert.equal(attributes['data-lenis-prevent'], undefined, 'Must remove data-lenis-prevent');
+
+  unbind();
+});
+
+test('TASK-C2: registerTelemetryScope exposes standardized window.__DNA_TELEMETRY__ bus', () => {
+  let progress = 0.42;
+  const unregister = registerTelemetryScope('work-stage', () => ({
+    activeCard: 2,
+    scrollProgress: progress,
+    cameraFov: 24
+  }));
+
+  const telemetry = getTelemetry('work-stage');
+  assert.equal(telemetry.activeCard, 2);
+  assert.equal(telemetry.scrollProgress, 0.42);
+
+  // Dynamic evaluation verifies getter behavior
+  progress = 0.88;
+  assert.equal(getTelemetry('work-stage').scrollProgress, 0.88, 'Telemetry getter must reflect dynamic state updates');
+
+  unregister();
+  assert.equal(getTelemetry('work-stage'), undefined, 'Unregister must remove telemetry scope');
 });
 

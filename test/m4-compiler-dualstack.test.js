@@ -26,6 +26,8 @@ const {
   validateCompositionGrammar,
   parseCompositionGrammar,
   generateDonutScopeRule,
+  buildScopedPreludes,
+  validateStrictDonutScope,
   validateDonutScopeInvariants,
   createStage,
   createSlot
@@ -289,6 +291,28 @@ describe('Suite 1: Kinetic Grammar Schema & Donut Isolation', () => {
     const piercingCheck = validateDonutScopeInvariants(piercingCss);
     assert.equal(piercingCheck.compliant, false);
     assert.ok(piercingCheck.violations.some(v => v.includes('Donut piercing violation')));
+  });
+
+  test('TASK-C1: buildScopedPreludes supports 5 W3C Cascade Level 6 topologies', () => {
+    assert.equal(buildScopedPreludes({ root: '.hero', limit: '.slot', mode: 'donut' }), '@scope (.hero) to (.slot)');
+    assert.equal(buildScopedPreludes({ root: '.hero', mode: 'root-only' }), '@scope (.hero)');
+    assert.equal(buildScopedPreludes({ limit: '.slot', mode: 'limit-only' }), '@scope to (.slot)');
+    assert.equal(buildScopedPreludes({ root: '.hero', limit: '.slot', mode: 'scoped-is' }), '@scope (:is(.hero)) to (:is(.slot))');
+    assert.equal(buildScopedPreludes({ root: '.hero', limit: '.slot', mode: 'fallback' }), '.hero:not(.slot)');
+  });
+
+  test('TASK-C1: validateStrictDonutScope catches all piercing combinators and allows self-styling', () => {
+    // Child combinator piercing
+    const childCheck = validateStrictDonutScope('[data-kinetic-slot] > h1 { color: red; }');
+    assert.equal(childCheck.compliant, false);
+
+    // Attribute value piercing
+    const attrCheck = validateStrictDonutScope('[data-kinetic-slot="title"] span { font-weight: bold; }');
+    assert.equal(attrCheck.compliant, false);
+
+    // Self-styling
+    const selfCheck = validateStrictDonutScope('[data-kinetic-slot] { all: unset; }');
+    assert.equal(selfCheck.compliant, true);
   });
 });
 

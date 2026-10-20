@@ -40,4 +40,18 @@ When converting scraped Next.js dumps into functional standalone static HTML fil
    - Static dumps contain empty spacer divs (e.g. `.hscroll-spacer { height: 450vh }`) that sit below fixed headers.
    - **Rule:** Pin the visible section (`.hscroll`) directly with `pin: true` and `end: () => "+=" + scrollDistance`, while setting static spacer height to `0` / `display: none` to eliminate blank scroll gaps.
 
+5. **WebGL & Awwwards Motion Interaction Protocol (Llama Engine & 4-Phase Arc):**
+   - **Lenis Prevent Ban in Update Loops:** É terminantemente proibido re-armar `data-lenis-prevent="true"` dinamicamente a cada tick de animação/scroll. Seções imersivas 3D devem adotar arcos contínuos com transição elástica de saída.
+   - **Zero-State WebGL Animation Rule:** Nenhuma variável atualizada por `wheel`, `pointermove` ou `RAF` deve disparar re-render no React (`useState`). Utilizar `useRef` e leitura direta no loop nativo do Three.js (`useFrame`) a 60 FPS.
+   - **Llama Engine Declarative Philosophy:** O DOM faz o layout e captura cliques/acessibilidade (`pointer-events: auto`), mas pinta nada (`opacity: 0`). Toda a renderização visual — incluindo títulos tipográficos e fundos espaciais — pertence ao WebGL.
+   - **Pure Black Void Contrast (#000000):** Em palcos 3D minimalistas de alta fidelidade (estilo Jesper Landberg), o background e base do piso devem ser `#000000` puro com linhas de grid sutis (`0.08`), eliminando tons acinzentados ou marrons intermediários.
+   - **Cinematic Framing & FOV:** Evitar distorção de lente olho-de-peixe ($FOV > 70^\circ$). Utilizar lentes canônicas de perspectiva cinematográfica ($FOV \approx 53.4^\circ, Z \approx 41.18$) para garantir presença monumental dos cards ocupando ~75% da altura da viewport.
+
+6. **Forensic Invariant Workflow (FIW) — Padrão Obrigatório para Refatorações Complexas:**
+   - Toda e qualquer alteração de cinemática, shaders, transições ou layouts de alta complexidade deve seguir estritamente o ciclo de 4 fases definido em `@[skills/forensic-invariant-workflow]`:
+     1. **Análise Forense & Destrinchamento:** Desmontagem matemática e física de código real (GLSL, equações, eventos).
+     2. **Locking de Invariáveis:** Trancamento absoluto dos contratos existentes (máquina de estados de telemetria, gates de teste, DOM, acessibilidade, headers).
+     3. **Matriz de Gap & Viabilização:** Mapeamento factual das discrepâncias e engenharia da ponte de transição sem quebras.
+     4. **Execução Faseada TDD:** Ciclo RED $\to$ GREEN $\to$ REFACTOR com comprovação estrita por execução de testes (Gates 1 a 6 e Challenger Multi-Viewport).
+
 

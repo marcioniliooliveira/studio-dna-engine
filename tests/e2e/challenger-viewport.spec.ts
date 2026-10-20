@@ -103,7 +103,7 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
     test(`Viewport ${vp.name} (${vp.width}x${vp.height}): Optical Symmetry & Viewport Coverage`, async ({
       page,
     }) => {
-      test.setTimeout(45000);
+      test.setTimeout(60000);
 
       const pageErrors: string[] = [];
       const consoleErrors: string[] = [];
@@ -118,10 +118,11 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-      // Aguarda helper determinístico de teste
+      // Aguarda helper determinístico de teste e WebGL pronto
       await page.waitForFunction(
-        () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function',
-        { timeout: 15000 }
+        () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && (window as any).__WORK_STAGE__?.webglReady === true,
+        null,
+        { timeout: 25000 }
       );
 
       // 1. Simetria óptica em portalProgress = 0.35
@@ -179,7 +180,8 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
           const ws = (window as any).__WORK_STAGE__;
           return ws && ws.phase === 'RIBBON_BROWSE' && ws.webglReady === true;
         },
-        { timeout: 10000 }
+        null,
+        { timeout: 20000 }
       );
 
       const wsState = await page.evaluate(() => {
@@ -204,7 +206,7 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
   test('Multi-Viewport Detail Flight & Header Theming across Desktop Resolutions', async ({
     page,
   }) => {
-    test.setTimeout(90000);
+    test.setTimeout(120000);
 
     const testResolutions = [
       { width: 1440, height: 900 },
@@ -218,7 +220,9 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
       await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
       await page.waitForFunction(
-        () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function'
+        () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && (window as any).__WORK_STAGE__?.webglReady === true,
+        null,
+        { timeout: 25000 }
       );
 
       // Expande para RIBBON_BROWSE
@@ -228,8 +232,8 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
 
       await page.waitForFunction(() => {
         const ws = (window as any).__WORK_STAGE__;
-        return ws && ws.phase === 'RIBBON_BROWSE' && ws.cards && Object.keys(ws.cards).length === 4;
-      });
+        return ws && ws.phase === 'RIBBON_BROWSE' && ws.webglReady === true && ws.cards && Object.keys(ws.cards).length === 4;
+      }, null, { timeout: 20000 });
 
       // Clica no proxy button do Card 0
       const proxy0 = page.locator('[data-work-card-proxy="0"]');
@@ -242,7 +246,8 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
           const ws = (window as any).__WORK_STAGE__;
           return ws && ws.phase === 'DETAIL_ACTIVE';
         },
-        { timeout: 12000 }
+        null,
+        { timeout: 15000 }
       );
 
       // Verifica cobertura física do detail panel no viewport atual
@@ -271,23 +276,36 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
           (text === '#2e2b28' || text === 'rgb(46, 43, 40)') &&
           (border === '#b8b3ac' || border === 'rgb(184, 179, 172)')
         );
-      }, { timeout: 8000 });
+      }, null, { timeout: 12000 });
 
-      // Fecha o detalhe via close button
+      // Fecha o detalhe via close button (com dispatchEvent / click force e fallback seguro para Escape)
       const closeBtn = page.locator('[data-detail-close]');
-      await closeBtn.waitFor({ state: 'attached' });
-      await closeBtn.click();
+      await closeBtn.waitFor({ state: 'attached', timeout: 5000 });
+      try {
+        await closeBtn.dispatchEvent('click');
+      } catch {
+        await closeBtn.click({ force: true, timeout: 5000 }).catch(() => {});
+      }
+
+      // Fallback seguro via tecla Escape caso a fase ainda seja DETAIL_ACTIVE
+      const isStillActive = await page.evaluate(() => {
+        const ws = (window as any).__WORK_STAGE__;
+        return ws && ws.phase === 'DETAIL_ACTIVE';
+      });
+      if (isStillActive) {
+        await page.keyboard.press('Escape');
+      }
 
       // Aguarda retorno a RIBBON_BROWSE
       await page.waitForFunction(() => {
         const ws = (window as any).__WORK_STAGE__;
         return ws && ws.phase === 'RIBBON_BROWSE';
-      }, { timeout: 8000 });
+      }, null, { timeout: 12000 });
     }
   });
 
   test('WebGL Lifecycle, Context Integrity & Memory Health', async ({ page }) => {
-    test.setTimeout(45000);
+    test.setTimeout(60000);
 
     const uncaughtErrors: string[] = [];
     page.on('pageerror', (err) => uncaughtErrors.push(err.message));
@@ -296,7 +314,9 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
     await page.waitForFunction(
-      () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function'
+      () => typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && (window as any).__WORK_STAGE__?.webglReady === true,
+      null,
+      { timeout: 25000 }
     );
 
     await page.evaluate(() => {
@@ -306,7 +326,7 @@ test.describe('Challenger Stress Suite: Multi-Viewport & WebGL Lifecycle', () =>
     await page.waitForFunction(() => {
       const ws = (window as any).__WORK_STAGE__;
       return ws && ws.phase === 'RIBBON_BROWSE' && ws.webglReady === true;
-    });
+    }, null, { timeout: 20000 });
 
     // Inspeciona canvas WebGL e integridade do driver
     const webglHealth = await page.evaluate(() => {

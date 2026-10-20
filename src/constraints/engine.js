@@ -4,7 +4,13 @@
 
 const { DependencyGraph } = require('./graph.js');
 const { resolveTypographySafeArea } = require('./typography.js');
-const { resolveBackgroundProductContrast } = require('./contrast.js');
+const {
+  resolveBackgroundProductContrast,
+  calcAPCA,
+  searchMonotonicContrast,
+  fontLookupAPCA,
+  solveOptimalScrimOpacity
+} = require('./contrast.js');
 const { resolveViewportCameraRig, resolveCollectionGeometry } = require('./geometry.js');
 const { resolveMotionReducedScaling } = require('./motion.js');
 const { resolvePerformanceFpsTier } = require('./performance.js');
@@ -81,6 +87,31 @@ class ConstraintEngine {
       }
     }
 
+    // 7. Dynamic constraints traversal if defined in dnaIr.constraints
+    if (Array.isArray(this.constraints)) {
+      for (const c of this.constraints) {
+        if (!c.inputs || !c.inputs.some(k => k in resolvedDelta)) continue;
+        if (c.type === 'apca-contrast') {
+          const bgVal = resolvedDelta[c.backgroundParam] || this.dnaIr?.tokens?.[c.backgroundParam];
+          const fgVal = resolvedDelta[c.foregroundParam] || this.dnaIr?.tokens?.[c.foregroundParam];
+          if (bgVal && fgVal) {
+            const lc = calcAPCA(fgVal, bgVal);
+            if (Math.abs(lc) < (c.targetThreshold || 60)) {
+              if (c.autoCompensate) {
+                const compliant = searchMonotonicContrast(bgVal, c.targetThreshold || 60, c.role || 'body');
+                if (compliant?.hex) {
+                  derivedCompensations[c.foregroundParam] = compliant.hex;
+                  resolvedDelta[c.foregroundParam] = compliant.hex;
+                }
+              } else {
+                errors.push(c.errorMessage || `APCA contrast violation: Lc ${lc.toFixed(1)} < ${c.targetThreshold}`);
+              }
+            }
+          }
+        }
+      }
+    }
+
     return {
       valid: errors.length === 0,
       resolvedDelta,
@@ -97,5 +128,9 @@ module.exports = {
   resolveViewportCameraRig,
   resolveCollectionGeometry,
   resolveMotionReducedScaling,
-  resolvePerformanceFpsTier
+  resolvePerformanceFpsTier,
+  calcAPCA,
+  searchMonotonicContrast,
+  fontLookupAPCA,
+  solveOptimalScrimOpacity
 };

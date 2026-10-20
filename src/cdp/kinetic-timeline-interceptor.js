@@ -17,6 +17,7 @@
 
 const { TrackerSanitizer } = require('./tracker-sanitizer');
 const { RuntimeHookInjector } = require('./runtime-hook-injector');
+const { fitEasingToMultiSegmentBezier, fitCurve } = require('../kinetic/bezier-fitter');
 
 class KineticTimelineInterceptor {
   constructor(options = {}) {
@@ -209,6 +210,126 @@ class KineticTimelineInterceptor {
       animations: ids,
       currentTime: currentTimeMs
     });
+  }
+
+  /**
+   * Deterministically samples an animation timeline step-by-step via CDP & GSAP time warp
+   * and fits the resulting time series into multi-segment cubic Bézier curves (Schneider 1990).
+   */
+  async sampleTimelineDeterministic(cdpSessionOrOptions = {}, maybeOptions = {}) {
+    let session = this.cdpSession;
+    let options = {};
+    if (cdpSessionOrOptions && typeof cdpSessionOrOptions.send === 'function') {
+      session = cdpSessionOrOptions;
+      options = maybeOptions || {};
+    } else if (cdpSessionOrOptions && typeof cdpSessionOrOptions === 'object') {
+      options = cdpSessionOrOptions;
+      if (options.cdpSession) session = options.cdpSession;
+    }
+
+    const dtMs = options.dtMs || 4;
+    const durationMs = options.durationMs || 1000;
+    const animationIds = options.animationIds || Array.from(this.capturedAnimations.keys());
+    const targetSelector = options.targetSelector || null;
+    const maxBezierError = options.maxBezierError !== undefined ? options.maxBezierError : 0.02;
+
+    const samples = [];
+
+    // Pause CDP animations
+    if (session && animationIds.length > 0) {
+      try {
+        await session.send('Animation.setPaused', {
+          animations: animationIds,
+          paused: true
+        });
+      } catch (e) {}
+    }
+
+    // Pause GSAP if in page
+    if (this.page) {
+      try {
+        await this.page.evaluate(() => {
+          if (window.gsap && window.gsap.globalTimeline) {
+            window.gsap.globalTimeline.pause();
+          }
+        });
+      } catch (e) {}
+    }
+
+    // Step clock deterministically from t = 0 to durationMs in steps of dtMs
+    for (let t = 0; t <= durationMs; t += dtMs) {
+      if (session && animationIds.length > 0) {
+        try {
+          await session.send('Animation.seekAnimations', {
+            animations: animationIds,
+            currentTime: t
+          });
+        } catch (e) {}
+      }
+
+      if (this.page) {
+        try {
+          const sample = await this.page.evaluate(({ tSec, sel }) => {
+            if (window.gsap && window.gsap.globalTimeline) {
+              window.gsap.globalTimeline.time(tSec);
+            }
+            if (sel) {
+              const el = document.querySelector(sel);
+              if (el) {
+                const style = window.getComputedStyle(el);
+                return {
+                  opacity: parseFloat(style.opacity) || 1,
+                  transform: style.transform || 'none'
+                };
+              }
+            }
+            return null;
+          }, { tSec: t / 1000, sel: targetSelector });
+
+          samples.push({
+            t,
+            val: sample && sample.opacity !== undefined ? sample.opacity : (t / durationMs),
+            meta: sample
+          });
+        } catch (e) {
+          samples.push({ t, val: t / durationMs });
+        }
+      } else {
+        samples.push({ t, val: t / durationMs });
+      }
+    }
+
+    // Resume animations
+    if (session && animationIds.length > 0) {
+      try {
+        await session.send('Animation.setPaused', {
+          animations: animationIds,
+          paused: false
+        });
+      } catch (e) {}
+    }
+
+    if (this.page) {
+      try {
+        await this.page.evaluate(() => {
+          if (window.gsap && window.gsap.globalTimeline) {
+            window.gsap.globalTimeline.play();
+          }
+        });
+      } catch (e) {}
+    }
+
+    // Fit sampled points with Schneider Bézier fitter
+    const bezierResult = fitEasingToMultiSegmentBezier(samples, maxBezierError);
+
+    return {
+      dtMs,
+      durationMs,
+      samplesCount: samples.length,
+      samples,
+      beziers: bezierResult.beziers,
+      cssCubicBezier: bezierResult.cssCubicBezier
+    };
   }
 
   /**

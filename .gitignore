@@ -130,6 +130,13 @@ scratch/
 .tempmediaStorage/
 *-report.json
 *_analysis.json
+gemini-code-*.html
+clientes/**/gemini-code-*.html
+clientes/**/dist-*/
+clientes/**/nextjs-dist/
+clientes/**/build-manifest.json
+preview-dump.json
+chatorb-raw-decompiled.js
 
 # ── Arquivos HTML soltos na raiz de copias (clone dumps antigos) ──────────────
 copias/*.html

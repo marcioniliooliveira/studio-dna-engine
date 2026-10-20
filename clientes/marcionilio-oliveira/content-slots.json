@@ -15,8 +15,8 @@
     "scrollPrompt": "SCROLL"
   },
   "about": {
-    "chapter": "Chapter I",
-    "label": "Quick intro",
+    "chapter": "Capítulo I",
+    "label": "Introdução",
     "bio": "Trabalho como web designer criando interfaces digitais ricas em movimento e tipografia. Passo meus dias com tranquilidade, prezo meu descanso e escolho onde coloco meu tempo. Quando assumo uma ideia, dedico energia monumental para entregar um resultado gráfico impecável.",
     "ctaText": "Mais sobre mim",
     "ctaHref": "#contact",
@@ -30,8 +30,8 @@
     "videoMobile": "./assets/_astro/thework-mobile.DFnsCk-1.mp4"
   },
   "selectedWork": {
-    "chapter": "Chapter II",
-    "label": "Selected work",
+    "chapter": "Capítulo II",
+    "label": "Trabalhos selecionados",
     "ctaText": "Ver todos os projetos",
     "ctaHref": "#contact",
     "disclaimer": "❋ Códigos de produção e estudos de caso disponíveis sob consulta.",
@@ -71,8 +71,8 @@
     ]
   },
   "services": {
-    "chapter": "Chapter III",
-    "label": "What I do?",
+    "chapter": "Capítulo III",
+    "label": "O que faço?",
     "headline": "Desenho interfaces digitais com hierarquia visual clara, física de movimento calculada e arquitetura estável.",
     "cards": [
       {
@@ -98,8 +98,8 @@
     ]
   },
   "clients": {
-    "chapter": "Chapter IV",
-    "label": "Selected experiences",
+    "chapter": "Capítulo IV",
+    "label": "Experiência selecionada",
     "note": "Princípios técnicos e ferramentas que sustentam cada entrega.",
     "brands": [
       "Motion & Física (GSAP + Lenis)",
@@ -111,8 +111,8 @@
     ]
   },
   "contact": {
-    "caption": "Where stories find their form",
-    "sub": "Next chapter",
+    "caption": "Onde ideias ganham forma",
+    "sub": "Próximo capítulo",
     "email": "contato@marcionilio.dev",
     "socials": [
       { "name": "LinkedIn", "url": "https://linkedin.com" },
