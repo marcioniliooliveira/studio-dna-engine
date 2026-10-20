@@ -7,6 +7,7 @@
  * 3. Enforces Character Budgeting Guard (+/- 25% budget).
  * 4. Enforces Anti-Slop Scanner (blocks AI meta-language in client UI).
  * 5. Guarantees GSAP, Lenis, and Webflow classes/attributes stay intact.
+ * 6. Slot Array Repeater: Clones archetypes and safely scales variable cardinality collections.
  */
 
 const fs = require('fs');
@@ -54,6 +55,155 @@ function validateCharacterBudget(originalText, newText, selector = '', tolerance
   const ratio = newLen / origLen;
   if (ratio < (1 - tolerance) || ratio > (1 + tolerance)) {
     console.warn(`⚠️ [Character Budget Warning] "${selector}": Original=${origLen} chars, New=${newLen} chars (ratio: ${ratio.toFixed(2)})`);
+  }
+}
+
+/**
+ * Transmuta coleções com cardinalidade variável via Slot Array Repeater.
+ * Clona o nó arquétipo da coleção, vincula os campos semânticos e remove nós excedentes,
+ * garantindo fidelidade de layout e zero geração estocástica de DOM.
+ *
+ * @param {import('cheerio').CheerioAPI} $
+ * @param {Object} collectionsData Mapa de coleções { [collectionKey]: { containerSelector?, itemSelector?, items: [], min?, max? } }
+ * @param {Object} [options]
+ */
+function transmuteCollectionSlots($, collectionsData, options = { enforceAntiSlop: true }) {
+  if (!collectionsData || typeof collectionsData !== 'object') return;
+
+  for (const [collectionKey, config] of Object.entries(collectionsData)) {
+    const containerSelector = config.containerSelector || `[data-slot-repeat="${collectionKey}"]`;
+    let $container = $(containerSelector);
+
+    if ($container.length === 0) {
+      $container = $(`[data-slot-repeat]`);
+      if ($container.length === 0) continue;
+    }
+
+    const targetContainer = $container.first();
+    const itemSelector = config.itemSelector || '[data-slot-item]';
+
+    let $archetype = targetContainer.find(itemSelector).first();
+    if ($archetype.length === 0) {
+      $archetype = targetContainer.children().first();
+    }
+
+    if ($archetype.length === 0) {
+      console.warn(`⚠️ [AST Transmuter] Nenhum arquétipo encontrado para coleção "${collectionKey}" em "${containerSelector}"`);
+      continue;
+    }
+
+    const archetypeHtml = $.html($archetype);
+    let items = Array.isArray(config.items) ? config.items : [];
+
+    // Limites de contrato min/max
+    const minAttr = targetContainer.attr('data-slot-min');
+    const maxAttr = targetContainer.attr('data-slot-max');
+    const minLimit = config.min !== undefined ? config.min : (minAttr ? parseInt(minAttr, 10) : 0);
+    const maxLimit = config.max !== undefined ? config.max : (maxAttr ? parseInt(maxAttr, 10) : Infinity);
+
+    if (items.length < minLimit) {
+      console.warn(`⚠️ [AST Transmuter] Coleção "${collectionKey}" abaixo do limite mínimo (${items.length} < ${minLimit})`);
+    }
+    if (items.length > maxLimit) {
+      console.warn(`⚠️ [AST Transmuter] Coleção "${collectionKey}" truncada para limite máximo (${items.length} -> ${maxLimit})`);
+      items = items.slice(0, maxLimit);
+    }
+
+    // Esvazia os filhos repetíveis do container
+    targetContainer.empty();
+
+    items.forEach((itemData, idx) => {
+      const $item = $(archetypeHtml);
+
+      if (typeof itemData === 'string') {
+        if (options.enforceAntiSlop) validateAntiSlop(itemData, `${collectionKey}[${idx}]`);
+        const $bindTarget = $item.find('[data-slot-bind]').first();
+        if ($bindTarget.length > 0) {
+          $bindTarget.text(itemData);
+        } else {
+          $item.text(itemData);
+        }
+      } else if (typeof itemData === 'object' && itemData !== null) {
+        // 1. Data binding explícito por atributo data-slot-bind="fieldName"
+        $item.find('[data-slot-bind]').each((_, el) => {
+          const $el = $(el);
+          const field = $el.attr('data-slot-bind');
+          if (field && itemData[field] !== undefined) {
+            const val = itemData[field];
+            if (options.enforceAntiSlop && typeof val === 'string') {
+              validateAntiSlop(val, `${collectionKey}[${idx}].${field}`);
+            }
+            $el.text(String(val));
+          }
+        });
+
+        // 2. Data binding de atributos: data-slot-attr-alt, data-slot-attr-src, data-slot-attr-href
+        const elementAttrs = ['src', 'alt', 'href', 'title', 'aria-label', 'target'];
+        for (const attrName of elementAttrs) {
+          $item.find(`[data-slot-attr-${attrName}]`).each((_, el) => {
+            const $el = $(el);
+            const field = $el.attr(`data-slot-attr-${attrName}`);
+            if (field && itemData[field] !== undefined) {
+              const val = itemData[field];
+              if (attrName === 'alt' && options.enforceAntiSlop && typeof val === 'string') {
+                validateAntiSlop(val, `${collectionKey}[${idx}].${field}`);
+              }
+              $el.attr(attrName, String(val));
+            }
+          });
+        }
+
+        // 3. Fallback semântico heurístico para propriedades padrão
+        for (const [k, v] of Object.entries(itemData)) {
+          if (k === 'title' || k === 'name' || k === 'heading') {
+            const $heading = $item.find('h1, h2, h3, h4, h5, h6, .title, .heading, [data-title]').first();
+            if ($heading.length > 0 && !$heading.attr('data-slot-bind')) {
+              if (options.enforceAntiSlop && typeof v === 'string') validateAntiSlop(v, `${collectionKey}[${idx}].${k}`);
+              $heading.text(String(v));
+            }
+          } else if (k === 'price' || k === 'tag' || k === 'badge') {
+            const $badge = $item.find('.price, .tag, .badge, [data-price]').first();
+            if ($badge.length > 0 && !$badge.attr('data-slot-bind')) {
+              if (options.enforceAntiSlop && typeof v === 'string') validateAntiSlop(v, `${collectionKey}[${idx}].${k}`);
+              $badge.text(String(v));
+            }
+          } else if (k === 'description' || k === 'desc' || k === 'subtitle') {
+            const $desc = $item.find('p, .desc, .description, [data-desc]').first();
+            if ($desc.length > 0 && !$desc.attr('data-slot-bind')) {
+              if (options.enforceAntiSlop && typeof v === 'string') validateAntiSlop(v, `${collectionKey}[${idx}].${k}`);
+              $desc.text(String(v));
+            }
+          } else if (k === 'image' || k === 'img' || k === 'src') {
+            const $img = $item.find('img, [data-img]').first();
+            if ($img.length > 0 && !$img.attr('data-slot-attr-src')) {
+              $img.attr('src', String(v));
+            }
+          } else if (k === 'alt') {
+            const $img = $item.find('img').first();
+            if ($img.length > 0 && !$img.attr('data-slot-attr-alt')) {
+              $img.attr('alt', String(v));
+            }
+          } else if (k === 'link' || k === 'href') {
+            const $link = $item.is('a') ? $item : $item.find('a').first();
+            if ($link.length > 0 && !$link.attr('data-slot-attr-href')) {
+              $link.attr('href', String(v));
+            }
+          }
+        }
+
+        // 4. Overrides explícitos de atributos se fornecido itemData.attr
+        if (itemData.attr && typeof itemData.attr === 'object') {
+          for (const [attrName, attrVal] of Object.entries(itemData.attr)) {
+            $item.attr(attrName, String(attrVal));
+          }
+        }
+      }
+
+      $item.attr('data-slot-index', String(idx));
+      targetContainer.append($item);
+    });
+
+    targetContainer.attr('data-rendered-count', String(items.length));
   }
 }
 
@@ -129,32 +279,59 @@ function transmuteWithAST({
   if (brandSpec.lists) {
     for (const [listKey, listConfig] of Object.entries(brandSpec.lists)) {
       const { parentSelector, itemSelector, items } = listConfig;
-      const elements = parentSelector ? $(parentSelector).find(itemSelector) : $(itemSelector);
+      let elements = parentSelector ? $(parentSelector).find(itemSelector) : $(itemSelector);
 
-      items.forEach((itemData, idx) => {
-        if (idx >= elements.length) return;
-        const target = $(elements[idx]);
+      if (elements.length > 0 && items && items.length > 0) {
+        // Se a lista do cliente tiver mais itens do que o template, clona o arquétipo
+        if (items.length > elements.length) {
+          const $parent = parentSelector ? $(parentSelector) : $(elements[0]).parent();
+          const $archetype = $(elements[elements.length - 1]);
+          const needCount = items.length - elements.length;
+          for (let i = 0; i < needCount; i++) {
+            const $clone = $archetype.clone();
+            $parent.append($clone);
+          }
+          elements = parentSelector ? $(parentSelector).find(itemSelector) : $(itemSelector);
+        } else if (items.length < elements.length) {
+          // Se o cliente tiver menos itens, remove elementos excedentes
+          for (let i = items.length; i < elements.length; i++) {
+            $(elements[i]).remove();
+          }
+          elements = parentSelector ? $(parentSelector).find(itemSelector) : $(itemSelector);
+        }
+      }
 
-        if (typeof itemData === 'string') {
-          if (options.enforceAntiSlop) validateAntiSlop(itemData, `${itemSelector} [${idx}]`);
-          target.text(itemData);
-        } else if (typeof itemData === 'object') {
-          if (itemData.text) {
-            if (options.enforceAntiSlop) validateAntiSlop(itemData.text, `${itemSelector} [${idx}]`);
-            target.text(itemData.text);
-          }
-          if (itemData.html) {
-            if (options.enforceAntiSlop) validateAntiSlop(itemData.html, `${itemSelector} [${idx}]`);
-            target.html(itemData.html);
-          }
-          if (itemData.attr) {
-            for (const [k, v] of Object.entries(itemData.attr)) {
-              target.attr(k, v);
+      if (items) {
+        items.forEach((itemData, idx) => {
+          if (idx >= elements.length) return;
+          const target = $(elements[idx]);
+
+          if (typeof itemData === 'string') {
+            if (options.enforceAntiSlop) validateAntiSlop(itemData, `${itemSelector} [${idx}]`);
+            target.text(itemData);
+          } else if (typeof itemData === 'object') {
+            if (itemData.text) {
+              if (options.enforceAntiSlop) validateAntiSlop(itemData.text, `${itemSelector} [${idx}]`);
+              target.text(itemData.text);
+            }
+            if (itemData.html) {
+              if (options.enforceAntiSlop) validateAntiSlop(itemData.html, `${itemSelector} [${idx}]`);
+              target.html(itemData.html);
+            }
+            if (itemData.attr) {
+              for (const [k, v] of Object.entries(itemData.attr)) {
+                target.attr(k, v);
+              }
             }
           }
-        }
-      });
+        });
+      }
     }
+  }
+
+  // 3.1 Transmutação Declarativa de Coleções (Slot Array Repeater)
+  if (brandSpec.collections) {
+    transmuteCollectionSlots($, brandSpec.collections, options);
   }
 
   // 4. Injetar Paleta Canônica de Cores (CSS Variables & Overrides)
@@ -225,6 +402,7 @@ function transmuteWithAST({
 
 module.exports = {
   transmuteWithAST,
+  transmuteCollectionSlots,
   validateAntiSlop,
   validateCharacterBudget,
   BANNED_AI_SLOP_KEYWORDS

@@ -4,6 +4,8 @@
 - [project] Always create a new dedicated branch for major code changes → project-conventions.md
 - [project] Playwright cloning conventions for high-fidelity layouts → project-conventions.md
 - [project] Always create dual versions (HTML static + Next.js) when copying websites → project-conventions.md
+- [project] WebGL & Awwwards Motion Interaction Protocol (Llama Engine & 4-Phase Arc) → project-conventions.md
+- [workflow] Forensic Invariant Workflow (FIW): Análise Forense, Locking de Invariáveis, Viabilização & TDD Gates → .agents/skills/forensic-invariant-workflow/SKILL.md
 
 ## Interpretable Context Methodology (ICM) & Client Isolation
 - [project] ICM significa Interpretable Context Methodology; não confundir com o pipeline de transmutação → strategic-alignment.md
@@ -22,4 +24,15 @@
 - [caso-01-healthtech] **PulseMed** (`clientes/caso-01-healthtech/`): Base `#120824`, CTA `#E8FF54`, ref `copias/urbi-ae`.
 - [caso-03-d2c] **APEX Wireless** (`clientes/flashtech-caso-03-d2c/`): Base `#02040A`, CTA `#00F0FF`, ref `copias/ciao-energy`.
 - [caso-02-ecommerce] **NorthTrail** (`clientes/flashtech-caso-02-ecommerce/`): Tokens `trail.orange=#ea580c`, `sand.100=#f5f1e8`.
+- [marcionilio-oliveira] **Marcionilio Oliveira** (`clientes/marcionilio-oliveira/`): Base `#262220`, Marfim `#FAF9F6`, ref `copias/khanhnguyen-design`.
+- [opxy-tuning-lab] **OP-XY Tuning Lab** (`clientes/opxy-tuning-lab/`): Synth 8-beat scroll lab, dual-gradient backdrop/step sync, ref `copias/op-xy-76-aura-build`.
+- [caso-04-growth] **SCALEX Digital** (`clientes/flashtech-caso-04-growth/`): Base `#F8F8F6`, CTA `#FFC552`, ref `copias/acilav-webflow-io`.
+- [negocia-bem] **Negocia Bem** (`clientes/negocia-bem/`): Imobiliária Paiçandu & Maringá, ref `copias/elyse-residence-dev-webflow-io`.
+- [caso-apex-barbearia] **Apex Barbearia** (`clientes/apex-barbearia/`): Base `#0A0A0A`, CTA `#C8A97E`, ref `copias/barbershop-landing-51-aura-build`.
+- [portfolio-webdev] **Web Developer Portfolio Reference** (ref `copias/likova-space/`): Referência pura mantida 100% intacta.
+- [ref-21oaks] **21Oaks Reference** (`copias/21oaks-org/`): Referência pura com reveals funcionais restaurados via SplitText nativo universal.
+- [ref-aircenter] **AIR Center Reference** (`copias/aircenter-space/`): Referência pura com 3D ribbon e matriz de mobilidade.
+- [jumpflex-home-evolution] **Jumpflex Home Evolution** (`clientes/jumpflex-home-evolution/`): Design System Kinetic Toybox (`#2976C7`, `#FF562D`, `#181B2D`), DNA Live Tuning HUD adaptado, simulador de quintal ABNT, física de molas de Hooke e dual-funnel B2C/B2B.
+- [silvio-iwata-imobiliaria] **Silvio Iwata Imobiliária** (`clientes/silvio-iwata-imobiliaria/`): Base `#F4F1E8` (Marfim) e `#0B2A1A` (Verde Floresta Profundo), Marca `#055227`, Acento `#A6C83A`, Tipografia `Instrument Serif` (Italic) + `DM Sans`, refs `copias/mellem-ca`, `copias/azimuteresidencial-com-br`, `copias/masters-residence-dviga`.
+
 

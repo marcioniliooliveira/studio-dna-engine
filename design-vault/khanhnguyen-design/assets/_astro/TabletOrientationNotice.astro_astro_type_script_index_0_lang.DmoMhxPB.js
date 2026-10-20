@@ -1,0 +1,1 @@
+import{s as o}from"./documentScrollLock.Bf2ZIqRA.js";const n=window.matchMedia("(min-width: 768px) and (max-width: 1024px) and (orientation: portrait)");let t=!1;const i=()=>{const e=n.matches;e!==t&&(t=e,o(e))};i();n.addEventListener("change",i);window.addEventListener("pagehide",e=>{e.persisted||(n.removeEventListener("change",i),t&&o(!1))},{once:!0});

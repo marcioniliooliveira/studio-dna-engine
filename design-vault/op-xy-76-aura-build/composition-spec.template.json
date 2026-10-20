@@ -1,0 +1,99 @@
+{
+  "version": "2.0.0",
+  "refSlug": "op-xy-76-aura-build",
+  "brandName": "OP–XY Hardware Showcase",
+  "archetype": "3D Hardware Product Showcase / Inertial Scroll Storytelling",
+  "theme": {
+    "bgBase": "#0c0d0e",
+    "bgSurface": "#141517",
+    "bgSurfaceRaised": "#1c1d20",
+    "border": "rgba(255, 255, 255, 0.08)",
+    "borderStrong": "rgba(255, 255, 255, 0.18)",
+    "accent": "#ff3a2f",
+    "textMain": "#e2e4e8",
+    "textDim": "#8b8f97",
+    "textMuted": "#52565e"
+  },
+  "typography": {
+    "display": "Geist",
+    "body": "Geist Mono",
+    "case": "lowercase"
+  },
+  "motion": {
+    "engine": "Three.js r186 + GSAP ScrollTrigger + Lenis",
+    "pinDistance": 22356,
+    "physics": {
+      "keySpringOvershoot": -0.32,
+      "keyDampingDecay": 7,
+      "filmAssemblyCurve": "backInOut"
+    },
+    "shader": {
+      "type": "FBM Volumetric Smoke & Light Beam",
+      "fogDensity": 0.35
+    }
+  },
+  "audio": {
+    "engine": "Web Audio API",
+    "procedural": true,
+    "oscillatorsCount": 8,
+    "hasInteractiveSequencer": true
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "type": "3d-product-hero",
+      "cameraPose": { "x": 0, "y": 0.45, "z": 0.95 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "strip",
+      "type": "feature-strip",
+      "cameraPose": { "x": -0.15, "y": 0.38, "z": 0.72 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "macro",
+      "type": "macro-zoom-keys",
+      "cameraPose": { "x": 0.05, "y": 0.22, "z": 0.45 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "engines",
+      "type": "sound-engine-selection",
+      "cameraPose": { "x": 0, "y": 0.35, "z": 0.65 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "seq",
+      "type": "interactive-step-sequencer",
+      "cameraPose": { "x": 0, "y": 0.52, "z": 0.68 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "connect",
+      "type": "io-ports-side-view",
+      "cameraPose": { "x": 0.42, "y": 0.12, "z": 0.38 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "flip",
+      "type": "underside-specs-rotation",
+      "cameraPose": { "x": 0, "y": -0.4, "z": 0.75 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    },
+    {
+      "id": "close",
+      "type": "purchase-call-to-action",
+      "cameraPose": { "x": 0, "y": 0.3, "z": 0.88 },
+      "bg": "#0c0d0e",
+      "text": "#e2e4e8"
+    }
+  ]
+}

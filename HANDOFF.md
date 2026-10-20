@@ -1,8 +1,51 @@
-# 🚀 HANDOFF DE ENGENHARIA & TRANSIÇÃO DE CONTEXTO (V5.2 CONSOLIDADA)
+# 🚀 HANDOFF DE ENGENHARIA & TRANSIÇÃO DE CONTEXTO (V5.3 CONSOLIDADA)
 
-> **Data:** 28 de Agosto de 2026  
+> **Data:** 14 de Setembro de 2026  
 > **Repositório:** `playwright-scraper` (`studio-dna-engine`)  
-> **Status:** Pipeline de Engenharia Determinística Ativo (Custo Zero de IA no Scraper), Design Vault Multidimensional (Elyse, ByMonolog, Motion Physics, 3D, Tipografia), Servidor MCP Integrado, Preview Server com HTTP 206 Streaming & Proxy Self-Healing 100% Operacional, Suíte de Auditoria Box-Diff Linter e Fábrica ICM com DNA Lock.
+> **Status:** Branch estruturada para testes da equipe com Canvases Kombai Canônicos (ACON24 e Jumpflex Home Journey), Cliente Negocia Bem validado via DNA Lock, Handoff Jumpflex Evolution atualizado e repositório higienizado.
+
+---
+
+## 🧪 Guia Rápido de Testes para a Equipe
+
+Esta branch foi organizada para que os colegas possam testar diretamente os principais artefatos canônicos:
+
+### 1. Canvases Kombai (Design & Jornadas)
+Os arquivos canônicos aprovados estão versionados em `.kombai/canvas/`:
+- **ACON24 Faithful Canvas Clone (`.kombai/canvas/ACON24 home — faithful canvas clone.html`):**
+  - Abra o arquivo HTML diretamente no seu navegador ou via extensão Kombai para visualizar o clone fiel e responsivo da home do ACON24.
+- **Jumpflex Home Journey (`.kombai/canvas/jumpflex-home-journey.canvas`):**
+  - Jornada completa de 7 etapas (`Hero`, `Transição Scroll`, `Rail FLEX/HERO/MEGA`, `Comparação de Produtos`, `Prova Social & Garantia`, `Entrada B2B/Cotação` e `FAQ/Footer`).
+  - Abra via extensão do Kombai no seu IDE ou editor de design.
+- **Jumpflex Brand Exploration (`.kombai/canvas/jumpflex-com-home.canvas`):**
+  - Exploração dos componentes de marca Jumpflex.
+
+### 2. Cliente Negocia Bem (`clientes/negocia-bem`)
+Site completo da consultoria imobiliária com DNA Lock e contratos ICM:
+- **Para executar o servidor dedicado do cliente:**
+  ```bash
+  cd clientes/negocia-bem
+  npm run dev
+  ```
+  Acesse `http://localhost:3000` para navegar na experiência com GSAP ScrollTrigger, abas interativas e formulários.
+- **Contratos e Documentação do Cliente:**
+  - `clientes/negocia-bem/DNA.md`
+  - `clientes/negocia-bem/brand-spec.json`
+  - `clientes/negocia-bem/composition-spec.json`
+  - `clientes/negocia-bem/content-slots.json`
+
+### 3. Documentação e Handoff Jumpflex Evolution
+- Consulte [clientes/jumpflex-home-evolution/handoff.md](file:///c:/Users/wd/Documents/playwright-scraper/clientes/jumpflex-home-evolution/handoff.md) para ver a especificação completa dos contratos de dados, slots, regras de motion GSAP, matriz comparativa e checklist de aceitação por etapas (A a E).
+
+### 4. Execução da Suíte de Testes Automatizados
+- Para rodar a bateria de testes automatizados do projeto:
+  ```bash
+  npm test
+  ```
+- Para rodar especificamente os testes do Negocia Bem:
+  ```bash
+  node --test test/negocia-bem-scroll-integrity.test.js
+  ```
 
 ---
 

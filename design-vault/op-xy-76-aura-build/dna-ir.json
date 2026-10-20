@@ -1,0 +1,301 @@
+{
+  "schemaVersion": "0.1.0",
+  "specimen": "op-xy-76-aura-build",
+  "name": "OP–XY Hardware Synthesizer Experience",
+  "capabilities": {
+    "layout": { "active": true, "confidence": 1.0, "driver": "css-sticky-stage" },
+    "typography": { "active": true, "confidence": 0.98, "driver": "base64-geist" },
+    "motion": { "active": true, "confidence": 0.95, "driver": "lenis-gsap-ticker" },
+    "webgl": { "active": true, "confidence": 1.0, "driver": "threejs-r186-draco" },
+    "audio": { "active": true, "confidence": 1.0, "driver": "webaudio-procedural" },
+    "interaction": { "active": true, "confidence": 0.95, "driver": "raycast-spring-keys" },
+    "editorial": { "active": false, "confidence": 0.9, "driver": "none" },
+    "density": { "active": true, "confidence": 0.92, "driver": "technical-industrial" }
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "role": "cinematic-hardware-hero",
+      "domSelector": "#hero",
+      "geometry": {
+        "height": "200vh",
+        "stage": "sticky 100vh",
+        "asymmetry": "left-heavy-3d",
+        "safeArea": { "top": "calc(var(--nav) + 4vh)", "right": "var(--gutter)", "maxWidth": "min(38vw, 22ch)" }
+      },
+      "children": ["claim", "watermark", "categories", "stage-3d"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "medium",
+        "layout": "low",
+        "camera": "medium",
+        "geometry3D": "locked"
+      }
+    },
+    {
+      "id": "strip",
+      "role": "technical-ortho-performance",
+      "domSelector": "#strip",
+      "geometry": {
+        "height": "180vh",
+        "stage": "sticky 100vh",
+        "camera": "top-down-68-keys"
+      },
+      "children": ["headline-perform", "tech-stack", "68-key-grid"],
+      "mutability": {
+        "copy": "high",
+        "typography": "high",
+        "palette": "high",
+        "layout": "low",
+        "camera": "locked",
+        "geometry3D": "locked"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "id": "hero.typography.primary",
+      "category": "typography",
+      "type": "FontSpec",
+      "value": { "family": "Geist", "fallback": "sans-serif" },
+      "mutability": "mutable",
+      "confidence": 0.98,
+      "origin": { "source": "static-analysis", "method": "css-root-vars" }
+    },
+    {
+      "id": "hero.typography.technical",
+      "category": "typography",
+      "type": "FontSpec",
+      "value": { "family": "Geist Mono", "fallback": "monospace" },
+      "mutability": "mutable",
+      "confidence": 0.98,
+      "origin": { "source": "static-analysis", "method": "css-root-vars" }
+    },
+    {
+      "id": "hero.surface.backdrop.toneGradient",
+      "category": "surface",
+      "type": "ColorGradient",
+      "value": { "type": "stepped-16-tones", "tint": "#ffffff", "toneRange": [0.01, 0.31] },
+      "mutability": "mutable",
+      "confidence": 0.96,
+      "origin": { "source": "runtime-observation", "method": "three-bars-mesh" }
+    },
+    {
+      "id": "hero.product.sequencerStepGradient",
+      "category": "surface",
+      "type": "ColorGradient",
+      "value": { "type": "stepped-16-tones", "targetControls": "OPXY.steps" },
+      "mutability": "mutable",
+      "confidence": 0.98,
+      "origin": { "source": "runtime-observation", "method": "glb-step-keys-mesh" }
+    },
+    {
+      "id": "hero.surface.ambientDarkness",
+      "category": "surface",
+      "type": "ColorHex",
+      "value": "#0c0d0e",
+      "mutability": "mutable",
+      "confidence": 0.95,
+      "origin": { "source": "static-analysis", "method": "css-root-bg" }
+    },
+    {
+      "id": "hero.product.accentTrigger",
+      "category": "surface",
+      "type": "ColorHex",
+      "value": "#ff3a2f",
+      "mutability": "mutable",
+      "confidence": 1.0,
+      "origin": { "source": "runtime-observation", "method": "glb-material-record" }
+    },
+    {
+      "id": "hero.copy.brand",
+      "category": "content",
+      "type": "StringText",
+      "value": "OP–XY",
+      "mutability": "mutable",
+      "confidence": 1.0,
+      "origin": { "source": "static-analysis", "method": "dom-h1" }
+    },
+    {
+      "id": "hero.copy.claim",
+      "category": "content",
+      "type": "StringText",
+      "value": "a synthesizer, a sampler and a sequencer. one instrument, all black.",
+      "mutability": "mutable",
+      "confidence": 0.98,
+      "origin": { "source": "static-analysis", "method": "dom-claim" }
+    },
+    {
+      "id": "strip.copy.headline",
+      "category": "content",
+      "type": "StringText",
+      "value": "perform.",
+      "mutability": "mutable",
+      "confidence": 1.0,
+      "origin": { "source": "static-analysis", "method": "dom-strip-h2" }
+    },
+    {
+      "id": "strip.copy.caption",
+      "category": "content",
+      "type": "StringText",
+      "value": "four rows · 68 keys · one grayscale",
+      "mutability": "mutable",
+      "confidence": 0.96,
+      "origin": { "source": "static-analysis", "method": "dom-strip-stack" }
+    },
+    {
+      "id": "audio.keyFeedback.baseFrequency",
+      "category": "audio",
+      "type": "FrequencyHz",
+      "value": 320,
+      "mutability": "mutable",
+      "confidence": 0.92,
+      "origin": { "source": "runtime-observation", "method": "webaudio-synth-pitch" }
+    },
+    {
+      "id": "motion.cameraGlidingDamp",
+      "category": "motion",
+      "type": "NumberRange",
+      "value": 0.12,
+      "mutability": "mutable",
+      "confidence": 0.9,
+      "origin": { "source": "runtime-observation", "method": "ticker-lerp-damping" }
+    }
+  ],
+  "bindings": [
+    {
+      "paramId": "hero.typography.primary",
+      "adapter": "css",
+      "target": ":root",
+      "property": "--sans"
+    },
+    {
+      "paramId": "hero.typography.technical",
+      "adapter": "css",
+      "target": ":root",
+      "property": "--mono"
+    },
+    {
+      "paramId": "hero.surface.ambientDarkness",
+      "adapter": "css",
+      "target": ":root",
+      "property": "--bg"
+    },
+    {
+      "paramId": "hero.surface.backdrop.toneGradient",
+      "adapter": "three",
+      "target": "OPXY.backdrop.bars",
+      "property": "toneMultiplier"
+    },
+    {
+      "paramId": "hero.product.accentTrigger",
+      "adapter": "three",
+      "target": "CONTROL__key-39.material",
+      "property": "color"
+    },
+    {
+      "paramId": "hero.copy.brand",
+      "adapter": "dom",
+      "target": "#hero h1",
+      "property": "textContent"
+    },
+    {
+      "paramId": "hero.copy.claim",
+      "adapter": "dom",
+      "target": "#hero .claim",
+      "property": "innerHTML"
+    },
+    {
+      "paramId": "strip.copy.headline",
+      "adapter": "dom",
+      "target": "#strip h2",
+      "property": "textContent"
+    },
+    {
+      "paramId": "strip.copy.caption",
+      "adapter": "dom",
+      "target": "#strip .stack b",
+      "property": "textContent"
+    },
+    {
+      "paramId": "audio.keyFeedback.baseFrequency",
+      "adapter": "audio",
+      "target": "AUDIO.keyClickOscillator",
+      "property": "frequency"
+    },
+    {
+      "paramId": "hero.product.sequencerStepGradient",
+      "adapter": "three",
+      "target": "OPXY.steps",
+      "property": "stepMaterials"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "c-synchronized-dual-gradient",
+      "type": "adaptive",
+      "source": "hero.surface.backdrop.toneGradient",
+      "target": "hero.product.sequencerStepGradient",
+      "rule": "synchronized-16-step-gradient"
+    },
+    {
+      "id": "c-typography-safearea",
+      "type": "adaptive",
+      "source": "hero.typography.primary",
+      "target": "hero.layout.safeArea",
+      "rule": "text-fit-containment"
+    },
+    {
+      "id": "c-contrast-background-product",
+      "type": "adaptive",
+      "source": "hero.surface.ambientDarkness",
+      "target": "hero.surface.backdrop.toneGradient",
+      "rule": "apca-minimum-contrast"
+    },
+    {
+      "id": "c-viewport-camera-fov",
+      "type": "adaptive",
+      "source": "viewport.aspectRatio",
+      "target": "hero.camera.fov",
+      "rule": "portrait-rig-recalculation"
+    },
+    {
+      "id": "c-motion-reduced-scaling",
+      "type": "adaptive",
+      "source": "prefers-reduced-motion",
+      "target": "motion.cameraGlidingDamp",
+      "rule": "a11y-motion-dampening"
+    },
+    {
+      "id": "c-performance-fps-tier",
+      "type": "adaptive",
+      "source": "runtime.fps",
+      "target": "shader.fbmNoise.active",
+      "rule": "adaptive-tier-degradation"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv-zero-js-errors",
+      "description": "Hard invariant: zero JavaScript and WebGL execution errors permitted during interactive sessions."
+    },
+    {
+      "id": "inv-68-keys-physical-retention",
+      "description": "Hard invariant: all 68 physical keyboard keys must retain raycasting, hover, and press animation."
+    },
+    {
+      "id": "inv-monochromatic-restraint",
+      "description": "Design invariant: strict monochromatic dark industrial palette with sparse single-accent strategy."
+    },
+    {
+      "id": "inv-audio-tactile-feedback",
+      "description": "Hard invariant: mechanical key switch audio synthesis must trigger per key event."
+    }
+  ],
+  "provenance": {
+    "extractedAt": "2026-09-28T11:45:00Z",
+    "method": "canonical-reverse-engineering-and-runtime-observation",
+    "agent": "studio-dna-engine-core"
+  }
+}

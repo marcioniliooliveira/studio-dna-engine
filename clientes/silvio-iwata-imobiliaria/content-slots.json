@@ -1,0 +1,139 @@
+{
+  "client": "silvio-iwata-imobiliaria",
+  "mode": "demonstrative-presentation",
+  "language": "pt-BR",
+  "brand": {
+    "name": "Imobiliária Silvio Iwata",
+    "logoText": "silvio iwata",
+    "tagline": "Imobiliária em Maringá PR",
+    "location": "Maringá e região",
+    "tokens": {
+      "forest": "#055227",
+      "forestDeep": "#005023",
+      "lime": "#8dbc2a",
+      "ink": "#0d0f14",
+      "muted": "#8a95a8",
+      "line": "#e8edf4",
+      "white": "#ffffff"
+    },
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Inter"
+  },
+  "intents": [
+    {
+      "id": "comprar",
+      "label": "Comprar",
+      "eyebrow": "Escolha com clareza",
+      "title": "Um imóvel pode ser o começo de uma vida com mais espaço para acontecer.",
+      "description": "Percorra uma seleção demonstrativa e leve para a conversa o que realmente importa para você.",
+      "actionLabel": "Explorar para comprar",
+      "image": "assets/silvio-casa-01.svg",
+      "target": "#intermediary-comprar"
+    },
+    {
+      "id": "alugar",
+      "label": "Alugar",
+      "eyebrow": "O lugar da sua rotina",
+      "title": "A próxima chave precisa fazer sentido antes mesmo de abrir a porta.",
+      "description": "Uma jornada visual para organizar localização, tipo de imóvel e ritmo de mudança.",
+      "actionLabel": "Explorar para alugar",
+      "image": "assets/silvio-casa-02.svg",
+      "target": "#intermediary-alugar"
+    },
+    {
+      "id": "investir",
+      "label": "Investir",
+      "eyebrow": "Patrimônio pede perspectiva",
+      "title": "Antes do próximo movimento, observe o que dá consistência a uma escolha.",
+      "description": "Uma frente de conversa sobre patrimônio e contexto local, sem promessa de rentabilidade.",
+      "actionLabel": "Conversar sobre investir",
+      "image": "assets/silvio-casa-03.svg",
+      "target": "#intermediary-investir"
+    }
+  ],
+  "properties": [
+    {
+      "title": "Casa Linha Verde",
+      "city": "Maringá",
+      "neighborhood": "Contexto demonstrativo",
+      "type": "Casa",
+      "bedrooms": "04",
+      "area": "180 m²",
+      "priceLabel": "Consulte condições",
+      "intent": "comprar",
+      "image": "assets/silvio-casa-01.svg",
+      "isDemo": true
+    },
+    {
+      "title": "Apartamento Horizonte",
+      "city": "Maringá",
+      "neighborhood": "Localização demonstrativa",
+      "type": "Apartamento",
+      "bedrooms": "02",
+      "area": "86 m²",
+      "priceLabel": "Consulte condições",
+      "intent": "alugar",
+      "image": "assets/silvio-casa-02.svg",
+      "isDemo": true
+    },
+    {
+      "title": "Endereço de Futuro",
+      "city": "Maringá e região",
+      "neighborhood": "Leitura demonstrativa",
+      "type": "Patrimônio",
+      "bedrooms": "—",
+      "area": "A definir",
+      "priceLabel": "Conversa inicial",
+      "intent": "investir",
+      "image": "assets/silvio-casa-03.svg",
+      "isDemo": true
+    }
+  ],
+  "authority": {
+    "headline": "Experiência regional para decisões que atravessam o tempo.",
+    "body": "Uma apresentação demonstrativa que traduz a presença da Silvio Iwata em uma navegação mais clara, sensorial e preparada para a próxima conversa.",
+    "historyLabel": "Presença construída desde 1976",
+    "locationLabel": "Maringá, Paraná"
+  },
+  "map": {
+    "label": "Maringá e região",
+    "caption": "Mapa demonstrativo de contexto regional. Não é uma navegação cartográfica ao vivo.",
+    "highlight": "Maringá e entorno"
+  },
+  "contactTemplate": {
+    "headline": "Qual movimento faz sentido agora?",
+    "support": "Escolha uma intenção para preparar uma conversa mais objetiva com a Silvio Iwata.",
+    "disclosure": "Esta é uma apresentação demonstrativa. Nenhuma mensagem é enviada por esta tela.",
+    "actionLabel": "Continuar para atendimento",
+    "backLabel": "Voltar para explorar"
+  },
+  "offline": {
+    "required": true,
+    "remoteAssets": [],
+    "remoteScripts": [],
+    "backend": false
+  },
+  "referenceTrace": [
+    {
+      "reference": "Aircenter",
+      "file": "copias/aircenter-space/site/index.html",
+      "lines": "306-503",
+      "mechanic": "hero sticky, parallax e reveal de entrada",
+      "adaptation": "preserva o fluxo contínuo com CSS variables e observadores nativos"
+    },
+    {
+      "reference": "Aircenter",
+      "file": "copias/aircenter-space/site/index.html",
+      "lines": "506-641; 903-975; 1242-1326",
+      "mechanic": "seção de formato, contador/progresso, mapa sticky e slider",
+      "adaptation": "converte os beats em narrativa imobiliária linear, mapa estático e propriedades demonstrativas"
+    },
+    {
+      "reference": "21 Oaks",
+      "file": "copias/21oaks-org/site/index.html",
+      "lines": "3564-3618",
+      "mechanic": "slider com progresso e autoplay",
+      "adaptation": "mantém o ritmo de seleção para as três intenções sem importar identidade visual"
+    }
+  ]
+}

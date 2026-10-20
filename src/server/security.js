@@ -56,6 +56,10 @@ function resolveStaticPath({ rootDir, copiasDir, clientesDir, pathname }) {
     return resolveWithin(projectRoot, segments.slice(2).join(path.sep));
   }
 
+  if (segments[0] === 'copias') {
+    return resolveWithin(copiasDir, segments.slice(1).join(path.sep));
+  }
+
   return resolveWithin(copiasDir, segments.join(path.sep));
 }
 

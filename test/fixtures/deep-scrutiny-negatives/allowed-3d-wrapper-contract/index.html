@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Allowed Test: Wrapper 3D Front Back Contract</title>
+  <style>
+    body { margin: 0; }
+    .single-heading-wrap { position: relative; width: 360px; height: 80px; }
+    .front, .back { position: absolute; inset: 0; display: block; }
+    .back { transform: rotateY(1deg); }
+    .front span, .back span { display: block; }
+  </style>
+</head>
+<body>
+  <div class="single-heading-wrap">
+    <div class="front" data-deep-scrutiny-overlap-group="hero-wrapper-front-back" data-deep-scrutiny-overlap-role="front">
+      <span>Visão de crescimento</span>
+    </div>
+    <div class="back" data-deep-scrutiny-overlap-group="hero-wrapper-front-back" data-deep-scrutiny-overlap-role="back">
+      <span>Visão de crescimento</span>
+    </div>
+  </div>
+</body>
+</html>

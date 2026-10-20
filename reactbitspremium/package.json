@@ -1,0 +1,29 @@
+{
+  "name": "reactbitspremium",
+  "version": "1.0.0",
+  "description": "Curated collection of the most premium, sophisticated and elegant components from ReactBits (https://reactbits.dev/)",
+  "private": true,
+  "dependencies": {
+    "@react-three/drei": "^9.99.0",
+    "@react-three/fiber": "^8.15.16",
+    "@react-three/rapier": "^1.3.0",
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.0.8",
+    "gsap": "^3.12.5",
+    "lucide-react": "^0.344.0",
+    "ogl": "^1.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.2.1",
+    "three": "^0.161.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/three": "^0.161.2",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
+  }
+}

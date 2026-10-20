@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "runId": "scalex-a2-asset-readiness-002",
+  "clientScope": "flashtech-caso-04-growth",
+  "budget": { "maxRetries": 1 },
+  "allowedTools": ["read-file", "edit-file", "run-targeted-test", "run-quality-gate"],
+  "allowedGates": ["unified-quality"],
+  "tasks": [
+    {
+      "id": "a2-asset-readiness",
+      "dependsOn": [],
+      "allowedTools": ["read-file", "edit-file", "run-targeted-test", "run-quality-gate"],
+      "allowedGates": ["unified-quality"],
+      "input": {
+        "role": "gemini-ide-executor",
+        "readOnly": [
+          "clientes/flashtech-caso-04-growth/qa-reports/a2-approved/unified-quality.json",
+          "src/qa/unified-quality-gate.js",
+          "scripts/run-unified-gate.js"
+        ],
+        "writeScope": ["src/qa/unified-quality-gate.js", "test/unified-quality-gate.test.js"],
+        "forbidden": ["clientes/flashtech-caso-04-growth/site", "clientes/flashtech-caso-04-growth/site/assets", "other client directories"],
+        "goal": "Differentiate unloaded lazy images from real broken image/network failures in the Unified Quality Gate, using test-first development and deterministic lifecycle evidence.",
+        "acceptance": [
+          "A failing regression test exists before the production change.",
+          "Real broken images and failed requests still fail the gate.",
+          "Offscreen lazy images cannot fail the gate merely for not being requested.",
+          "The flashtech A2 gate is rerun and reports the changed classification with compact evidence."
+        ]
+      }
+    }
+  ]
+}

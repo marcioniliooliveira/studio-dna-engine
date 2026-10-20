@@ -14,8 +14,8 @@
     "text": "#fafaf9"
   },
   "seo": {
-    "title": "Nome da Empresa â€” Slogan de Destaque",
-    "description": "DescriÃ§Ã£o de alto padrÃ£o para motores de busca e compartilhamento em redes sociais.",
+    "title": "Nome da Empresa — Slogan de Destaque",
+    "description": "Descrição de alto padrão para motores de busca e compartilhamento em redes sociais.",
     "ogImage": "./assets/images/og-preview.png",
     "canonicalUrl": "https://minhaempresa.com"
   },
@@ -25,16 +25,16 @@
   },
   "copyOverrides": {
     "hero": {
-      "eyebrow": "TECNOLOGIA Â· ALTA PERFORMANCE",
-      "title": "ExperiÃªncias Digitais que Transformam Resultados.",
-      "description": "Criamos presenÃ§as digitais exclusivas para marcas que lideram seus mercados.",
-      "primaryCta": "Agendar ReuniÃ£o",
+      "eyebrow": "TECNOLOGIA · ALTA PERFORMANCE",
+      "title": "Experiências Digitais que Transformam Resultados.",
+      "description": "Criamos presenças digitais exclusivas para marcas que lideram seus mercados.",
+      "primaryCta": "Agendar Reunião",
       "secondaryCta": "Ver Projetos"
     },
     "metrics": [
       {
         "number": "99.8%",
-        "label": "PrecisÃ£o & Confiabilidade"
+        "label": "Precisão & Confiabilidade"
       },
       {
         "number": "15k+",
@@ -42,13 +42,13 @@
       },
       {
         "number": "24/7",
-        "label": "Monitoramento ContÃ­nuo"
+        "label": "Monitoramento Contínuo"
       }
     ],
     "contact": {
       "whatsapp": "5511999999999",
       "email": "contato@empresa.com",
-      "address": "SÃ£o Paulo, Brasil"
+      "address": "São Paulo, Brasil"
     }
   }
 }

@@ -1,0 +1,1 @@
+const o=new Set;function l(e){return o.add(e),()=>{o.delete(e)}}function r(e){const t=e?"hidden":"";document.documentElement.style.overflow=t,document.body.style.overflow=t,e?document.documentElement.style.overscrollBehavior="none":document.documentElement.style.removeProperty("overscroll-behavior");for(const n of o)n(e)}export{l as o,r as s};

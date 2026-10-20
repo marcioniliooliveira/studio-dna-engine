@@ -1,0 +1,171 @@
+{
+  "_meta": {
+    "extractedAt": "2026-09-21T12:59:00Z",
+    "sourceUrl": "https://integriimoveis.com.br/",
+    "pipeline": "studio-dna-engine v2.0.0",
+    "status": "observed",
+    "dossie": "03",
+    "dossieName": "Imobiliária Regional / Catálogo + Lead Capture WhatsApp"
+  },
+  "client": {
+    "id": "integrii-imoveis",
+    "name": "Integrii Imóveis",
+    "fullName": "Integrii Imóveis",
+    "tagline": "Encontre o seu imóvel ideal!",
+    "niche": "RealEstate",
+    "subNiche": "Imobiliária regional — Paiçandu PR",
+    "location": "Paiçandu, Paraná, Brasil — Av. Ivaí, 299 Centro — CEP 87140-000",
+    "language": "pt-BR"
+  },
+
+  "_DESIGN_TOKEN_POLICY": "Os tokens P1 abaixo são IDENTIDADE DE MARCA — capturados como verdade da marca do cliente. A IMPLEMENTAÇÃO Bootstrap/CSS é descartada e reconstruída com padrão FlashTech premium. As cores P0 FlashTech (#02040A, #00F0FF, etc.) são adicionadas pela metodologia — NÃO estão no site original e isso é esperado e correto.",
+
+  "colorsP1_brand": {
+    "_policy": "Cores observadas com freq >= 3. Identidade cromática do cliente Integrii.",
+    "primary": {
+      "hex": "#00233a",
+      "role": "Azul naval profundo — cor única e dominante da marca Integrii",
+      "frequency": 18,
+      "observed": true,
+      "hslApprox": "hsl(204, 100%, 11%)",
+      "tone": "Naval, autoridade, confiança imobiliária — azul escuro premium",
+      "FlashTechUsage": "Cor de marca principal — usar em headers, navbar, badges, elementos de identidade",
+      "_analysis": "Identidade cromática FORTE e única. Azul naval distingue da média do mercado imobiliário regional (que usa verde ou laranja). Sinal de posicionamento mais premium."
+    },
+    "primaryHover": {
+      "hex": "#264458",
+      "role": "Variante mais clara do primary — hover/active states",
+      "frequency": 3,
+      "observed": true,
+      "FlashTechUsage": "Hover states, gradientes sutis sobre o primary"
+    },
+    "nearBlack": {
+      "hex": "#121212",
+      "role": "Quase-preto para textos e rodapé",
+      "frequency": 6,
+      "observed": true,
+      "FlashTechUsage": "Textos de corpo sobre fundos claros. Próximo do obsidian P0 — considerar substituição."
+    },
+    "lightGray": {
+      "hex": "#f2f2f2",
+      "role": "Cinza claro para seções alternadas e footer",
+      "frequency": 4,
+      "observed": true,
+      "FlashTechUsage": "Background de seções de listagem de imóveis, separação visual"
+    },
+    "white": {
+      "hex": "#ffffff",
+      "role": "Branco padrão",
+      "frequency": 8,
+      "observed": true,
+      "FlashTechUsage": "Textos sobre primary"
+    }
+  },
+
+  "colorsP0_flashtech": {
+    "_policy": "Tokens P0 FlashTech. AUSENTES no original — serão ADICIONADOS no site demo. Inegociáveis.",
+    "obsidian": "#02040A",
+    "cyan": "#00F0FF",
+    "blue": "#0072FF",
+    "cyanLight": "#64CEFB",
+    "ctaGradient": "linear-gradient(135deg, #64CEFB 0%, #0072FF 50%, #00F0FF 100%)",
+    "_colorHarmony": "O azul FlashTech (#0072FF, #64CEFB) harmoniza naturalmente com o naval #00233a do cliente — criando coesão entre identidade e metodologia."
+  },
+
+  "colorsToDiscard": {
+    "_policy": "Cores do original que NÃO devem ser herdadas.",
+    "duplicateSecondary": "#00233a usado como primária E secundária",
+    "reason": "A marca Integrii tem APENAS uma cor — sem acento real. O site demo deve introduzir o acento FlashTech cyan como ponto de conversão, aproveitando a harmonia com o azul naval.",
+    "genericGray": "#f2f2f2 em excesso como background",
+    "reasonGray": "Substituir por obsidian P0 ou neutros com mais personalidade"
+  },
+
+  "typography": {
+    "_policy": "Poppins é válida e de qualidade — preservamos como P1 para o corpo. Mantemos mas elevamos o stack com Plus Jakarta Sans para display.",
+    "original": {
+      "family": "Poppins",
+      "status": "PRESERVADO parcialmente",
+      "reason": "Poppins é moderna, legível e amplamente disponível. Adequada para imobiliário de porte médio.",
+      "limitation": "Usada em TODOS os níveis tipográficos — sem hierarquia real. H3/paragraph com peso 700 cria poluição visual."
+    },
+    "recommended": {
+      "display": {
+        "family": "Plus Jakarta Sans",
+        "weights": [700, 800],
+        "role": "H1, H2, nome do imóvel em destaque, CTAs",
+        "justification": "Eleva o posicionamento com mais personalidade que Poppins pura. Cria distinção visual clara vs concorrência regional."
+      },
+      "body": {
+        "family": "Poppins",
+        "weights": [400, 500],
+        "role": "Texto descritivo, specs de imóvel, fichas técnicas",
+        "justification": "Preservamos Poppins onde funciona — corpo e UI labels. Mantém familiaridade da marca."
+      },
+      "data": {
+        "family": "JetBrains Mono",
+        "weights": [400, 600],
+        "role": "Preços (R$ 450.000), metragem (120m²), CEP, dados numéricos",
+        "justification": "P0 FlashTech — credibilidade técnica em dados numéricos imobiliários"
+      }
+    },
+    "typographyProblems": [
+      "H3 e paragraph com weight: 700 — poluição visual por excesso de bold",
+      "Ausência de escala tipográfica real — todos os tamanhos são próximos (14-32px)",
+      "Zero letter-spacing intencional — sem refinamento editorial"
+    ]
+  },
+
+  "brandIdentity": {
+    "tone": "Acessível, regional, próxima da comunidade de Paiçandu e região",
+    "market": "Paiçandu PR — imobiliário regional / compra e venda",
+    "categories": ["Comprar", "Rural", "Selecionados"],
+    "filters": ["Ambientes", "Dormitórios", "Localização", "Bairro", "Tipo"],
+    "contact": {
+      "address": "Avenida Ivaí, 299 Centro, Paiçandu - PR",
+      "cep": "87140-000"
+    },
+    "socialPresence": "Detectada menção a redes sociais no footer",
+    "_positioning": "Imobiliária de bairro com ambições de crescimento — o site demo deve posicioná-la como a imobiliária mais moderna e confiável da região"
+  },
+
+  "siteStructure": {
+    "currentSections": [
+      "Header sticky com navegação",
+      "Nav com filtros de busca (Comprar/Rural/Tipo)",
+      "Main: listing de imóveis com filtros avançados (noUiSlider para preço)",
+      "Footer: endereço, redes sociais, mapa"
+    ],
+    "techStack_observed": [
+      "Bootstrap 5.3",
+      "Swiper.js (carrossel de imóveis)",
+      "noUiSlider (filtro de preço)",
+      "jQuery (legado)"
+    ],
+    "currentProblems": [
+      "Sem hero section — o site começa direto no catálogo, sem pitch de valor",
+      "15 links externos no funil — dispersão moderada",
+      "Paleta monocromática — sem acento, sem hierarquia visual de conversão",
+      "Tipografia sem escala real — todos os pesos são bold",
+      "Sem métricas de credibilidade (anos de mercado, imóveis vendidos)",
+      "Sem depoimentos visíveis",
+      "Sem micro-animações ou scroll effects"
+    ],
+    "demoSiteProposal": {
+      "structure": [
+        "Hero: 'Encontre seu imóvel ideal em Paiçandu e região' + Busca premium com glassmorphism",
+        "Trust bar: anos de experiência, imóveis vendidos, clientes atendidos",
+        "Destaques: Cards de imóveis com hover 3D e badges animados",
+        "Diferenciais: Por que Integrii — local, humano, eficiente",
+        "CTA primário: WhatsApp / Agendar visita",
+        "Footer mínimo — endereço + redes sociais"
+      ],
+      "dossiê": "03 — Captação de lead regional com catálogo de vitrine",
+      "differentiator": "Azul naval + cyan FlashTech = identidade premium única para imobiliário regional"
+    }
+  },
+
+  "ux_p0_violations_original": {
+    "externalLinksInFunnel": 15,
+    "status": "MODERADO — 15 links externos. Melhor que o mercado típico mas ainda viola funil fechado"
+  }
+}

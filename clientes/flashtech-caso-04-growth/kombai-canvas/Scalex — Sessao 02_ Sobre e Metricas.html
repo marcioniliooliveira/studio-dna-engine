@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="kombai-design-canvas" content="true">
+  <title>Scalex — Sessão 02: Sobre e Métricas</title>
+  <link rel="stylesheet" href="https://cdn.prod.website-files.com/69a94d5051ada59087892bea/css/acilav.webflow.shared.379082d56.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anton:300,400,500,600,700%7CInter:300,400,500,600,700">
+  <style>
+    html, body { margin: 0; padding: 0; background: #0B0D11; color: #FFFFFF; }
+    #root { display: contents; }
+  </style>
+  <style id="scalex-ui-refinement">
+      :root { --scalex-gold: #FFC552; }
+      .hero-display-text-1, .hero-display-text-2 {
+        font-family: Anton, sans-serif !important;
+      }
+      .hero-display-text-2 {
+        white-space: nowrap !important;
+      }
+      body, .primary-btn, .about-card, .about-card p {
+        font-family: Inter, sans-serif !important;
+      }
+      .primary-btn {
+        background: var(--scalex-gold) !important;
+      }
+      .about-cards-wrapper {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      @media (max-width: 767px) {
+        .about-cards-wrapper {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  <style>
+.wf-force-outline-none[tabindex="-1"]:focus{outline:none;}
+@media (min-width:992px) {html.w-mod-js:not(.w-mod-ix) [data-w-id="e0cae7f3-2d93-8036-9b74-63a3374df3b0"] {-webkit-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="1e5e684d-8611-e6fb-a8b8-ba445568b4ac"] {-webkit-transform:translate3d(10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-7deg) skew(0, 0);-moz-transform:translate3d(10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-7deg) skew(0, 0);-ms-transform:translate3d(10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-7deg) skew(0, 0);transform:translate3d(10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-7deg) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="2e3403ca-676a-90a2-1a80-f6d32c7e41ba"] {-webkit-transform:translate3d(-95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(8deg) skew(0, 0);-moz-transform:translate3d(-95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(8deg) skew(0, 0);-ms-transform:translate3d(-95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(8deg) skew(0, 0);transform:translate3d(-95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(8deg) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="c46e4b4a-aa11-f030-506b-3d99e7a0e414"] {-webkit-transform:translate3d(-210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-17deg) skew(0, 0);-moz-transform:translate3d(-210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-17deg) skew(0, 0);-ms-transform:translate3d(-210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-17deg) skew(0, 0);transform:translate3d(-210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-17deg) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="c0739b90-5a49-66c9-c1a4-c0c5eeebd2dc"] {-webkit-transform:translate3d(-10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(7deg) skew(0, 0);-moz-transform:translate3d(-10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(7deg) skew(0, 0);-ms-transform:translate3d(-10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(7deg) skew(0, 0);transform:translate3d(-10%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(7deg) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="7d088f20-0f05-d532-7f5b-afe4b6ead808"] {-webkit-transform:translate3d(95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-8deg) skew(0, 0);-moz-transform:translate3d(95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-8deg) skew(0, 0);-ms-transform:translate3d(95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-8deg) skew(0, 0);transform:translate3d(95%, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(-8deg) skew(0, 0);}html.w-mod-js:not(.w-mod-ix) [data-w-id="69061921-ea09-d149-13f6-8511284d460d"] {-webkit-transform:translate3d(210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(17deg) skew(0, 0);-moz-transform:translate3d(210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(17deg) skew(0, 0);-ms-transform:translate3d(210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(17deg) skew(0, 0);transform:translate3d(210%, null, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(17deg) skew(0, 0);}}@media (max-width:991px) and (min-width:768px) {html.w-mod-js:not(.w-mod-ix) [data-w-id="e0cae7f3-2d93-8036-9b74-63a3374df3b0"] {-webkit-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);}}@media (max-width:767px) and (min-width:480px) {html.w-mod-js:not(.w-mod-ix) [data-w-id="e0cae7f3-2d93-8036-9b74-63a3374df3b0"] {-webkit-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);}}@media (max-width:479px) {html.w-mod-js:not(.w-mod-ix) [data-w-id="e0cae7f3-2d93-8036-9b74-63a3374df3b0"] {-webkit-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);}}
+html.w-mod-js:not(.w-mod-ix3) :is(.insight-card-contents, [data-insight-slide-stagger="true"], .nav-link-text.is-default, .nav-link-text.is-absolute, .heading-3d-back, .single-heading-wrap.utility .heading-3d-back, .hero-display-text-1, .hero-display-text-2, .hero-image, .value-card) {visibility: hidden !important;}
+  
+  /* Service Cards Hover Reveal (Item 5B - Preserva Sticky Scroll) */
+  .service-hover-reveal {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #A0A5B5;
+  }
+  .service-card:hover .service-hover-reveal,
+  .service-card:focus-within .service-hover-reveal {
+    max-height: 180px;
+    opacity: 1;
+    margin-top: 14px;
+  }
+  .service-reveal-item {
+    margin-bottom: 4px;
+  }
+
+  </style>
+<style id="studio-dna-engine-core-fixes">
+  /* Prevenção de Bleed Horizontal W3C (Clip corta sem criar scroll container e preserva position: sticky) */
+  html {
+    overflow-x: clip !important;
+  }
+  body {
+    overflow-x: clip !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
+  .page-wrapper, .main-wrapper, .section {
+    overflow: visible !important;
+  }
+  .logo-marquees-wrapper, .insight-slider-mask {
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* Geometria 3D Nativa W3C para Títulos Rolantes (Sem display: none que causava sumiço pós-scroll) */
+  .single-heading-wrap {
+    perspective: 1200px !important;
+    transform-style: preserve-3d !important;
+    position: relative !important;
+  }
+  .heading-3d-front, .heading-3d-back {
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+  .heading-3d-front {
+    transform-origin: 50% 100% !important;
+  }
+  .heading-3d-back {
+    position: absolute !important;
+    inset: 0% !important;
+    transform-origin: 50% 0% !important;
+  }
+
+  /* Fix de Camadas Duplas (Hover limpo e sem sobreposição AABB em repouso) */
+  .nav-link-texts-wrap, .primary-btn-texts-wrapper, .submit-btn {
+    position: relative !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+  }
+  .nav-link-text.is-default, .primary-btn-text.is-default, .submit-btn-text.is-default {
+    position: relative !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    filter: blur(0px) !important;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, filter 0.3s ease !important;
+  }
+  .nav-link-text.is-absolute, .primary-btn-text.is-absolute, .submit-btn-text.is-absolute {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(100%) !important;
+    filter: blur(4px) !important;
+    pointer-events: none !important;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, filter 0.3s ease !important;
+  }
+  .nav-link:hover .nav-link-text.is-default, .primary-btn:hover .primary-btn-text.is-default, .submit-btn:hover .submit-btn-text.is-default {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    filter: blur(4px) !important;
+  }
+  .nav-link:hover .nav-link-text.is-absolute, .primary-btn:hover .primary-btn-text.is-absolute, .submit-btn:hover .submit-btn-text.is-absolute {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    filter: blur(0px) !important;
+  }
+
+  /* Ciclo de Vida Limpo dos Cards de Insights (Hover Reveal Suave sem Badge Preso) */
+  .insight-card-contents {
+    opacity: 0 !important;
+    transform: translateY(20px) !important;
+    transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  }
+  .insight-card:hover .insight-card-contents,
+  .insight-card:focus-within .insight-card-contents {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  @media (max-width: 991px), (hover: none) {
+    .insight-card-contents {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .insight-card-btn {
+      display: none !important;
+    }
+  }
+
+  /* Responsividade fluida e sem corte da Hero */
+  .hero-display-text-1 {
+    font-size: clamp(2.5rem, 8vw, 8.5rem) !important;
+    white-space: nowrap !important;
+    line-height: 1.05 !important;
+  }
+  .hero-display-text-2 {
+    font-size: clamp(2rem, 5.8vw, 7.5rem) !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.05 !important;
+  }
+  @media (max-width: 767px) {
+    .hero-display-text-1, .hero-display-text-2 {
+      font-size: clamp(2rem, 10vw, 3.8rem) !important;
+      word-break: break-word !important;
+      line-height: 1.05 !important;
+      white-space: normal !important;
+    }
+    .hero-contents {
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+    }
+  }
+</style>
+<style id="studio-dna-theme-override">
+  :root {
+    --bg-base: #0B0D11;
+    --bg-surface: #12151C;
+    --bg-card: #1A1E27;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --accent-laser: #FFC552;
+    --text-main: #FFFFFF;
+  }
+</style>
+<style id="scalex-service-hover-style" data-scalex-compiled="true">
+  .service-hover-reveal {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s ease;
+    margin-top: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #A0A5B5;
+  }
+  .service-card:hover .service-hover-reveal,
+  .service-card:focus-within .service-hover-reveal {
+    max-height: 140px;
+    opacity: 1;
+    visibility: visible;
+    margin-top: 12px;
+  }
+  .service-reveal-item {
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+  <div id="root">
+    <section id="about" class="section about"><div class="padding-global"><div class="w-layout-blockcontainer container w-container"><div class="about-section-inner"><div data-w-id="724a57ed-30b3-bd9c-7a04-475bb91fdb1e" style="transform-style: preserve-3d;" class="about-left"><div class="section-label">Sobre a Scalex</div></div><div class="about-right"><div class="about-right-top"><h2 data-w-id="7e427d9c-d678-cf4d-2fd1-1767d2ca2dfd" style="transform-style: preserve-3d; color: #FFFFFF; font-family: Inter, sans-serif; font-size: clamp(1.8rem, 2.6vw, 2.8rem); line-height: 1.3; font-weight: 500;" class="about-heading" aria-label="We’re a results-driven SEO agency helping businesses grow traffic, boost rankings, and achieve long-term.">Somos uma consultoria de Growth &amp; SEO orientada a dados, acelerando empresas que buscam liderança de mercado, escala comercial e previsibilidade de receita.</h2><div data-w-id="b9f6f995-3861-d8f6-6464-8da1adaa0a66" style="transform-style: preserve-3d;" class="about-btn-wrapper"><a data-wf--primary-btn--variant="base" data-w-id="e4c68e2b-0f32-4ebf-6164-c196f32c10cb" href="#contact" class="primary-btn w-inline-block" style="transform-style: preserve-3d;"><div class="primary-btn-bg"><img loading="eager" src="https://cdn.prod.website-files.com/69a94d5051ada59087892bea/69abf03bd757f4d4cf82b2b8_primary%20btn%20bg.avif" alt="primary btn bg" class="primary-btn-bg-image"></div><div class="primary-btn-gradient"></div><div class="primary-btn-texts-wrapper"><div class="primary-btn-text is-default" style="transform-style: preserve-3d; filter: blur(0px);">Falar com Especialista</div><div class="primary-btn-text is-absolute" style="transform-style: preserve-3d; filter: blur(5px);">Falar com Especialista</div></div></a></div></div><div data-w-id="c9edef40-9717-4c32-62ae-19e6c20a25fe" style="transform-style: preserve-3d;" class="about-cards-wrapper"><div class="about-card"><div class="counter-hide"><div data-w-id="144d5d8f-937a-53ab-78b4-e51249f0f4be" class="counter"><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _01"><div class="counter-number">1</div><div class="counter-number">2</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">8</div><div class="counter-number">1</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _02"><div class="counter-number">7</div><div class="counter-number">0</div><div class="counter-number">1</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">7</div></div><div class="counter-numbers-wrapper _03"><div class="counter-number">+</div></div></div></div><div class="about-card-text">Anos de Experiência em Growth &amp; SEO</div></div><div class="about-card"><div class="counter-hide"><div data-w-id="2a9d5bdf-6d90-412e-d3c8-47b0352ecf9d" class="counter"><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _01"><div class="counter-number">5</div><div class="counter-number">2</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">8</div><div class="counter-number">5</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _02"><div class="counter-number">0</div><div class="counter-number">0</div><div class="counter-number">1</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">0</div></div><div class="counter-numbers-wrapper _03"><div class="counter-number">+</div></div></div></div><div class="about-card-text">Operações B2B &amp; E-commerce Aceleradas</div></div><div class="about-card"><div class="counter-hide"><div data-w-id="d616cb09-44bd-1e33-6cb7-0ae5850434e9" class="counter"><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _01"><div class="counter-number">1</div><div class="counter-number">2</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">8</div><div class="counter-number">1</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _02"><div class="counter-number">2</div><div class="counter-number">0</div><div class="counter-number">1</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">2</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _01"><div class="counter-number">0</div><div class="counter-number">2</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">8</div><div class="counter-number">0</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _02"><div class="counter-number">0</div><div class="counter-number">0</div><div class="counter-number">1</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">0</div></div><div class="counter-numbers-wrapper _03"><div class="counter-number">+</div></div></div></div><div class="about-card-text">Palavras-Chave Posicionadas no Top 3</div></div><div class="about-card"><div class="counter-hide"><div data-w-id="97ec7729-2042-d07c-ae64-ca00a2e1f419" class="counter"><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _01"><div class="counter-number">8</div><div class="counter-number">2</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">8</div><div class="counter-number">8</div></div><div style="transform-style: preserve-3d;" class="counter-numbers-wrapper _02"><div class="counter-number">0</div><div class="counter-number">0</div><div class="counter-number">1</div><div class="counter-number">3</div><div class="counter-number">4</div><div class="counter-number">5</div><div class="counter-number">6</div><div class="counter-number">7</div><div class="counter-number">0</div></div><div class="counter-numbers-wrapper _03"><div class="counter-number">%</div></div></div></div><div class="about-card-text">Taxa Média de Retenção de Clientes</div></div></div></div></div></div></div></section>
+  </div>
+</body>
+</html>

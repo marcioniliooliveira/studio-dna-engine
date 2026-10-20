@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "clientScope": "flashtech-caso-04-growth",
+  "status": "approved-for-implementation",
+  "direction": {
+    "character": "editorial, estratégica e sofisticada",
+    "intensity": 8,
+    "guardrail": "legibilidade, intenção profissional e conversão prevalecem sobre espetáculo"
+  },
+  "invariants": {
+    "palette": ["#F8F8F6", "#FFC552"],
+    "typography": ["Anton", "Inter"],
+    "conversion": ["navbar CTA", "hero CTA", "audit invitation", "diagnostic form"]
+  },
+  "motion": {
+    "hero": {
+      "headline": "character-level Anton reveal with masked overflow",
+      "orbitIcons": "scroll-driven rotation only",
+      "illustration": "subtle cursor parallax on desktop and pointer-capable devices",
+      "priority": "highest"
+    },
+    "scroll": {
+      "default": "masked reveal",
+      "stagger": "allowed only when it clarifies grouped content",
+      "pinnedStorytelling": "services or cases section only"
+    },
+    "metrics": {
+      "entry": "count once when entering viewport",
+      "repeat": false
+    },
+    "cta": {
+      "hover": "magnetic offset plus controlled text blur/position swap",
+      "active": "short tactile scale feedback"
+    },
+    "auditInvitation": {
+      "behavior": "compact invite at 60 percent scroll; modal only after explicit click",
+      "modal": "opacity, scale and translateY; reversible close and restored focus"
+    },
+    "form": {
+      "feedback": "amber focus states plus visible completion progress"
+    },
+    "accessibility": {
+      "mobile": "same direction with reduced distances and durations",
+      "reducedMotion": "disable continuous motion and retain short fades only"
+    }
+  },
+  "performance": {
+    "continuousProperties": ["transform", "opacity"],
+    "forbiddenDuringScroll": ["width", "height", "margin", "top", "left"],
+    "scrollListeners": "passive",
+    "willChange": "only for continuously animated elements"
+  },
+  "acceptanceCriteria": [
+    "hero remains readable at 1440px and 390px",
+    "no horizontal overflow or clipped headline",
+    "CTA remains keyboard accessible and visible on mobile",
+    "modal never opens without an explicit click after the compact invitation",
+    "prefers-reduced-motion disables continuous movement",
+    "Unified Quality Gate and deep scrutiny gates pass"
+  ]
+}

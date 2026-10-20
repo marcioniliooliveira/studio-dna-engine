@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VisualCritique",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "timestamp",
+    "overallScore",
+    "dimensions",
+    "approved"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["2.0.0"]
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "overallScore": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "approved": {
+      "type": "boolean"
+    },
+    "dimensions": {
+      "type": "object",
+      "required": [
+        "hierarquia",
+        "composicao",
+        "tipografia",
+        "cor",
+        "assets",
+        "originalidade_contextual",
+        "movimento"
+      ],
+      "properties": {
+        "hierarquia": { "$ref": "#/definitions/DimensionCritique" },
+        "composicao": { "$ref": "#/definitions/DimensionCritique" },
+        "tipografia": { "$ref": "#/definitions/DimensionCritique" },
+        "cor": { "$ref": "#/definitions/DimensionCritique" },
+        "assets": { "$ref": "#/definitions/DimensionCritique" },
+        "originalidade_contextual": { "$ref": "#/definitions/DimensionCritique" },
+        "movimento": { "$ref": "#/definitions/DimensionCritique" }
+      },
+      "additionalProperties": false
+    },
+    "criticalFailures": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "definitions": {
+    "DimensionCritique": {
+      "type": "object",
+      "required": [
+        "score",
+        "critical",
+        "rationale",
+        "region",
+        "screenshotId",
+        "screenshotHash"
+      ],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "critical": {
+          "type": "boolean"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 5
+        },
+        "region": {
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "width": { "type": "number", "minimum": 1 },
+            "height": { "type": "number", "minimum": 1 }
+          }
+        },
+        "screenshotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screenshotHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

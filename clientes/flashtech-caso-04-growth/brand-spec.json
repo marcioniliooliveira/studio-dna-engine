@@ -1,0 +1,46 @@
+{
+  "brandName": "SCALEX",
+  "tagline": "Consultoria de Growth, SEO & Performance Digital",
+  "clientSlug": "flashtech-caso-04-growth",
+  "niche": "B2B Growth, SEO & Performance Digital",
+  "toneOfVoice": "Arrojado, Orientado a Dados, Técnico e de Alto Impacto",
+  "colors": {
+    "primary": "#FFC552",
+    "secondary": "#F8F8F6",
+    "surface": "#FFFFFF",
+    "text": "#0B0D11"
+  },
+  "theme": {
+    "bgBase": "#F8F8F6",
+    "bgSurface": "#FFFFFF",
+    "bgCard": "#F2F2F0",
+    "accent": "#FFC552",
+    "accentGlow": "rgba(255, 197, 82, 0.28)",
+    "border": "rgba(11, 13, 17, 0.12)",
+    "textMain": "#0B0D11",
+    "textMuted": "#4A4A4A"
+  },
+  "hero": {
+    "approvedDirection": "a2-original",
+    "goldenReference": "design/goldens/hero-a2-approved-v1.png",
+    "canvas": "#F8F8F6",
+    "textMain": "#0B0D11",
+    "textMuted": "#4A4A4A",
+    "accent": "#FFC552",
+    "composition": "headline-left, conversion-block-left, vertical-rocket-right",
+    "scope": "global"
+  },
+  "typography": {
+    "fontHeading": "Anton, sans-serif",
+    "fontBody": "Inter, sans-serif"
+  },
+  "conversion": {
+    "primaryCTA": "Agendar Sessão Estratégica",
+    "popupFeature": "ScrollTrigger Pop-up de Auditoria Gratuita",
+    "popupTriggerThreshold": 0.6
+  },
+  "contact": {
+    "email": "contato@scalex.com.br",
+    "location": "São Paulo, SP · Atendimento Nacional"
+  }
+}

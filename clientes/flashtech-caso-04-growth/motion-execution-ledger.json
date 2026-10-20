@@ -1,0 +1,1 @@
+{"version":1,"runs":[{"runId":"scalex-motion-iteration-001","taskId":"workflow:scalex-motion-iteration-001","model":"gemini-3.7-flash","inputTokens":0,"outputTokens":0,"retries":0,"status":"running","gates":{},"artifactHash":"pending","inputHash":"sha256:8fdfac40661df7c79f10303121b02854b16d152180d42384b4e6a5cb93970e07","events":[]}]}

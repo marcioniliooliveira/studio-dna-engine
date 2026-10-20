@@ -1,0 +1,143 @@
+{
+  "auditTimestamp": "2026-08-31T21:47:45.982Z",
+  "siteSlug": "flashtech-caso-04-growth",
+  "auditPassed": true,
+  "jsErrors": [],
+  "layoutBoxes": [
+    {
+      "index": 0,
+      "tag": "header",
+      "id": "home",
+      "classes": "section hero",
+      "top": 0,
+      "left": 0,
+      "width": 1440,
+      "height": 972
+    },
+    {
+      "index": 1,
+      "tag": "section",
+      "id": null,
+      "classes": "section logo",
+      "top": 972,
+      "left": 0,
+      "width": 1440,
+      "height": 174
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "id": "about",
+      "classes": "section about",
+      "top": 1146,
+      "left": 0,
+      "width": 1440,
+      "height": 684
+    },
+    {
+      "index": 3,
+      "tag": "section",
+      "id": null,
+      "classes": "section result",
+      "top": 1830,
+      "left": 0,
+      "width": 1440,
+      "height": 960
+    },
+    {
+      "index": 4,
+      "tag": "section",
+      "id": null,
+      "classes": "section value",
+      "top": 2790,
+      "left": 0,
+      "width": 1440,
+      "height": 1072
+    },
+    {
+      "index": 5,
+      "tag": "section",
+      "id": "services",
+      "classes": "section service",
+      "top": 3862,
+      "left": 0,
+      "width": 1440,
+      "height": 1894
+    },
+    {
+      "index": 6,
+      "tag": "section",
+      "id": null,
+      "classes": "section pricing",
+      "top": 5755,
+      "left": 0,
+      "width": 1440,
+      "height": 1007
+    },
+    {
+      "index": 7,
+      "tag": "section",
+      "id": "insights",
+      "classes": "section insights",
+      "top": 6762,
+      "left": 0,
+      "width": 1440,
+      "height": 3940
+    },
+    {
+      "index": 8,
+      "tag": "section",
+      "id": "review",
+      "classes": "section review",
+      "top": 10702,
+      "left": 0,
+      "width": 1440,
+      "height": 864
+    },
+    {
+      "index": 9,
+      "tag": "section",
+      "id": null,
+      "classes": "section faq",
+      "top": 11566,
+      "left": 0,
+      "width": 1440,
+      "height": 1046
+    },
+    {
+      "index": 10,
+      "tag": "section",
+      "id": null,
+      "classes": "section newsletter",
+      "top": 12612,
+      "left": 0,
+      "width": 1440,
+      "height": 540
+    },
+    {
+      "index": 11,
+      "tag": "section",
+      "id": "contact",
+      "classes": "section contact",
+      "top": 13152,
+      "left": 0,
+      "width": 1440,
+      "height": 1154
+    },
+    {
+      "index": 12,
+      "tag": "footer",
+      "id": null,
+      "classes": "section footer",
+      "top": 14306,
+      "left": 0,
+      "width": 1440,
+      "height": 1472
+    }
+  ],
+  "imagesSummary": {
+    "total": 141,
+    "valid": 141,
+    "broken": []
+  }
+}

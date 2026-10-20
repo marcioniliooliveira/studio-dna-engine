@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="utf-8">
+  <meta name="kombai-design-canvas" content="true">
+  
+  
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4.3.3/dist/index.global.js" integrity="sha384-2ql948lIdLcGEE0/qxNiudyTjgauA3RDJERu5xW75kFCvSl5a9odyQYCb6tEjnmB" crossorigin="anonymous"></script>
+  
+  <style>html, body { margin: 0; padding: 0; } #root { display: contents; }</style>
+</head><body>
+  <div id="root"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400;1,700;1,800&display=swap');
+:root{--ink:#1f1f1f;--paper:#fbfbfb;--beige:#f0e8e0;--blue:#009fdf;--red:#ee3c3c}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Karla,Arial,sans-serif;letter-spacing:-.03em}a{color:inherit;text-decoration:none}.wrap{max-width:1320px;margin:auto;padding:0 28px}.announcement{height:45px;background:#1f1f1f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}.header{background:#fff;display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:22px;padding:22px 34px;border-bottom:1px solid #eee;position:relative;z-index:5}.logo{font-size:26px;font-weight:800;letter-spacing:-.1em}.nav{display:flex;justify-content:center;gap:28px;font-weight:700;font-size:16px}.nav button{border:0;background:none;font:inherit;cursor:pointer}.icons{display:flex;align-items:center;gap:18px}.icons svg{width:25px;height:25px;stroke:var(--ink);fill:none;stroke-width:1.5}.country{font-size:14px}.hero{min-height:650px;position:relative;display:flex;align-items:flex-start;overflow:hidden;background:#777}.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:31% 61%;filter:saturate(.95)}.hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.46),rgba(0,0,0,.06) 70%)}.hero-copy{position:relative;z-index:1;color:#fff;padding:105px 7vw;max-width:850px}.hero h1{font-size:clamp(64px,9vw,150px);line-height:.82;margin:0;font-weight:800;letter-spacing:-.07em}.hero h2{font-size:36px;line-height:1;margin:24px 0 32px;font-style:italic;max-width:650px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 29px;min-height:48px;background:var(--ink);color:#fff;text-transform:uppercase;font-size:13px;font-weight:800;letter-spacing:.04em;border:1px solid var(--ink)}.btn.blue{background:var(--blue);border-color:var(--blue);color:var(--ink)}.btn.light{background:#fff;border-color:#fff;color:var(--ink)}.section{padding:68px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}.eyebrow{text-transform:uppercase;font-size:15px;font-weight:800;letter-spacing:.08em}.section h2{font-size:42px;line-height:.95;margin:0;font-style:italic}.showall{text-decoration:underline;font-weight:700}.products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.product{position:relative}.product img{width:100%;aspect-ratio:1;object-fit:cover;background:#f4f4f4}.tag{display:inline-block;background:var(--beige);padding:6px 10px;text-transform:uppercase;font-size:11px;font-weight:800;position:absolute;top:12px;left:12px}.stars{color:var(--blue);letter-spacing:2px;margin-top:10px}.product h3{font-size:21px;font-style:italic;margin:5px 0 0}.product p{font-size:16px;margin:4px 0}.price{font-weight:800}.promo{background:var(--blue);color:#fff;text-align:center;padding:52px 20px}.promo h2{font-size:52px;margin:0 0 12px;font-style:italic}.promo p{font-size:22px;margin:0 0 22px}.testimonials{background:#f4f4f4;text-align:center;padding:75px 12vw}.review-stars{color:var(--blue);font-size:24px;letter-spacing:7px}.quote{font-size:34px;line-height:1.05;font-style:italic;font-weight:700;max-width:920px;margin:25px auto}.reviewer{font-size:13px;font-weight:800;text-transform:uppercase}.beige{background:var(--beige)}.intro h2{font-size:72px;max-width:900px}.intro p{font-size:23px;max-width:820px;font-style:italic}.heritage{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}.heritage img{width:100%;aspect-ratio:1;object-fit:cover}.heritage h3{font-size:44px;line-height:.95;font-style:italic;margin:0 0 20px}.heritage p{font-size:22px;line-height:1.2}.image-map{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--beige)}.image-map>img{width:100%;height:100%;min-height:510px;object-fit:cover}.map-copy{padding:45px}.map-copy h3{font-size:30px;font-style:italic}.map-copy p{font-size:18px;line-height:1.35}.hotspots{display:flex;gap:10px;margin-bottom:25px}.hotspots button{width:17px;height:17px;border-radius:50%;border:2px solid var(--ink);background:var(--beige);cursor:pointer}.hotspots button.active{background:var(--blue)}.benefits{background:var(--beige);display:grid;grid-template-columns:repeat(5,1fr);gap:18px;text-align:center;padding:38px 28px}.benefit .symbol{font-size:34px;color:var(--blue)}.benefit h4{font-size:15px;text-transform:uppercase;margin:10px 0 5px}.benefit p{font-size:14px;margin:0}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature{position:relative;min-height:530px;overflow:hidden;background:#222;color:#fff}.feature img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;opacity:.8}.feature:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent 65%)}.feature-copy{position:absolute;z-index:1;bottom:25px;left:25px;right:25px}.feature h3{font-size:35px;line-height:.95;font-style:italic;margin:0 0 18px}.video{position:relative;min-height:420px;overflow:hidden}.video img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover}.video:after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.2)}.video-copy{position:relative;z-index:1;color:#fff;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center}.play{width:68px;height:68px;border-radius:50%;border:0;background:var(--blue);font-size:30px;cursor:pointer}.awards{background:var(--beige);text-align:center}.award-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin-top:35px}.award{border:1px solid #c9c0b7;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center}.award b{font-size:22px}.newsletter{background:#f4f4f4;text-align:center;padding:65px 20px}.newsletter h2{font-size:43px}.newsletter p{font-size:20px}.newsletter form{display:flex;max-width:560px;margin:25px auto 0}.newsletter input{flex:1;border:1px solid #aaa;background:#fff;padding:16px;font:inherit}.footer{background:var(--ink);color:#fff;padding:65px 0}.footer-grid{display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:35px}.footer h4{font-size:14px;text-transform:uppercase;letter-spacing:.08em}.footer a,.footer li{font-size:15px;line-height:1.8}.footer ul{list-style:none;padding:0;margin:0}.footer-brand{font-size:55px;font-weight:800;letter-spacing:-.1em}.payments{border-top:1px solid #555;margin-top:48px;padding-top:20px;color:#aaa;font-size:13px}@media(max-width:850px){.header{grid-template-columns:1fr auto}.nav{display:none}.hero{min-height:570px}.hero-copy{padding:90px 28px}.hero h2{font-size:27px}.products,.cards{grid-template-columns:repeat(2,1fr)}.heritage,.image-map{grid-template-columns:1fr}.benefits{grid-template-columns:repeat(2,1fr)}.award-grid,.footer-grid{grid-template-columns:1fr}.intro h2{font-size:52px}.section h2{font-size:35px}.newsletter form{display:block}.newsletter input,.newsletter .btn{width:100%}}
+</style>
+<div class="announcement" data-kid="1" data-name="announcement banner text">
+    <a data-kid="1-1" data-name="announcement banner link" href="#products">
+        The Best Trampoline >>
+    </a>
+</div>
+<header class="header" data-kid="2" data-name="header container">
+    <div class="logo" data-kid="2-1" data-name="brand logo text">
+        ACON
+    </div>
+    <nav class="nav" data-kid="2-2" data-name="main navigation">
+        <button data-kid="2-2-1" data-name="trampolines navigation button">
+            Trampolines
+        </button>
+        <button data-kid="2-2-2" data-name="rebounders navigation button">
+            Rebounders
+        </button>
+        <button data-kid="2-2-3" data-name="gymnastics navigation button">
+            Gymnastics
+        </button>
+        <a data-kid="2-2-4" data-name="find a retailer navigation link" href="#retailer">
+            Find a retailer
+        </a>
+        <a data-kid="2-2-5" data-name="find your trampoline navigation link" href="#quiz">
+            Find your trampoline
+        </a>
+        <a data-kid="2-2-6" data-name="outlet navigation link" href="#outlet">
+            Outlet
+        </a>
+        <button data-kid="2-2-7" data-name="why acon navigation button">
+            Why Acon
+        </button>
+    </nav>
+    <div class="icons" data-kid="2-3" data-name="header icons container">
+        <svg data-kid="2-3-1" data-name="search icon" viewbox="0 0 30 30">
+            <circle cx="13.6" cy="13.6" r="9.8">
+            </circle>
+            <path d="m20.5 20.5 5.7 5.7">
+            </path>
+        </svg>
+        <svg data-kid="2-3-2" data-name="cart icon" viewbox="0 0 30 30">
+            <path d="M3 4h3l3 17h14l3-12H7">
+            </path>
+            <circle cx="10" cy="25" r="2">
+            </circle>
+            <circle cx="23" cy="25" r="2">
+            </circle>
+        </svg>
+        <span class="country" data-kid="2-3-3" data-name="region and currency display">
+            EU / €
+        </span>
+    </div>
+</header>
+<main data-kid="3" data-name="page content area">
+    <section class="hero" data-kid="3-1" data-name="hero section">
+        <img alt="Four children run toward an Acon trampoline after school, backpacks on, in a sunny backyard." data-kid="3-1-1" data-name="hero background image" decoding="async" loading="eager" src="../../copias/acon24-com/site/assets/cdn/shop/files/kids-rushing-to-acon-trampoline.webp"/>
+        <div class="hero-copy" data-kid="3-1-2" data-name="hero copy container">
+            <h1 data-kid="3-1-2-1" data-name="hero headline">
+                Their Choice
+            </h1>
+            <h2 data-kid="3-1-2-2" data-name="hero subheading">
+                If your kids had the final say, the decision would be easy.
+            </h2>
+            <a class="btn blue" data-kid="3-1-2-3" data-name="hero call to action button" href="#products">
+                Shop ACON
+            </a>
+        </div>
+    </section>
+    <section class="section" data-kid="3-2" data-name="popular products section" id="products">
+        <div class="wrap" data-kid="3-2-1" data-name="section layout wrapper">
+            <div class="section-head" data-kid="3-2-1-1" data-name="products section header">
+                <h2 data-kid="3-2-1-1-1" data-name="products section title">
+                    Most popular products
+                </h2>
+                <a class="showall" data-kid="3-2-1-1-2" data-name="show all products link" href="#products">
+                    Show All
+                </a>
+            </div>
+            <div class="products" data-kid="3-2-1-2" data-name="products grid container">
+                <article class="product" data-kid="3-2-1-2-1" data-name="product card 1">
+                    <span class="tag" data-kid="3-2-1-2-1-1" data-name="product tag">
+                        Test Winner
+                    </span>
+                    <img alt="ACON X 17ft Rectangular Trampoline with Net and Ladder" data-kid="3-2-1-2-1-2" data-name="product image 1" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-x-trampoline-black.png"/>
+                    <div class="stars" data-kid="3-2-1-2-1-3" data-name="product star rating container 1">
+                        ★★★★★
+                        <small data-kid="3-2-1-2-1-3-1" data-name="product review count 1">
+                            52 Reviews
+                        </small>
+                    </div>
+                    <h3 data-kid="3-2-1-2-1-4" data-name="product title 1">
+                        ACON X 17ft
+                    </h3>
+                    <p data-kid="3-2-1-2-1-5" data-name="product description 1">
+                        Rectangular Trampoline with Net and Ladder
+                    </p>
+                    <p class="price" data-kid="3-2-1-2-1-6" data-name="product price 1">
+                        €3.999,00
+                    </p>
+                </article>
+                <article class="product" data-kid="3-2-1-2-2" data-name="product card 2">
+                    <span class="tag" data-kid="3-2-1-2-2-1" data-name="product tag 2">
+                        Bestseller
+                    </span>
+                    <img alt="ACON 16 HD trampoline, safety net, and ladder." data-kid="3-2-1-2-2-2" data-name="product image 2" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-16hd-trampoline-with-net-and-ladder-w3.jpg"/>
+                    <div class="stars" data-kid="3-2-1-2-2-3" data-name="product star rating container 2">
+                        ★★★★★
+                        <small data-kid="3-2-1-2-2-3-1" data-name="product review count 2">
+                            605 Reviews
+                        </small>
+                    </div>
+                    <h3 data-kid="3-2-1-2-2-4" data-name="product title 2">
+                        ACON 16 HD
+                    </h3>
+                    <p data-kid="3-2-1-2-2-5" data-name="product description 2">
+                        Rectangular Trampoline with Net and Ladder
+                    </p>
+                    <p class="price" data-kid="3-2-1-2-2-6" data-name="product price 2">
+                        €2.199,00
+                        <s data-kid="3-2-1-2-2-6-1" data-name="original price 2">
+                            €2.498,00
+                        </s>
+                    </p>
+                </article>
+                <article class="product" data-kid="3-2-1-2-3" data-name="product card 3">
+                    <img alt="ACON Air 4,6m Round Trampoline with Safety Net and Ladder" data-kid="3-2-1-2-3-1" data-name="product image 3" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-air-15ft-4_6m-trampoline-w-net.jpg"/>
+                    <div class="stars" data-kid="3-2-1-2-3-2" data-name="product star rating container 3">
+                        ★★★★★
+                        <small data-kid="3-2-1-2-3-2-1" data-name="product review count 3">
+                            20 Reviews
+                        </small>
+                    </div>
+                    <h3 data-kid="3-2-1-2-3-3" data-name="product title 3">
+                        ACON Air 4,6m
+                    </h3>
+                    <p data-kid="3-2-1-2-3-4" data-name="product description 3">
+                        Round Trampoline with Safety Net and Ladder, GEN 2.0
+                    </p>
+                    <p class="price" data-kid="3-2-1-2-3-5" data-name="product price 3">
+                        €1.399,00
+                    </p>
+                </article>
+                <article class="product" data-kid="3-2-1-2-4" data-name="product card 4">
+                    <span class="tag" data-kid="3-2-1-2-4-1" data-name="product tag 4">
+                        Bestseller
+                    </span>
+                    <img alt="Acon Trampoline Tent for Round Trampoline" data-kid="3-2-1-2-4-2" data-name="product image 4" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-tent-for-round-trampolines.png"/>
+                    <div class="stars" data-kid="3-2-1-2-4-3" data-name="product star rating container 4">
+                        ★★★★★
+                        <small data-kid="3-2-1-2-4-3-1" data-name="product review count 4">
+                            62 Reviews
+                        </small>
+                    </div>
+                    <h3 data-kid="3-2-1-2-4-4" data-name="product title 4">
+                        Acon Trampoline Tent
+                    </h3>
+                    <p data-kid="3-2-1-2-4-5" data-name="product description 4">
+                        for Round Trampoline
+                    </p>
+                    <p class="price" data-kid="3-2-1-2-4-6" data-name="product price 4">
+                        €369,00
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+    <section class="promo" data-kid="3-3" data-name="retailer promo section" id="retailer">
+        <h2 data-kid="3-3-1" data-name="promo title">
+            Try out an Acon Trampoline
+        </h2>
+        <p data-kid="3-3-2" data-name="promo description">
+            Find your nearest store or trampoline park featuring Acon trampolines.
+        </p>
+        <a class="btn light" data-kid="3-3-3" data-name="promo call to action button" href="#retailer">
+            Find a Retailer
+        </a>
+    </section>
+    <section class="testimonials" data-kid="3-4" data-name="testimonials section">
+        <div class="review-stars" data-kid="3-4-1" data-name="testimonial star rating icon">
+            ★★★★★
+        </div>
+        <p class="quote" data-kid="3-4-2" data-name="testimonial quote">
+            “This is definitely the best garden trampoline I’ve ever tried.”
+        </p>
+        <p class="reviewer" data-kid="3-4-3" data-name="reviewer attribution">
+            — Aleksi Sainio – Pro Tricker, Acon X user
+        </p>
+        <a class="btn" data-kid="3-4-4" data-name="show all reviews button" href="#reviews">
+            Show all reviews
+        </a>
+    </section>
+    <section class="section beige intro" data-kid="3-5" data-name="intro section">
+        <div class="wrap" data-kid="3-5-1" data-name="intro wrapper">
+            <h2 data-kid="3-5-1-1" data-name="intro title">
+                30 Years of Leading the Way in Trampolines
+            </h2>
+            <p data-kid="3-5-1-2" data-name="intro description">
+                Explore the milestones, values, and innovations that have shaped ACON over the past three decades.
+            </p>
+        </div>
+    </section>
+    <section class="section" data-kid="3-6" data-name="image map section">
+        <div class="wrap image-map" data-kid="3-6-1" data-name="image map layout container">
+            <img alt="Collage of people enjoying Acon trampolines in backyards, featuring jumping, games and family activities." data-kid="3-6-1-1" data-name="image map visual" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/jumpers-on-acon-trampolines-combo.webp"/>
+            <div class="map-copy" data-kid="3-6-1-2" data-name="image map content">
+                <div class="hotspots" data-kid="3-6-1-2-1" data-name="hotspot controls container">
+                    <button class="active" data-kid="3-6-1-2-1-1" data-name="hotspot button 1">
+                    </button>
+                    <button data-kid="3-6-1-2-1-2" data-name="hotspot button 2">
+                    </button>
+                    <button data-kid="3-6-1-2-1-3" data-name="hotspot button 3">
+                    </button>
+                    <button data-kid="3-6-1-2-1-4" data-name="hotspot button 4">
+                    </button>
+                    <button data-kid="3-6-1-2-1-5" data-name="hotspot button 5">
+                    </button>
+                </div>
+                <h3 data-kid="3-6-1-2-2" data-name="hotspot title">
+                    30 Years of Trampoline Expertise
+                </h3>
+                <p data-kid="3-6-1-2-3" data-name="hotspot description">
+                    For 30 years, trampolines have been at the heart of everything we do. What began as a small family business has grown into one of the world's leading trampoline brands, trusted by families and athletes in more than 60 countries.
+                </p>
+                <p data-kid="3-6-1-2-4" data-name="hotspot supplemental description">
+                    Every product we create is built on decades of experience, customer feedback, and thousands of five-star reviews. Thirty years later, we're still driven by the same goal: creating the best bounce possible.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="benefits" data-kid="3-7" data-name="benefits grid">
+        <div class="benefit" data-kid="3-7-1" data-name="benefit card 1">
+            <div class="symbol" data-kid="3-7-1-1" data-name="benefit symbol 1">
+                ☺
+            </div>
+            <h4 data-kid="3-7-1-2" data-name="benefit title 1">
+                Thousands of 5 star reviews
+            </h4>
+            <p data-kid="3-7-1-3" data-name="benefit description 1">
+                Satisfied customers in over 60+ countries
+            </p>
+        </div>
+        <div class="benefit" data-kid="3-7-2" data-name="benefit card 2">
+            <div class="symbol" data-kid="3-7-2-1" data-name="benefit symbol 2">
+                ◷
+            </div>
+            <h4 data-kid="3-7-2-2" data-name="benefit title 2">
+                30 years of experience
+            </h4>
+            <p data-kid="3-7-2-3" data-name="benefit description 2">
+                Trusted #1 trampoline manufacturer
+            </p>
+        </div>
+        <div class="benefit" data-kid="3-7-3" data-name="benefit card 3">
+            <div class="symbol" data-kid="3-7-3-1" data-name="benefit symbol 3">
+                ◈
+            </div>
+            <h4 data-kid="3-7-3-2" data-name="benefit title 3">
+                Up to 10 year warranties
+            </h4>
+            <p data-kid="3-7-3-3" data-name="benefit description 3">
+                Local customer service for life long support
+            </p>
+        </div>
+        <div class="benefit" data-kid="3-7-4" data-name="benefit card 4">
+            <div class="symbol" data-kid="3-7-4-1" data-name="benefit symbol 4">
+                ▣
+            </div>
+            <h4 data-kid="3-7-4-2" data-name="benefit title 4">
+                Safe and fast shopping
+            </h4>
+            <p data-kid="3-7-4-3" data-name="benefit description 4">
+                Secure payments and fast deliveries
+            </p>
+        </div>
+        <div class="benefit" data-kid="3-7-5" data-name="benefit card 5">
+            <div class="symbol" data-kid="3-7-5-1" data-name="benefit symbol 5">
+                ↻
+            </div>
+            <h4 data-kid="3-7-5-2" data-name="benefit title 5">
+                99,5% recyclable parts
+            </h4>
+            <p data-kid="3-7-5-3" data-name="benefit description 5">
+                Sustainable choice
+            </p>
+        </div>
+    </section>
+    <section class="section" data-kid="3-8" data-name="heritage section">
+        <div class="wrap heritage" data-kid="3-8-1" data-name="heritage section wrapper">
+            <img alt="Acon trampoline installed on ground and in ground." data-kid="3-8-1-1" data-name="heritage image" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/onground-and-inground.jpg"/>
+            <div data-kid="3-8-1-2" data-name="heritage content container">
+                <h3 data-kid="3-8-1-2-1" data-name="heritage title">
+                    On Ground and In Ground
+                </h3>
+                <p data-kid="3-8-1-2-2" data-name="heritage description">
+                    Acon offers safe trampolines that can be assembled either on ground or in ground. You can choose from 2 shapes, 8 sizes, and different enclosure designs to suit your needs.
+                </p>
+                <a class="btn" data-kid="3-8-1-2-3" data-name="learn more button" href="#quiz">
+                    Learn more
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="section" data-kid="3-9" data-name="features card section">
+        <div class="wrap cards" data-kid="3-9-1" data-name="features grid">
+            <article class="feature" data-kid="3-9-1-1" data-name="feature card 1">
+                <img alt="A happy kid on the Acon HD Trampoline." data-kid="3-9-1-1-1" data-name="feature image 1" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-trampolinist.jpg"/>
+                <div class="feature-copy" data-kid="3-9-1-1-2" data-name="feature copy container 1">
+                    <h3 data-kid="3-9-1-1-2-1" data-name="feature title 1">
+                        Trampolines for small kids
+                    </h3>
+                    <a class="btn light" data-kid="3-9-1-1-2-2" data-name="feature shop button 1" href="#products">
+                        Shop now
+                    </a>
+                </div>
+            </article>
+            <article class="feature" data-kid="3-9-1-2" data-name="feature card 2">
+                <img alt="A woman jumping on an Acon HD trampoline in a sunrise." data-kid="3-9-1-2-1" data-name="feature image 2" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/SAM_1115.jpg"/>
+                <div class="feature-copy" data-kid="3-9-1-2-2" data-name="feature copy container 2">
+                    <h3 data-kid="3-9-1-2-2-1" data-name="feature title 2">
+                        Trampolines for performers and adults
+                    </h3>
+                    <a class="btn light" data-kid="3-9-1-2-2-2" data-name="feature shop button 2" href="#products">
+                        Shop now
+                    </a>
+                </div>
+            </article>
+            <article class="feature" data-kid="3-9-1-3" data-name="feature card 3">
+                <img alt="Gymnast woman volting on an Acon big airtrack." data-kid="3-9-1-3-1" data-name="feature image 3" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/DJI_0467.jpg"/>
+                <div class="feature-copy" data-kid="3-9-1-3-2" data-name="feature copy container 3">
+                    <h3 data-kid="3-9-1-3-2-1" data-name="feature title 3">
+                        Gymnastics fans
+                    </h3>
+                    <a class="btn light" data-kid="3-9-1-3-2-2" data-name="feature shop button 3" href="#products">
+                        Shop now
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section class="section" data-kid="3-10" data-name="founder highlight section">
+        <div class="wrap heritage" data-kid="3-10-1" data-name="founder content grid">
+            <div data-kid="3-10-1-1" data-name="founder content container">
+                <h3 data-kid="3-10-1-1-1" data-name="founder section title">
+                    Setting the standard for over 30 years
+                </h3>
+                <p data-kid="3-10-1-1-2" data-name="founder section quote">
+                    “For 30 years, we’ve been leading the revolution to perfect the garden trampoline experience. With Acon X, we draw upon consumer insights from parents, kids, freestyle trickers, and pros to deliver the trampoline of their dreams.”
+                </p>
+                <p data-kid="3-10-1-1-3" data-name="founder name container">
+                    <strong data-kid="3-10-1-1-3-1" data-name="founder name">
+                        Acon Founder, Tarmo Sallinen
+                    </strong>
+                </p>
+                <a class="btn" data-kid="3-10-1-1-4" data-name="who we are button" href="#about">
+                    Who we are
+                </a>
+            </div>
+            <img alt="The founder of Acon, Tarmo Sallinen, standing in front of an X-trampoline." data-kid="3-10-1-2" data-name="founder image" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-tarmo-sallinen-trampolines-since-1996-red-dot-winner-2024.webp"/>
+        </div>
+    </section>
+    <section class="section" data-kid="3-11" data-name="video section">
+        <div class="wrap video" data-kid="3-11-1" data-name="video section wrapper">
+            <img alt="Acon X Trampoline, dark background." data-kid="3-11-1-1" data-name="video background image" decoding="async" loading="lazy" src="../../copias/acon24-com/site/assets/cdn/shop/files/acon-x-trampoline-front.webp"/>
+            <div class="video-copy" data-kid="3-11-1-2" data-name="video overlay copy">
+                <h2 data-kid="3-11-1-2-1" data-name="video section title">
+                    The Making of X
+                </h2>
+                <button aria-label="Play video" class="play" data-kid="3-11-1-2-2" data-name="play video button">
+                    ▶
+                </button>
+                <p data-kid="3-11-1-2-3" data-name="video watch prompt">
+                    WATCH THE VIDEO
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="section awards" data-kid="3-12" data-name="awards section">
+        <div class="wrap" data-kid="3-12-1" data-name="awards grid wrapper">
+            <h2 data-kid="3-12-1-1" data-name="awards section title">
+                Awarded for our Passion
+            </h2>
+            <div class="award-grid" data-kid="3-12-1-2" data-name="awards grid">
+                <div class="award" data-kid="3-12-1-2-1" data-name="award card 1">
+                    <b data-kid="3-12-1-2-1-1" data-name="award title 1">
+                        DESIGN
+                        <br data-kid="3-12-1-2-1-1-1" data-name="award title line break 1"/>
+                        FROM FINLAND
+                    </b>
+                    <span data-kid="3-12-1-2-1-2" data-name="award subtitle 1">
+                        Design from Finland
+                    </span>
+                </div>
+                <div class="award" data-kid="3-12-1-2-2" data-name="award card 2">
+                    <b data-kid="3-12-1-2-2-1" data-name="award title 2">
+                        GREAT PLACE
+                        <br data-kid="3-12-1-2-2-1-1" data-name="award title line break 2"/>
+                        TO WORK
+                    </b>
+                    <span data-kid="3-12-1-2-2-2" data-name="award subtitle 2">
+                        Great Place to Work
+                    </span>
+                </div>
+                <div class="award" data-kid="3-12-1-2-3" data-name="award card 3">
+                    <b data-kid="3-12-1-2-3-1" data-name="award title 3">
+                        RED DOT
+                        <br data-kid="3-12-1-2-3-1-1" data-name="award title line break 3"/>
+                        DESIGN
+                    </b>
+                    <span data-kid="3-12-1-2-3-2" data-name="award subtitle 3">
+                        Red Dot Design
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="newsletter" data-kid="3-13" data-name="newsletter section">
+        <h2 data-kid="3-13-1" data-name="newsletter title">
+            Sign up for newsletter
+        </h2>
+        <p data-kid="3-13-2" data-name="newsletter description">
+            Join the ACON team to stay up to date with product news and offers.
+        </p>
+        <form data-kid="3-13-3" data-name="newsletter form">
+            <input aria-label="email@example.com" data-kid="3-13-3-1" data-name="newsletter email input" placeholder="email@example.com" type="email"/>
+            <button class="btn" data-kid="3-13-3-2" data-name="newsletter submit button" type="button">
+                Submit
+            </button>
+        </form>
+    </section>
+</main>
+<footer class="footer" data-kid="4" data-name="footer">
+    <div class="wrap footer-grid" data-kid="4-1" data-name="footer grid">
+        <div data-kid="4-1-1" data-name="footer brand section">
+            <div class="footer-brand" data-kid="4-1-1-1" data-name="footer brand logo text">
+                ACON
+            </div>
+            <p data-kid="4-1-1-2" data-name="footer operating hours">
+                Our customer care is open:
+                <br data-kid="4-1-1-2-1" data-name="operating hours line break 1"/>
+                Mon-Wed, Fri 9 am to 5 pm
+                <br data-kid="4-1-1-2-2" data-name="operating hours line break 2"/>
+                Thu 9 am to 4 pm (EET)
+            </p>
+        </div>
+        <nav data-kid="4-1-2" data-name="support navigation">
+            <h4 data-kid="4-1-2-1" data-name="support title">
+                Support
+            </h4>
+            <ul data-kid="4-1-2-2" data-name="support links list">
+                <li data-kid="4-1-2-2-1" data-name="customer care link">
+                    Customer Care
+                </li>
+                <li data-kid="4-1-2-2-2" data-name="faq link">
+                    Frequently Asked Questions (FAQ)
+                </li>
+                <li data-kid="4-1-2-2-3" data-name="shipping returns link">
+                    Shipping & Returns
+                </li>
+                <li data-kid="4-1-2-2-4" data-name="find retailer footer link">
+                    Find a retailer
+                </li>
+                <li data-kid="4-1-2-2-5" data-name="privacy policy link">
+                    Acon Privacy Policy
+                </li>
+            </ul>
+        </nav>
+        <nav data-kid="4-1-3" data-name="about navigation">
+            <h4 data-kid="4-1-3-1" data-name="about title">
+                About Acon
+            </h4>
+            <ul data-kid="4-1-3-2" data-name="about links list">
+                <li data-kid="4-1-3-2-1" data-name="outlet footer link">
+                    Outlet
+                </li>
+                <li data-kid="4-1-3-2-2" data-name="why acon footer link">
+                    Why Acon
+                </li>
+                <li data-kid="4-1-3-2-3" data-name="who we are footer link">
+                    Who we are
+                </li>
+                <li data-kid="4-1-3-2-4" data-name="reviews footer link">
+                    Reviews
+                </li>
+                <li data-kid="4-1-3-2-5" data-name="blog footer link">
+                    Blog
+                </li>
+                <li data-kid="4-1-3-2-6" data-name="aconverse footer link">
+                    Aconverse
+                </li>
+            </ul>
+        </nav>
+        <nav data-kid="4-1-4" data-name="manuals navigation">
+            <h4 data-kid="4-1-4-1" data-name="manuals title">
+                Manuals
+            </h4>
+            <ul data-kid="4-1-4-2" data-name="manuals links list">
+                <li data-kid="4-1-4-2-1" data-name="trampoline manuals link">
+                    Trampoline Manuals
+                </li>
+                <li data-kid="4-1-4-2-2" data-name="airtrack manuals link">
+                    Airtrack Manuals
+                </li>
+                <li data-kid="4-1-4-2-3" data-name="fitness manuals link">
+                    Fitness Product Manuals
+                </li>
+                <li data-kid="4-1-4-2-4" data-name="assembly videos link">
+                    Assembly Videos
+                </li>
+                <li data-kid="4-1-4-2-5" data-name="installation guidelines link">
+                    Installation Guidelines
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="wrap payments" data-kid="4-2" data-name="footer payment info and copyright">
+        Shipping to Europe · Secure payments · © ACON Finland Oy
+    </div>
+</footer>
+<script>
+    document.querySelectorAll('.hotspots button').forEach((b,i)=>b.addEventListener('click',()=>{document.querySelectorAll('.hotspots button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}));
+</script>
+</div>
+</body></html>

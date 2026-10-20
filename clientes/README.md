@@ -34,3 +34,4 @@ clientes/<slug-do-cliente>/
 | [`caso-01-healthtech/`](file:///c:/Users/wd/Documents/playwright-scraper/clientes/caso-01-healthtech/) | PulseMed | Telemedicina & Agendamento | `copias/urbi-ae` | `#120824` (Deep Purple) / `#E8FF54` (Neon Lime) |
 | [`flashtech-caso-03-d2c/`](file:///c:/Users/wd/Documents/playwright-scraper/clientes/flashtech-caso-03-d2c/) | APEX Wireless | D2C Hardware Premium | `copias/ciao-energy` | `#02040A` (Obsidiana) / `#00F0FF` (Cyan Neon) |
 | [`flashtech-caso-02-ecommerce/`](file:///c:/Users/wd/Documents/playwright-scraper/clientes/flashtech-caso-02-ecommerce/) | NorthTrail | E-commerce Outdoor | `copias/...` | `#ea580c` (Trail Orange) / `#f5f1e8` (Sand) |
+| [`marcionilio-oliveira/`](file:///c:/Users/wd/Documents/playwright-scraper/clientes/marcionilio-oliveira/) | Marcionilio Oliveira | Creative Technologist & Portfolio | `copias/khanhnguyen-design` | `#262220` (Carvão Mineral) / `#FAF9F6` (Marfim Linho) |

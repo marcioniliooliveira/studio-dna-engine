@@ -90,8 +90,29 @@ function generateAssetManifest({ siteDir, siteUrl = '', outputPath = null }) {
     const ext = path.extname(file.fileName).toLowerCase();
     const name = file.fileName.toLowerCase();
 
+    // 3D Models (.glb, .gltf)
+    if (ext === '.glb' || ext === '.gltf') {
+      manifest.replacements.push({
+        id: `model3d_${path.parse(name).name}`,
+        category: "THREE_3D_MODEL_GLB",
+        originalFile: file.relPath,
+        recommendedStrategy: "THREEJS_3D_MODEL_OR_PROCEDURAL",
+        rationale: "Modelo 3D Three.js em tempo real com iluminação e controles de cena",
+        componentSuggestion: "Interactive3DViewer.tsx"
+      });
+    }
+    // WebAssembly / Draco decoder
+    else if (ext === '.wasm') {
+      manifest.replacements.push({
+        id: `wasm_${path.parse(name).name}`,
+        category: "DRACO_DECODER_WASM",
+        originalFile: file.relPath,
+        recommendedStrategy: "VENDOR_STATIC_ASSET",
+        rationale: "Decodificador de geometria comprimida Draco WebAssembly"
+      });
+    }
     // Knolling / Backgrounds de grande escala
-    if (name.includes('knolling') || name.includes('texture') || name.includes('banner') || name.includes('cover') || name.includes('hero')) {
+    else if (name.includes('knolling') || name.includes('texture') || name.includes('banner') || name.includes('cover') || name.includes('hero')) {
       manifest.summary.heroBackgroundsDetected++;
       manifest.replacements.push({
         id: `bg_${path.parse(name).name}`,

@@ -60,6 +60,7 @@ class AntiSlopGate {
     $('body, head title, meta[name="description"]').each((_, el) => {
       const clone = $(el).clone();
       clone.find('script, style, noscript').remove();
+      clone.find('*').after(' ');
       textNodes.push(clone.text());
     });
 

@@ -1,0 +1,163 @@
+{
+  "version": "2.0.0",
+  "description": "Deterministic Anti-Slop Governance & Design Grammar Ruleset",
+  "variablesCount": 38,
+  "libraries": {
+    "bannedVisualTropes": {
+      "purpleGlow": {
+        "id": "TROP-001",
+        "description": "Ban on generic purple/indigo AI glow or blur spheres (#7c3aed, #6366f1, #8b5cf6)",
+        "bannedHuesRangeOklch": [280, 315],
+        "bannedHexCodes": ["#7c3aed", "#6366f1", "#8b5cf6", "#a855f7", "#4f46e5"],
+        "maxBlurRadiusPx": 64
+      },
+      "threeCardBentoTrap": {
+        "id": "TROP-002",
+        "description": "Ban on 3 identical symmetric cards side-by-side with centered icon-in-bubble",
+        "enforceAsymmetry": true,
+        "allowedAspectRatios": ["60/40", "2x1", "asymmetric-masonry"]
+      },
+      "floatingMockupCliché": {
+        "id": "TROP-003",
+        "description": "Ban on 15-degree floating isometric mockups lacking client-specific data",
+        "maxTransformRotateDeg": 5
+      },
+      "shadowSoup": {
+        "id": "TROP-004",
+        "description": "Ban on heavy diffuse black shadows",
+        "maxBoxShadowSpreadPx": 12,
+        "maxBoxShadowAlpha": 0.15,
+        "preferredDepth": "1px-border-light-leak"
+      },
+      "cardsInsideCards": {
+        "id": "TROP-005",
+        "description": "Ban on nested cards inside cards inside cards",
+        "maxCardNestingDepth": 1
+      }
+    },
+    "typographyBounds": {
+      "negativeTracking": {
+        "id": "TYPO-001",
+        "minFontSizePxForNegativeTracking": 40,
+        "requiredTrackingRangeEm": [-0.05, -0.025]
+      },
+      "displayLeading": {
+        "id": "TYPO-002",
+        "maxDisplayLineHeight": 1.05,
+        "minDisplayLineHeight": 0.90
+      },
+      "weightContrast": {
+        "id": "TYPO-003",
+        "minWeightDeltaBetweenH1AndH2": 300
+      },
+      "readingLength": {
+        "id": "TYPO-004",
+        "minLineLengthCh": 50,
+        "maxLineLengthCh": 72
+      },
+      "heroHeadlineWrap": {
+        "id": "TYPO-005",
+        "maxWrapLinesAt1440px": 2
+      },
+      "textBalance": {
+        "id": "TYPO-006",
+        "requiredRule": "text-wrap: balance or text-wrap: pretty on all headings"
+      },
+      "contrastRatio": {
+        "id": "TYPO-007",
+        "bodyTextMinContrast": 7.0,
+        "mutedTextMinContrast": 4.5
+      }
+    },
+    "motionPhysics": {
+      "scrollEngine": {
+        "id": "MOT-001",
+        "requiredEngine": "Lenis",
+        "lerpRange": [0.08, 0.12],
+        "smoothTouch": false
+      },
+      "cinematicEasingCurves": {
+        "id": "MOT-002",
+        "bannedEasings": ["linear", "ease", "ease-in", "ease-out"],
+        "declaredCurves": {
+          "snappy": "cubic-bezier(0.16, 1, 0.3, 1)",
+          "smooth": "cubic-bezier(0.25, 1, 0.5, 1)",
+          "heavy": "cubic-bezier(0.7, 0, 0.3, 1)"
+        }
+      },
+      "unmaskingStagger": {
+        "id": "MOT-003",
+        "staggerDelayMsRange": [40, 80],
+        "maxEntranceTranslateYPx": 32
+      },
+      "performanceTargets": {
+        "id": "MOT-004",
+        "minSustainedScrollFps": 58,
+        "maxCumulativeLayoutShift": 0.000
+      }
+    },
+    "bannedCopyDictionary": {
+      "id": "COPY-001",
+      "forbiddenTerms": [
+        "potencialize seus resultados",
+        "solução definitiva",
+        "experiência inovadora",
+        "impulsione seu negócio",
+        "next-gen platform",
+        "transforme sua jornada",
+        "tecnologia de ponta",
+        "resultados comprovados",
+        "sua empresa aqui",
+        "lorem ipsum",
+        "sample text",
+        "soluções completas",
+        "all-in-one solution",
+        "seamless integration",
+        "game-changer",
+        "leverage the power of ai"
+      ],
+      "minConcreteFactsToAdjectivesRatio": 3.0
+    },
+    "designRecipes": {
+      "technicalPrecision": {
+        "id": "RECIPE-001",
+        "bgBase": "#030508",
+        "surface": "rgba(255, 255, 255, 0.02)",
+        "surfaceHover": "rgba(255, 255, 255, 0.04)",
+        "border": "rgba(255, 255, 255, 0.07)",
+        "accent": "#38bdf8",
+        "accentSecondary": "#818cf8",
+        "fontDisplay": "Inter, sans-serif",
+        "fontMono": "JetBrains Mono, monospace",
+        "borderRadiusPx": 12,
+        "gutterPx": 24
+      },
+      "editorialBrutalist": {
+        "id": "RECIPE-002",
+        "bgBase": "#0a0a0a",
+        "surface": "#121212",
+        "surfaceHover": "#1a1a1a",
+        "border": "#262626",
+        "accent": "#f5f5f5",
+        "accentSecondary": "#a3a3a3",
+        "fontDisplay": "Cabinet Grotesk, sans-serif",
+        "fontMono": "IBM Plex Mono, monospace",
+        "borderRadiusPx": 0,
+        "gutterPx": 32
+      },
+      "kineticLuxury": {
+        "id": "RECIPE-003",
+        "bgBase": "#07080a",
+        "surface": "rgba(240, 235, 225, 0.03)",
+        "surfaceHover": "rgba(240, 235, 225, 0.06)",
+        "border": "rgba(240, 235, 225, 0.1)",
+        "accent": "#d4af37",
+        "accentSecondary": "#e5e0d8",
+        "fontDisplay": "Playfair Display, serif",
+        "fontMono": "JetBrains Mono, monospace",
+        "borderRadiusPx": 16,
+        "gutterPx": 28
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "clientSlug": "negocia-bem-imobiliaria",
+  "selectedRefSlug": "elyse-residence-dev-webflow-io",
+  "compatibility": 0.9,
+  "rationale": "O shell oferece hero de impacto, revelações, paralaxe, carrossel, modais, FAQ e narrativa sticky adequados aos três funis de conversão da consultoria.",
+  "preservedBehaviors": [
+    "CSS responsivo e layout Webflow",
+    "GSAP/ScrollTrigger e data-anim",
+    "sticky amenities track e data-amenities-anim",
+    "Splide com paginação, loop e swipe",
+    "menu overlay, FAQ e modais"
+  ],
+  "assetCaveat": "Imagens e vídeo herdados da referência são temporários e devem ser substituídos por mídia aprovada do cliente antes de publicação."
+}

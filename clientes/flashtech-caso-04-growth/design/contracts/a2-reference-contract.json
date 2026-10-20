@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "id": "scalex-a2-reference-contract-v1",
+  "clientScope": "flashtech-caso-04-growth",
+  "status": "approved",
+  "reference": {
+    "path": "clientes/flashtech-caso-04-growth/design/goldens/hero-a2-approved-v1.png",
+    "sha256": "8F3EA1C9EADAECF67381CCB26EF3A0FFC25BE575B15722642DC39FAD0E870695",
+    "viewport": { "width": 1586, "height": 992 },
+    "usage": "geometry, hierarchy, color and material reference only. Never render this file as the website background."
+  },
+  "sourceOfTruth": {
+    "tokens": "clientes/flashtech-caso-04-growth/DESIGN.md",
+    "copy": "clientes/flashtech-caso-04-growth/composition-spec.json",
+    "implementationTarget": "clientes/flashtech-caso-04-growth/site/index.html"
+  },
+  "designRead": {
+    "theme": "pristine light mode",
+    "backgroundCharacter": "pure light canvas with restrained technical linework",
+    "typographyCharacter": "compressed statement typography",
+    "heroArchitecture": "asymmetric split hero",
+    "visualDensity": "low",
+    "primaryFocalPoint": "vertical rocket anchored to the right edge"
+  },
+  "p0": {
+    "tokens": {
+      "canvas": "#F8F8F6",
+      "surface": "#FFFFFF",
+      "ink": "#0B0D11",
+      "accent": "#FFC552",
+      "muted": "#4A4A4A",
+      "forbidden": ["#0B0D11 as page background", "blue accent", "purple accent", "second accent color", "dark section inversion"]
+    },
+    "copy": {
+      "brand": "SCALEX",
+      "navigation": ["Início", "Sobre", "Soluções", "Insights", "Resultados"],
+      "navbarCta": "FALAR COM ESPECIALISTA",
+      "headlineLines": ["GROWTH DE ALTA", "CONVERSÃO"],
+      "supportingCopy": "Acelere tráfego orgânico, leads qualificados e receita previsível com engenharia de dados e SEO técnico.",
+      "primaryCta": "AGENDAR SESSÃO ESTRATÉGICA",
+      "trajectoryTop": ["TRAJETÓRIA", "ESCALA"],
+      "trajectoryBottom": ["CONVERSÃO", "RESULTADO"]
+    },
+    "semanticHooks": ["data-a2-hero", "data-a2-brand", "data-a2-headline", "data-a2-copy", "data-a2-primary-cta", "data-a2-rocket", "data-a2-trajectory"],
+    "composition": {
+      "referenceViewport": { "width": 1586, "height": 992 },
+      "zones": [
+        { "id": "navbar", "x": 0.028, "y": 0.03, "width": 0.948, "height": 0.07, "tolerance": 0.02 },
+        { "id": "headline", "x": 0.069, "y": 0.25, "width": 0.47, "height": 0.42, "tolerance": 0.025, "maxLines": 2 },
+        { "id": "supporting-copy", "x": 0.071, "y": 0.70, "width": 0.34, "height": 0.10, "tolerance": 0.025, "maxLines": 3 },
+        { "id": "primary-cta", "x": 0.071, "y": 0.833, "width": 0.282, "height": 0.072, "tolerance": 0.02 },
+        { "id": "trajectory", "x": 0.63, "y": 0.145, "width": 0.09, "height": 0.75, "tolerance": 0.025 },
+        { "id": "rocket", "x": 0.665, "y": 0, "width": 0.335, "height": 1, "tolerance": 0.025, "crop": ["top", "right", "bottom"] }
+      ],
+      "relations": [
+        "The rocket must never intersect the bounding box of headline, supporting-copy or primary-cta. Its bounding box may occupy the navbar CTA region, as in the approved reference, only when the CTA remains fully painted above it and receives pointer input.",
+        "The primary CTA aligns to the left edge of the headline and supporting copy.",
+        "The headline dominates all other typography and remains fully visible.",
+        "The trajectory stays between conversion content and rocket."
+      ]
+    },
+    "componentRules": {
+      "navbar": "single desktop line; logo and all labels are semantic text; navbar CTA is filled amber with ink text.",
+      "headline": "Anton only; no gradient fill; no overlap; no more than two desktop lines.",
+      "cta": "filled #FFC552 rectangle with 4px radius, ink text, visible arrow affordance and no wrapping at desktop.",
+      "rocket": "use a verified client asset with a vertical silhouette, matte light and charcoal material, controlled amber details and an edge crop matching the reference. If no client asset can meet this, return a blocked result instead of substituting a generic rocket.",
+      "trajectory": "one amber curve and one vertical measured line with top and bottom endpoints only. No orbit circles, data cards, KPI counters, badges or decorative crosshairs."
+    },
+    "responsive": {
+      "desktop": { "viewport": [1440, 900], "rule": "keep all six zones visible in the first viewport" },
+      "mobile": { "viewport": [375, 812], "rule": "stack headline, copy, CTA, then rocket; no overlap or horizontal overflow" }
+    },
+    "motion": {
+      "allowed": ["headline masked reveal", "rocket parallax of 8px maximum on pointer-capable desktop", "one-time trajectory draw"],
+      "properties": ["transform", "opacity"],
+      "reducedMotion": "all continuous motion disabled and content remains visible",
+      "forbidden": ["orbit rotation", "infinite loop", "layout-property animation", "motion that hides CTA or copy"]
+    },
+    "antiDrift": [
+      "Do not use generic bento cards or a dashboard.",
+      "Do not add a second image, photo orbit or badge cluster to the hero.",
+      "Do not change any approved copy.",
+      "Do not use the golden raster as a visual implementation shortcut."
+    ]
+  },
+  "failurePolicy": "Any P0 violation is a failed task result. The executor must report the violating selector, screenshot and measured value."
+}

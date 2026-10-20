@@ -5,6 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { createPipelineRunner } = require('../src/pipeline/pipeline-runner');
+const { ExecutionLedger } = require('../src/orchestration/execution-ledger');
 
 function createFixture(overrides = {}) {
   const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-dna-pipeline-'));
@@ -87,5 +88,110 @@ test('pipeline rejects unknown modes before starting work', async () => {
     error => error.code === 'INVALID_PIPELINE_MODE'
   );
   assert.deepEqual(fixture.calls, []);
+  fixture.cleanup();
+});
+
+test('pipeline records an execution ledger when opted in', async () => {
+  const fixture = createFixture();
+  const result = await fixture.runner.run({
+    url: 'https://example.com',
+    mode: 'clone',
+    recordExecution: true,
+    model: 'gemini-3.7-flash',
+    inputTokens: 12,
+    outputTokens: 8,
+    retries: 1
+  });
+
+  const ledgerPath = path.join(fixture.outputDir, 'reference-site', 'EXECUTION_LEDGER.json');
+  const ledger = ExecutionLedger.load(ledgerPath);
+  const runs = JSON.parse(ledger.serialize()).runs;
+  assert.equal(runs.length, 1);
+  assert.equal(runs[0].model, 'gemini-3.7-flash');
+  assert.equal(runs[0].status, 'completed');
+  assert.equal(runs[0].inputTokens, 12);
+  assert.equal(runs[0].outputTokens, 8);
+  assert.equal(runs[0].retries, 1);
+  assert.match(runs[0].artifactHash, /^sha256:[0-9a-f]{64}$/);
+  assert.match(runs[0].inputHash, /^sha256:[0-9a-f]{64}$/);
+  assert.match(runs[0].artifactHash, /^sha256:[0-9a-f]{64}$/);
+  assert.notEqual(runs[0].inputHash, runs[0].artifactHash);
+  assert.deepEqual(runs[0].events.filter(event => event.type).map(event => [event.type, event.stage, event.status]), [
+    ['stage', 'detect', 'started'],
+    ['stage', 'detect', 'passed'],
+    ['stage', 'clone', 'started'],
+    ['stage', 'clone', 'passed'],
+    ['stage', 'normalize-assets', 'started'],
+    ['stage', 'normalize-assets', 'passed']
+  ]);
+  fixture.cleanup();
+});
+
+test('pipeline writes execution ledger to an explicit custom path', async () => {
+  const fixture = createFixture();
+  const customPath = path.join(fixture.outputDir, 'ledger', 'custom.json');
+  await fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true, ledgerPath: customPath });
+  assert.equal(fs.existsSync(customPath), true);
+  assert.equal(fs.existsSync(path.join(fixture.outputDir, 'reference-site', 'EXECUTION_LEDGER.json')), false);
+  fixture.cleanup();
+});
+
+test('pipeline appends runs without overwriting an existing ledger', async () => {
+  const fixture = createFixture();
+  const customPath = path.join(fixture.outputDir, 'ledger.json');
+  await fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true, ledgerPath: customPath });
+  await fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true, ledgerPath: customPath });
+  const runs = JSON.parse(ExecutionLedger.load(customPath).serialize()).runs;
+  assert.equal(runs.length, 2);
+  assert.notEqual(runs[0].runId, runs[1].runId);
+  fixture.cleanup();
+});
+
+test('pipeline records a distinct artifact hash when generated output changes', async () => {
+  let revision = 0;
+  let fixture;
+  fixture = createFixture({
+    cloneSite: async () => {
+      revision += 1;
+      fs.writeFileSync(path.join(fixture.outputDir, 'reference-site', 'generated.txt'), `revision-${revision}`);
+    }
+  });
+  const customPath = path.join(fixture.outputDir, 'ledger.json');
+  await fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true, ledgerPath: customPath });
+  await fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true, ledgerPath: customPath });
+  const runs = JSON.parse(ExecutionLedger.load(customPath).serialize()).runs;
+  assert.equal(runs[0].inputHash, runs[1].inputHash);
+  assert.notEqual(runs[0].artifactHash, runs[1].artifactHash);
+  fixture.cleanup();
+});
+
+test('pipeline persists a failed ledger event before PipelineStageError', async () => {
+  const fixture = createFixture({
+    cloneSite: async () => { throw new Error('clone exploded'); }
+  });
+
+  await assert.rejects(
+    fixture.runner.run({ url: 'https://example.com', mode: 'clone', recordExecution: true }),
+    error => error.code === 'PIPELINE_STAGE_FAILED' && error.stage === 'clone'
+  );
+
+  const ledgerPath = path.join(fixture.outputDir, 'reference-site', 'EXECUTION_LEDGER.json');
+  const runs = JSON.parse(ExecutionLedger.load(ledgerPath).serialize()).runs;
+  assert.equal(runs.length, 1);
+  assert.equal(runs[0].status, 'failed');
+  assert.deepEqual(runs[0].events.filter(event => event.type).map(event => [event.type, event.stage, event.status]), [
+    ['stage', 'detect', 'started'],
+    ['stage', 'detect', 'passed'],
+    ['stage', 'clone', 'started'],
+    ['stage', 'clone', 'failed']
+  ]);
+  fixture.cleanup();
+});
+
+test('pipeline preserves legacy behavior when execution recording is disabled', async () => {
+  const fixture = createFixture();
+  const result = await fixture.runner.run({ url: 'https://example.com', mode: 'clone' });
+  assert.equal(fs.existsSync(path.join(fixture.outputDir, 'reference-site', 'EXECUTION_LEDGER.json')), false);
+  assert.equal(result.status, 'completed');
   fixture.cleanup();
 });

@@ -1,0 +1,129 @@
+{
+  "client": "integrii-imoveis",
+  "mode": "demonstrative-presentation",
+  "language": "pt-BR",
+  "brand": {
+    "name": "Integrii Imóveis",
+    "logoText": "integrii",
+    "tagline": "Encontre o seu imóvel ideal!",
+    "location": "Paiçandu e região",
+    "tokens": {
+      "navy": "#00233a",
+      "navyHover": "#264458",
+      "ink": "#121212",
+      "mist": "#f2f2f2",
+      "white": "#ffffff"
+    },
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Poppins"
+  },
+  "intents": [
+    {
+      "id": "comprar",
+      "label": "Comprar",
+      "eyebrow": "Para chamar de seu",
+      "title": "Um endereço que acompanha a sua próxima fase.",
+      "description": "Explore uma curadoria demonstrativa de casas e apartamentos para encontrar o ponto de partida da sua busca.",
+      "actionLabel": "Ver opções para comprar",
+      "image": "assets/integri-casa-01.svg",
+      "target": "#intermediary-comprar"
+    },
+    {
+      "id": "alugar",
+      "label": "Alugar",
+      "eyebrow": "Pronto para viver agora",
+      "title": "O próximo capítulo pode começar mais perto do que você imagina.",
+      "description": "Veja uma seleção demonstrativa para orientar a sua conversa sobre localização, rotina e espaço.",
+      "actionLabel": "Encontrar um lugar para alugar",
+      "image": "assets/integri-casa-02.svg",
+      "target": "#intermediary-alugar"
+    },
+    {
+      "id": "investir",
+      "label": "Investir",
+      "eyebrow": "Uma decisão com contexto",
+      "title": "Leia a região antes de escolher o próximo movimento.",
+      "description": "Uma frente de apresentação para conversar sobre patrimônio, localização e oportunidades — sem promessa de retorno.",
+      "actionLabel": "Conversar sobre investir",
+      "image": "assets/integri-casa-03.svg",
+      "target": "#intermediary-investir"
+    }
+  ],
+  "properties": [
+    {
+      "title": "Casa Horizonte",
+      "city": "Paiçandu",
+      "neighborhood": "Região demonstrativa",
+      "type": "Casa",
+      "bedrooms": "03",
+      "area": "120 m²",
+      "priceLabel": "Consulte condições",
+      "intent": "comprar",
+      "image": "assets/integri-casa-01.svg",
+      "isDemo": true
+    },
+    {
+      "title": "Apartamento Janela Aberta",
+      "city": "Paiçandu",
+      "neighborhood": "Localização demonstrativa",
+      "type": "Apartamento",
+      "bedrooms": "02",
+      "area": "78 m²",
+      "priceLabel": "Consulte condições",
+      "intent": "alugar",
+      "image": "assets/integri-casa-02.svg",
+      "isDemo": true
+    },
+    {
+      "title": "Ponto de Encontro",
+      "city": "Paiçandu e região",
+      "neighborhood": "Contexto demonstrativo",
+      "type": "Patrimônio",
+      "bedrooms": "—",
+      "area": "A definir",
+      "priceLabel": "Conversa inicial",
+      "intent": "investir",
+      "image": "assets/integri-casa-03.svg",
+      "isDemo": true
+    }
+  ],
+  "authority": {
+    "headline": "Quando propósito e profissionalismo encontram o lugar certo.",
+    "body": "Uma experiência demonstrativa inspirada na presença regional da Integrii e pensada para aproximar a primeira conversa da decisão.",
+    "locationLabel": "Paiçandu, Paraná"
+  },
+  "map": {
+    "label": "Mapa demonstrativo de Maringá e região",
+    "caption": "Contexto visual da área de atendimento. Não é uma navegação cartográfica ao vivo.",
+    "highlight": "Paiçandu e entorno"
+  },
+  "contactTemplate": {
+    "headline": "Vamos dar nome ao próximo endereço?",
+    "support": "Escolha uma intenção para preparar uma conversa mais objetiva com a Integrii.",
+    "disclosure": "Esta é uma apresentação demonstrativa. Nenhuma mensagem é enviada por esta tela.",
+    "actionLabel": "Continuar para atendimento",
+    "backLabel": "Voltar para explorar"
+  },
+  "offline": {
+    "required": true,
+    "remoteAssets": [],
+    "remoteScripts": [],
+    "backend": false
+  },
+  "referenceTrace": [
+    {
+      "reference": "21 Oaks",
+      "file": "copias/21oaks-org/site/index.html",
+      "lines": "3040-3160",
+      "mechanic": "preload, clipPath circular, troca de slides, miniaturas e autoplay",
+      "adaptation": "mantém a gramática de reveal e progresso para três intenções imobiliárias locais"
+    },
+    {
+      "reference": "21 Oaks",
+      "file": "copias/21oaks-org/site/index.html",
+      "lines": "3194-3260",
+      "mechanic": "ritmo de entrada baseado em scroll",
+      "adaptation": "usa CSS e APIs nativas para funcionar sem bundle remoto"
+    }
+  ]
+}

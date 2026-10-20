@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "2.0.0",
+  "description": "Content Slots Template para o esqueleto op-xy-76-aura-build (Hardware 3D Showcase)",
+  "slots": {
+    "nav": {
+      "brandLogo": "OP–XY",
+      "links": [
+        { "label": "sound", "href": "#strip" },
+        { "label": "engines", "href": "#engines" },
+        { "label": "sequencer", "href": "#seq" },
+        { "label": "specs", "href": "#flip" }
+      ],
+      "ctaText": "pre-order",
+      "ctaPrice": "$2,299"
+    },
+    "hero": {
+      "tagline": "a synthesizer, a sampler and a sequencer. one instrument, all black.",
+      "title": "OP–XY",
+      "subtitle": "portable synthesizer · sampler · sequencer"
+    },
+    "strip": {
+      "words": ["sample.", "sequence.", "synthesize.", "perform."],
+      "specTitle": "four rows · 68 keys · one grayscale",
+      "specDesc": "the whole instrument is a grid. one row of instruments, one row of steps, and a two-octave keyboard under your fingers. the display keeps everything in grayscale, so the red means one thing: record."
+    },
+    "macro": {
+      "tagline": "anodized aluminum billet frame",
+      "body": "solid machined unibody chassis, ultra-tactile keycaps, zero wobble."
+    },
+    "engines": {
+      "title": "sound engines",
+      "list": ["axis", "dissolve", "e-piano", "hardsync", "organ", "prism", "simple", "wavetable"]
+    },
+    "sequencer": {
+      "title": "the sequencer.",
+      "description": "every step can carry its own velocity, timing, pitch and up to fourteen components. brain transposes the chord progression underneath, so a pattern keeps reinventing itself while you play.",
+      "defaultBpm": 120,
+      "tracks": ["kick", "snare", "hat", "synth"]
+    },
+    "ports": {
+      "title": "connect everything.",
+      "subtitle": "the right end is an i/o system. amps, headphones, a modular, a drum machine, your laptop, and the mic on the side records straight into a track.",
+      "items": [
+        { "id": "power", "name": "power", "desc": "on · off. sixteen hours on a charge." },
+        { "id": "usbc", "name": "usb-c", "desc": "audio and midi, host and device, charging." },
+        { "id": "linein", "name": "line in", "desc": "3.5 mm stereo. sample anything." },
+        { "id": "midiin", "name": "midi in", "desc": "3.5 mm. clock and notes from outside." },
+        { "id": "multiout", "name": "multi out", "desc": "midi, cv/gate, sync and aux audio on one jack." },
+        { "id": "lineout", "name": "line out", "desc": "3.5 mm stereo with headset mic support." }
+      ]
+    },
+    "plate": {
+      "title": "the other side.",
+      "subtitle": "the exact footprint of the OP–1 field. an aluminium plate, four feet, two loop pads, and everything it is printed once.",
+      "specs": [
+        { "label": "size", "value": "288 × 102 × 29 mm" },
+        { "label": "display", "value": "480 × 222 px ips" },
+        { "label": "keys", "value": "68 mechanical, ultra low profile" },
+        { "label": "encoders", "value": "4 grayscale, push" },
+        { "label": "sensors", "value": "6-axis imu, microphone" },
+        { "label": "battery", "value": "16 hours" },
+        { "label": "i/o", "value": "line in · midi in · multi out · line out · usb-c" }
+      ],
+      "laserInscription": "OP–XY portable synthesizer · synthétiseur portable · tragbarer synthesizer · designed in stockholm"
+    },
+    "cta": {
+      "title": "OP–XY",
+      "price": "$2,299",
+      "delivery": "shipping now · free shipping over $120",
+      "primaryBtn": "pre-order",
+      "secondaryBtn": "user guide"
+    },
+    "footer": {
+      "col1": ["store", "guides", "downloads"],
+      "col2": ["support", "press", "returns"],
+      "col3": ["privacy", "terms", "cookies"]
+    }
+  }
+}

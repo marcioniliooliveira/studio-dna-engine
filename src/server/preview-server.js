@@ -6,6 +6,10 @@ const { loadConfig } = require('../config');
 const { generateTailwindConfig } = require('../generators/tailwind-generator');
 const { createClientProject } = require('../generators/client-factory');
 const { runBoxDiffLinter } = require('../../scripts/box-diff-linter');
+const { handleV2Orchestrate } = require('./routes/v2-orchestrate');
+const { handleV2Vault } = require('./routes/v2-vault');
+const { handleV2Review } = require('./routes/v2-review');
+const { handleV2Audit } = require('./routes/v2-audit');
 const {
   resolveStaticPath,
   assertSafeExternalUrl,
@@ -39,7 +43,8 @@ const MIME_TYPES = {
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
   '.wasm': 'application/wasm',
-  '.md': 'text/markdown; charset=utf-8'
+  '.md': 'text/markdown; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8'
 };
 
 /**
@@ -222,6 +227,10 @@ function buildDashboardHtml(copias, clientes) {
     return '<option value="' + c + '">' + c + '</option>';
   }).join('');
 
+  const activeClientsOptions = clientes.map(function(cl) {
+    return '<option value="' + cl + '">' + cl + '</option>';
+  }).join('');
+
   return '<!DOCTYPE html>\n' +
 '<html lang="pt-BR" class="dark">\n' +
 '<head>\n' +
@@ -284,6 +293,7 @@ function buildDashboardHtml(copias, clientes) {
 '        <button class="nav-btn" onclick="showTab(\'tab-vault\')">&#129516; Design Vault</button>\n' +
 '        <button class="nav-btn" onclick="showTab(\'tab-clones\')">&#128230; Esqueletos &amp; Copias</button>\n' +
 '        <button class="nav-btn" onclick="showTab(\'tab-extractor\')">&#9889; Deep Scraper</button>\n' +
+'        <button class="nav-btn" onclick="showTab(\'tab-review\')">&#127915; Review Console (V2)</button>\n' +
 '      </div>\n' +
 '    </div>\n' +
 '  </header>\n' +
@@ -331,6 +341,64 @@ function buildDashboardHtml(copias, clientes) {
 '        </div>\n' +
 '      </div>\n' +
 '    </section>\n' +
+'\n' +
+'    <section id="tab-review" class="view-section">\n' +
+'      <div class="form-panel">\n' +
+'        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">\n' +
+'          <div>\n' +
+'            <h2 style="font-size:1.4rem;margin-bottom:4px">&#127915; Review Console &amp; Direcoes Visuais V2</h2>\n' +
+'            <p style="color:var(--text-muted);font-size:0.92rem">Controle de divergencia A/B/C, dials de intencao e auditoria multifatorial (38 variaveis).</p>\n' +
+'          </div>\n' +
+'          <div style="display:flex;gap:8px">\n' +
+'            <select id="reviewClientSelect" style="background:#07090e;border:1px solid var(--border);color:#fff;padding:8px 12px;border-radius:8px">\n' +
+activeClientsOptions + '\n' +
+'            </select>\n' +
+'            <button class="btn btn-primary" onclick="loadDirections()">Carregar 3 Direcoes</button>\n' +
+'            <button class="btn btn-secondary" onclick="runTriangulatedAudit()">Auditoria 38 Variaveis</button>\n' +
+'          </div>\n' +
+'        </div>\n' +
+'        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:24px;background:#05070a;padding:16px;border-radius:8px;border:1px solid var(--border)">\n' +
+'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">DENSIDADE: <span id="val-density">3</span></label><input type="range" id="dial-density" min="1" max="5" value="3" style="width:100%" oninput="document.getElementById(\'val-density\').innerText=this.value"></div>\n' +
+'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">ESTETICA: <span id="val-aesthetic">2</span></label><input type="range" id="dial-aesthetic" min="1" max="5" value="2" style="width:100%" oninput="document.getElementById(\'val-aesthetic\').innerText=this.value"></div>\n' +
+'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">MOVIMENTO: <span id="val-motion">5</span></label><input type="range" id="dial-motion" min="1" max="5" value="5" style="width:100%" oninput="document.getElementById(\'val-motion\').innerText=this.value"></div>\n' +
+'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">CONTRASTE: <span id="val-contrast">2</span></label><input type="range" id="dial-contrast" min="1" max="5" value="2" style="width:100%" oninput="document.getElementById(\'val-contrast\').innerText=this.value"></div>\n' +
+'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">SUPERFICIE: <span id="val-surface">3</span></label><input type="range" id="dial-surface" min="1" max="5" value="3" style="width:100%" oninput="document.getElementById(\'val-surface\').innerText=this.value"></div>\n' +
+'        </div>\n' +
+'        <div id="directionsGrid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:24px">\n' +
+'          <div class="card" style="border-top:3px solid #38bdf8">\n' +
+'            <h3>Direcao A</h3>\n' +
+'            <p style="color:var(--accent);font-weight:600">Technical Precision (Swiss Grid)</p>\n' +
+'            <p>Grid de 12 colunas, tipografia mono, dark mode profundo #030508, Lenis snappy easing.</p>\n' +
+'            <button class="btn btn-primary" onclick="selectGolden(\'A\')" style="margin-top:12px">&#9989; Aprovar Golden A</button>\n' +
+'          </div>\n' +
+'          <div class="card" style="border-top:3px solid #f5f5f5">\n' +
+'            <h3>Direcao B</h3>\n' +
+'            <p style="color:#fff;font-weight:600">Editorial Brutalist</p>\n' +
+'            <p>Tipografia display com tracking negativo, alto contraste P&amp;B, zero border-radius.</p>\n' +
+'            <button class="btn btn-secondary" onclick="selectGolden(\'B\')" style="margin-top:12px">&#9989; Aprovar Golden B</button>\n' +
+'          </div>\n' +
+'          <div class="card" style="border-top:3px solid #d4af37">\n' +
+'            <h3>Direcao C</h3>\n' +
+'            <p style="color:#d4af37;font-weight:600">Kinetic Luxury</p>\n' +
+'            <p>Midia full-bleed com color grading cinematografico, serifas finas, transicoes lentas de 1200ms.</p>\n' +
+'            <button class="btn btn-secondary" onclick="selectGolden(\'C\')" style="margin-top:12px">&#9989; Aprovar Golden C</button>\n' +
+'          </div>\n' +
+'        </div>\n' +
+'        <div style="margin-top:24px">\n' +
+'          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">\n' +
+'            <h3 style="font-size:1.1rem">&#128269; Viewport Sandbox &amp; Diff Interativo</h3>\n' +
+'            <div style="display:flex;gap:8px">\n' +
+'              <button class="btn btn-secondary" onclick="setPreviewViewport(1440, 900)">&#128187; Desktop (1440px)</button>\n' +
+'              <button class="btn btn-secondary" onclick="setPreviewViewport(768, 1024)">&#128241; Tablet (768px)</button>\n' +
+'              <button class="btn btn-secondary" onclick="setPreviewViewport(375, 812)">&#128242; Mobile (375px)</button>\n' +
+'            </div>\n' +
+'          </div>\n' +
+'          <div style="background:#000;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;justify-content:center;padding:16px">\n' +
+'            <iframe id="previewIframe" src="/clientes/piloto-elyse-luxe/site/index.html" style="width:1440px;height:700px;border:none;border-radius:8px;background:#05070a;transition:width 0.3s ease"></iframe>\n' +
+'          </div>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'    </section>\n' +
 '  </main>\n' +
 '\n' +
 '  <script>\n' +
@@ -373,6 +441,60 @@ function buildDashboardHtml(copias, clientes) {
 '        setTimeout(function() { window.location.reload(); }, 10000);\n' +
 '      } catch (e) { alert("Erro: " + e.message); }\n' +
 '    }\n' +
+'    async function loadDirections() {\n' +
+'      var sel = document.getElementById("reviewClientSelect");\n' +
+'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
+'      try {\n' +
+'        var res = await fetch("/api/v2/directions/" + slug);\n' +
+'        var data = await res.json();\n' +
+'        if (data.success) {\n' +
+'          var iframe = document.getElementById("previewIframe");\n' +
+'          if (iframe) iframe.src = "/clientes/" + slug + "/site/index.html";\n' +
+'          alert("3 Direcoes carregadas com sucesso para: " + slug);\n' +
+'        } else {\n' +
+'          alert("Erro ao carregar direcoes: " + data.error);\n' +
+'        }\n' +
+'      } catch (e) { alert("Falha: " + e.message); }\n' +
+'    }\n' +
+'    async function selectGolden(dirId) {\n' +
+'      var sel = document.getElementById("reviewClientSelect");\n' +
+'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
+'      try {\n' +
+'        var res = await fetch("/api/v2/decisions", {\n' +
+'          method: "POST",\n' +
+'          headers: { "Content-Type": "application/json" },\n' +
+'          body: JSON.stringify({ clientSlug: slug, selectedDirection: dirId, approver: "human-architect" })\n' +
+'        });\n' +
+'        var data = await res.json();\n' +
+'        if (data.success) {\n' +
+'          alert("Golden " + dirId + " aprovado com sucesso para " + slug + "! Contrato selado.");\n' +
+'        } else {\n' +
+'          alert("Erro: " + data.error);\n' +
+'        }\n' +
+'      } catch (e) { alert("Falha: " + e.message); }\n' +
+'    }\n' +
+'    async function runTriangulatedAudit() {\n' +
+'      var sel = document.getElementById("reviewClientSelect");\n' +
+'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
+'      alert("Iniciando auditoria multifatorial (38 variaveis) para " + slug + "... Aguarde.");\n' +
+'      try {\n' +
+'        var res = await fetch("/api/v2/audit/" + slug, { method: "POST" });\n' +
+'        var data = await res.json();\n' +
+'        if (data.success && data.audit) {\n' +
+'          var a = data.audit;\n' +
+'          alert("LAUDO DE AUDITORIA MULTIFATORIAL:\\nStatus: " + a.status + "\\nScore: " + a.score + "\\nDivergencia Detectada: " + (a.divergenceDetected ? "SIM" : "NAO") + "\\nDuracao: " + a.durationMs + "ms");\n' +
+'        } else {\n' +
+'          alert("Erro: " + (data.error || "falha desconhecida"));\n' +
+'        }\n' +
+'      } catch (e) { alert("Falha: " + e.message); }\n' +
+'    }\n' +
+'    function setPreviewViewport(w, h) {\n' +
+'      var iframe = document.getElementById("previewIframe");\n' +
+'      if (iframe) {\n' +
+'        iframe.style.width = w + "px";\n' +
+'        iframe.style.height = h + "px";\n' +
+'      }\n' +
+'    }\n' +
 '  </script>\n' +
 '</body>\n' +
 '</html>';
@@ -406,7 +528,9 @@ function startPreviewServer(options = {}) {
     }
 
     let pathname;
+    let urlObj;
     try {
+      urlObj = new URL(req.url || '/', 'http://127.0.0.1:4000');
       const rawPathname = String(req.url || '/').split('?')[0];
       pathname = decodeURIComponent(rawPathname);
     } catch (error) {
@@ -420,6 +544,24 @@ function startPreviewServer(options = {}) {
       res.end(JSON.stringify({ error: 'Mutation APIs are disabled or unauthorized' }));
       return;
     }
+
+    // ── Component Workbench Route ───────────────────────────────────────────
+    if (pathname === '/workbench') {
+      const client = (urlObj && urlObj.searchParams.get('client')) || 'marcionilio-oliveira';
+      const target = (urlObj && urlObj.searchParams.get('target')) || 'WorkStage';
+      res.writeHead(302, {
+        'Location': `/clientes/${encodeURIComponent(client)}/site/index.html?workbench=${encodeURIComponent(target)}&skipIntro=1`
+      });
+      res.end();
+      return;
+    }
+
+    // ── Rotas V2 da Arquitetura de Orquestração & Auditoria ─────────────────
+    const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, maxBodyBytes: opts.maxBodyBytes };
+    if (await handleV2Orchestrate(req, res, pathname, routeOpts)) return;
+    if (await handleV2Vault(req, res, pathname, routeOpts)) return;
+    if (await handleV2Review(req, res, pathname, routeOpts)) return;
+    if (await handleV2Audit(req, res, pathname, routeOpts)) return;
 
     // ── API: Iniciar Extração ──────────────────────────────────────────────
     if (pathname === '/api/extract' && req.method === 'POST') {
@@ -563,6 +705,39 @@ function startPreviewServer(options = {}) {
       return;
     }
 
+    // ── Alias e Atalhos Amigáveis (ex: /site/:slug, /styleguide/:slug) ──
+    if (pathname.startsWith('/site/')) {
+      const slugCandidate = pathname.replace('/site/', '').split('/')[0].trim();
+      if (slugCandidate) {
+        try {
+          const safeSlug = assertSafeSlug(slugCandidate);
+          let targetUrl = `/${safeSlug}/site/index.html`;
+          if (fs.existsSync(path.join(clientesDir, safeSlug))) {
+            targetUrl = `/clientes/${safeSlug}/site/index.html`;
+          }
+          res.writeHead(302, { Location: targetUrl });
+          res.end();
+          return;
+        } catch (e) {}
+      }
+    }
+
+    if (pathname.startsWith('/styleguide/')) {
+      const slugCandidate = pathname.replace('/styleguide/', '').split('/')[0].trim();
+      if (slugCandidate) {
+        try {
+          const safeSlug = assertSafeSlug(slugCandidate);
+          let targetUrl = `/${safeSlug}/design-system/design-system.html`;
+          if (fs.existsSync(path.join(clientesDir, safeSlug))) {
+            targetUrl = `/clientes/${safeSlug}/design-system/design-system.html`;
+          }
+          res.writeHead(302, { Location: targetUrl });
+          res.end();
+          return;
+        } catch (e) {}
+      }
+    }
+
     // ── Servir Arquivos Estáticos & Self-Healing Proxy ───────────────────
     let filePath;
     try {
@@ -571,6 +746,20 @@ function startPreviewServer(options = {}) {
       res.writeHead(error.statusCode || 400, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('400 Bad Request');
       return;
+    }
+
+    // Se o caminho apontar para um diretório, tenta site/index.html ou index.html
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      const candidates = [
+        path.join(filePath, 'site', 'index.html'),
+        path.join(filePath, 'index.html')
+      ];
+      for (const cand of candidates) {
+        if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+          filePath = cand;
+          break;
+        }
+      }
     }
 
     const referer = req.headers.referer || '';
@@ -719,10 +908,49 @@ function startPreviewServer(options = {}) {
           content = UniversalAssetNormalizer.applyUniversalFixes(content);
         } catch(e) {}
         try {
-          delete require.cache[require.resolve('../dev/dev-hud')];
-          const { injectDevHud } = require('../dev/dev-hud');
-          content = injectDevHud(content);
+          delete require.cache[require.resolve('../generators/hud-projector')];
+          const { injectDnaHud } = require('../generators/hud-projector');
+          const clientRoot = path.dirname(path.dirname(filePath));
+          const dnaPath = path.join(clientRoot, 'dna-ir.json');
+          if (fs.existsSync(dnaPath)) {
+            const dnaIr = JSON.parse(fs.readFileSync(dnaPath, 'utf8'));
+            content = injectDnaHud(content, dnaIr);
+          } else {
+            delete require.cache[require.resolve('../dev/dev-hud')];
+            const { injectDevHud } = require('../dev/dev-hud');
+            content = injectDevHud(content);
+          }
         } catch(e) {}
+
+        // Component Workbench & skipIntro handling
+        const skipIntro = urlObj && urlObj.searchParams.get('skipIntro') === '1';
+        const workbenchTarget = urlObj && urlObj.searchParams.get('workbench');
+        if (skipIntro || workbenchTarget) {
+          const skipScript = `
+<script id="__DNA_WORKBENCH_SKIP_INTRO__">
+  window.__SKIP_INTRO__ = true;
+  window.__WORKBENCH_TARGET__ = ${JSON.stringify(workbenchTarget || '')};
+  document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.classList.remove('lenis-locked');
+    document.documentElement.style.overflow = '';
+    if (document.body) {
+      document.body.classList.remove('loading', 'preloader-active');
+      document.body.style.opacity = '1';
+    }
+    const preloader = document.querySelector('[data-preloader], .preloader, #preloader, [data-intro]');
+    if (preloader) {
+      preloader.style.display = 'none';
+    }
+  });
+</script>
+`;
+          if (content.includes('</head>')) {
+            content = content.replace('</head>', skipScript + '</head>');
+          } else {
+            content = skipScript + content;
+          }
+        }
+
         res.end(content);
         return;
       }
@@ -730,6 +958,18 @@ function startPreviewServer(options = {}) {
       // Serve com suporte a Streaming HTTP 206 (Range) para mídias e assets estáticos
       streamFileWithRange(req, res, filePath, contentType);
     } else {
+      // Self-healing fallback para Service Worker ausente
+      if (pathname.endsWith('/sw.js') || pathname === '/sw.js') {
+        res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+        res.end('self.addEventListener("install", () => self.skipWaiting()); self.addEventListener("activate", () => self.clients.claim());');
+        return;
+      }
+      // Self-healing fallback para Webpack dynamic chunks que não puderam ser baixados
+      if (pathname.endsWith('.js') && (pathname.includes('chunk') || pathname.includes('achunk'))) {
+        res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+        res.end('(self.webpackChunk=self.webpackChunk||[]).push([[],{}]);');
+        return;
+      }
       res.writeHead(404, {
         'Content-Type': 'text/plain; charset=utf-8'
       });

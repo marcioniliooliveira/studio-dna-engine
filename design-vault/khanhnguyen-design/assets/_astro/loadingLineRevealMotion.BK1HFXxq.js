@@ -1,0 +1,1 @@
+function a(){return typeof window<"u"&&window.innerWidth<768?.86:1}const i=.2;function o(n={}){return{scale:a(),...n}}function t(n={}){return{scale:a(),staggerEach:i,...n}}function s(n,e={}){return n.querySelector("[data-line]")!==null?o(e):t(e)}export{a,t as b,s as c,i as l};

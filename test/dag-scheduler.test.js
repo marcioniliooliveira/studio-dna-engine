@@ -605,3 +605,41 @@ test('records descendants as blocked when their dependency fails', async () => {
     { type: 'TASK_FAILED', data: { nodeId: 'n3', code: 'DEPENDENCY_FAILED', evidence: { dependencyIds: ['n2'] } } }
   ]);
 });
+
+const { scheduleBlueprint } = require('../src/orchestration/dag-scheduler');
+
+const simpleBlueprint = () => ({ version: 1, runId: 'run-1', clientScope: 'client-a', tasks: [
+  { id: 'z', dependsOn: ['a'] }, { id: 'a', dependsOn: [] }, { id: 'b', dependsOn: [] }
+] });
+
+test('scheduler executes ready tasks in deterministic batches and passes dependency outputs', async () => {
+  const calls = [];
+  const result = await scheduleBlueprint(simpleBlueprint(), async (task, context) => {
+    calls.push(task.id);
+    return task.id === 'a' ? { value: 2 } : { deps: Object.keys(context.dependencies) };
+  });
+  assert.deepEqual(calls, ['a', 'b', 'z']);
+  assert.deepEqual(result.outputs.z, { deps: ['a'] });
+  assert.deepEqual(result.completed, ['a', 'b', 'z']);
+});
+
+test('scheduler stops dependent work after a task fails and reports the failure', async () => {
+  const calls = [];
+  await assert.rejects(scheduleBlueprint(simpleBlueprint(), async task => {
+    calls.push(task.id);
+    if (task.id === 'a') throw new Error('broken');
+    return true;
+  }), error => error.code === 'DAG_TASK_FAILED' && error.taskId === 'a');
+  assert.deepEqual(calls, ['a', 'b']);
+});
+
+test('scheduler requires an independent verifier before releasing task output', async () => {
+  const verified = [];
+  await assert.rejects(scheduleBlueprint(simpleBlueprint(), async task => ({ id: task.id }), {
+    verifyTask: async task => {
+      verified.push(task.id);
+      return task.id !== 'b';
+    }
+  }), error => error.code === 'DAG_VERIFICATION_FAILED' && error.taskId === 'b');
+  assert.deepEqual(verified, ['a', 'b']);
+});

@@ -1,0 +1,143 @@
+{
+  "_meta": {
+    "extractedAt": "2026-10-06T08:41:00Z",
+    "sourceUrl": "https://silvioiwata.com.br/",
+    "pipeline": "studio-dna-engine v2.5.0",
+    "status": "aligned",
+    "dossie": "portal-imobiliario-premium",
+    "dossieName": "Portal Imobiliário Regional de Alto Padrão / Flagships + Catálogo"
+  },
+  "client": {
+    "id": "silvio-iwata-imobiliaria",
+    "name": "Silvio Iwata Imobiliária",
+    "fullName": "Imobiliária Silvio Iwata",
+    "tagline": "A imobiliária de Maringá que transforma seu jeito de viver e investir.",
+    "niche": "RealEstate",
+    "subNiche": "Portal imobiliário regional / Lançamentos de alto padrão",
+    "location": "Maringá, Paraná, Brasil",
+    "language": "pt-BR",
+    "analytics": {
+      "googleAds": ["AW-961505209", "AW-792602062"],
+      "ga4": "G-DX1M6Z92C9",
+      "gtm": "GTM-MXWBHL9",
+      "facebookPixel": ["1510423229407972", "217940745597788"],
+      "hotjar": "5075854",
+      "rdstation": true,
+      "clarityMs": "nmefp74y6v"
+    }
+  },
+
+  "tokensP0": {
+    "bgSand": {
+      "hex": "#F4F1E8",
+      "role": "Background base claro institucional (Marfim Arquitetônico / Sand)"
+    },
+    "bgForest": {
+      "hex": "#0B2A1A",
+      "role": "Background profundo (Verde Floresta Noturno para Hero, Drawer e Painel Técnico)"
+    },
+    "brandPrimary": {
+      "hex": "#055227",
+      "role": "Verde Institucional Tradição Silvio Iwata"
+    },
+    "brandDeep": {
+      "hex": "#005023",
+      "role": "Verde escuro de apoio para hover states e contornos"
+    },
+    "accentLime": {
+      "hex": "#A6C83A",
+      "role": "Lima Vibrante para badges de lançamento, tags ativas e micro-acessos"
+    },
+    "textInk": {
+      "hex": "#0D0F14",
+      "role": "Tipografia de alto contraste sobre fundo claro"
+    },
+    "textWhite": {
+      "hex": "#FFFFFF",
+      "role": "Tipografia sobre verde escuro"
+    },
+    "textMuted": {
+      "hex": "#6B7A6E",
+      "role": "Metadados e textos secundários de apoio"
+    }
+  },
+
+  "typographyP0": {
+    "display": {
+      "family": "Instrument Serif",
+      "weights": [400],
+      "style": "italic",
+      "role": "Headlines editoriais de impacto e nomes de empreendimentos flagship",
+      "reference": "azimuteresidencial.com.br"
+    },
+    "body": {
+      "family": "DM Sans",
+      "weights": [400, 500, 600, 700],
+      "role": "Interface, menus, formulários, fichas técnicas e cards",
+      "reference": "mellem.ca / masters-residence"
+    }
+  },
+
+  "references": {
+    "navigationAndLayout": {
+      "url": "https://www.mellem.ca/en",
+      "aspects": "Floating pill header, mega-menu drawer arquitetônico em tela cheia, calma editorial"
+    },
+    "heroSection": {
+      "url": "https://azimuteresidencial.com.br/",
+      "aspects": "Fotografia panorâmica em golden hour sobre Maringá, tipografia Instrument Serif itálica, cápsula de busca em verde escuro"
+    },
+    "flagshipShowcase": {
+      "url": "https://dviga.marketing/masters-en#",
+      "aspects": "Stage split 50/50 alternado, galeria com abas numéricas, painel escuro com watermark arquitetônico e ficha técnica"
+    },
+    "components": {
+      "url": "https://uiarc.dev",
+      "mode": "clean-room-path-b",
+      "aspects": "Pills, drawers, tabs e cards construídos artesanalmente sob medida"
+    }
+  },
+
+  "siteSections": [
+    {
+      "id": "header",
+      "name": "Floating Pill Header + Drawer",
+      "pattern": "mellem-drawer"
+    },
+    {
+      "id": "hero",
+      "name": "Panorâmica Maringá + Smart Search",
+      "pattern": "azimute-cinematic"
+    },
+    {
+      "id": "flagships",
+      "name": "Vitrine de Lançamentos Flagship Split 50/50",
+      "pattern": "masters-split-stage"
+    },
+    {
+      "id": "catalog",
+      "name": "Catálogo Curado de Imóveis (Venda / Aluguel)",
+      "pattern": "mellem-clean-cards"
+    },
+    {
+      "id": "neighborhoods",
+      "name": "Guia de Bairros de Maringá",
+      "pattern": "visual-region-guide"
+    },
+    {
+      "id": "authority",
+      "name": "Tradição 45+ Anos & Credenciais CRECI",
+      "pattern": "metrics-trust-grid"
+    },
+    {
+      "id": "contact",
+      "name": "Atendimento Direto & Corretores",
+      "pattern": "direct-consultant-cta"
+    },
+    {
+      "id": "footer",
+      "name": "Footer Institucional",
+      "pattern": "architectural-footer"
+    }
+  ]
+}

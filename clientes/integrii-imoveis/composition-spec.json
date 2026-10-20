@@ -1,0 +1,45 @@
+{
+  "client": "integrii-imoveis",
+  "reference": "21-oaks-conscious-adaptation",
+  "designIntent": "Uma vitrine editorial e regional que transforma a primeira escolha — comprar, alugar ou investir — em uma conversa guiada.",
+  "tokens": {
+    "background": "#f2f2f2",
+    "surface": "#ffffff",
+    "ink": "#121212",
+    "brand": "#00233a",
+    "brandHover": "#264458",
+    "muted": "#7a90a8",
+    "line": "#dce8f0",
+    "accent": "#00233a"
+  },
+  "type": {
+    "display": "Plus Jakarta Sans",
+    "body": "Poppins",
+    "scale": "editorial-fluid",
+    "fallbacks": ["Arial", "sans-serif"]
+  },
+  "sections": [
+    "hero-intent-reveal",
+    "demo-property-rail",
+    "regional-authority",
+    "maringa-region-map",
+    "guided-process",
+    "intermediary-contact",
+    "footer"
+  ],
+  "hero": {
+    "desktopReveal": "circle-clip-path",
+    "mobileReveal": "opacity-translate",
+    "autoplayMs": 6200,
+    "progress": "synchronized-with-intent",
+    "primaryActionPerFold": 1
+  },
+  "constraints": {
+    "remoteRuntime": false,
+    "backend": false,
+    "flashtechTokens": false,
+    "referenceAssets": false,
+    "demoDisclosure": true,
+    "externalFunnelLinks": false
+  }
+}

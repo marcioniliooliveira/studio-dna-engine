@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seção 5 · Radar Urbano & Cartografia Maringá · 3 Variantes de Design</title>
+  
+  <!-- Fontes Oficiais P0 (Instrument Serif + DM Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & TOKENS P0 (SILVIO IWATA IMOBILIÁRIA)
+       Zero contaminação externa · Matte arquitetônico · Padrão Masters / Zorge / Air Center
+       ========================================================================== */
+    :root {
+      /* Bases Cromáticas */
+      --bg-sand: #F4F1E8;
+      --bg-sand-warm: #EFECE6;
+      --bg-sand-card: #FAF8F3;
+      --bg-forest: #0B2A1A;
+      --bg-forest-card: #0F3522;
+      --bg-forest-dark: #071F13;
+      
+      /* Marca Silvio Iwata */
+      --brand-primary: #055227;
+      --brand-deep: #005023;
+      --accent-lime: #A6C83A;
+      --accent-lime-hover: #95B72F;
+
+      /* Categorias de POI (Divisão cromática por função) */
+      --cat-transit: #2C6E85;     /* Azul-petróleo: Aeroporto / Eixos / Rodovia */
+      --cat-nature: #3B7A57;      /* Verde floresta: Parques / Bosques / Praças */
+      --cat-culture: #B85338;     /* Terracota: Catedral / Monumentos / Teatros */
+      --cat-gastronomy: #C4822B;  /* Âmbar: Mercadão / Alta Gastronomia / Shoppings */
+
+      /* Tipografia & Textos */
+      --text-ink: #0D0F14;
+      --text-ink-muted: #5A665D;
+      --text-white: #FFFFFF;
+      --text-sand: #F4F1E8;
+      --text-muted: #6B7A6E;
+      --text-muted-dark: #8E9F91;
+
+      /* Linhas & Bordas Arquitetônicas */
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --border-dark-subtle: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(5, 82, 39, 0.14);
+      --border-light-subtle: rgba(5, 82, 39, 0.08);
+
+      /* Tipografia */
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-sand);
+      color: var(--text-ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       BARRA DE CONTROLE DE VARIANTES (FIXA NO TOPO PARA COMPARAÇÃO)
+       ========================================================================== */
+    .variant-nav-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(11, 42, 26, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 14px 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .variant-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-sand);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+
+    .variant-badge-env {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+    }
+
+    .variant-tabs-group {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-dark);
+      padding: 4px;
+      border-radius: 9999px;
+      gap: 6px;
+    }
+
+    .variant-btn {
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-sand);
+      opacity: 0.75;
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .variant-btn:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .variant-btn.active {
+      opacity: 1;
+      background: var(--brand-primary);
+      color: var(--text-white);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Container de cada variante */
+    .variant-view {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.35s var(--ease-out);
+    }
+
+    .variant-view.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       SVG CARTOGRÁFICO ARQUITETÔNICO DE MARINGÁ (COMPONENTE COMUM)
+       Traçado real da malha urbana de Maringá (Catedral Pio XII, Parque do Ingá,
+       Avenidas Tiradentes, Brasil, São Paulo, Horácio Raccanello e PR-317).
+       ========================================================================== */
+    .maringa-carto-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      user-select: none;
+    }
+
+    /* Ruas & Vias */
+    .road-artery {
+      fill: none;
+      stroke: #DED9CF;
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-primary {
+      fill: none;
+      stroke: #E5E1D8;
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-local {
+      fill: none;
+      stroke: #EBE8E1;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-rail-sub {
+      fill: none;
+      stroke: #D3CDC1;
+      stroke-width: 6;
+      stroke-dasharray: 8 6;
+    }
+
+    /* Parques e Áreas Verdes Reais de Maringá */
+    .park-polygon {
+      fill: #D8DFD5;
+      stroke: #CAD3C6;
+      stroke-width: 1.5;
+      transition: all 0.3s ease;
+    }
+
+    .park-water {
+      fill: #C8D8DB;
+      stroke: #B5CBD0;
+      stroke-width: 1;
+    }
+
+    .urban-block {
+      fill: #F0EDE5;
+      stroke: #E4E0D6;
+      stroke-width: 1;
+    }
+
+    /* Rótulos Cartográficos no Mapa */
+    .map-geo-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      fill: #857F73;
+      pointer-events: none;
+    }
+
+    .map-road-label {
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill: #A09A8F;
+      pointer-events: none;
+    }
+
+    /* Marcadores de Empreendimentos Silvio Iwata (Monogramas) */
+    .building-pin {
+      cursor: pointer;
+      transition: transform 0.25s var(--ease-out);
+    }
+
+    .building-pin:hover {
+      transform: scale(1.12);
+    }
+
+    .pin-brand-bg {
+      fill: var(--bg-forest);
+      stroke: var(--text-sand);
+      stroke-width: 2.5;
+      filter: drop-shadow(0 8px 16px rgba(11, 42, 26, 0.35));
+    }
+
+    .pin-brand-monogram {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 16px;
+      font-weight: 700;
+      fill: var(--accent-lime);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    /* Marcadores de POI (Pontos de Interesse) */
+    .poi-marker {
+      cursor: pointer;
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .poi-marker:hover {
+      transform: scale(1.15);
+    }
+
+    .poi-circle-transit { fill: var(--cat-transit); }
+    .poi-circle-nature { fill: var(--cat-nature); }
+    .poi-circle-culture { fill: var(--cat-culture); }
+    .poi-circle-gastronomy { fill: var(--cat-gastronomy); }
+
+    .poi-number {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 700;
+      fill: #FFFFFF;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .poi-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      fill: #222923;
+    }
+
+    .poi-badge-time {
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      fill: #4F5E52;
+    }
+
+    /* ==========================================================================
+       VARIANTE 1: "THE MASTERS EDITORIAL" (ESTILO EXATO DO PRINT DVIGA)
+       ========================================================================== */
+    .v1-masters-section {
+      background-color: var(--bg-sand-warm);
+      min-height: calc(100vh - 72px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Topo Editorial Masters */
+    .v1-masters-header {
+      padding: 32px 56px 20px;
+      border-bottom: 1px solid var(--border-light-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .v1-brand-monogram {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--brand-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .v1-header-nav-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-ink);
+      opacity: 0.85;
+    }
+
+    /* Layout Split 58% Mapa / 42% Painel Numérico */
+    .v1-split-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      min-height: 740px;
+    }
+
+    /* Lado Esquerdo: Canvas do Mapa */
+    .v1-map-viewport {
+      position: relative;
+      background: #ECE8E0;
+      overflow: hidden;
+      border-right: 1px solid var(--border-light-subtle);
+    }
+
+    /* Floating Category Pills no rodapé do mapa (Air Center UX) */
+    .v1-map-pills-bar {
+      position: absolute;
+      bottom: 32px;
+      left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .v1-category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px;
+      border-radius: 9999px;
+      background: rgba(244, 241, 232, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(13, 15, 20, 0.08);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-ink);
+      transition: all 0.2s var(--ease-out);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    .v1-category-pill:hover {
+      background: var(--bg-sand-card);
+      transform: translateX(4px);
+    }
+
+    .v1-category-pill.active {
+      background: var(--bg-forest);
+      color: var(--text-sand);
+      border-color: var(--bg-forest);
+    }
+
+    .v1-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Lado Direito: Painel de Dados Masters (Anti Text-Heavy) */
+    .v1-data-panel {
+      padding: 56px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 40px;
+      background: var(--bg-sand-warm);
+    }
+
+    .v1-editorial-intro {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-ink);
+      font-weight: 500;
+      max-width: 540px;
+      border-left: 2px solid var(--brand-primary);
+      padding-left: 20px;
+    }
+
+    .v1-times-block {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .v1-times-group-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-ink-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .v1-times-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px 20px;
+    }
+
+    .v1-time-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .v1-time-number-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .v1-time-big {
+      font-family: var(--font-body);
+      font-size: 2.8rem;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--text-ink);
+      letter-spacing: -0.03em;
+    }
+
+    .v1-time-unit {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-ink-muted);
+    }
+
+    .v1-time-destination {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-ink);
+      line-height: 1.3;
+    }
+
+    .v1-time-detail {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* Linha Divisória Fina */
+    .v1-divider {
+      height: 1px;
+      background: var(--border-light-subtle);
+      width: 100%;
+    }
+
+    /* Rodapé do Painel */
+    .v1-panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light-subtle);
+    }
+
+    .v1-cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+      transition: gap 0.2s ease;
+    }
+
+    .v1-cta-link:hover {
+      gap: 18px;
+      color: var(--brand-deep);
+    }
+
+    /* ==========================================================================
+       VARIANTE 2: "ZORGE 9 RICH CARDS" (CANVAS FULL-WIDTH COM RICH HOVER)
+       ========================================================================== */
+    .v2-zorge-section {
+      background-color: var(--bg-forest-dark);
+      color: var(--text-sand);
+      min-height: calc(100vh - 72px);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .v2-top-bar {
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(7, 31, 19, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dark);
+      z-index: 30;
+    }
+
+    .v2-title-combo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .v2-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .v2-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      letter-spacing: -0.01em;
+      color: var(--text-sand);
+    }
+
+    .v2-canvas-container {
+      position: relative;
+      flex: 1;
+      height: 720px;
+      overflow: hidden;
+      background: #0A1C13;
+    }
+
+    /* Rich Floating Card do Zorge 9 (Preenchendo a falta de dados) */
+    .zorge-rich-card {
+      position: absolute;
+      width: 320px;
+      background: rgba(11, 42, 26, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+      transition: all 0.28s var(--ease-out);
+    }
+
+    .zorge-rich-card.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: none;
+    }
+
+    .zorge-card-media {
+      position: relative;
+      height: 140px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .zorge-card-media-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(11,42,26,0.1) 0%, rgba(11,42,26,0.85) 100%);
+    }
+
+    .zorge-card-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      color: #fff;
+    }
+
+    .zorge-card-body {
+      padding: 16px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .zorge-card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-sand);
+      line-height: 1.25;
+    }
+
+    .zorge-card-desc {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-muted-dark);
+    }
+
+    .zorge-card-metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-dark-subtle);
+    }
+
+    .zorge-metric-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .zorge-metric-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .zorge-metric-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-sand);
+    }
+
+    /* HUD de Controles no mapa do Zorge */
+    .v2-map-hud-legend {
+      position: absolute;
+      bottom: 28px;
+      left: 28px;
+      background: rgba(11, 42, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-dark);
+      padding: 12px 18px;
+      border-radius: 12px;
+      display: flex;
+      gap: 16px;
+      z-index: 20;
+    }
+
+    .v2-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--text-sand);
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       VARIANTE 3: "AIR CENTER HYBRID FOCUS" (HIGHLIGHT SELETIVO + CONEXÕES)
+       ========================================================================== */
+    .v3-aircenter-section {
+      background-color: var(--bg-sand);
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      position: relative;
+    }
+
+    /* Menu Lateral de Highlights (Padrão Air Center Location) */
+    .v3-sidebar {
+      background: #FAF8F3;
+      border-right: 1px solid var(--border-light);
+      padding: 48px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 32px;
+      z-index: 10;
+    }
+
+    .v3-sidebar-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .v3-sidebar-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .v3-sidebar-title {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      line-height: 1.1;
+      color: var(--text-ink);
+    }
+
+    .v3-sidebar-desc {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-ink-muted);
+    }
+
+    /* Lista de Categorias com Contadores e Switchers */
+    .v3-category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .v3-cat-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light-subtle);
+      background: #FFFFFF;
+      transition: all 0.2s var(--ease-out);
+      text-align: left;
+    }
+
+    .v3-cat-btn:hover {
+      border-color: var(--brand-primary);
+      transform: translateX(4px);
+    }
+
+    .v3-cat-btn.active {
+      background: var(--bg-forest);
+      color: var(--text-sand);
+      border-color: var(--bg-forest);
+      box-shadow: 0 8px 20px rgba(11, 42, 26, 0.15);
+    }
+
+    .v3-cat-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .v3-cat-color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .v3-cat-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .v3-cat-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .v3-cat-btn.active .v3-cat-count {
+      background: rgba(255, 255, 255, 0.18);
+      color: var(--accent-lime);
+    }
+
+    /* Área do Mapa com Linhas de Conexão Hairline */
+    .v3-map-container {
+      position: relative;
+      background: #EFECE6;
+      overflow: hidden;
+    }
+
+    /* Dossiê Flutuante do Ponto Selecionado */
+    .v3-poi-drawer {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+      width: 360px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+      z-index: 40;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .v3-drawer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .v3-drawer-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .v3-drawer-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-ink);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .v3-drawer-desc {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--text-ink-muted);
+      margin-bottom: 16px;
+    }
+
+    .v3-drawer-stats {
+      display: flex;
+      gap: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light-subtle);
+    }
+
+    .v3-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .v3-stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+      line-height: 1;
+    }
+
+    .v3-stat-lbl {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Linhas de Conexão no SVG (Hairline Trajectory) */
+    .connection-line {
+      fill: none;
+      stroke: var(--brand-primary);
+      stroke-width: 2;
+      stroke-dasharray: 6 4;
+      opacity: 0.65;
+      transition: all 0.3s ease;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .v1-split-layout {
+        grid-template-columns: 1fr;
+      }
+      .v1-data-panel {
+        padding: 40px 24px;
+      }
+      .v3-aircenter-section {
+        grid-template-columns: 1fr;
+      }
+      .v3-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .v3-poi-drawer {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR DE ALTERNÂNCIA DE VARIANTES (CONTROLE DE REVISÃO)
+       ======================================================================== -->
+  <header class="variant-nav-bar">
+    <div class="variant-brand">
+      <span style="font-family: var(--font-display); font-style: italic; font-size: 1.3rem; color: var(--accent-lime);">Silvio Iwata</span>
+      <span>· Seção 5: Radar Urbano Maringá</span>
+      <span class="variant-badge-env">3 Variantes</span>
+    </div>
+
+    <div class="variant-tabs-group" role="tablist">
+      <button class="variant-btn active" data-target="v1" role="tab" aria-selected="true">
+        Variante 1: The Masters Editorial
+      </button>
+      <button class="variant-btn" data-target="v2" role="tab" aria-selected="false">
+        Variante 2: Zorge 9 Rich Cards
+      </button>
+      <button class="variant-btn" data-target="v3" role="tab" aria-selected="false">
+        Variante 3: Air Center Hybrid
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VARIANTE 1: "THE MASTERS EDITORIAL" (INSPIRADA NO PRINT DA DVIGA MASTERS)
+       Split 58/42 · Mapa à esquerda + Pills Air Center · Painel Numérico à direita
+       ======================================================================== -->
+  <main id="view-v1" class="variant-view active">
+    <section class="v1-masters-section">
+      <!-- Topo Editorial Masters -->
+      <div class="v1-masters-header">
+        <div style="display: flex; align-items: baseline; gap: 16px;">
+          <span class="v1-brand-monogram">SI</span>
+          <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-ink);">
+            Silvio Iwata Flagships · Maringá / PR
+          </span>
+        </div>
+        <span class="v1-header-nav-title">LOCALIZAÇÃO & CONECTIVIDADE</span>
+      </div>
+
+      <!-- Layout Split 58% Mapa / 42% Dados -->
+      <div class="v1-split-layout">
+        <!-- Lado Esquerdo: Canvas do Mapa com Topologia Real de Maringá -->
+        <div class="v1-map-viewport">
+          <svg class="maringa-carto-svg" viewBox="0 0 1000 700" id="svg-map-v1">
+            <defs>
+              <!-- Padrão Pontilhado de Parques (Estilo Masters) -->
+              <pattern id="park-dots" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                <circle cx="6" cy="6" r="1.5" fill="#3B7A57" opacity="0.3" />
+              </pattern>
+            </defs>
+
+            <!-- Fundo Base Cartográfica -->
+            <rect width="1000" height="700" fill="#EFECE6" />
+
+            <!-- Quarteirões Urbanos Sutis -->
+            <rect x="220" y="140" width="160" height="110" class="urban-block" />
+            <rect x="420" y="140" width="220" height="110" class="urban-block" />
+            <rect x="220" y="280" width="160" height="180" class="urban-block" />
+            <rect x="670" y="280" width="180" height="180" class="urban-block" />
+            <rect x="220" y="490" width="220" height="140" class="urban-block" />
+            <rect x="470" y="490" width="220" height="140" class="urban-block" />
+
+            <!-- Eixo Ferroviário Rebaixado (Novo Centro) -->
+            <path d="M 50 240 L 950 240" class="road-rail-sub" />
+            <text x="70" y="234" class="map-road-label">Eixo Ferroviário Rebaixado · Novo Centro</text>
+
+            <!-- Áreas Verdes Reais de Maringá -->
+            <!-- 1. Parque do Ingá (Retângulo Denso de 47 Hectares com Lago) -->
+            <g id="v1-polygon-inga">
+              <rect x="540" y="340" width="160" height="230" rx="24" class="park-polygon" />
+              <rect x="540" y="340" width="160" height="230" rx="24" fill="url(#park-dots)" />
+              <!-- Lago do Parque do Ingá -->
+              <ellipse cx="610" cy="450" rx="35" ry="55" class="park-water" />
+              <text x="620" y="370" class="map-geo-label">Parque do Ingá</text>
+              <text x="620" y="386" class="map-road-label">Reserva 47 ha</text>
+            </g>
+
+            <!-- 2. Bosque das Grevíleas (Bosque 2 - Zona 02) -->
+            <g id="v1-polygon-bosque2">
+              <rect x="490" y="580" width="140" height="80" rx="18" class="park-polygon" />
+              <text x="505" y="625" class="map-geo-label">Bosque 2</text>
+            </g>
+
+            <!-- 3. Anel Radial da Praça Pio XII / Catedral Basílica -->
+            <g id="v1-polygon-catedral">
+              <circle cx="430" cy="380" r="48" class="park-polygon" />
+              <circle cx="430" cy="380" r="48" fill="url(#park-dots)" />
+              <circle cx="430" cy="380" r="14" fill="#D2CCC0" stroke="#B8B2A6" stroke-width="2" />
+              <text x="430" y="345" class="map-geo-label" text-anchor="middle">Praça Pio XII</text>
+            </g>
+
+            <!-- Malha Viária Principal (Avenidas Reais de Maringá) -->
+            <!-- Av. Colombo (Norte) -->
+            <path d="M 50 110 L 950 110" class="road-artery" />
+            <text x="70" y="102" class="map-road-label">Av. Colombo (BR-376)</text>
+
+            <!-- Av. Brasil (Centro Comercial) -->
+            <path d="M 50 280 L 950 280" class="road-artery" />
+            <text x="70" y="272" class="map-road-label">Av. Brasil</text>
+
+            <!-- Av. Horácio Raccanello Coimbra (Novo Centro) -->
+            <path d="M 120 200 L 900 200" class="road-primary" />
+            <text x="140" y="193" class="map-road-label">Av. Horácio Raccanello</text>
+
+            <!-- Av. Tiradentes (Radial da Catedral) -->
+            <path d="M 430 380 L 150 490" class="road-primary" />
+            <text x="210" y="445" class="map-road-label" transform="rotate(-21 210 445)">Av. Tiradentes</text>
+
+            <!-- Av. Cerro Azul (Radial Sul da Catedral) -->
+            <path d="M 430 380 L 430 680" class="road-primary" />
+            <text x="438" y="550" class="map-road-label" transform="rotate(90 438 550)">Av. Cerro Azul</text>
+
+            <!-- Av. São Paulo (Lateral do Parque do Ingá / Eixo Gastronômico) -->
+            <path d="M 520 110 L 520 680" class="road-artery" />
+            <text x="528" y="295" class="map-road-label" transform="rotate(90 528 295)">Av. São Paulo</text>
+
+            <!-- Av. Duque de Caxias -->
+            <path d="M 330 110 L 330 680" class="road-primary" />
+            <text x="338" y="320" class="map-road-label" transform="rotate(90 338 320)">Av. Duque de Caxias</text>
+
+            <!-- Rodovia PR-317 (Acesso ao Aeroporto) -->
+            <path d="M 150 490 L 60 670" class="road-artery" />
+            <text x="80" y="580" class="map-road-label" transform="rotate(63 80 580)">PR-317 · Aeroporto</text>
+
+            <!-- ================= PONTOS DE INTERESSE (POIS) ================= -->
+            <!-- 1. Catedral Basílica de Maringá (Cultura / Cone 124m) -->
+            <g class="poi-marker" data-cat="culture" data-name="Catedral Basílica de Maringá" data-walk="3 min" data-drive="2 min">
+              <circle cx="430" cy="380" r="16" class="poi-circle-culture" />
+              <text x="430" y="380" class="poi-number">C</text>
+              <text x="430" y="415" class="poi-label" text-anchor="middle">Catedral Basílica</text>
+              <text x="430" y="428" class="poi-badge-time" text-anchor="middle">🚶 3 MIN</text>
+            </g>
+
+            <!-- 2. Parque do Ingá (Natureza) -->
+            <g class="poi-marker" data-cat="nature" data-name="Parque do Ingá & Pista de Cooper" data-walk="4 min" data-drive="3 min">
+              <circle cx="580" cy="420" r="14" class="poi-circle-nature" />
+              <text x="580" y="420" class="poi-number">1</text>
+              <text x="600" y="424" class="poi-label">Parque do Ingá</text>
+              <text x="600" y="437" class="poi-badge-time">🚶 4 MIN · 47 ha</text>
+            </g>
+
+            <!-- 3. Maringá Park Shopping (Shopping / Conveniência) -->
+            <g class="poi-marker" data-cat="gastronomy" data-name="Maringá Park Shopping" data-walk="6 min" data-drive="4 min">
+              <circle cx="470" cy="310" r="13" class="poi-circle-gastronomy" />
+              <text x="470" y="310" class="poi-number">2</text>
+              <text x="490" y="314" class="poi-label">Maringá Park</text>
+              <text x="490" y="327" class="poi-badge-time">🚶 6 MIN</text>
+            </g>
+
+            <!-- 4. Mercadão Municipal de Maringá (Gastronomia) -->
+            <g class="poi-marker" data-cat="gastronomy" data-name="Mercadão Municipal de Maringá" data-walk="14 min" data-drive="7 min">
+              <circle cx="340" cy="180" r="13" class="poi-circle-gastronomy" />
+              <text x="340" y="180" class="poi-number">3</text>
+              <text x="360" y="184" class="poi-label">Mercadão Municipal</text>
+              <text x="360" y="197" class="poi-badge-time">🚗 7 MIN</text>
+            </g>
+
+            <!-- 5. Eurogarden (Urbanismo & Expansão Nobre) -->
+            <g class="poi-marker" data-cat="nature" data-name="Bairro Eurogarden" data-walk="18 min" data-drive="5 min">
+              <circle cx="280" cy="560" r="13" class="poi-circle-nature" />
+              <text x="280" y="560" class="poi-number">4</text>
+              <text x="300" y="564" class="poi-label">Eurogarden</text>
+              <text x="300" y="577" class="poi-badge-time">🚗 5 MIN</text>
+            </g>
+
+            <!-- 6. Aeroporto Regional de Maringá (SBMG - Conectividade) -->
+            <g class="poi-marker" data-cat="transit" data-name="Aeroporto Regional de Maringá" data-walk="—" data-drive="15 min">
+              <circle cx="90" cy="650" r="15" class="poi-circle-transit" />
+              <text x="90" y="650" class="poi-number">✈</text>
+              <text x="115" y="654" class="poi-label">Aeroporto Regional (SBMG)</text>
+              <text x="115" y="667" class="poi-badge-time">🚗 15 MIN</text>
+            </g>
+
+            <!-- ================= EDIFÍCIOS SILVIO IWATA (FLAGSHIPS) ================= -->
+            <!-- 1. Lithos Residencial (Zona 01 - Em Obras) -->
+            <g class="building-pin" id="v1-pin-lithos" data-name="Lithos Residencial" data-status="Em Obras · 62%" data-zona="Zona 01">
+              <rect x="480" y="360" width="36" height="36" rx="8" class="pin-brand-bg" />
+              <text x="498" y="378" class="pin-brand-monogram">L</text>
+              <text x="498" y="410" class="poi-label" text-anchor="middle" style="font-weight: 800; fill: var(--brand-deep);">LITHOS</text>
+            </g>
+
+            <!-- 2. La Vie Concept (Novo Centro - Breve Lançamento) -->
+            <g class="building-pin" id="v1-pin-lavie" data-name="La Vie Concept" data-status="Breve Lançamento" data-zona="Novo Centro">
+              <rect x="380" y="190" width="32" height="32" rx="8" class="pin-brand-bg" />
+              <text x="396" y="206" class="pin-brand-monogram" style="font-size: 14px;">LV</text>
+              <text x="396" y="234" class="poi-label" text-anchor="middle" style="font-weight: 800; fill: var(--brand-deep);">LA VIE</text>
+            </g>
+
+            <!-- 3. Reserva do Porto (Zona 03 - Pronto) -->
+            <g class="building-pin" id="v1-pin-porto" data-name="Reserva do Porto" data-status="Pronto para Morar" data-zona="Zona 03">
+              <rect x="710" y="470" width="32" height="32" rx="8" class="pin-brand-bg" />
+              <text x="726" y="486" class="pin-brand-monogram" style="font-size: 13px;">RP</text>
+              <text x="726" y="514" class="poi-label" text-anchor="middle" style="font-weight: 800; fill: var(--brand-deep);">RESERVA DO PORTO</text>
+            </g>
+          </svg>
+
+          <!-- Pílulas de Categoria no Rodapé do Mapa (Padrão Air Center) -->
+          <div class="v1-map-pills-bar">
+            <button class="v1-category-pill active" data-filter="all">
+              <span class="v1-pill-dot" style="background: var(--text-sand);"></span>
+              <span>Todos os Locais (7)</span>
+            </button>
+            <button class="v1-category-pill" data-filter="nature">
+              <span class="v1-pill-dot" style="background: var(--cat-nature);"></span>
+              <span>Parques & Natureza</span>
+            </button>
+            <button class="v1-category-pill" data-filter="culture">
+              <span class="v1-pill-dot" style="background: var(--cat-culture);"></span>
+              <span>Cultura & Catedral</span>
+            </button>
+            <button class="v1-category-pill" data-filter="gastronomy">
+              <span class="v1-pill-dot" style="background: var(--cat-gastronomy);"></span>
+              <span>Gastronomia & Compras</span>
+            </button>
+            <button class="v1-category-pill" data-filter="transit">
+              <span class="v1-pill-dot" style="background: var(--cat-transit);"></span>
+              <span>Conectividade & Trânsito</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lado Direito: Painel de Dados Masters (Anti Text-Heavy) -->
+        <div class="v1-data-panel">
+          <div>
+            <p class="v1-editorial-intro">
+              Posicionado nos quadrantes mais desejados de Maringá. A cidade planejada onde o eixo da Catedral, o Parque do Ingá e os polos gastronômicos convergem em minutos da sua porta.
+            </p>
+          </div>
+
+          <div class="v1-times-block">
+            <!-- Grupo 1: Condução / Carro -->
+            <div>
+              <div class="v1-times-group-title">
+                <span>🚗 TEMPO DE CONDUÇÃO (DRIVING)</span>
+              </div>
+              <div class="v1-times-grid">
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">15</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Aeroporto Regional</span>
+                  <span class="v1-time-detail">Acesso expresso PR-317</span>
+                </div>
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">7</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Mercadão Municipal</span>
+                  <span class="v1-time-detail">Polo gastronômico</span>
+                </div>
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">5</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Bairro Eurogarden</span>
+                  <span class="v1-time-detail">Eixo sustentável</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="v1-divider"></div>
+
+            <!-- Grupo 2: Distância a Pé -->
+            <div>
+              <div class="v1-times-group-title">
+                <span>🚶 DISTÂNCIA A PÉ (WALKING DISTANCE)</span>
+              </div>
+              <div class="v1-times-grid">
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">3</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Catedral Basílica</span>
+                  <span class="v1-time-detail">Praça Pio XII</span>
+                </div>
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">4</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Parque do Ingá</span>
+                  <span class="v1-time-detail">Pista de cooper e lago</span>
+                </div>
+                <div class="v1-time-item">
+                  <div class="v1-time-number-row">
+                    <span class="v1-time-big">6</span>
+                    <span class="v1-time-unit">MINS</span>
+                  </div>
+                  <span class="v1-time-destination">Maringá Park</span>
+                  <span class="v1-time-detail">Shopping & alta moda</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rodapé do Painel -->
+          <div class="v1-panel-footer">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">
+              Base calculada a partir do <strong style="color: var(--brand-primary);">Lithos Residencial (Zona 01)</strong>
+            </span>
+            <a href="#contato" class="v1-cta-link">
+              <span>AGENDAR TOUR PELO BAIRRO →</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       VARIANTE 2: "ZORGE 9 RICH CARDS" (HOVER EXPANDIDO RICO EM DADOS)
+       Canvas imersivo · Marcador de tempo direto no mapa · Card detalhado no hover
+       ======================================================================== -->
+  <main id="view-v2" class="variant-view">
+    <section class="v2-zorge-section">
+      <!-- Top Bar com Identidade Zorge 9 -->
+      <div class="v2-top-bar">
+        <div class="v2-title-combo">
+          <span class="v2-eyebrow">Localização Privilegiada · Zorge 9 Aesthetic</span>
+          <h2 class="v2-title">Maringá em Raio de 15 Minutos</h2>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted-dark); max-width: 380px; text-align: right;">
+          Passe o mouse sobre os marcadores para abrir o card de dados completos e conexões de cada endereço.
+        </div>
+      </div>
+
+      <!-- Canvas do Mapa Zorge com Rich Floating Card -->
+      <div class="v2-canvas-container" id="v2-map-wrapper">
+        <svg class="maringa-carto-svg" viewBox="0 0 1000 700" id="svg-map-v2">
+          <!-- Fundo Escuro Arquitetônico Zorge 9 -->
+          <rect width="1000" height="700" fill="#0A1C13" />
+
+          <!-- Quarteirões Noturnos -->
+          <rect x="220" y="140" width="160" height="110" fill="#0D251A" stroke="#163828" stroke-width="1" />
+          <rect x="420" y="140" width="220" height="110" fill="#0D251A" stroke="#163828" stroke-width="1" />
+          <rect x="220" y="280" width="160" height="180" fill="#0D251A" stroke="#163828" stroke-width="1" />
+          <rect x="670" y="280" width="180" height="180" fill="#0D251A" stroke="#163828" stroke-width="1" />
+          <rect x="220" y="490" width="220" height="140" fill="#0D251A" stroke="#163828" stroke-width="1" />
+          <rect x="470" y="490" width="220" height="140" fill="#0D251A" stroke="#163828" stroke-width="1" />
+
+          <!-- Eixo Ferroviário -->
+          <path d="M 50 240 L 950 240" fill="none" stroke="#25503B" stroke-width="3" stroke-dasharray="6 6" />
+
+          <!-- Parques Noturnos com Glow Suave -->
+          <rect x="540" y="340" width="160" height="230" rx="24" fill="#0F3822" stroke="#1E5E3B" stroke-width="1.5" />
+          <ellipse cx="610" cy="450" rx="35" ry="55" fill="#134731" />
+          <text x="620" y="370" fill="#A6C83A" font-size="11" font-weight="700" letter-spacing="0.12em">PARQUE DO INGÁ</text>
+
+          <rect x="490" y="580" width="140" height="80" rx="18" fill="#0F3822" stroke="#1E5E3B" stroke-width="1.5" />
+          <text x="505" y="625" fill="#A6C83A" font-size="11" font-weight="700">BOSQUE 2</text>
+
+          <!-- Catedral Radial -->
+          <circle cx="430" cy="380" r="48" fill="#0F3822" stroke="#1E5E3B" stroke-width="1.5" />
+          <circle cx="430" cy="380" r="14" fill="#1E5E3B" />
+
+          <!-- Vias Noturnas -->
+          <path d="M 50 110 L 950 110" fill="none" stroke="#1C4731" stroke-width="10" />
+          <path d="M 50 280 L 950 280" fill="none" stroke="#1C4731" stroke-width="10" />
+          <path d="M 120 200 L 900 200" fill="none" stroke="#173B29" stroke-width="7" />
+          <path d="M 430 380 L 150 490" fill="none" stroke="#173B29" stroke-width="7" />
+          <path d="M 430 380 L 430 680" fill="none" stroke="#173B29" stroke-width="7" />
+          <path d="M 520 110 L 520 680" fill="none" stroke="#1C4731" stroke-width="10" />
+          <path d="M 330 110 L 330 680" fill="none" stroke="#173B29" stroke-width="7" />
+          <path d="M 150 490 L 60 670" fill="none" stroke="#1C4731" stroke-width="10" />
+
+          <!-- Marcadores Noturnos Zorge 9 (Com tempo embutido direto no mapa) -->
+          <!-- Catedral -->
+          <g class="zorge-marker-interactive" data-id="catedral" transform="translate(430, 380)">
+            <circle r="14" fill="#B85338" stroke="#FFF" stroke-width="2" />
+            <rect x="20" y="-12" width="68" height="24" rx="12" fill="rgba(184,83,56,0.95)" />
+            <text x="54" y="4" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">3 MIN</text>
+          </g>
+
+          <!-- Parque do Ingá -->
+          <g class="zorge-marker-interactive" data-id="inga" transform="translate(580, 420)">
+            <circle r="14" fill="#3B7A57" stroke="#FFF" stroke-width="2" />
+            <rect x="20" y="-12" width="68" height="24" rx="12" fill="rgba(59,122,87,0.95)" />
+            <text x="54" y="4" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">4 MIN</text>
+          </g>
+
+          <!-- Maringá Park -->
+          <g class="zorge-marker-interactive" data-id="maringapark" transform="translate(470, 310)">
+            <circle r="14" fill="#C4822B" stroke="#FFF" stroke-width="2" />
+            <rect x="20" y="-12" width="68" height="24" rx="12" fill="rgba(196,130,43,0.95)" />
+            <text x="54" y="4" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">6 MIN</text>
+          </g>
+
+          <!-- Mercadão -->
+          <g class="zorge-marker-interactive" data-id="mercadao" transform="translate(340, 180)">
+            <circle r="14" fill="#C4822B" stroke="#FFF" stroke-width="2" />
+            <rect x="20" y="-12" width="76" height="24" rx="12" fill="rgba(196,130,43,0.95)" />
+            <text x="58" y="4" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">🚗 7 MIN</text>
+          </g>
+
+          <!-- Aeroporto -->
+          <g class="zorge-marker-interactive" data-id="aeroporto" transform="translate(90, 650)">
+            <circle r="14" fill="#2C6E85" stroke="#FFF" stroke-width="2" />
+            <rect x="20" y="-12" width="82" height="24" rx="12" fill="rgba(44,110,133,0.95)" />
+            <text x="61" y="4" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">🚗 15 MIN</text>
+          </g>
+
+          <!-- Edifício Lithos (Ponto Âncora) -->
+          <g transform="translate(490, 360)">
+            <rect width="36" height="36" rx="8" fill="#A6C83A" stroke="#FFF" stroke-width="2" />
+            <text x="18" y="24" fill="#0B2A1A" font-family="var(--font-display)" font-size="18" font-style="italic" font-weight="700" text-anchor="middle">L</text>
+            <text x="18" y="52" fill="#A6C83A" font-size="11" font-weight="800" text-anchor="middle">LITHOS</text>
+          </g>
+        </svg>
+
+        <!-- Rich Card Flutuante (O Card Completo do Zorge 9) -->
+        <div class="zorge-rich-card" id="zorge-card">
+          <div class="zorge-card-media" id="zorge-card-img" style="background-image: url('assets/hero-maringa-clean.jpg');">
+            <div class="zorge-card-media-overlay"></div>
+            <span class="zorge-card-tag" id="zorge-card-tag" style="background: var(--cat-culture);">CULTURA & MARCO</span>
+          </div>
+          <div class="zorge-card-body">
+            <h3 class="zorge-card-title" id="zorge-card-title">Catedral Basílica de Maringá</h3>
+            <p class="zorge-card-desc" id="zorge-card-desc">
+              O monumento icônico da cidade com seu cone arquitetônico de 124m de altura, cercado por espelhos d'água e bosque paisagístico.
+            </p>
+            <div class="zorge-card-metrics-row">
+              <div class="zorge-metric-box">
+                <span class="zorge-metric-label">Caminhada</span>
+                <span class="zorge-metric-value" id="zorge-card-walk">🚶 3 MIN (250m)</span>
+              </div>
+              <div class="zorge-metric-box">
+                <span class="zorge-metric-label">Condução</span>
+                <span class="zorge-metric-value" id="zorge-card-drive">🚗 2 MIN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HUD de Legenda Zorge 9 -->
+        <div class="v2-map-hud-legend">
+          <div class="v2-legend-item">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--cat-culture);"></span>
+            <span>Cultura</span>
+          </div>
+          <div class="v2-legend-item">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--cat-nature);"></span>
+            <span>Parques</span>
+          </div>
+          <div class="v2-legend-item">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--cat-gastronomy);"></span>
+            <span>Gastronomia</span>
+          </div>
+          <div class="v2-legend-item">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--cat-transit);"></span>
+            <span>Conectividade</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       VARIANTE 3: "AIR CENTER HYBRID FOCUS" (HIGHLIGHT SELETIVO + LINHAS DE CONEXÃO)
+       Menu lateral de categorias · Destaque isolado · Linhas métricas desde o Lithos
+       ======================================================================== -->
+  <main id="view-v3" class="variant-view">
+    <section class="v3-aircenter-section">
+      <!-- Sidebar de Categorias e Destaques (Air Center Location UX) -->
+      <aside class="v3-sidebar">
+        <div class="v3-sidebar-header">
+          <span class="v3-sidebar-eyebrow">Maringá Mobility Matrix</span>
+          <h2 class="v3-sidebar-title">Selecione os Pontos de Interesse</h2>
+          <p class="v3-sidebar-desc">
+            Explore a malha urbana filtrando por categoria. O mapa traça a linha de rota direta e o tempo estimado a partir do Lithos Residencial.
+          </p>
+        </div>
+
+        <div class="v3-category-list">
+          <button class="v3-cat-btn active" data-v3-cat="all">
+            <div class="v3-cat-left">
+              <span class="v3-cat-color-dot" style="background: var(--brand-primary);"></span>
+              <span class="v3-cat-label">Visão Completa</span>
+            </div>
+            <span class="v3-cat-count">7</span>
+          </button>
+          <button class="v3-cat-btn" data-v3-cat="nature">
+            <div class="v3-cat-left">
+              <span class="v3-cat-color-dot" style="background: var(--cat-nature);"></span>
+              <span class="v3-cat-label">Parques & Natureza</span>
+            </div>
+            <span class="v3-cat-count">2</span>
+          </button>
+          <button class="v3-cat-btn" data-v3-cat="culture">
+            <div class="v3-cat-left">
+              <span class="v3-cat-color-dot" style="background: var(--cat-culture);"></span>
+              <span class="v3-cat-label">Catedral & Monumentos</span>
+            </div>
+            <span class="v3-cat-count">1</span>
+          </button>
+          <button class="v3-cat-btn" data-v3-cat="gastronomy">
+            <div class="v3-cat-left">
+              <span class="v3-cat-color-dot" style="background: var(--cat-gastronomy);"></span>
+              <span class="v3-cat-label">Alta Gastronomia & Mall</span>
+            </div>
+            <span class="v3-cat-count">2</span>
+          </button>
+          <button class="v3-cat-btn" data-v3-cat="transit">
+            <div class="v3-cat-left">
+              <span class="v3-cat-color-dot" style="background: var(--cat-transit);"></span>
+              <span class="v3-cat-label">Mobilidade & Aeroporto</span>
+            </div>
+            <span class="v3-cat-count">1</span>
+          </button>
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+          <strong>Ponto Central de Partida:</strong><br>
+          Lithos Residencial · Av. São Paulo / Zona 01.
+        </div>
+      </aside>
+
+      <!-- Área do Mapa com Linhas de Conexão Hairline -->
+      <div class="v3-map-container">
+        <svg class="maringa-carto-svg" viewBox="0 0 1000 700" id="svg-map-v3">
+          <rect width="1000" height="700" fill="#EFECE6" />
+
+          <!-- Parques -->
+          <rect x="540" y="340" width="160" height="230" rx="24" class="park-polygon" />
+          <ellipse cx="610" cy="450" rx="35" ry="55" class="park-water" />
+          <circle cx="430" cy="380" r="48" class="park-polygon" />
+
+          <!-- Vias -->
+          <path d="M 50 110 L 950 110" class="road-artery" />
+          <path d="M 50 280 L 950 280" class="road-artery" />
+          <path d="M 120 200 L 900 200" class="road-primary" />
+          <path d="M 430 380 L 150 490" class="road-primary" />
+          <path d="M 430 380 L 430 680" class="road-primary" />
+          <path d="M 520 110 L 520 680" class="road-artery" />
+          <path d="M 330 110 L 330 680" class="road-primary" />
+          <path d="M 150 490 L 60 670" class="road-artery" />
+
+          <!-- Linhas de Conexão Hairline desde o Lithos (498, 378) -->
+          <g id="v3-trajectories">
+            <!-- Rota Lithos -> Catedral (430, 380) -->
+            <line x1="498" y1="378" x2="430" y2="380" class="connection-line" data-v3-target="culture" />
+            <!-- Rota Lithos -> Parque do Ingá (580, 420) -->
+            <line x1="498" y1="378" x2="580" y2="420" class="connection-line" data-v3-target="nature" />
+            <!-- Rota Lithos -> Maringá Park (470, 310) -->
+            <line x1="498" y1="378" x2="470" y2="310" class="connection-line" data-v3-target="gastronomy" />
+            <!-- Rota Lithos -> Mercadão (340, 180) -->
+            <line x1="498" y1="378" x2="340" y2="180" class="connection-line" data-v3-target="gastronomy" />
+            <!-- Rota Lithos -> Aeroporto (90, 650) -->
+            <line x1="498" y1="378" x2="90" y2="650" class="connection-line" data-v3-target="transit" />
+          </g>
+
+          <!-- Marcadores V3 -->
+          <g class="v3-marker" data-cat="culture" transform="translate(430, 380)">
+            <circle r="14" class="poi-circle-culture" />
+            <text class="poi-number">C</text>
+            <text y="28" class="poi-label" text-anchor="middle">Catedral</text>
+          </g>
+          <g class="v3-marker" data-cat="nature" transform="translate(580, 420)">
+            <circle r="14" class="poi-circle-nature" />
+            <text class="poi-number">1</text>
+            <text y="28" class="poi-label" text-anchor="middle">Parque do Ingá</text>
+          </g>
+          <g class="v3-marker" data-cat="gastronomy" transform="translate(470, 310)">
+            <circle r="14" class="poi-circle-gastronomy" />
+            <text class="poi-number">2</text>
+            <text y="28" class="poi-label" text-anchor="middle">Maringá Park</text>
+          </g>
+          <g class="v3-marker" data-cat="gastronomy" transform="translate(340, 180)">
+            <circle r="14" class="poi-circle-gastronomy" />
+            <text class="poi-number">3</text>
+            <text y="28" class="poi-label" text-anchor="middle">Mercadão</text>
+          </g>
+          <g class="v3-marker" data-cat="transit" transform="translate(90, 650)">
+            <circle r="14" class="poi-circle-transit" />
+            <text class="poi-number">✈</text>
+            <text y="28" class="poi-label" text-anchor="middle">Aeroporto</text>
+          </g>
+
+          <!-- Empreendimento Lithos Central -->
+          <g transform="translate(480, 360)">
+            <rect width="36" height="36" rx="8" class="pin-brand-bg" />
+            <text x="18" y="22" class="pin-brand-monogram">L</text>
+            <text x="18" y="52" class="poi-label" text-anchor="middle" style="font-weight: 800; fill: var(--brand-primary);">LITHOS</text>
+          </g>
+        </svg>
+
+        <!-- Dossiê do Ponto Selecionado -->
+        <div class="v3-poi-drawer" id="v3-drawer">
+          <div class="v3-drawer-top">
+            <span class="v3-drawer-tag" id="v3-drawer-tag">Parques & Bem-Estar</span>
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-lime); background: var(--bg-forest); padding: 3px 8px; border-radius: 9999px;">
+              Destaque
+            </span>
+          </div>
+          <h3 class="v3-drawer-title" id="v3-drawer-title">Parque do Ingá</h3>
+          <p class="v3-drawer-desc" id="v3-drawer-desc">
+            Maior reserva de mata atlântica nativa no perímetro urbano da região. Pista de cooper pavimentada de 3.000m e lago natural a poucos passos do Lithos.
+          </p>
+          <div class="v3-drawer-stats">
+            <div class="v3-stat-item">
+              <span class="v3-stat-num" id="v3-stat-walk">4 min</span>
+              <span class="v3-stat-lbl">Caminhada a pé</span>
+            </div>
+            <div class="v3-stat-item">
+              <span class="v3-stat-num" id="v3-stat-dist">350 m</span>
+              <span class="v3-stat-lbl">Distância direta</span>
+            </div>
+            <div class="v3-stat-item">
+              <span class="v3-stat-num" id="v3-stat-drive">3 min</span>
+              <span class="v3-stat-lbl">Condução</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       SCRIPTS DE INTERATIVIDADE VANILLA (CONTROLE DE VARIANTES, HOVER & FILTROS)
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Alternador de Abas de Variantes
+      const variantBtns = document.querySelectorAll('.variant-btn');
+      const variantViews = document.querySelectorAll('.variant-view');
+
+      variantBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-target');
+          
+          variantBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+
+          variantViews.forEach(view => {
+            view.classList.remove('active');
+            if (view.id === `view-${target}`) {
+              view.classList.add('active');
+            }
+          });
+        });
+      });
+
+      // 2. Filtros de Categoria da Variante 1 (The Masters)
+      const v1Pills = document.querySelectorAll('.v1-category-pill');
+      const v1Markers = document.querySelectorAll('#svg-map-v1 .poi-marker');
+
+      v1Pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          v1Pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+
+          const filter = pill.getAttribute('data-filter');
+          v1Markers.forEach(m => {
+            const cat = m.getAttribute('data-cat');
+            if (filter === 'all' || cat === filter) {
+              m.style.opacity = '1';
+              m.style.transform = 'scale(1)';
+            } else {
+              m.style.opacity = '0.2';
+              m.style.transform = 'scale(0.85)';
+            }
+          });
+        });
+      });
+
+      // 3. Rich Card Flutuante da Variante 2 (Zorge 9)
+      const zorgeData = {
+        catedral: {
+          title: 'Catedral Basílica de Maringá',
+          tag: 'Cultura & Arquitetura',
+          tagBg: 'var(--cat-culture)',
+          desc: 'Cone arquitetônico monumental de 124m de altura, cercado por espelhos d\'água e praça paisagística no coração da Zona 01.',
+          walk: '🚶 3 MIN (250m)',
+          drive: '🚗 2 MIN',
+          img: 'assets/hero-maringa-clean.jpg'
+        },
+        inga: {
+          title: 'Parque do Ingá & Pista de Cooper',
+          tag: 'Natureza & Lazer',
+          tagBg: 'var(--cat-nature)',
+          desc: 'Reserva florestal urbana de 47 hectares com lago natural, pista de caminhada iluminada de 3.000m e ar puro permanente.',
+          walk: '🚶 4 MIN (350m)',
+          drive: '🚗 3 MIN',
+          img: 'assets/palco-lithos-clean.jpg'
+        },
+        maringapark: {
+          title: 'Maringá Park Shopping',
+          tag: 'Gastronomia & Compras',
+          tagBg: 'var(--cat-gastronomy)',
+          desc: 'Principal centro de alta moda e serviços da Zona 01. Salas VIP de cinema, alta gastronomia e conveniência a passos de casa.',
+          walk: '🚶 6 MIN (500m)',
+          drive: '🚗 4 MIN',
+          img: 'assets/card-clarina.jpg'
+        },
+        mercadao: {
+          title: 'Mercadão Municipal de Maringá',
+          tag: 'Polo Gastronômico',
+          tagBg: 'var(--cat-gastronomy)',
+          desc: 'Empório nobre com restaurantes, adegas e produtos artesanais no Novo Centro. Ponto de encontro tradicional da cidade.',
+          walk: '🚶 14 MIN (1.2km)',
+          drive: '🚗 7 MIN',
+          img: 'assets/card-luxras.jpg'
+        },
+        aeroporto: {
+          title: 'Aeroporto Regional de Maringá (SBMG)',
+          tag: 'Mobilidade & Conectividade',
+          tagBg: 'var(--cat-transit)',
+          desc: 'Conexões diárias diretas para São Paulo (CGH/GRU), Curitiba e Campinas. Acesso expresso pela Rodovia PR-317 sem semáforos.',
+          walk: '— (Não aplicável)',
+          drive: '🚗 15 MIN (12km)',
+          img: 'assets/fachada-azimute.webp'
+        }
+      };
+
+      const zorgeCard = document.getElementById('zorge-card');
+      const zorgeMarkers = document.querySelectorAll('.zorge-marker-interactive');
+      const v2Wrapper = document.getElementById('v2-map-wrapper');
+
+      zorgeMarkers.forEach(m => {
+        m.addEventListener('mouseenter', (e) => {
+          const id = m.getAttribute('data-id');
+          const data = zorgeData[id];
+          if (!data) return;
+
+          document.getElementById('zorge-card-title').textContent = data.title;
+          document.getElementById('zorge-card-tag').textContent = data.tag;
+          document.getElementById('zorge-card-tag').style.background = data.tagBg;
+          document.getElementById('zorge-card-desc').textContent = data.desc;
+          document.getElementById('zorge-card-walk').textContent = data.walk;
+          document.getElementById('zorge-card-drive').textContent = data.drive;
+          document.getElementById('zorge-card-img').style.backgroundImage = `url('${data.img}')`;
+
+          const rect = m.getBoundingClientRect();
+          const wrapperRect = v2Wrapper.getBoundingClientRect();
+
+          let left = rect.left - wrapperRect.left + 30;
+          let top = rect.top - wrapperRect.top - 80;
+
+          // Limitar nas bordas
+          if (left + 330 > wrapperRect.width) left = rect.left - wrapperRect.left - 330;
+          if (top < 10) top = 10;
+
+          zorgeCard.style.left = `${left}px`;
+          zorgeCard.style.top = `${top}px`;
+          zorgeCard.classList.add('is-visible');
+        });
+
+        m.addEventListener('mouseleave', () => {
+          zorgeCard.classList.remove('is-visible');
+        });
+      });
+
+      // 4. Highlight Seletivo e Dossiê da Variante 3 (Air Center)
+      const v3Btns = document.querySelectorAll('.v3-cat-btn');
+      const v3Markers = document.querySelectorAll('.v3-marker');
+      const v3Lines = document.querySelectorAll('.connection-line');
+
+      const v3Data = {
+        nature: {
+          tag: 'Parques & Bem-Estar',
+          title: 'Parque do Ingá & Pista de Cooper',
+          desc: 'Maior reserva de mata atlântica nativa no perímetro urbano da região. Pista de cooper pavimentada de 3.000m e lago natural a poucos passos do Lithos.',
+          walk: '4 min',
+          dist: '350 m',
+          drive: '3 min'
+        },
+        culture: {
+          tag: 'Cultura & Arquitetura',
+          title: 'Catedral Basílica de Maringá',
+          desc: 'Monumento projetado em arquitetura brutalista sacra de 124m. O maior marco cívico do Estado do Paraná.',
+          walk: '3 min',
+          dist: '250 m',
+          drive: '2 min'
+        },
+        gastronomy: {
+          tag: 'Alta Gastronomia & Compras',
+          title: 'Maringá Park & Mercadão Gourmet',
+          desc: 'Eixo gastronômico com restaurantes premiados, empórios de vinhos importados e marcas internacionais.',
+          walk: '6 min',
+          dist: '500 m',
+          drive: '4 min'
+        },
+        transit: {
+          tag: 'Conectividade Aérea & Rodoviária',
+          title: 'Aeroporto Regional de Maringá (SBMG)',
+          desc: 'Terminal moderno com sala VIP e voos executivos diários para as principais capitais brasileiras.',
+          walk: '—',
+          dist: '12 km',
+          drive: '15 min'
+        },
+        all: {
+          tag: 'Visão Geral Metropolitana',
+          title: 'Todos os Eixos Integrados',
+          desc: 'Os 7 pontos vitais de Maringá mapeados em raio de 15 minutos a partir do centro cívico e da Zona 01.',
+          walk: '3 a 6 min',
+          dist: 'Raio 500m',
+          drive: '2 a 15 min'
+        }
+      };
+
+      v3Btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          v3Btns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const cat = btn.getAttribute('data-v3-cat');
+          const info = v3Data[cat] || v3Data.all;
+
+          document.getElementById('v3-drawer-tag').textContent = info.tag;
+          document.getElementById('v3-drawer-title').textContent = info.title;
+          document.getElementById('v3-drawer-desc').textContent = info.desc;
+          document.getElementById('v3-stat-walk').textContent = info.walk;
+          document.getElementById('v3-stat-dist').textContent = info.dist;
+          document.getElementById('v3-stat-drive').textContent = info.drive;
+
+          // Atualizar Marcadores
+          v3Markers.forEach(m => {
+            const mCat = m.getAttribute('data-cat');
+            if (cat === 'all' || mCat === cat) {
+              m.style.opacity = '1';
+              m.style.transform = 'scale(1.1)';
+            } else {
+              m.style.opacity = '0.2';
+              m.style.transform = 'scale(0.85)';
+            }
+          });
+
+          // Atualizar Linhas de Conexão
+          v3Lines.forEach(line => {
+            const target = line.getAttribute('data-v3-target');
+            if (cat === 'all' || target === cat) {
+              line.style.opacity = '0.7';
+              line.style.strokeWidth = '2.5';
+            } else {
+              line.style.opacity = '0.05';
+              line.style.strokeWidth = '1';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

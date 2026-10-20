@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Imagem demonstrativa de volumes residenciais</title>
+  <desc id="desc">Composição de volumes de arquitetura residencial sobre uma paisagem verde.</desc>
+  <defs><linearGradient id="ground" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#005023"/><stop offset="1" stop-color="#055227"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="#e8edf4"/>
+  <path d="M0 530h1600v470H0Z" fill="url(#ground)"/>
+  <path d="M0 660 360 470l330 130 330-210 580 250v80H0Z" fill="#8dbc2a" opacity=".45"/>
+  <path d="M240 720 580 455l335 245v235H240Z" fill="#ffffff" stroke="#055227" stroke-width="16"/>
+  <path d="m480 700 370-300 410 300" fill="none" stroke="#005023" stroke-width="28" stroke-linejoin="round"/>
+  <path d="M450 720h405v215H450ZM1000 650h290v285H1000Z" fill="#055227"/>
+  <path d="M575 720v215M710 720v215M1000 785h290" stroke="#b9d8c1" stroke-width="14"/>
+  <circle cx="1300" cy="160" r="110" fill="#8dbc2a" opacity=".75"/>
+  <path d="M110 935h1380" stroke="#8dbc2a" stroke-width="22" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "id": "scalex-a2-visual-acceptance-v1",
+  "clientScope": "flashtech-caso-04-growth",
+  "referenceContract": "clientes/flashtech-caso-04-growth/design/contracts/a2-reference-contract.json",
+  "artifactDirectory": "clientes/flashtech-caso-04-growth/qa-reports/a2-approved",
+  "capture": [
+    { "id": "desktop", "viewport": [1440, 900], "path": "desktop.png" },
+    { "id": "mobile", "viewport": [375, 812], "path": "mobile.png" },
+    { "id": "desktop-reduced-motion", "viewport": [1440, 900], "reducedMotion": true, "path": "desktop-reduced-motion.png" }
+  ],
+  "p0": [
+    "Verify golden SHA-256 before execution.",
+    "Verify every semantic hook from the reference contract exists exactly once.",
+    "Measure all reference zones using getBoundingClientRect and compare normalized x, y, width and height against their contract tolerance.",
+    "Assert the rocket does not intersect headline, supporting-copy or primary-cta. If its bounding box overlaps the navbar CTA, assert the filled amber CTA remains the top hit target and visually unobscured.",
+    "Assert headline has exactly two desktop lines and supporting copy has at most three desktop lines.",
+    "Assert page canvas resolves to #F8F8F6 and all visible hero text resolves to #0B0D11 or #4A4A4A. Assert accent usage is #FFC552 only.",
+    "Assert the desktop screenshot includes the CTA and full headline in the first viewport.",
+    "Assert mobile horizontal scroll width is not greater than viewport width and the CTA is visible before the rocket.",
+    "Assert reduced motion leaves headline, copy, CTA and rocket visible with no continuous animation.",
+    "Run Unified Quality Gate with no runtime, network, broken-image, overflow or clipping failure."
+  ],
+  "p1": [
+    "Create a 50 percent opacity overlay of desktop screenshot and golden at 1586 by 992 scale.",
+    "Record global SSIM and different-pixel ratio for review. Pass only after visual reviewer confirms the macro composition is faithful.",
+    "Record computed font-family, font-size, line-height and color for brand, headline, copy and both CTAs."
+  ],
+  "evidence": {
+    "required": ["desktop.png", "mobile.png", "desktop-reduced-motion.png", "overlay.png", "metrics.json", "unified-quality.json"],
+    "resultSchema": {
+      "status": ["passed", "failed", "blocked"],
+      "failures": "compact array of observable P0 or P1 failures only",
+      "measurements": "normalized DOM rects, computed styles and image comparison metrics"
+    }
+  },
+  "releaseRule": "A task cannot be approved by prose. It requires all P0 checks, evidence artifacts and a separate visual-review approval."
+}

@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-10-01T17:21:57.080Z",
+  "binaries": [
+    {
+      "url": "https://jesperlandberg.com/glyphs/sans-400.bin",
+      "filePath": "models/b2f84e89a1db_sans-400.bin",
+      "mimeType": "application/octet-stream",
+      "size": 409600,
+      "hash": "b2f84e89a1db"
+    },
+    {
+      "url": "https://jesperlandberg.com/glyphs/sans-500.bin",
+      "filePath": "models/6051c398263b_sans-500.bin",
+      "mimeType": "application/octet-stream",
+      "size": 409600,
+      "hash": "6051c398263b"
+    },
+    {
+      "url": "https://jesperlandberg.com/basis/basis_transcoder.wasm",
+      "filePath": "models/6cf17dc88935_basis_transcoder.wasm",
+      "mimeType": "application/wasm",
+      "size": 527333,
+      "hash": "6cf17dc88935"
+    },
+    {
+      "url": "https://jesperlandberg.com/models/award.glb",
+      "filePath": "models/b599fc26450f_award.glb",
+      "mimeType": "model/gltf-binary",
+      "size": 71776,
+      "hash": "b599fc26450f"
+    },
+    {
+      "url": "https://jesperlandberg.com/models/llama.glb",
+      "filePath": "models/c38e354b1457_llama.glb",
+      "mimeType": "model/gltf-binary",
+      "size": 143140,
+      "hash": "c38e354b1457"
+    }
+  ],
+  "shaders": [
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_a8da30f2c9.glsl",
+      "hash": "a8da30f2c9"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_9187e93bf0.glsl",
+      "hash": "9187e93bf0"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_fb52242535.glsl",
+      "hash": "fb52242535"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_6487188e97.glsl",
+      "hash": "6487188e97"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_d9ceaf56df.glsl",
+      "hash": "d9ceaf56df"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_b9f6e97dc1.glsl",
+      "hash": "b9f6e97dc1"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_b2576ef93e.glsl",
+      "hash": "b2576ef93e"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_38a8b00079.glsl",
+      "hash": "38a8b00079"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_9c20bf6ff9.glsl",
+      "hash": "9c20bf6ff9"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_2c8a8f899f.glsl",
+      "hash": "2c8a8f899f"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_15355e8915.glsl",
+      "hash": "15355e8915"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_f101e40391.glsl",
+      "hash": "f101e40391"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_afbd795b3d.glsl",
+      "hash": "afbd795b3d"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_748ed9e97b.glsl",
+      "hash": "748ed9e97b"
+    },
+    {
+      "type": "vertex",
+      "filePath": "shaders/shader_vertex_ef4bba5232.glsl",
+      "hash": "ef4bba5232"
+    },
+    {
+      "type": "fragment",
+      "filePath": "shaders/shader_fragment_b30531cf54.glsl",
+      "hash": "b30531cf54"
+    }
+  ],
+  "blobs": [
+    {
+      "id": "blob:https://jesperlandberg.com/cb659b7d-ad27-4467-a5e7-93f3cbb2f4ff",
+      "mimeType": "application/octet-stream",
+      "size": 63523,
+      "filePath": "blobs/blob_3298a7ef7125.bin"
+    },
+    {
+      "id": "blob:https://jesperlandberg.com/ee979eed-75b5-4505-96c5-dbf327516715",
+      "mimeType": "image/webp",
+      "size": 2492,
+      "filePath": "blobs/blob_1aee8d4513a5.webp"
+    }
+  ],
+  "sequences": [
+    "sequences/frame_0000.webp",
+    "sequences/frame_0001.webp",
+    "sequences/frame_0002.webp",
+    "sequences/frame_0003.webp",
+    "sequences/frame_0004.webp",
+    "sequences/frame_0005.webp",
+    "sequences/frame_0006.webp",
+    "sequences/frame_0007.webp",
+    "sequences/frame_0008.webp",
+    "sequences/frame_0009.webp",
+    "sequences/frame_0010.webp",
+    "sequences/frame_0011.webp",
+    "sequences/frame_0012.webp",
+    "sequences/frame_0013.webp",
+    "sequences/frame_0014.webp",
+    "sequences/frame_0015.webp",
+    "sequences/frame_0016.webp",
+    "sequences/frame_0017.webp",
+    "sequences/frame_0018.webp",
+    "sequences/frame_0019.webp",
+    "sequences/frame_0020.webp",
+    "sequences/frame_0021.webp",
+    "sequences/frame_0022.webp",
+    "sequences/frame_0023.webp",
+    "sequences/frame_0024.webp",
+    "sequences/frame_0025.webp",
+    "sequences/frame_0026.webp",
+    "sequences/frame_0027.webp",
+    "sequences/frame_0028.webp",
+    "sequences/frame_0029.webp",
+    "sequences/frame_0030.webp"
+  ]
+}

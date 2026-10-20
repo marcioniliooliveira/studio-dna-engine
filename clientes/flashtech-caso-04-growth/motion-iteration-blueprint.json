@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "runId": "scalex-motion-iteration-001",
+  "clientScope": "flashtech-caso-04-growth",
+  "budget": { "maxRetries": 1 },
+  "allowedTools": ["read-file", "edit-file", "run-quality-gate", "capture-screenshot"],
+  "allowedGates": ["unified-quality", "deep-scrutiny", "motion-regression"],
+  "tasks": [
+    {
+      "id": "hero-motion",
+      "dependsOn": [],
+      "allowedTools": ["read-file", "edit-file", "capture-screenshot"],
+      "allowedGates": ["motion-regression"],
+      "input": {
+        "files": ["clientes/flashtech-caso-04-growth/site/index.html", "clientes/flashtech-caso-04-growth/motion-spec.json"],
+        "goal": "Implement masked character reveal for the Anton hero headline, scroll-driven orbit rotation and desktop-only subtle illustration parallax.",
+        "constraints": ["preserve copy and P0 tokens", "transform and opacity only for continuous motion", "respect prefers-reduced-motion"]
+      }
+    },
+    {
+      "id": "conversion-motion",
+      "dependsOn": ["hero-motion"],
+      "allowedTools": ["read-file", "edit-file", "capture-screenshot"],
+      "allowedGates": ["motion-regression"],
+      "input": {
+        "files": ["clientes/flashtech-caso-04-growth/site/index.html", "clientes/flashtech-caso-04-growth/motion-spec.json"],
+        "goal": "Implement magnetic CTA feedback, compact audit invitation at 60 percent scroll, click-triggered modal and form progress feedback.",
+        "constraints": ["do not auto-open the modal", "restore focus when modal closes", "preserve CTA copy and form conversion structure"]
+      }
+    },
+    {
+      "id": "storytelling-motion",
+      "dependsOn": ["conversion-motion"],
+      "allowedTools": ["read-file", "edit-file", "capture-screenshot"],
+      "allowedGates": ["motion-regression"],
+      "input": {
+        "files": ["clientes/flashtech-caso-04-growth/site/index.html", "clientes/flashtech-caso-04-growth/motion-spec.json"],
+        "goal": "Add a single pinned storytelling interaction to the section where it best clarifies services or cases, masked section reveals and once-only metrics counters.",
+        "constraints": ["no more than one pinned section", "use stagger only when content grouping benefits", "mobile remains readable and free-scrolling"]
+      }
+    },
+    {
+      "id": "verify-motion",
+      "dependsOn": ["storytelling-motion"],
+      "allowedTools": ["run-quality-gate", "capture-screenshot"],
+      "allowedGates": ["unified-quality", "deep-scrutiny", "motion-regression"],
+      "input": {
+        "goal": "Run deterministic visual, runtime and reduced-motion verification for the motion iteration; report only compact failures or approval evidence."
+      }
+    }
+  ]
+}

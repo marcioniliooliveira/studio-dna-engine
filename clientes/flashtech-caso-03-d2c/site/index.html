@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,12 +10,12 @@
   <!-- FlashTech D2C: Bundle JS < 90kB | LCP target 0.68s -->
   <!-- Google Fonts: P0 tipografia invariante -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
 
   <!-- GSAP (scroll-triggered animations — Dossiê 03: storytelling progressivo) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer=""></script>
 
   <style>
     /* ═══════════════════════════════════════════════════════
@@ -676,7 +674,7 @@
     .reveal { opacity: 0; transform: translateY(32px); }
   </style>
 <style id="universal-unlock-css">
-      /* 1. Supressão Completa de Cortinas de Transição, Preloaders, Overlays e Modais Inativos (Anti-Blur / Anti-Blackscreen) */
+      /* 1. Supressão Completa de Cortinas de Transição e Preloaders (Anti-Blackscreen) */
       #transition-overlay, 
       [data-cover], 
       .transition-curtain, 
@@ -698,79 +696,89 @@
       .is-loading-overlay, 
       .page-transition, 
       .page_loader,
-      .w-preloader,
-      .about_overlay_close:not(.is-open),
-      .menu_overlay_close:not(.is-open),
-      .modal_overlay_close:not(.is-open),
-      .about_wrap:not([data-modal-status="open"]),
-      .menu_wrap:not([data-navigation-status="is-open"]),
-      .hero_home_fade,
-      .modal-backdrop:not(.show),
-      .drawer-backdrop:not(.show) {
+      .w-preloader {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
         visibility: hidden !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
       }
 
-      /* 2. Desbloqueio e Revelação Imediata do Layout e Conteúdo */
-      body > div:not(.about_wrap):not(.menu_wrap):not(.transition_screen):not([class*="overlay"]):not([class*="modal"]), 
-      #__nuxt, 
-      #__next, 
-      #root, 
-      #app, 
-      main, 
-      section, 
-      header, 
-      nav, 
-      .layout-grid, 
-      [data-animate], 
-      .navbar_wrap, 
-      [data-split], 
-      [data-split='heading'], 
-      [data-split-reveal], 
-      .g_eyebrow, 
-      .g_btn_text, 
-      [data-reveal], 
-      [data-scroll-reveal], 
-      .hero_wrap, 
-      .hero-content,
-      .page_main,
-      .page_wrap {
-        opacity: 1 !important;
+      /* Desbloqueia position: sticky globalmente removendo overflow hostil dos ancestrais */
+      html, body {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+      }
+      .page-wrapper, main, .main-wrapper, .container, .page-padding {
+        overflow: visible !important;
+      }
+
+      /* Desbloqueia sliders de marcas / logos para rotação infinita */
+      .brand-slider, .logo-slider, .partner-slider {
+        display: flex !important;
         visibility: visible !important;
+        opacity: 1 !important;
       }
 
-      /* 2.1 Overlays cosméticos não podem bloquear eventos de mouse */
+      /* Reparo de layout para seções empilhadas e eliminação de spacers fantasmas */
+      .faq-spacer {
+        display: none !important;
+      }
+      .faq-relative {
+        height: auto !important;
+      }
+      section.cta, .cta {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 10 !important;
+      }
+      section.faq, .faq {
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 5 !important;
+      }
+
+      /* Interatividade de hover fluida na FAQ */
+      .faq [data-dropdown-list] {
+        opacity: 0 !important;
+        transform: translateX(24px) !important;
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none !important;
+      }
+      .faq [data-dropdown]:hover [data-dropdown-list],
+      .faq [data-dropdown].is-active [data-dropdown-list] {
+        opacity: 1 !important;
+        transform: translateX(0px) !important;
+        pointer-events: auto !important;
+      }
+      .faq [data-dropdown]:hover .faq-dropdown-toggle h3,
+      .faq [data-dropdown].is-active .faq-dropdown-toggle h3 {
+        color: #ffffff !important;
+        transition: color 0.3s ease;
+      }
+
+      /* Reseta máscaras para evitar listras estáticas em repouso */
+      [data-amenities-anim="big-image"].is-first {
+        position: relative !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        opacity: 1 !important;
+      }
+      [data-amenities-anim="big-image"]:not(.is-first) {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+        -webkit-mask-image: var(--mask-gradient, linear-gradient(0deg, transparent 0% 100%));
+      }
+
+      /* 2. Overlays cosméticos não podem bloquear eventos de mouse */
       .g_overlay, .g_grain_overlay {
         pointer-events: none !important;
       }
 
-      /* 3. Unmasking Universal de SplitText, Mascaramento de Linhas e Textos */
-      .appear-line-mask, 
-      [data-v-30d30ebe] .appear-line-mask, 
-      .split-line, 
-      .splittext--line, 
-      .lines-split, 
-      [data-split],
-      [data-split-reveal] {
-        overflow: visible !important;
-      }
-
-      .appear-line, 
-      [data-v-30d30ebe] .appear-line, 
-      .split-line > div, 
-      .line > div, 
-      [data-split] span,
-      [data-split-reveal] span {
-        transform: translateY(0px) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-
-      /* 4. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis */
+      /* 3. Prevenção de Bloqueio de Scroll por Classes de Preloader/Lenis */
       html, body {
         overflow-x: hidden !important;
       }
@@ -784,44 +792,52 @@
         height: auto !important;
       }
 
-      /* 5. Controles, Navbar, CTAs e Sliders Ativos */
-      .fixed, header, button, [id*="cta"], .project-slider-progress-line {
-        opacity: 1 !important;
-        visibility: visible !important;
+      /* 4. Controles, Navbar, CTAs fixos */
+      .fixed, header, [id*="cta"] {
+        opacity: 1;
+        visibility: visible;
       }
 
-      /* 6. Previne sobreposição fantasma de múltiplos slides em carrosséis absolutos */
-      .will-change-transform .relative > div:not(:first-child) {
-        display: none !important;
-      }
-      .will-change-transform .relative > div:first-child {
-        display: block !important;
-        opacity: 1 !important;
-      }
-
-      /* 7. Garante renderização nítida de imagens e mídias */
+      /* 5. Garante renderização nítida de imagens e mídias */
       img, svg, canvas, video {
         content-visibility: visible;
+      }
+
+      /* 6. Suporte Universal a Dark Mode e Text Reveals do Next.js / Tailwind */
+      html.dark, body.dark {
+        background-color: #09090b !important;
+        color: #ededed !important;
+      }
+      [id="preview"] {
+        background-color: #121214 !important;
+      }
+      [id="preview"] span.inline-block {
+        opacity: 1 !important;
+        transform: none !important;
+        color: #ffffff !important;
       }
     </style>
 <script id="universal-resilience-polyfills">
 (function() {
   'use strict';
-  // 1. Mocks de Analytics & Rastreamento
+  // 1. Mocks de Analytics, Rastreamento & WebFont
   window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments); };
   window.gtag = window.gtag || function() { (window.dataLayer = window.dataLayer || []).push(arguments); };
   window.dataLayer = window.dataLayer || [];
   window.umami = window.umami || { track: function() {} };
+  window.WebFont = window.WebFont || { load: function(cfg) { if (cfg && cfg.active) try { cfg.active(); } catch(e){} } };
 
-  // 2. Polyfills / Stubs de GSAP & Plugins (CustomEase, SplitText, ScrollTrigger, Flip)
-  if (typeof window.CustomEase === 'undefined') {
-    window.CustomEase = { create: function(id, data) { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
-  }
-  if (typeof window.SplitText === 'undefined') {
-    window.SplitText = function(target) {
-      return { lines: [], words: [], chars: [], revert: function() {} };
-    };
-  }
+  // 2. Polyfills / Stubs de GSAP & Plugins (apenas se ausentes após carregamento)
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.CustomEase === 'undefined') {
+      window.CustomEase = { create: function() { return function(t) { return t; }; }, get: function() { return function(t) { return t; }; } };
+    }
+    if (typeof window.SplitText === 'undefined') {
+      window.SplitText = function(target) {
+        return { lines: [], words: [], chars: [], revert: function() {} };
+      };
+    }
+  });
 
   // 3. Stub de Audio (Howler.js)
   if (typeof window.Howl === 'undefined') {
@@ -840,13 +856,18 @@
     };
   }
 
-  // 4. Stub de Barba.js (previne hang em transições de página)
+  // 4. Stub de Barba.js & Modais
   if (typeof window.barba === 'undefined') {
     window.barba = {
       init: function() {},
       use: function() {},
       hooks: { before: function() {}, after: function() {}, enter: function() {}, leave: function() {} },
       transitions: []
+    };
+  }
+  if (typeof window.ProjectModal === 'undefined') {
+    window.ProjectModal = function() {
+      return { open: function(){}, close: function(){} };
     };
   }
 
@@ -857,6 +878,16 @@
     if (document.body) {
       document.body.classList.remove('is-loading', 'lenis-stopped', 'no-scroll');
     }
+    
+    // Limpeza de textos mascarados e nós do SplitText
+    var maskedNodes = document.querySelectorAll('[style*="visibility: hidden"], [style*="opacity: 0"], .gsap-reveal');
+    maskedNodes.forEach(function(el) {
+        if(el.classList.contains('child') || el.classList.contains('line')) {
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+        }
+    });
+
     var blocked = document.querySelectorAll('.transition_screen, .preloader_wrap, #transition-overlay, [data-cover], .loader, .preloader, .loading-screen, .loading-overlay, #preloader, #loading-mask');
     blocked.forEach(function(el) {
       el.style.setProperty('display', 'none', 'important');
@@ -865,14 +896,35 @@
     });
   }
 
+  // 6. Splide & Carousel Auto-Binder
+  function initSplides() {
+    if (typeof window.Splide !== 'undefined') {
+      var splides = document.querySelectorAll('.splide:not(.is-initialized)');
+      splides.forEach(function(s) {
+        try {
+          new window.Splide(s, {
+            type: 'loop',
+            perPage: 1,
+            autoplay: false,
+            pagination: true
+          }).mount();
+        } catch(e) {}
+      });
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', forceUnhide);
+    document.addEventListener('DOMContentLoaded', function() {
+      forceUnhide();
+      initSplides();
+    });
   } else {
     forceUnhide();
+    initSplides();
   }
-  setTimeout(forceUnhide, 50);
-  setTimeout(forceUnhide, 300);
-  setTimeout(forceUnhide, 1000);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 50);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 300);
+  setTimeout(function() { forceUnhide(); initSplides(); }, 1000);
 })();
 </script>
 </head>
@@ -911,7 +963,7 @@
       <a href="#garantia" class="btn-cta" id="hero-cta" aria-label="Comprar APEX com garantia de 30 dias">
         Quero o APEX Agora
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
         </svg>
       </a>
 
@@ -1007,8 +1059,8 @@
             <div class="diagram-ring"></div>
             <div class="diagram-center">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#02040A" stroke-width="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
               </svg>
             </div>
             <span class="diagram-label top">DRIVER 40mm</span>
@@ -1101,7 +1153,7 @@
 
       <div class="guarantee-badge reveal" role="status">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
         </svg>
         <span>Garantia Incondicional de 30 Dias</span>
       </div>
@@ -1128,25 +1180,25 @@
       <a href="#" class="btn-cta reveal" id="checkout-cta" aria-label="Comprar APEX agora com garantia de 30 dias">
         Garantir Meu APEX — R$ 1.897
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
         </svg>
       </a>
 
       <div class="checkout-trust reveal" role="list" aria-label="Selos de segurança e confiança">
         <div class="trust-item" role="listitem">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"></path></svg>
           Checkout SSL 256-bit
         </div>
         <div class="trust-item" role="listitem">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke-width="2"/><line x1="1" y1="10" x2="23" y2="10" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke-width="2"></rect><line x1="1" y1="10" x2="23" y2="10" stroke-width="2"></line></svg>
           Pix · Cartão · Boleto
         </div>
         <div class="trust-item" role="listitem">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12" stroke-width="2.5"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12" stroke-width="2.5"></polyline></svg>
           Frete Grátis &gt; R$ 300
         </div>
         <div class="trust-item" role="listitem">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><polyline points="12 6 12 12 16 14" stroke-width="2"></polyline></svg>
           Despacho em 48h
         </div>
       </div>
@@ -1260,8 +1312,8 @@
   onReady(function() {
     // --- 1. DESBLOQUEIO IMEDIATO DE HERO, NAVBAR E ROOT SSR CONTAINERS ---
     document.querySelectorAll('.opacity-0').forEach(function(el) {
-      // Ignora elementos que devem ser alternados por sliders ou spinners
-      if (el.closest('#intro-logo-spinner') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
+      // Ignora elementos que devem ser alternados por sliders, carrosséis ou abas
+      if (el.closest('#intro-logo-spinner') || el.closest('.amenities-slide-box') || el.closest('.splide') || el.classList.contains('project-slider-progress-line') || el.classList.contains('scale-[1.05]')) {
         return;
       }
       const cs = window.getComputedStyle(el);
@@ -1272,8 +1324,12 @@
     });
 
     // --- 2. MOTOR UNIVERSAL DE SPLITTEXT / APPEAR-LINE REVEAL ---
-    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div'));
-    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask'));
+    const splitLines = Array.from(document.querySelectorAll('.appear-line, .appear-line-mask, [data-v-30d30ebe] .appear-line, .splittext--line > div')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
+    const lineMasks = Array.from(document.querySelectorAll('.appear-line-mask, [data-v-30d30ebe] .appear-line-mask')).filter(function(el) {
+      return !el.closest('.amenities-slide-box:not(.is-first)');
+    });
 
     lineMasks.forEach(function(mask) {
       mask.style.overflow = 'visible';
@@ -1713,33 +1769,128 @@
       }
     }
 
-    // --- 11. FAQ ACCORDION EXPANDER INTERATIVO ---
-    document.querySelectorAll('[data-accordion-toggle]').forEach(function(toggleBtn) {
-      toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const item = toggleBtn.closest('[data-accordion-status]');
-        if (!item) return;
-        const isCurrentActive = item.getAttribute('data-accordion-status') === 'active';
-        
-        // Fecha outros itens se necessário
-        const allItems = item.parentElement?.querySelectorAll('[data-accordion-status]') || [];
-        allItems.forEach(function(other) {
-          other.setAttribute('data-accordion-status', 'not-active');
-          const bottom = other.querySelector('.accordion_css_item_bottom');
-          if (bottom) bottom.style.gridTemplateRows = '0fr';
-        });
+    // --- 12. MOTOR UNIVERSAL DE REVELAÇÃO WEBFLOW (data-anim="split", data-anim="element", data-anim="stagger", data-anim="slideUp-once") ---
+    if (typeof gsap !== 'undefined') {
+      // 12.1 Data-anim split
+      document.querySelectorAll('[data-anim="split"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        try {
+          if (typeof SplitText !== 'undefined') {
+            const cleanText = el.getAttribute('aria-label') || el.textContent.trim();
+            el.innerHTML = cleanText;
+            const st = new SplitText(el, { type: 'lines', linesClass: 'split-line', mask: 'lines' });
+            if (st.lines && st.lines.length > 0) {
+              const triggerEl = el.closest('section, .wrap') || el;
+              gsap.from(st.lines, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 90%',
+                  once: true
+                }
+              });
+            }
+          }
+        } catch(e) {}
+      });
 
-        if (!isCurrentActive) {
-          item.setAttribute('data-accordion-status', 'active');
-          const bottom = item.querySelector('.accordion_css_item_bottom');
-          if (bottom) bottom.style.gridTemplateRows = '1fr';
+      // 12.2 Data-anim element e slideUp-once
+      document.querySelectorAll('[data-anim="element"], [data-anim="slideUp-once"]').forEach(function(el) {
+        if (el.closest('.amenities-slide-box')) return;
+        const triggerEl = el.closest('section, .wrap') || el;
+        gsap.fromTo(el, 
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top 90%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // 12.3 Data-anim stagger
+      document.querySelectorAll('[data-anim="stagger"]').forEach(function(el) {
+        const children = Array.from(el.children).filter(function(child) {
+          return !child.hasAttribute('data-dropdown-list') && !child.classList.contains('faq-dropdown-list');
+        });
+        if (children.length > 0) {
+          const triggerEl = el.closest('section, .wrap') || el;
+          gsap.fromTo(children,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 90%',
+                once: true
+              }
+            }
+          );
         }
       });
-    });
+      // 12.4 Data-anim img-overlay
+      document.querySelectorAll('[data-anim="img-overlay"]').forEach(function(el) {
+        gsap.to(el, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      });
 
-    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions) ativados com sucesso.');
+      // 12.5 Data-anim img-paralax / img-parallax (Parallax de imagens Webflow)
+      document.querySelectorAll('[data-anim="img-paralax"], [data-anim="img-parallax"]').forEach(function(el) {
+        gsap.fromTo(el,
+          { yPercent: -10, scale: 1.1 },
+          {
+            yPercent: 10,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.closest('section, .wrap') || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      });
+
+      // 12.6 FAQ Dropdown Hover & Click Engine
+      document.querySelectorAll('.faq [data-dropdown]').forEach(function(dropdown) {
+        dropdown.addEventListener('mouseenter', function() {
+          dropdown.classList.add('is-active');
+        });
+        dropdown.addEventListener('mouseleave', function() {
+          dropdown.classList.remove('is-active');
+        });
+        dropdown.addEventListener('click', function() {
+          dropdown.classList.toggle('is-active');
+        });
+      });
+    }
+
+    console.log('✅ [Universal Scroll Director] Todos os subsistemas (SplitText, 3D Spinner, Curtains, Sliders, Highlights, Stacking Cards, Accordions, Webflow Reveals) ativados com sucesso.');
   });
 })();
 </script>
-</body>
-</html>
+
+</body></html>

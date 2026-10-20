@@ -1,0 +1,1 @@
+{"version":1,"runs":[{"runId":"scalex-hero-a2-approved-001","taskId":"workflow:scalex-hero-a2-approved-001","model":"gemini-3.7-flash","inputTokens":0,"outputTokens":0,"retries":0,"status":"planned","gates":{},"artifactHash":"pending","inputHash":"sha256:0dcaaaac1e08f551d40b51ae4a8e438a4f9ea21ae38bfd08c0f6f4f1d97af0a8","events":[]}]}

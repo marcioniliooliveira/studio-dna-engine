@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-08-31T21:47:41.076Z",
+  "clientSlug": "flashtech-caso-04-growth",
+  "passed": true,
+  "status": "verified",
+  "gates": {
+    "antiSlop": {
+      "passed": true,
+      "violations": [],
+      "stats": {
+        "slopMatches": 0,
+        "residualMatches": 0,
+        "unfilledSlots": 0,
+        "budgetWarnings": 0
+      }
+    },
+    "console": {
+      "passed": true,
+      "errorsCount": 0,
+      "errors": []
+    },
+    "network": {
+      "passed": true,
+      "failedRequestsCount": 0,
+      "failures": []
+    },
+    "structural": {
+      "passed": true,
+      "totalImages": 141,
+      "brokenImagesCount": 0,
+      "brokenImages": [],
+      "sectionsCount": 14
+    }
+  },
+  "artifacts": {
+    "htmlPath": "clientes/flashtech-caso-04-growth/site/index.html",
+    "screenshotPath": "clientes/flashtech-caso-04-growth/qa-reports/verified-golden-preview.png"
+  }
+}

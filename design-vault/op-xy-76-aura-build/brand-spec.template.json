@@ -1,0 +1,31 @@
+{
+  "client": {
+    "id": "cliente-opxy-showcase",
+    "name": "Nome do Produto / Empresa",
+    "tagline": "Slogan do instrumento ou hardware",
+    "niche": "Hardware | AudioSynthesis | TactileDesign",
+    "language": "pt-BR"
+  },
+  "colors": {
+    "primary": "#0c0d0e",
+    "accent": "#ff3a2f",
+    "surface": "#141517",
+    "surfaceRaised": "#1c1d20",
+    "text": "#e2e4e8"
+  },
+  "typography": {
+    "headings": "Geist, sans-serif",
+    "body": "Geist, sans-serif",
+    "mono": "Geist Mono, monospace"
+  },
+  "copyOverrides": {
+    "hero": {
+      "brand": "OP–XY",
+      "claim": "a synthesizer, a sampler and a sequencer. one instrument, all black."
+    },
+    "strip": {
+      "headline": "perform.",
+      "caption": "four rows · 68 keys · one grayscale"
+    }
+  }
+}

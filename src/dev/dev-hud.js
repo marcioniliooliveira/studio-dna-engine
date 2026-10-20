@@ -4,8 +4,8 @@
  */
 
 const HUD_HTML = `
-<!-- STUDIO DNA AGENCY LIVE HUD (TWEAKPANE v4) -->
-<script src="https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpane.min.js"></script>
+<!-- STUDIO DNA AGENCY LIVE HUD (TWEAKPANE UMD) -->
+<script src="https://cdn.jsdelivr.net/npm/tweakpane@3.1.10/dist/tweakpane.min.js"></script>
 <script id="studio-dna-hud-script">
 (function() {
   function initHud() {
@@ -22,6 +22,12 @@ const HUD_HTML = `
     pane.element.style.zIndex = '2147483647';
     pane.element.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.75)';
 
+    function bind(folder, obj, key, opts) {
+      if (typeof folder.addBinding === 'function') return folder.addBinding(obj, key, opts);
+      if (typeof folder.addInput === 'function') return folder.addInput(obj, key, opts);
+      return { on: function() {} };
+    }
+
     const PARAMS = {
       primaryColor: '#38bdf8',
       accentColor: '#64cefb',
@@ -35,7 +41,7 @@ const HUD_HTML = `
     // 1. Aba de Cores & Design Tokens
     const fTheme = pane.addFolder({ title: '🎨 Cores & Tokens' });
     
-    fTheme.addBinding(PARAMS, 'primaryColor', { label: 'Primary' }).on('change', (ev) => {
+    bind(fTheme, PARAMS, 'primaryColor', { label: 'Primary' }).on('change', (ev) => {
       document.documentElement.style.setProperty('--primary', ev.value);
       document.documentElement.style.setProperty('--accent-laser', ev.value);
       document.querySelectorAll('.btn-primary, .bg-primary, [class*="btn-laser"]').forEach(el => {
@@ -43,24 +49,24 @@ const HUD_HTML = `
       });
     });
 
-    fTheme.addBinding(PARAMS, 'accentColor', { label: 'Accent' }).on('change', (ev) => {
+    bind(fTheme, PARAMS, 'accentColor', { label: 'Accent' }).on('change', (ev) => {
       document.documentElement.style.setProperty('--accent', ev.value);
       document.documentElement.style.setProperty('--color-accent', ev.value);
     });
 
-    fTheme.addBinding(PARAMS, 'bgColor', { label: 'Background' }).on('change', (ev) => {
+    bind(fTheme, PARAMS, 'bgColor', { label: 'Background' }).on('change', (ev) => {
       document.documentElement.style.setProperty('--bg-base', ev.value);
       document.documentElement.style.setProperty('--bg-color', ev.value);
       document.body.style.backgroundColor = ev.value;
       document.documentElement.style.backgroundColor = ev.value;
     });
 
-    fTheme.addBinding(PARAMS, 'textColor', { label: 'Text Color' }).on('change', (ev) => {
+    bind(fTheme, PARAMS, 'textColor', { label: 'Text Color' }).on('change', (ev) => {
       document.documentElement.style.setProperty('--text-primary', ev.value);
       document.body.style.color = ev.value;
     });
 
-    fTheme.addBinding(PARAMS, 'cardAlpha', { min: 0.01, max: 0.25, step: 0.01, label: 'Card Alpha' }).on('change', (ev) => {
+    bind(fTheme, PARAMS, 'cardAlpha', { min: 0.01, max: 0.25, step: 0.01, label: 'Card Alpha' }).on('change', (ev) => {
       document.querySelectorAll('.info-text, .info-text-large, [class*="card"], .glass-card').forEach(el => {
         el.style.backgroundColor = \`rgba(255, 255, 255, \${ev.value})\`;
       });
@@ -68,7 +74,7 @@ const HUD_HTML = `
 
     // 2. Aba de Física & Animação
     const fMotion = pane.addFolder({ title: '⚡ Motion & Scroll Physics' });
-    fMotion.addBinding(PARAMS, 'lenisDuration', { min: 0.4, max: 3.0, step: 0.1, label: 'Lenis Duration' }).on('change', (ev) => {
+    bind(fMotion, PARAMS, 'lenisDuration', { min: 0.4, max: 3.0, step: 0.1, label: 'Lenis Duration' }).on('change', (ev) => {
       if (window.lenis) window.lenis.options.duration = ev.value;
     });
 

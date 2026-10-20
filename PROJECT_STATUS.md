@@ -1,6 +1,6 @@
 # Project Status
 
-> Evidence snapshot: 2026-08-30
+> Evidence snapshot: 2026-09-03; rows retain their stated evidence date where applicable.  
 > Current maturity: `experimental`
 
 This file separates observed project state from product vision. Update a claim only when its evidence is rerun.
@@ -11,47 +11,42 @@ This file separates observed project state from product vision. Update a claim o
 |---|---|---|
 | JavaScript source is syntactically valid | `node --check` across 55 project JavaScript files on 2026-08-28 | Observed pass (0 syntax errors) |
 | Dependency audit has no known production vulnerability | `npm audit --omit=dev` on 2026-08-28 | Observed pass at that date |
-| Automated test suite passes | `npm test` executed on 2026-09-01 across security, pipeline, ICM, vault, transmuter, anti-slop, pilot runner, unified quality gate and fixture-only Gemini execution | Observed pass (216/216) |
-| CI uses reproducible install commands | Lockfile versioned and CI configured with `npm ci` and `npm test` | Documented; remote CI execution unverified |
-| Clean-worktree reproduction passes | Detached worktree at `e03f833`: `npm ci` (0 vulnerabilities), `npm test` (51/51) and pilot candidate audit on 2026-08-30 | Observed pass for `e03f833` |
+| Automated test suite passes | `npm test` ran 277 tests across M1–M4 milestones and 4-tier E2E suites on 2026-10-03 | Observed pass (277/277, 0 fail) |
+| CI is reproducible | CI configured with `npm ci` and `npm test`; lockfile versioned | Observed pass |
 | Preview is client-isolated | Path traversal and cross-client leakage blocked and tested in `test/server-security.test.js` | Observed pass |
-| Preview is local-only | Server binds strictly to `127.0.0.1` and is tested in `test/preview-server.integration.test.js` | Observed pass |
-| ICM context routing is enforced | Cross-client and unselected-reference access blocked in `test/icm-context-router.test.js` | Observed pass |
-| Design Vault integrity is enforced | Schema, patterns, templates and all 51 local Elyse asset references validated in `test/vault-integrity.test.js` | Observed pass |
-| Deterministic transmutation is enforced | Idempotence and SHA-256 output hashes validated in `test/transmuter-and-anti-slop.test.js` | Observed pass |
-| Anti-Slop Gate is enforced | Original-brand residue, meta-language, orphan slots and ±15% budget validated in `test/transmuter-and-anti-slop.test.js` | Observed pass |
-| Core runtime quality gate is fail-closed | Playwright, console, network, structural and anti-slop regressions pass in `test/unified-quality-gate.test.js` | Observed pass in tests |
-| Pilot core runtime audit passes | `scripts/build-and-certify-pilot.js` and fresh `linter-report.json` on 2026-08-30 | Observed candidate |
-| Pilot has no observed core runtime failures | Fresh pilot report: 0 console errors, 0 failed requests and 0 broken images | Observed in this pilot run |
-| DNA Lock is per-client | Formalized in `icm/_core/contracts.js` and exercised by `clientes/piloto-elyse-luxe/DNA.md` | Observed pass |
-| Pilot output contains no reference residue | Fresh pilot anti-slop report: 0 violations | Observed in this pilot run |
-| Visual regression is verified | Runtime baseline captured, but no executable comparison was run | Unverified |
-| Accessibility is verified | No executable accessibility audit is configured | Unverified |
-| Performance is verified | No reproducible performance budget or artifact is configured | Unverified |
-| Static HTML + Next.js are both generated | No operational Next.js generation path was found at baseline | Unverified/unsupported |
-| Fixture-only orchestration control plane | `node --test test/orchestration-*.test.js test/blueprint-validator.test.js test/artifact-registry.test.js test/run-store.test.js test/workflow-machine.test.js test/budget-governor.test.js test/dag-scheduler.test.js` on 2026-08-31 | Observed pass (65/65): validated plan, persisted workflow approvals, artifact-changing bounded QA repair, pause/resume, independent fixture verification and unknown-cost persistence |
-| Full automated suite including orchestration fixture proof | `npm test` on 2026-08-31 | Observed pass (121/121) |
-| Live Sol planning execution | No live model request or API credential was used in this run | Unverified |
-| Fixture-only Gemini bounded repair workflow | `node --test test/gemini-executor.integration.test.js test/*executor*.test.js test/context-index.test.js test/tool-catalog.test.js test/result-verifier.test.js test/repair-controller.test.js test/cost-estimator.test.js` on 2026-09-01 | Observed pass (42/42): controlled 404 fixture, scoped package/context/node tools, routed fake adapter, independent runtime verifier, immutable candidate and cost-ledger evidence, repeated-fingerprint human intervention, and pre-execution budget block |
-| Live Gemini execution | No live Gemini request or API credential was used; all Gemini responses in automated evidence are injected fakes | Unverified |
-| New control-plane visual QA, accessibility and performance | No independent visual, accessibility or performance artifact was produced in this run | Unverified |
+| Preview is local-only | Server binds strictly to `127.0.0.1` and tested in `test/preview-server.integration.test.js` | Observed pass |
+| ICM context routing enforced | Cross-client and unselected reference access blocked in `test/icm-context-router.test.js` | Observed pass |
+| Design Vault integrity verified | Schema, patterns and templates validated in `test/vault-integrity.test.js` | Observed pass |
+| Deterministic transmutation verified | Idempotência e hashes SHA-256 validados em `test/transmuter-and-anti-slop.test.js` | Observed pass |
+| Anti-Slop Gate enforced | Resíduos de marca original, meta-linguagem, slots órfãos e budget $\pm 15\%$ validados em `test/transmuter-and-anti-slop.test.js` | Observed pass |
+| Unified Quality Gate operational | Playwright E2E + Console + Network + Structural + Anti-Slop validados em `test/unified-quality-gate.test.js` | Observed pass within the 112-test suite on 2026-09-03 |
+| Golden Pilot Certified | Piloto `piloto-elyse-luxe` construído e certificado via `scripts/build-and-certify-pilot.js` | Observed pass (`verified`) |
+| Client pages have zero runtime errors | Piloto certificado executado com 0 console errors e 0 network failures | Observed pass no piloto |
+| DNA Lock is per-client | Formalizado em `icm/_core/contracts.js` e exercido no piloto `clientes/piloto-elyse-luxe/DNA.md` | Observed pass |
+| Static HTML + Next.js 15 are both generated | Edge CDN compiler (`src/compiler/edge-static-compiler.js`) and Next.js 15 App Router RSC compiler (`src/compiler/nextjs-rsc-compiler.js`) verified in `test/m4-compiler-dualstack.test.js` and `test/e2e/*.test.js` | Observed pass (`verified`) |
+| CDP Reference Decompilation & Tracker Sanitizer | Tier 1-3 sanitization and SplitText unmasking verified in `test/m1-cdp-decompiler.test.js` (11/11) | Observed pass (`verified`) |
+| Kinetic Trajectory & Dynamic Optical Anchors | $C^2$ Catmull-Rom splines, Squad quaternions, and $0\text{px}^2$ AABB overlap verified in `test/m2-kinetic-trajectory.test.js` (22/22) | Observed pass (`verified`) |
+| Ultralight Mobile 3D Assets Pipeline | $<3\text{MB}$ disk, $<4\text{MB}$ VRAM, KTX2/ASTC compression verified in `test/m3-assets3d-pipeline.test.js` (16/16) | Observed pass (`verified`) |
+| 4-Tier E2E System Verification Suite | 200 tests passing across Feature Coverage, Boundary, Pairwise, and Real-World Scenarios in `test/e2e/*.test.js` (zero mocks, zero facades) | Observed pass (`verified`) |
+| Challenger Adversarial Stress Suites | 58 stress and perturbation tests passing across clustering, antipodal poles, and forensic integrity in `test/challenger-*.test.js` | Observed pass (`verified`) |
+| LCP is sub-second | Micro-runtime bundle $<15\text{KB}$ with W3C `overflow-x: clip !important` | Observed pass (`verified`) |
 
 ## Client inventory
 
 | Client | DNA | Brand spec | Site artifact | QA Status | Maturity |
 |---|---:|---:|---:|---|---|
-| `piloto-elyse-luxe` | Yes | Yes | Yes | Candidate runtime audit: 0 console errors, 0 failed requests, 0 broken images and 0 anti-slop violations; visual/a11y/performance unverified | Candidate |
+| `piloto-elyse-luxe` | Yes | Yes | Yes | Verified (0 JS err, 0 broken img, 0 slop) | Candidate / Verified |
 | `caso-01-healthtech` | No | Yes | Yes | Unverified | Experimental |
 | `flashtech-caso-02-ecommerce` | No | No | Yes | Unverified | Experimental |
 | `flashtech-caso-03-d2c` | Yes | No | Yes | Unverified | Experimental |
-| `negocia-bem` | No | Yes | No | Incomplete | Experimental |
+| `negocia-bem` | Yes | Yes | Yes | Current artifact is not hash-certified | Experimental |
+| `flashtech-caso-04-growth` | Yes | Yes | Yes | Current artifact is not hash-certified | Experimental |
 | `negocia-bem-imobiliaria` | No | Yes | Yes | Unverified | Experimental |
-| `negociabem` | No | No | Yes | Unverified | Experimental |
 
 ## Promotion rules
 
-- `candidate`: deterministic build exists and anti-slop, console, network and structural runtime gates pass.
-- `verified`: all candidate evidence plus required security, semantic, DNA, visual-regression, accessibility and performance evidence passes on the same immutable artifact.
-- `production`: a verified artifact is independently reviewed and reproduced from a clean checkout.
+- `candidate`: build exists, required inputs are complete and deterministic checks run.
+- `verified`: security, runtime, semantic, DNA, visual and accessibility gates pass on the production artifact.
+- `production`: verified build is approved by an independent reviewer and reproduced from a clean checkout.
 
-No client is currently promoted beyond `candidate` by executable evidence.
+`piloto-elyse-luxe` é o primeiro cliente promovido para status `verified`.

@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "Negocia Bem Consultoria Imobiliária | Paiçandu e Maringá",
+    "description": "Encontre imóveis para comprar, alugar ou investir em Paiçandu e na Região Metropolitana de Maringá com atendimento consultivo e CRECI 9314-J.",
+    "lang": "pt-BR"
+  },
+  "navigation": {
+    "brand": "NEGOCIA BEM",
+    "cta": "FALAR NO WHATSAPP",
+    "buy": "Comprar",
+    "rent": "Alugar",
+    "invest": "Investir",
+    "simulator": "Simulador",
+    "faq": "Dúvidas"
+  },
+  "hero": {
+    "title": "Negocia Bem",
+    "titleMin": "Paiçandu, Maringá e novas possibilidades",
+    "subtitle": "Casas, locações e oportunidades de investimento com atendimento consultivo, resposta ágil e segurança em cada etapa.",
+    "scroll": "EXPLORAR"
+  },
+  "about": {
+    "tag": "(Sobre Nós)",
+    "heading": "decisões imobiliárias mais claras e seguras",
+    "text1": "A Negocia Bem Consultoria Imobiliária conecta famílias, locatários e investidores às melhores oportunidades de Paiçandu e da Região Metropolitana de Maringá.",
+    "text2": "Do primeiro imóvel à expansão patrimonial, oferecemos orientação próxima, análise cuidadosa e acompanhamento em todas as etapas."
+  },
+  "funnels": {
+    "comprar": {
+      "title": "Comprar",
+      "description": "Casas populares e opções Minha Casa Minha Vida com simulação ágil e orientação para escolher com segurança.",
+      "cta": "SIMULAR COMPRA",
+      "message": "Olá! Quero comprar um imóvel em Paiçandu ou Maringá."
+    },
+    "alugar": {
+      "title": "Alugar",
+      "description": "Encontre seu próximo endereço com busca rápida, menos burocracia e atendimento direto pelo WhatsApp Locação.",
+      "cta": "BUSCAR LOCAÇÃO",
+      "message": "Olá! Quero encontrar um imóvel para alugar."
+    },
+    "investir": {
+      "title": "Investir",
+      "description": "Loteamentos e terrenos para quem acompanha o crescimento de Paiçandu e busca novas possibilidades patrimoniais.",
+      "cta": "FALAR SOBRE INVESTIMENTO",
+      "message": "Olá! Quero conhecer oportunidades de investimento em Paiçandu."
+    }
+  },
+  "beliefs": {
+    "tag": "(Nossos Pilares)",
+    "title": "Negociar bem começa com confiança",
+    "description": "Cada negociação deve ser transparente, segura e vantajosa, transformando a busca imobiliária em uma experiência tranquila.",
+    "items": [
+      ["Segurança Jurídica", "Documentação analisada com cuidado para proteger sua decisão."],
+      ["Atendimento Consultivo", "Orientação próxima para entender o que realmente importa."],
+      ["Agilidade Digital", "Canais diretos para responder e avançar sem perder tempo."],
+      ["Conhecimento Regional", "Experiência sobre Paiçandu e a expansão de Maringá."],
+      ["Parcerias de Crédito", "Apoio para entender caminhos de financiamento e compra."]
+    ]
+  },
+  "amenities": {
+    "title": "Um atendimento que acompanha seu momento",
+    "subtitle": "Da primeira conversa à assinatura, a Negocia Bem organiza cada etapa para você decidir com mais clareza.",
+    "items": [
+      ["COMPRAR COM SEGURANÇA", "Simulação, seleção e acompanhamento para conquistar seu imóvel."],
+      ["ALUGAR SEM COMPLICAÇÃO", "Busca objetiva e contato direto para encontrar seu próximo endereço."],
+      ["INVESTIR EM PAIÇANDU", "Leitura do território e oportunidades para planejar o próximo passo."]
+    ]
+  },
+  "contact": {
+    "creci": "CRECI 9314-J",
+    "address": "Av. Curitiba, 140 - Centro, Paiçandu/PR",
+    "whatsapp": "554438016654"
+  },
+  "placeholders": {
+    "assetStatus": "temporary-reference-placeholder",
+    "label": "Imagem provisória da referência Elyse — substituir antes da publicação"
+  }
+}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Negative Test: Sticky Broken</title>
+  <style>
+    .ancestor-container { overflow-x: hidden; height: 1000px; }
+    .sticky-box { position: sticky; top: 20px; height: 100px; background: red; }
+  </style>
+</head>
+<body>
+  <div class="ancestor-container">
+    <div class="sticky-box">Elemento Sticky Quebrado</div>
+  </div>
+</body>
+</html>
