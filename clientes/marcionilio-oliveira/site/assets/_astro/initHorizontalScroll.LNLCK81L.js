@@ -14,26 +14,30 @@ function syncViewportClip(pp, cur, tHoldEnd) {
     ? (document.querySelector('[data-more-work-mobile-rect]') || document.querySelector('[data-more-work-rect]'))
     : (document.querySelector('[data-more-work-rect]') || document.querySelector('[data-more-work-mobile-rect]'));
 
-  viewportEl.removeAttribute('data-lenis-prevent');
-  viewportEl.removeAttribute('data-lenis-prevent-wheel');
-  viewportEl.removeAttribute('data-lenis-prevent-touch');
+  if (viewportEl.hasAttribute('data-lenis-prevent')) {
+    viewportEl.removeAttribute('data-lenis-prevent');
+    viewportEl.removeAttribute('data-lenis-prevent-wheel');
+    viewportEl.removeAttribute('data-lenis-prevent-touch');
+  }
 
   if (pp >= 0.999) {
-    viewportEl.style.clipPath = 'none';
-    viewportEl.style.opacity = '1';
+    if (viewportEl.style.clipPath !== 'none') viewportEl.style.clipPath = 'none';
+    if (viewportEl.style.opacity !== '1') viewportEl.style.opacity = '1';
     viewportEl.style.pointerEvents = 'auto';
   } else if (pp <= 0.001) {
-    viewportEl.style.clipPath = 'polygon(0 0, 0 0, 0 0, 0 0)';
-    viewportEl.style.opacity = '0';
+    if (viewportEl.style.clipPath !== 'polygon(0 0, 0 0, 0 0, 0 0)') {
+      viewportEl.style.clipPath = 'polygon(0 0, 0 0, 0 0, 0 0)';
+    }
+    if (viewportEl.style.opacity !== '0') viewportEl.style.opacity = '0';
     viewportEl.style.pointerEvents = 'none';
   } else {
     viewportEl.style.pointerEvents = 'none';
     if (rectEl) {
       const r = rectEl.getBoundingClientRect();
-      viewportEl.style.opacity = '1';
+      if (viewportEl.style.opacity !== '1') viewportEl.style.opacity = '1';
       viewportEl.style.clipPath = `polygon(${r.left}px ${r.top}px, ${r.right}px ${r.top}px, ${r.right}px ${r.bottom}px, ${r.left}px ${r.bottom}px)`;
     } else {
-      viewportEl.style.clipPath = 'none';
+      if (viewportEl.style.clipPath !== 'none') viewportEl.style.clipPath = 'none';
       viewportEl.style.opacity = String(Math.max(0, Math.min(1, pp)));
     }
   }
@@ -63,6 +67,7 @@ function fe(e) {
   let m, y = !1;
   return J(l),
   o.add("(min-width: 768px)", () => {
+    let triggerPortalExit = null;
     const n = r.querySelector("[data-more-work-section]"),
           i = n?.querySelector("[data-more-work-rect]"),
           u = n?.querySelector("[data-more-work-more]"),
@@ -158,16 +163,19 @@ function fe(e) {
             } else {
               pp = 0;
             }
-            if (Math.abs(pp - _lastDesktopPP) >= 0.005 || pp === 0 || pp === 1) {
+            const delta = Math.abs(pp - _lastDesktopPP);
+            if (delta >= 0.005 || (pp === 0 && _lastDesktopPP !== 0) || (pp === 1 && _lastDesktopPP !== 1)) {
               _lastDesktopPP = pp;
-              syncViewportClip(pp, cur, t3);
               if (typeof window != "undefined") {
                 if (window.__TEST_SET_PORTAL_PROGRESS__) {
-                  window.__TEST_SET_PORTAL_PROGRESS__(pp);
-                } else if (window.__WORK_STAGE__) {
-                  window.__WORK_STAGE__.portalProgress = pp;
-                  window.__WORK_STAGE__.floorAlpha = pp;
-                  window.__WORK_STAGE__.phase = pp >= 0.99 ? 'RIBBON_BROWSE' : 'PORTAL_EXPAND';
+                  window.__TEST_SET_PORTAL_PROGRESS__(pp, cur, t3);
+                } else {
+                  syncViewportClip(pp, cur, t3);
+                  if (window.__WORK_STAGE__) {
+                    window.__WORK_STAGE__.portalProgress = pp;
+                    window.__WORK_STAGE__.floorAlpha = pp;
+                    window.__WORK_STAGE__.phase = pp >= 0.99 ? 'RIBBON_BROWSE' : 'PORTAL_EXPAND';
+                  }
                 }
               }
             }
@@ -190,7 +198,10 @@ function fe(e) {
             typeof window != "undefined" && window.__TEST_SET_PORTAL_PROGRESS__ && window.__TEST_SET_PORTAL_PROGRESS__(cl);
           };
 
-          const triggerPortalExit = () => {
+          if (triggerPortalExit) {
+            window.removeEventListener('work-portal-exit-request', triggerPortalExit);
+          }
+          triggerPortalExit = () => {
             const lenisInst = (typeof window !== 'undefined') ? (window.lenis || window.__lenis || window.__LENIS__) : null;
             const startExitScroll = d.start + t3;
             const endExitScroll = d.start + t4;
@@ -250,6 +261,9 @@ function fe(e) {
     document.fonts.ready.then(() => { T && (x(), E()); });
     const S = X(() => { T && (x(), E()); }, 150);
     return window.addEventListener("resize", S), () => {
+      if (triggerPortalExit) {
+        window.removeEventListener('work-portal-exit-request', triggerPortalExit);
+      }
       T = !1, S.cancel(), window.removeEventListener("resize", S), m = d?.progress ?? m, d?.kill(!0, !0), s.clear(), g(), !y && !w.matches && (ne(m), E());
     };
   }),

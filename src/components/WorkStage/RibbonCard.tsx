@@ -127,7 +127,7 @@ export const RibbonCard: React.FC<RibbonCardProps> = ({
       const w = typeof window !== 'undefined' ? (window as any) : null;
       const ws = w?.__WORK_STAGE__;
       const currentOffset = ws?.ribbonOffset ?? 0;
-      const targetWrappedX = wrapRibbonPosition((project.index - 1.5) * RIBBON_STRIDE + currentOffset);
+      const targetWrappedX = wrapRibbonPosition(project.index * RIBBON_STRIDE + currentOffset);
       gsap.to(meshRef.current.position, {
         x: targetWrappedX,
         y: worldY,
@@ -184,7 +184,7 @@ export const RibbonCard: React.FC<RibbonCardProps> = ({
       const ws = w?.__WORK_STAGE__;
       const currentOffset = ws?.ribbonOffset ?? 0;
       const currentVel = ws?.scrollVelocity ?? scrollVelocity;
-      const xRaw = (project.index - 1.5) * RIBBON_STRIDE + currentOffset;
+      const xRaw = project.index * RIBBON_STRIDE + currentOffset;
       meshRef.current.position.x = wrapRibbonPosition(xRaw);
       meshRef.current.position.y = worldY;
       matRef.current.u_sheetV = currentVel;

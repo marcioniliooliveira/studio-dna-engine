@@ -120,7 +120,7 @@ export const WorkStage: React.FC<WorkStageProps> = ({
     const w = window as any;
     const initialCards: Record<number, any> = {};
     REFERENCE_PROJECTS.forEach((proj) => {
-      const baseX = (proj.index - 1.5) * RIBBON_STRIDE;
+      const baseX = wrapRibbonPosition(proj.index * RIBBON_STRIDE);
       initialCards[proj.index] = {
         index: proj.index,
         slug: proj.slug,
@@ -363,7 +363,7 @@ export const WorkStage: React.FC<WorkStageProps> = ({
         REFERENCE_PROJECTS.forEach((proj) => {
           const btn = proxyBtnRefs.current[proj.index];
           if (!btn) return;
-          const xRaw = (proj.index - 1.5) * RIBBON_STRIDE + ribbonState.current.offset;
+          const xRaw = proj.index * RIBBON_STRIDE + ribbonState.current.offset;
           const xWrapped = wrapRibbonPosition(xRaw);
           const rect = computeCardProxyRect(
             xWrapped,
@@ -374,22 +374,12 @@ export const WorkStage: React.FC<WorkStageProps> = ({
             uniformParams
           );
 
-          // For on-screen cards, use exact 1:1 projection.
-          // For off-screen cards, clamp position so at least 50px remains inside viewport edge
-          // ensuring Playwright locator.hover({ force: true }) can reach the element.
-          let targetLeft = rect.left;
-          if (targetLeft > vpW - 50) {
-            targetLeft = vpW - 50;
-          } else if (targetLeft < -rect.width + 50) {
-            targetLeft = -rect.width + 50;
-          }
-
-          btn.style.left = `${targetLeft}px`;
+          btn.style.left = `${rect.left}px`;
           btn.style.top = `${rect.top}px`;
           btn.style.width = `${rect.width}px`;
           btn.style.height = `${rect.height}px`;
-          btn.style.pointerEvents = 'auto';
-          btn.style.visibility = 'visible';
+          btn.style.pointerEvents = rect.isVisible ? 'auto' : 'none';
+          btn.style.visibility = rect.isVisible ? 'visible' : 'hidden';
         });
       }
 
@@ -724,7 +714,7 @@ export const WorkStage: React.FC<WorkStageProps> = ({
               uSheetP={activeIndex === null ? 1.0 : 0.0}
             />
             {REFERENCE_PROJECTS.map((proj) => {
-              const baseX = (proj.index - 1.5) * RIBBON_STRIDE;
+              const baseX = wrapRibbonPosition(proj.index * RIBBON_STRIDE);
               const isThisOpen = activeIndex === proj.index;
               const isOtherOpen = activeIndex !== null && activeIndex !== proj.index;
 

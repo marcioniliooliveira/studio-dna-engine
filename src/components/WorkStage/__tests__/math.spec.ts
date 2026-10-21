@@ -12,6 +12,7 @@ import {
   roundedBox,
   sheetLit,
   computeDynamicDepth,
+  wrapRibbonPosition,
   SHEET_CONSTANTS,
 } from '../math';
 
@@ -110,5 +111,33 @@ describe('Gate 1: Matemática Pura na CPU (CPU Twin of GLSL Shaders)', () => {
 
     // Saturação além de 1.0 não explode além de 25.2
     expect(computeDynamicDepth(baseDepth, 2.5)).toBeCloseTo(25.2, 6);
+  });
+
+  it('wrapRibbonPosition mapeia coordenadas para o intervalo simétrico [-64, +64) com continuidade periódica', () => {
+    // Identidade no intervalo central
+    expect(wrapRibbonPosition(0.0)).toBeCloseTo(0.0, 6);
+    expect(wrapRibbonPosition(32.0)).toBeCloseTo(32.0, 6);
+    expect(wrapRibbonPosition(-32.0)).toBeCloseTo(-32.0, 6);
+
+    // Limites de transição periódica
+    expect(wrapRibbonPosition(64.0)).toBeCloseTo(-64.0, 6);
+    expect(wrapRibbonPosition(-64.0)).toBeCloseTo(-64.0, 6);
+    expect(wrapRibbonPosition(63.999)).toBeCloseTo(63.999, 3);
+    expect(wrapRibbonPosition(-63.999)).toBeCloseTo(-63.999, 3);
+
+    // Deslocamentos positivos (wrapping para a esquerda)
+    expect(wrapRibbonPosition(96.0)).toBeCloseTo(-32.0, 6);
+    expect(wrapRibbonPosition(128.0)).toBeCloseTo(0.0, 6);
+    expect(wrapRibbonPosition(160.0)).toBeCloseTo(32.0, 6);
+
+    // Deslocamentos negativos (wrapping para a direita)
+    expect(wrapRibbonPosition(-96.0)).toBeCloseTo(32.0, 6);
+    expect(wrapRibbonPosition(-128.0)).toBeCloseTo(0.0, 6);
+    expect(wrapRibbonPosition(-160.0)).toBeCloseTo(-32.0, 6);
+
+    // Preservação exata do stride de 32.0 entre cards adjacentes
+    const p3 = wrapRibbonPosition(48.0);
+    const p0 = wrapRibbonPosition(-48.0);
+    expect(wrapRibbonPosition(p3 + 32.0)).toBeCloseTo(p0, 6);
   });
 });
