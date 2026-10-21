@@ -1,4 +1,4 @@
-# BRIEFING — 2026-10-20T15:21:00Z
+# BRIEFING — 2026-10-20T19:48:00Z
 
 ## Mission
 Coordinate, route, monitor, and victory-audit the implementation of Infinite Ribbon Wrap, Cinematic HUD with voluntary departure, inverted optical exit, and staggered Card-to-Sheet choreography in "THE WORK" section of Marcionilio Oliveira, maintaining all automated quality gates 100% green.
@@ -18,7 +18,8 @@ Coordinate, route, monitor, and victory-audit the implementation of Infinite Rib
 - Victory Auditor: fd427db1-c882-4bbf-b7ce-21bf0c66eed9 (victory_auditor_3, VICTORY CONFIRMED)
 - Orchestrator (Completed): 0182b98b-f0b8-4ba3-b638-72cd13600fd3 (orchestrator_8, completed)
 - Victory Auditor: ca7605ab-253f-4bd6-beba-4d4ae0b373e3 (victory_auditor_4, VICTORY CONFIRMED)
-- Orchestrator (Active): 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5 (orchestrator_9, running)
+- Orchestrator: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5 (orchestrator_9, killed on 429 quota exhaustion)
+- Orchestrator (Active): 1a3b44e6-9ee7-4256-b012-6757f09cf665 (orchestrator_10, running)
 
 ## 🔒 Key Constraints
 - No technical decisions — relay only
@@ -29,15 +30,15 @@ Coordinate, route, monitor, and victory-audit the implementation of Infinite Rib
 ## User Context
 - **Last user request**: Infinite 3D ribbon scroll, voluntary departure HUD ("Fique o tempo que quiser", "Eu já estou convencido"), inverted optical portal exit animation, staggered Card-to-Sheet choreography, and 100% green on all 7 automated gates.
 - **Pending clarifications**: none
-- **Delivered results**: previous milestones completed and verified.
+- **Delivered results**: Iteration 1 completed (WP-1..WP-4 implemented, bundle compiled, Vitest 8/8 pass, Playwright 5/5 pass, Challenger viewport 6/6 pass; 3/5 reviews approved). Iteration 2 remediation blueprint formulated by explorer.
 
 ## Project Status
-- **Phase**: in progress
+- **Phase**: in progress (Iteration 2 Remediation & Final Verification)
 - **Active Route**: General (teamwork_preview_orchestrator)
-- **Active Orchestrator**: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5 (orchestrator_9)
+- **Active Orchestrator**: 1a3b44e6-9ee7-4256-b012-6757f09cf665 (orchestrator_10)
 - **Victory Auditor**: pending
 - **Crons**: Active (task-28: Progress reporting `*/8`, task-30: Liveness `*/10`)
-- **Subagents**: 1 active (orchestrator_9)
+- **Subagents**: 1 active (orchestrator_10)
 
 ## Victory Audit Status
 - **Triggered**: no
@@ -47,5 +48,6 @@ Coordinate, route, monitor, and victory-audit the implementation of Infinite Rib
 ## Artifact Index
 - C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md — Authoritative user request
 - C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\sentinel\BRIEFING.md — Sentinel memory
-- C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_9\plan.md — Orchestrator 9 plan
-- C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_9\progress.md — Orchestrator 9 progress
+- C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_remediation_m5_1\handoff.md — Complete remediation blueprints
+- C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_10\plan.md — Orchestrator 10 plan
+- C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_10\progress.md — Orchestrator 10 progress

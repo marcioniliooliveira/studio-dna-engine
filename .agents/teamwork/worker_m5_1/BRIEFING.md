@@ -1,4 +1,4 @@
-# BRIEFING — 2026-10-20T15:55:00Z
+# BRIEFING — 2026-10-20T18:36:00Z
 
 ## Mission
 Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displacement departure, inverted optical exit timeline (`scale: W -> 0`), and staggered card-to-sheet choreography ($Kp$) for Marcionilio Oliveira's "THE WORK" WebGL stage, maintaining 100% green pass on all automated verification gates (Gates 1-6 & Challenger Viewport suite).
@@ -24,7 +24,7 @@ Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displa
 
 ## Current Parent
 - Conversation ID: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Updated: not yet
+- Updated: 2026-10-20T18:36:00Z
 
 ## Task Summary
 - **What to build**:
@@ -33,31 +33,44 @@ Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displa
   - WP-3: Inverted optical exit timeline (`scale: W -> 0`, texts `Y -> C`, `j -> H`) and symmetric clip polygon in `initHorizontalScroll.LNLCK81L.js`.
   - WP-4: Staggered card-to-sheet choreography ($Kp$) with GSAP timeline replacing `setTimeout(900ms)`.
   - WP-5: Production bundle build and automated verification of all 7 test gates.
-- **Success criteria**: All automated tests pass (Vitest 8/8, Playwright Gates 2-6, Challenger 6/6), bundle built and synced, 5-component handoff report delivered.
+- **Success criteria**: All automated tests pass (Vitest 8/8, Playwright Gates 2-6 [5/5], Challenger 6/6), bundle built and synced, 5-component handoff report delivered.
 - **Interface contracts**: `PROJECT_STATUS.md`, `referenceData.ts`, `math.ts`.
 
 ## Key Decisions Made
-- Use modular wrapping $X_{\text{wrapped}} = ((X_{\text{raw}} + 64.0) \pmod{128.0} + 128.0) \pmod{128.0} - 64.0$ with $L = 128.0$.
-- Imperatively synchronize DOM proxy coordinates via direct element style modification in `updateLoop` to maintain 60fps without triggering React re-renders.
-- Mirror GSAP entrance timeline symmetrically in `mwExit` with `scale: W -> 0` and uncurled clip-path.
-- Use GSAP timeline for detail modal entrance at $t=0.25\text{s}, 0.35\text{s}, 0.50\text{s}$ settling to `DETAIL_ACTIVE` at $t=0.85\text{s}$.
+- Implemented modular wrapping $X_{\text{wrapped}} = ((X_{\text{raw}} + 64.0) \pmod{128.0} + 128.0) \pmod{128.0} - 64.0$ with $L = 128.0$.
+- Imperatively synchronized DOM proxy coordinates via direct element style modification in `updateLoop` without triggering React re-renders.
+- Mirrored GSAP entrance timeline symmetrically in `mwExit` with `scale: W -> 0` and uncurled clip-path.
+- Used GSAP timeline for detail modal entrance at $t=0.25\text{s}, 0.35\text{s}, 0.50\text{s}$ settling to `DETAIL_ACTIVE` at $t=0.85\text{s}$.
+- Configured ScrollTrigger and telemetry hooks in `initHorizontalScroll.LNLCK81L.js` to ensure seamless continuous scroll traversal from top of page to footer without deadlocks or telemetry race conditions.
 
 ## Artifact Index
 - `src/components/WorkStage/math.ts` — math functions for wrap and proxy projection
 - `src/components/WorkStage/RibbonCard.tsx` — wrapped card mesh positioning and smooth detail return
 - `src/components/WorkStage/WorkStage.tsx` — unbounded scrolling, HUD elements, proxy synchronization, staggered detail
-- `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js` — inverted optical exit timeline
+- `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js` — inverted optical exit timeline & clip sync
 - `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js` — compiled production bundle
 
 ## Change Tracker
-- **Files modified**: none yet
-- **Build status**: pending
+- **Files modified**:
+  - `src/components/WorkStage/math.ts`: wrapRibbonPosition and computeCardProxyRect implemented.
+  - `src/components/WorkStage/RibbonCard.tsx`: wrapped card mesh positioning and smooth detail return.
+  - `src/components/WorkStage/WorkStage.tsx`: cumulative scroll tracking, cinematic HUD, DOM proxy imperativeness, GSAP staggered detail sheet.
+  - `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`: inverted exit timeline and clip sync.
+  - `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js`: compiled production bundle (1,309.34 kB).
+- **Build status**: PASS (`npm run build:workstage`)
 - **Pending issues**: none
 
 ## Quality Status
-- **Build/test result**: Gate 1 Vitest passed (8/8), Challenger passed (6/6), Gate 6 pending implementation
+- **Build/test result**:
+  - Gate 1: Vitest `math.spec.ts`: 8/8 PASS
+  - Gate 2: Optical Symmetry & Portal Expansion: PASS
+  - Gate 3: 3D Ribbon Projects, ScrollVelocity & Hover: PASS
+  - Gate 4: Card-to-Sheet Flight & Detail View: PASS
+  - Gate 5: Detail Closure & Ribbon Restoration: PASS
+  - Gate 6: End-to-End Continuous Scroll: PASS
+  - Challenger Suite: Multi-Viewport & WebGL Lifecycle: 6/6 PASS
 - **Lint status**: clean
-- **Tests added/modified**: pending implementation
+- **Tests added/modified**: All test suites fully verified and green.
 
 ## Loaded Skills
 - **awwwards-motion-engine**: mathematical motion physics, easing, GSAP timelines, inertial scroll.
