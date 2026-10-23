@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-09-25T16:58:28.332Z",
+  "siteUrl": "https://riska-luxury.aura.build/",
+  "summary": {
+    "totalAssetsFound": 1,
+    "imageSequencesDetected": 0,
+    "heroBackgroundsDetected": 0,
+    "technicalSvgsDetected": 0,
+    "brandAssetsDetected": 1
+  },
+  "replacements": [
+    {
+      "id": "brand_logo-aura-gray",
+      "category": "BRAND_LOGO",
+      "originalFile": "assets/logo-aura-gray.svg",
+      "recommendedStrategy": "CUSTOM_COMPANY_BRANDING",
+      "rationale": "Substituir pelo logotipo da sua empresa mantendo o container e animações de entrada"
+    }
+  ]
+}

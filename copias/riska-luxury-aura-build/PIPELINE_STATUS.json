@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "completed",
+  "url": "https://riska-luxury.aura.build/",
+  "siteName": "riska-luxury-aura-build",
+  "mode": "all",
+  "startedAt": "2026-09-25T16:57:38.448Z",
+  "completedAt": "2026-09-25T16:58:28.340Z",
+  "stages": [
+    {
+      "name": "detect",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:57:38.451Z",
+      "completedAt": "2026-09-25T16:57:52.540Z"
+    },
+    {
+      "name": "clone",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:57:52.541Z",
+      "completedAt": "2026-09-25T16:58:16.336Z"
+    },
+    {
+      "name": "normalize-assets",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:16.337Z",
+      "completedAt": "2026-09-25T16:58:16.394Z"
+    },
+    {
+      "name": "extract-design-dna",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:16.395Z",
+      "completedAt": "2026-09-25T16:58:23.860Z"
+    },
+    {
+      "name": "generate-styleguide",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:23.861Z",
+      "completedAt": "2026-09-25T16:58:23.863Z"
+    },
+    {
+      "name": "extract-ui-ux",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:23.864Z",
+      "completedAt": "2026-09-25T16:58:28.319Z"
+    },
+    {
+      "name": "generate-master-spec",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:28.320Z",
+      "completedAt": "2026-09-25T16:58:28.331Z"
+    },
+    {
+      "name": "generate-asset-manifest",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:28.332Z",
+      "completedAt": "2026-09-25T16:58:28.337Z"
+    },
+    {
+      "name": "generate-prompt-catalog",
+      "status": "passed",
+      "startedAt": "2026-09-25T16:58:28.338Z",
+      "completedAt": "2026-09-25T16:58:28.339Z"
+    }
+  ]
+}

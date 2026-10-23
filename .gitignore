@@ -24,6 +24,8 @@ out/
 # ── Copias (Awwwards scrapes brutos e pesados) ─────────────────────────────────
 copias/*
 !copias/README.md
+!copias/riska-luxury-aura-build/
+!copias/riska-luxury-aura-build/**
 
 # ── Clientes de Produção & Projetos Customizados ──────────────────────────────
 # Manter arquivos estruturais e DNA, ignorar dumps de assets pesados e screenshots
@@ -44,6 +46,9 @@ projetos/**/site/assets/
 *.mp4
 *.webm
 *.mov
+
+!clientes/jumpflex-home-evolution/*.jpg
+!clientes/jumpflex-home-evolution/site/*.jpg
 
 design-vault/*/tokens.json
 design-vault/*/tailwind.config.js
@@ -76,6 +81,7 @@ temp-*/
 .temp/
 scratch/
 .tempmediaStorage/
+.worktrees/
 
 # ── Arquivos HTML soltos na raiz de copias (clone dumps antigos) ──────────────
 copias/*.html

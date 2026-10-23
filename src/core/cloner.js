@@ -121,13 +121,13 @@ async function findPreviewFrameTarget(page, timeoutMs = 15000) {
         const src = (await iframeEl.getAttribute('src')) || '';
         const title = (await iframeEl.getAttribute('title')) || '';
         const hasSrcDoc = (await iframeEl.getAttribute('srcdoc')) !== null;
-        const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
+        const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick') || src.includes('mediadelivery.net') || src.includes('b-cdn.net') || src.includes('player');
         const isPreviewCandidate = title.toLowerCase().includes('preview') || 
                                    hasSrcDoc ||
                                    src.includes('sandpack') ||
                                    src.includes('aura.build');
 
-        if (!isVideo && ((box && box.width > 400 && box.height > 250) || isPreviewCandidate)) {
+        if (!isVideo && isPreviewCandidate) {
           const frame = await iframeEl.contentFrame();
           if (frame) {
             const bodyLength = await frame.evaluate(() => document.body ? document.body.innerHTML.length : 0).catch(() => 0);
@@ -339,7 +339,7 @@ async function cloneSite(rawUrl, customOptions = {}) {
     const target = await findPreviewFrameTarget(page, 15000);
     if (target !== page) {
       console.log(`ℹ️ [Site Cloner] Container de preview detectado. Desembrulhando aplicação interna...`);
-      await target.waitForLoadState('networkidle').catch(() => {});
+      await target.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       await page.waitForTimeout(2000);
     }
 
@@ -480,7 +480,8 @@ async function cloneSite(rawUrl, customOptions = {}) {
         if (seen.has(el)) return;
         seen.add(el);
         const tag = el.tagName.toLowerCase();
-        const id = el.id || el.className.split(' ').find(c => c.includes('section') || c.includes('hero') || c.includes('footer') || c.includes('header') || c.includes('nav')) || `${tag}-${i}`;
+        const classStr = typeof el.className === 'string' ? el.className : (el.className?.baseVal || '');
+        const id = el.id || (classStr ? classStr.split(' ').find(c => c.includes('section') || c.includes('hero') || c.includes('footer') || c.includes('header') || c.includes('nav')) : null) || `${tag}-${i}`;
         const cleanId = id.replace(/[^a-zA-Z0-9-_]/g, '-').slice(0, 40);
         const rect = el.getBoundingClientRect();
         if (rect.height < 50) return;

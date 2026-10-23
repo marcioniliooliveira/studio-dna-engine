@@ -107,13 +107,13 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
     for (const iframeEl of allIframes) {
       const box = await iframeEl.boundingBox();
       const src = await iframeEl.getAttribute('src') || '';
-      const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick');
+      const isVideo = src.includes('vimeo.com') || src.includes('youtube') || src.includes('wistia') || src.includes('doubleclick') || src.includes('mediadelivery.net') || src.includes('b-cdn.net') || src.includes('player');
       if (box && box.width > 500 && box.height > 300 && !isVideo) {
         const contentFrame = await iframeEl.contentFrame();
         if (contentFrame) {
           evaluationTarget = contentFrame;
           console.log(`ℹ️ [UI/UX Extractor] Iframe de conteúdo detectado (${Math.round(box.width)}x${Math.round(box.height)}). Entrando no frame...`);
-          await contentFrame.waitForLoadState('networkidle').catch(() => {});
+          await contentFrame.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
           await page.waitForTimeout(1000);
           break;
         }

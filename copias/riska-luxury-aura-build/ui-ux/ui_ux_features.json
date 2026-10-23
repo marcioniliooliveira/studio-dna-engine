@@ -1,0 +1,99 @@
+{
+  "gsap": {
+    "detected": false,
+    "version": null,
+    "hasScrollTrigger": false,
+    "scrollTriggerInstances": 0,
+    "tweensCount": 0,
+    "plugins": [],
+    "timelines": []
+  },
+  "lenis": {
+    "detected": false,
+    "config": null
+  },
+  "microInteractions": {
+    "magneticButtons": [],
+    "tiltCards": [],
+    "spotlightElements": [],
+    "textScramble": false
+  },
+  "webglCanvas": {
+    "canvasCount": 0,
+    "hasThreeJs": false,
+    "shadersCount": 0,
+    "shaders": []
+  },
+  "typography": {
+    "splitTextDetected": false,
+    "variableFonts": [],
+    "marqueesCount": 0
+  },
+  "cssEffects": {
+    "keyframes": [
+      {
+        "name": "float",
+        "cssText": "@keyframes float { \n  0%, 100% { transform: translateY(0px); }\n  50% { transform: translateY(-10px); }\n}"
+      },
+      {
+        "name": "bounce",
+        "cssText": "@keyframes bounce { \n  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }\n  50% { transform: none; animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }\n}"
+      },
+      {
+        "name": "fade-in",
+        "cssText": "@keyframes fade-in { \n  0% { opacity: 0; }\n  100% { opacity: 1; }\n}"
+      },
+      {
+        "name": "mic-pulse",
+        "cssText": "@keyframes mic-pulse { \n  0% { transform: scale(1.2); opacity: 0.7; }\n  50% { transform: scale(1.45); opacity: 0.4; }\n  100% { transform: scale(1.2); opacity: 0.7; }\n}"
+      },
+      {
+        "name": "ping",
+        "cssText": "@keyframes ping { \n  75%, 100% { transform: scale(2); opacity: 0; }\n}"
+      },
+      {
+        "name": "pulse-slow",
+        "cssText": "@keyframes pulse-slow { \n  0%, 100% { opacity: 1; }\n  50% { opacity: 0.8; }\n}"
+      },
+      {
+        "name": "shimmer",
+        "cssText": "@keyframes shimmer { \n  0% { background-position: -1000px 0px; }\n  100% { background-position: 1000px 0px; }\n}"
+      },
+      {
+        "name": "small-mic-pulse",
+        "cssText": "@keyframes small-mic-pulse { \n  0% { transform: scale(1.2); opacity: 0.7; }\n  50% { transform: scale(1.4); opacity: 0.4; }\n  100% { transform: scale(1.2); opacity: 0.7; }\n}"
+      },
+      {
+        "name": "spin",
+        "cssText": "@keyframes spin { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "enter",
+        "cssText": "@keyframes enter { \n  0% { opacity: var(--tw-enter-opacity, 1); transform: translate3d(var(--tw-enter-translate-x, 0),var(--tw-enter-translate-y, 0),0) scale3d(var(--tw-enter-scale, 1),var(--tw-enter-scale, 1),var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0)); }\n}"
+      },
+      {
+        "name": "exit",
+        "cssText": "@keyframes exit { \n  100% { opacity: var(--tw-exit-opacity, 1); transform: translate3d(var(--tw-exit-translate-x, 0),var(--tw-exit-translate-y, 0),0) scale3d(var(--tw-exit-scale, 1),var(--tw-exit-scale, 1),var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0)); }\n}"
+      },
+      {
+        "name": "animation-path",
+        "cssText": "@keyframes animation-path { \n  0% { offset-distance: 0%; }\n  100% { offset-distance: 100%; }\n}"
+      },
+      {
+        "name": "border-beam",
+        "cssText": "@keyframes border-beam { \n  0% { offset-distance: 0%; }\n  100% { offset-distance: 100%; }\n}"
+      },
+      {
+        "name": "blur-up",
+        "cssText": "@keyframes blur-up { \n  0% { opacity: 0; filter: blur(10px); transform: translateY(10px); }\n  100% { opacity: 1; filter: blur(0px); transform: translateY(0px); }\n}"
+      },
+      {
+        "name": "gradient",
+        "cssText": "@keyframes gradient { \n  0% { background-position: 0% center; }\n  100% { background-position: 200% center; }\n}"
+      }
+    ],
+    "glassmorphism": true,
+    "clipPaths": [],
+    "svgFilters": []
+  }
+}

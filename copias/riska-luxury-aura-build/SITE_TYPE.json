@@ -1,0 +1,9 @@
+{
+  "url": "https://riska-luxury.aura.build/",
+  "framework": "SPA (CSR Puro)",
+  "siteType": "SPA_CSR",
+  "cloneMode": "STRUCTURED_CLONE",
+  "estimatedFidelity": "70%",
+  "warning": "AVISO: SPA renderizado 100% no cliente. Capturando DOM hidratado via Playwright Headless.",
+  "detectedAt": "2026-09-25T16:57:52.540Z"
+}

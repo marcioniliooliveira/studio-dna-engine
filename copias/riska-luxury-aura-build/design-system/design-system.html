@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System & Styleguide - DNA Inspector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-color: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 20px;
+    }
+    h1 { font-size: 2.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .card h2 { font-size: 1.3rem; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .color-card {
+      background: #1e293b;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+    .color-preview { height: 90px; width: 100%; }
+    .color-info { padding: 12px; }
+    .color-name { display: block; font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 4px; word-break: break-all; }
+    .color-val { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px; border-bottom: 1px solid var(--card-border); }
+    th { font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); }
+    code { font-family: 'JetBrains Mono', monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+    .sections-grid { display: flex; flex-direction: column; gap: 12px; }
+    .section-card {
+      display: flex;
+      align-items: center;
+      background: #1e293b;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      gap: 16px;
+    }
+    .section-badge {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .section-details { flex-grow: 1; }
+    .sec-id { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+    .classes-list { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .sec-text { font-size: 0.85rem; color: #cbd5e1; font-style: italic; margin-top: 4px; }
+    .section-height { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted); flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 Design System & Styleguide</h1>
+      <p class="subtitle">Especificação compilada automaticamente a partir da extração do Design DNA.</p>
+    </header>
+
+    <div class="card">
+      <h2>1. Cores & Design Tokens</h2>
+      <div class="color-grid">
+          <div class="color-card">
+            <div class="color-preview" style="background-color: #1e1e1e;"></div>
+            <div class="color-info">
+              <span class="color-name">--syntax-bg</span>
+              <span class="color-val">#1e1e1e</span>
+            </div>
+          </div>
+        
+          <div class="color-card">
+            <div class="color-preview" style="background-color: #d4d4d4;"></div>
+            <div class="color-info">
+              <span class="color-name">--syntax-color</span>
+              <span class="color-val">#d4d4d4</span>
+            </div>
+          </div>
+        
+          <div class="color-card">
+            <div class="color-preview" style="background-color: rgba(0, 0, 0, .05);"></div>
+            <div class="color-info">
+              <span class="color-name">--slider-track-bg</span>
+              <span class="color-val">rgba(0, 0, 0, .05)</span>
+            </div>
+          </div>
+        
+          <div class="color-card">
+            <div class="color-preview" style="background-color: rgba(0, 0, 0, .1);"></div>
+            <div class="color-info">
+              <span class="color-name">--slider-active-bg</span>
+              <span class="color-val">rgba(0, 0, 0, .1)</span>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Escala Tipográfica Computada</h2>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr><th>Elemento</th><th>Visualização</th><th>Font Family</th><th>Size</th><th>Weight</th><th>Line Height</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Arquitetura & Seções Mapeadas</h2>
+      <div class="sections-grid"></div>
+    </div>
+  </div>
+</body>
+</html>

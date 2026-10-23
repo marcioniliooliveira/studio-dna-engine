@@ -25,8 +25,8 @@ async function detectSiteType(url, customConfig = {}) {
   const page = await context.newPage();
 
   try {
-    await page.goto(url, { waitUntil: 'networkidle', timeout: config.timeout }).catch(() => {});
-    await page.waitForTimeout(1500);
+    await page.goto(url, { waitUntil: 'load', timeout: 20000 }).catch(() => {});
+    await page.waitForTimeout(2000);
 
     const detection = await page.evaluate(() => {
       const scripts = Array.from(document.querySelectorAll('script[src]')).map(s => s.src);
@@ -51,7 +51,7 @@ async function detectSiteType(url, customConfig = {}) {
       const isAstro    = !!(document.querySelector('meta[name="generator"][content*="Astro"]') || allText.includes('astro'));
 
       // Detecção de página vazia (CSR puro)
-      const bodyText = document.body.innerText.trim();
+      const bodyText = (document.body && document.body.innerText) ? document.body.innerText.trim() : '';
       const rootEl = document.getElementById('root') || document.getElementById('app') || document.getElementById('__next');
       const isEmpty = rootEl && rootEl.children.length === 0;
       const isCSROnly = isEmpty || bodyText.length < 50;

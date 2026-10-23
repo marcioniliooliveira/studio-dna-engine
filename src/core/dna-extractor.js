@@ -50,13 +50,13 @@ async function extractDesignDna(targetUrl, outputFolder = null, customConfig = {
     const allIframes = await page.$$('iframe');
     for (const iframeEl of allIframes) {
       const box = await iframeEl.boundingBox();
-      if (box && box.width > 500 && box.height > 300) {
+      const src = (await iframeEl.getAttribute('src')) || ''; const isVid = src.includes('vimeo') || src.includes('youtube') || src.includes('mediadelivery') || src.includes('player'); if (!isVid && box && box.width > 800 && box.height > 500) {
         const contentFrame = await iframeEl.contentFrame();
         if (contentFrame) {
           evaluationTarget = contentFrame;
           isIframe = true;
           console.log(`ℹ️ Iframe de conteúdo detectado (${Math.round(box.width)}x${Math.round(box.height)}). Entrando no frame...`);
-          await contentFrame.waitForLoadState('networkidle');
+          await contentFrame.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
           await page.waitForTimeout(2000);
           break;
         }

@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'Gagkline';
+  src: url('./Gagkline.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gagkline';
+  src: url('./Gagkline Italic.otf') format('opentype'),
+       url('./Gagkline%20Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gagkline-Italic';
+  src: url('./Gagkline Italic.otf') format('opentype'),
+       url('./Gagkline%20Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Satoshi-Regular.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Editorial Typography Utilities */
+.font-editorial {
+  font-family: 'Gagkline', 'DM Serif Display', Georgia, serif;
+}
+.font-editorial-italic {
+  font-family: 'Gagkline-Italic', 'Gagkline', 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+}
+.font-kicker, .font-body-editorial {
+  font-family: 'Satoshi', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
