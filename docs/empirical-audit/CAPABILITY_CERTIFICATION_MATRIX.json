@@ -1,0 +1,385 @@
+[
+  {
+    "capabilityId": "CAP-ORCH-DAG-LOCKS",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Agendamento sequencial simples sem caminhos aninhados"],
+      "unsupportedScenarios": ["Escrita concorrente pai/filho", "Segmentos relativos com parent traversal", "Concorrencia real paralela"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "FAIL",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "FAIL"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 3,
+      "testsPassed": 3,
+      "branchCoverage": 49.32,
+      "mutationScore": 0.0,
+      "sampleCount": 3,
+      "confidenceInterval": "Score 0.0% em amostra n=3 mutantes sobreviventes"
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/mutation-report.json",
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/race-report.json",
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/security-findings.json"
+    ],
+    "reproducedCounterexamples": [
+      "pathsIntersect('src/components', 'src/components/button.js') retorna false permitindo escrita concorrente (SEC-001)",
+      "pathsIntersect('src/components/../button.js', 'src/button.js') retorna false (SEC-002)"
+    ],
+    "residualRisks": [
+      "Corrupcao silenciosa de arquivos em execucoes paralelas de agentes",
+      "Conflitos de escrita nao detectados em diretórios base"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-ORCH-TASK-CONTRACT-V2",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Validacao isolada de objetos TaskContractV2"],
+      "unsupportedScenarios": ["Integracao direta automatica no pipeline de blueprint V1"]
+    },
+    "dimensions": {
+      "localCorrectness": "PASS",
+      "integration": "FAIL",
+      "robustness": "PASS",
+      "generalization": "NOT_TESTED",
+      "operations": "INCONCLUSIVE"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 18,
+      "testsPassed": 18,
+      "branchCoverage": 81.07,
+      "mutationScore": null,
+      "sampleCount": 18,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/security-findings.json"
+    ],
+    "reproducedCounterexamples": [
+      "validateBlueprint aceita tarefas invalidas segundo task-contract-v2 sem lancar excecao (SEC-003)"
+    ],
+    "residualRisks": [
+      "Bypass contratual permitindo tarefas arbitrárias sem restricoes de rede ou leitura/escrita"
+    ],
+    "verdict": "INCONCLUSIVE",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-ORCH-BLUEPRINT-INGESTION",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Ingestao e validacao basica de blueprints V1"],
+      "unsupportedScenarios": ["Garantia de verificacao de ciclos em presenca de mutantes"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "INCONCLUSIVE",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "INCONCLUSIVE"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 5,
+      "testsPassed": 5,
+      "branchCoverage": 70.0,
+      "mutationScore": 0.0,
+      "sampleCount": 1,
+      "confidenceInterval": "Mutante MUT-03 sobreviveu sem deteccao"
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/surviving-mutants.json"
+    ],
+    "reproducedCounterexamples": [
+      "Remocao da deteccao de ciclos em blueprint.js nao quebra nenhum teste da suite oficial"
+    ],
+    "residualRisks": [
+      "Loops infinitos no agendador de tarefas por falha na deteccao de grafos ciclicos"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-ORCH-EXECUTION-SANDBOX",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Invocacao em memoria de funcoes autorizadas"],
+      "unsupportedScenarios": ["Isolamento real de chamadas ao sistema operacional ou filesystem"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "FAIL",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "FAIL"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 3,
+      "testsPassed": 3,
+      "branchCoverage": 60.0,
+      "mutationScore": null,
+      "sampleCount": 1,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/security-findings.json"
+    ],
+    "reproducedCounterexamples": [
+      "createExecutor executa funcoes maliciosas sem intercepcao de filesystem ou rede (SEC-004)"
+    ],
+    "residualRisks": [
+      "Execucao de codigo arbitrario e vazamento de variaveis de ambiente sensiveis"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-ORCH-CLI-GOVERNANCE",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Comandos de ledger em modo local cooperativo"],
+      "unsupportedScenarios": ["Ambientes de producao, multi-tenant ou esteiras CI/CD seguras"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "FAIL",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "FAIL"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 4,
+      "testsPassed": 4,
+      "branchCoverage": 55.0,
+      "mutationScore": null,
+      "sampleCount": 1,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/approval-audit.jsonl",
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/security-findings.json"
+    ],
+    "reproducedCounterexamples": [
+      "bin/orchestrator.js approve promove run planned para approved sem chave, sem ator e sem hash (SEC-005)"
+    ],
+    "residualRisks": [
+      "Aprovacao forjada de artefatos corrompidos ou maliciosos em producao"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-M1-CDP-DECOMPILER",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Sanitizacao de trackers e iframes em AST HTML/CSS"],
+      "unsupportedScenarios": ["Conexao ao vivo com Chrome DevTools Protocol remoto"]
+    },
+    "dimensions": {
+      "localCorrectness": "PASS",
+      "integration": "INCONCLUSIVE",
+      "robustness": "PASS",
+      "generalization": "NOT_TESTED",
+      "operations": "PASS"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 11,
+      "testsPassed": 11,
+      "branchCoverage": 88.5,
+      "mutationScore": null,
+      "sampleCount": 11,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/test-inventory.json"
+    ],
+    "reproducedCounterexamples": [],
+    "residualRisks": [
+      "Fidelidade limitada a fixtures estaticas; falta prova em sessao CDP viva com WebSocket"
+    ],
+    "verdict": "PASS",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-M2-KINETIC-TRAJECTORY",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Calculo analitico de splines de Bezier e derivada zero em ancoras"],
+      "unsupportedScenarios": ["Animacoes GSAP complexas com scroll horizontal interativo"]
+    },
+    "dimensions": {
+      "localCorrectness": "PASS",
+      "integration": "INCONCLUSIVE",
+      "robustness": "PASS",
+      "generalization": "NOT_TESTED",
+      "operations": "PASS"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 22,
+      "testsPassed": 22,
+      "branchCoverage": 91.2,
+      "mutationScore": null,
+      "sampleCount": 22,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/test-inventory.json"
+    ],
+    "reproducedCounterexamples": [],
+    "residualRisks": [
+      "Validado analiticamente em dados sinteticos; holdout visual pendente"
+    ],
+    "verdict": "PASS",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-M3-ASSETS-3D-PIPELINE",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Quantizacao KTX2 e estimativa estatica de VRAM de malhas 3D"],
+      "unsupportedScenarios": ["Renderizacao WebGL em dispositivos mobile reais com lost context"]
+    },
+    "dimensions": {
+      "localCorrectness": "PASS",
+      "integration": "INCONCLUSIVE",
+      "robustness": "PASS",
+      "generalization": "NOT_TESTED",
+      "operations": "PASS"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 16,
+      "testsPassed": 16,
+      "branchCoverage": 86.4,
+      "mutationScore": null,
+      "sampleCount": 16,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/test-inventory.json"
+    ],
+    "reproducedCounterexamples": [],
+    "residualRisks": [
+      "Estimativa analitica de VRAM difere da alocacao real de driver GPU proprietario"
+    ],
+    "verdict": "PASS",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-M4-COMPILER-DUALSTACK",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Compilacao de templates HTML puros e componentes RSC Next.js"],
+      "unsupportedScenarios": ["Hidratacao em Edge CDN com servicos de terceiros"]
+    },
+    "dimensions": {
+      "localCorrectness": "PASS",
+      "integration": "INCONCLUSIVE",
+      "robustness": "PASS",
+      "generalization": "NOT_TESTED",
+      "operations": "PASS"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 30,
+      "testsPassed": 30,
+      "branchCoverage": 89.0,
+      "mutationScore": null,
+      "sampleCount": 30,
+      "confidenceInterval": null
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/test-inventory.json"
+    ],
+    "reproducedCounterexamples": [],
+    "residualRisks": [
+      "Testes focados em geracao textual de markup sem inspecao E2E de hidratacao React"
+    ],
+    "verdict": "PASS",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-QA-VISUAL-CRITIC",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Validacao estrutural de manifestos de captura visual"],
+      "unsupportedScenarios": ["Inspecao perceptual humana ou calibração de diferenca de pixel real"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "FAIL",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "FAIL"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 4,
+      "testsPassed": 4,
+      "branchCoverage": 65.0,
+      "mutationScore": null,
+      "sampleCount": 4,
+      "confidenceInterval": "Todos os testes usam mocks sinteticos de screenshot"
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/ci-coverage-map.csv"
+    ],
+    "reproducedCounterexamples": [
+      "test/visual-critic-and-refinement.test.js passa integralmente sem capturar nenhum pixel de browser"
+    ],
+    "residualRisks": [
+      "Falso senso de seguranca visual; defeitos de renderizacao passam despercebidos"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  },
+  {
+    "capabilityId": "CAP-CI-INTEGRITY",
+    "scope": {
+      "commit": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "supportedEnvironments": ["node:22"],
+      "supportedScenarios": ["Execucao pontual de testes unitarios individuais"],
+      "unsupportedScenarios": ["Checkout limpo da CI sem artefatos locais"]
+    },
+    "dimensions": {
+      "localCorrectness": "FAIL",
+      "integration": "FAIL",
+      "robustness": "FAIL",
+      "generalization": "NOT_TESTED",
+      "operations": "FAIL"
+    },
+    "quantitativeEvidence": {
+      "testsExecuted": 10,
+      "testsPassed": 0,
+      "branchCoverage": 9.3,
+      "mutationScore": null,
+      "sampleCount": 108,
+      "confidenceInterval": "Apenas 10 suites de 108 sao alcancadas; 56 suites 100% orfas"
+    },
+    "evidenceRefs": [
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/orphaned-suites.json",
+      "artifacts/empirical-audit/audit-20261023-eixo-a-foundation/ci-coverage-map.csv"
+    ],
+    "reproducedCounterexamples": [
+      "npm test falha fatalmente em clean checkout por dependencia de copias/useplanes-com (LEG-03)"
+    ],
+    "residualRisks": [
+      "Quebra imediata de pipelines de integracao continua em qualquer ambiente limpo"
+    ],
+    "verdict": "FAIL",
+    "independentReviewer": "Antigravity Evidence Auditor"
+  }
+]

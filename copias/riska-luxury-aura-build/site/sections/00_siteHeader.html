@@ -10,7 +10,7 @@
   html,
   body {
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
   }
 
   #root {
@@ -216,6 +216,45 @@
       /* 7. Prevenção de travamento de texto com filtros de reveal congelados */
       .reveal-word, .word-mask, .reveal-copy, .reveal-link, .product-meta, .product-title, .product-copy, .product-action {
         filter: none !important;
+      }
+
+      /* Piece Switcher Sticky Elevation & Missing Tailwind Utility (R2) */
+      .z-50 {
+        z-index: 50 !important;
+      }
+
+      .piece-switcher {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+      }
+
+      /* Mobile Sticky Viewport Guard: prevent overflow-x: hidden on html/body from breaking position: sticky (R2) */
+      @media (max-width: 639px) {
+        html,
+        body {
+          overflow-x: clip !important;
+        }
+      }
+
+      /* Luxury Editorial Header State Machine (R2) */
+      #siteHeader {
+        transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1),
+                    opacity 0.55s cubic-bezier(0.77, 0, 0.175, 1) !important;
+        will-change: transform, opacity;
+      }
+
+      #siteHeader.header--hidden {
+        transform: translateY(-100%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* WCAG Reduced Motion Accommodation */
+      @media (prefers-reduced-motion: reduce) {
+        #siteHeader {
+          transition: none !important;
+        }
       }
     </style>
 <script id="universal-resilience-polyfills">
@@ -643,7 +682,7 @@
   html,
   body {
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
   }
 
   #root {

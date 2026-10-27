@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-10-23T16:14:05.972Z",
+  "component": "dag-scheduler.js",
+  "findings": [
+    {
+      "finding_id": "SEC-001-DAG-LOCK-DIRECTORY-BYPASS",
+      "severity": "HIGH",
+      "component": "dag-scheduler.js",
+      "description": "pathsIntersect falha em detectar conflito entre pasta base (src/components) e arquivo filho (src/components/button.js) quando não termina explicitamente com /* ou /**.",
+      "evidence": {
+        "scheduled_concurrently": [
+          "task-a",
+          "task-b"
+        ]
+      },
+      "status": "observed"
+    },
+    {
+      "finding_id": "SEC-002-DAG-LOCK-TRAVERSAL-EQUIVALENCE",
+      "severity": "MEDIUM",
+      "component": "dag-scheduler.js",
+      "description": "pathsIntersect não normaliza segmentos relativos (../), permitindo que dois caminhos equivalentes não colidam e sejam executados em paralelo.",
+      "evidence": {
+        "scheduled_concurrently": [
+          "task-x",
+          "task-y"
+        ]
+      },
+      "status": "observed"
+    }
+  ]
+}

@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090705">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Studio DNA — hero experimental com atmosfera procedural, nuvens instanciadas e lente gravitacional.">
+  <title>Studio DNA — B / Campo gravitacional</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #f3eee6;
+      --muted: rgba(243, 238, 230, 0.66);
+      --faint: rgba(243, 238, 230, 0.38);
+      --coal: #090705;
+      --ember: #d77935;
+      --sand: #e7b77c;
+      --line: rgba(240, 224, 205, 0.16);
+      --line-strong: rgba(240, 224, 205, 0.28);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --copy-opacity: 1;
+      --copy-shift: 0vh;
+      --copy-scale: 1;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--coal);
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--coal);
+      color: var(--ink);
+      font-family: "Archivo", "Helvetica Neue", sans-serif;
+      font-synthesis: none;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    ::selection {
+      background: var(--sand);
+      color: #160c07;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--sand);
+      border-radius: 999px;
+      background: var(--coal);
+      font: 500 0.75rem/1 "IBM Plex Mono", monospace;
+      text-decoration: none;
+      transform: translateY(-180%);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .hero-shell {
+      position: relative;
+      height: 190svh;
+      min-height: 64rem;
+      background: var(--coal);
+    }
+
+    .hero-stage {
+      --pointer-x: 68%;
+      --pointer-y: 48%;
+      position: sticky;
+      top: 0;
+      isolation: isolate;
+      height: 100svh;
+      min-height: 39rem;
+      overflow: clip;
+      background:
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(173, 77, 31, 0.18), transparent 25%),
+        radial-gradient(ellipse at 50% 72%, #35170d 0%, #120a07 38%, #070604 78%);
+    }
+
+    .hero-canvas,
+    .fallback-atmosphere,
+    .grid,
+    .vignette,
+    .grain {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero-canvas {
+      z-index: -5;
+      display: block;
+      opacity: 0;
+      transition: opacity 800ms var(--ease);
+    }
+
+    .is-three-ready .hero-canvas {
+      opacity: 1;
+    }
+
+    .fallback-atmosphere {
+      z-index: -6;
+      background:
+        radial-gradient(ellipse at 16% 28%, rgba(151, 73, 31, 0.38), transparent 29%),
+        radial-gradient(ellipse at 82% 65%, rgba(119, 48, 22, 0.52), transparent 34%),
+        radial-gradient(circle at 69% 48%, transparent 0 14%, rgba(207, 101, 44, 0.16) 18%, transparent 31%),
+        linear-gradient(180deg, #050403, #190d08 58%, #080604);
+    }
+
+    .grid {
+      z-index: -3;
+      opacity: 0.13;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 5rem 5rem;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 74%);
+    }
+
+    .vignette {
+      z-index: 4;
+      background:
+        linear-gradient(180deg, rgba(4,3,2,0.72), transparent 21%, transparent 75%, rgba(4,3,2,0.78)),
+        radial-gradient(ellipse at center, transparent 35%, rgba(3,2,2,0.62));
+    }
+
+    .grain {
+      z-index: 5;
+      opacity: 0.12;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .site-nav {
+      position: absolute;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      display: grid;
+      width: 100%;
+      padding: 1.5rem clamp(1rem, 3.4vw, 3.75rem);
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      font: 500 0.67rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 1.05rem;
+      aspect-ratio: 1;
+      border: 1px solid rgba(235, 191, 142, 0.78);
+      border-radius: 50%;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      position: absolute;
+      content: "";
+      background: rgba(235, 191, 142, 0.78);
+    }
+
+    .brand-mark::before {
+      top: 50%;
+      left: -0.28rem;
+      width: calc(100% + 0.56rem);
+      height: 1px;
+    }
+
+    .brand-mark::after {
+      top: -0.28rem;
+      left: 50%;
+      width: 1px;
+      height: calc(100% + 0.56rem);
+    }
+
+    .nav-index {
+      justify-self: center;
+      color: var(--faint);
+    }
+
+    .nav-links {
+      display: flex;
+      justify-self: end;
+      gap: clamp(1rem, 2vw, 2rem);
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--ink);
+    }
+
+    .hero-content {
+      position: absolute;
+      z-index: 10;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      width: min(78rem, calc(100% - 2rem));
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      opacity: var(--copy-opacity);
+      transform: translate(-50%, calc(-48% + var(--copy-shift))) scale(var(--copy-scale));
+      transform-origin: 50% 60%;
+      will-change: transform, opacity;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 clamp(1.4rem, 2.8vh, 2.25rem);
+      padding: 0.64rem 0.9rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(9,7,5,0.3);
+      color: rgba(245,234,220,0.72);
+      font: 500 0.64rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+
+    .signal {
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 50%;
+      background: var(--sand);
+      box-shadow: 0 0 0.8rem rgba(231,183,124,0.72);
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 0;
+      color: #eee9e2;
+      font-size: clamp(3rem, 7.4vw, 7.15rem);
+      font-stretch: 91%;
+      font-weight: 460;
+      letter-spacing: -0.074em;
+      line-height: 0.91;
+      text-wrap: balance;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    h1 .accent {
+      padding-bottom: 0.08em;
+      background: linear-gradient(94deg, #f3eee6 8%, #e9c397 38%, #b8622c 74%, #ead0b2 100%);
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-lede {
+      max-width: 42rem;
+      margin: clamp(1.45rem, 3vh, 2.25rem) auto 0;
+      color: var(--muted);
+      font-size: clamp(0.95rem, 1.35vw, 1.12rem);
+      font-weight: 360;
+      letter-spacing: -0.018em;
+      line-height: 1.55;
+      text-wrap: balance;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-top: clamp(1.65rem, 3.8vh, 2.75rem);
+    }
+
+    .button {
+      position: relative;
+      display: inline-flex;
+      min-height: 3.55rem;
+      align-items: center;
+      justify-content: center;
+      gap: 1.15rem;
+      padding: 0.85rem 1.35rem 0.85rem 1.55rem;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: linear-gradient(110deg, #eee9df, #e4bd8c 55%, #bf6e39 120%);
+      color: #1a0e08;
+      font: 500 0.73rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.045em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 320ms var(--ease);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+    }
+
+    .button-secondary {
+      border-color: var(--line-strong);
+      background: rgba(10,8,6,0.28);
+      color: var(--ink);
+      backdrop-filter: blur(10px);
+    }
+
+    .button-arrow {
+      display: grid;
+      width: 1.5rem;
+      height: 1.5rem;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .coordinates,
+    .runtime,
+    .scroll-cue {
+      position: absolute;
+      z-index: 8;
+      color: var(--faint);
+      font: 400 0.58rem/1.7 "IBM Plex Mono", monospace;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .coordinates {
+      top: 50%;
+      left: clamp(1rem, 3.4vw, 3.75rem);
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+    }
+
+    .runtime {
+      right: clamp(1rem, 3.4vw, 3.75rem);
+      bottom: 1.45rem;
+    }
+
+    .scroll-cue {
+      bottom: 1.45rem;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transform: translateX(-50%);
+    }
+
+    .scroll-line {
+      width: 3rem;
+      height: 1px;
+      background: linear-gradient(90deg, var(--sand), var(--line));
+    }
+
+    .chapter {
+      position: relative;
+      z-index: 2;
+      min-height: 100svh;
+      padding: clamp(5rem, 11vw, 10rem) clamp(1rem, 6vw, 7rem);
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 80% 20%, rgba(158,76,34,0.13), transparent 24rem),
+        #0c0907;
+    }
+
+    .chapter-inner {
+      display: grid;
+      width: min(80rem, 100%);
+      margin: 0 auto;
+      grid-template-columns: minmax(10rem, 0.6fr) minmax(18rem, 2fr);
+      gap: clamp(2rem, 8vw, 9rem);
+    }
+
+    .chapter-kicker {
+      color: var(--faint);
+      font: 500 0.62rem/1.4 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chapter h2 {
+      max-width: 13ch;
+      margin: 0;
+      font-size: clamp(2.8rem, 6vw, 6.1rem);
+      font-stretch: 88%;
+      font-weight: 430;
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+    }
+
+    .chapter p:last-child {
+      max-width: 42rem;
+      margin: 3rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      line-height: 1.6;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--sand);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 760px) {
+      .hero-shell {
+        height: 170svh;
+        min-height: 54rem;
+      }
+
+      .site-nav {
+        grid-template-columns: 1fr auto;
+        padding-block: 1.1rem;
+      }
+
+      .nav-index,
+      .nav-links a:not(:last-child) {
+        display: none;
+      }
+
+      .hero-content {
+        top: 48%;
+        width: calc(100% - 1.75rem);
+      }
+
+      h1 {
+        max-width: 10ch;
+        font-size: clamp(3.1rem, 14vw, 5rem);
+        letter-spacing: -0.068em;
+        line-height: 0.93;
+      }
+
+      .hero-actions {
+        width: min(24rem, 100%);
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .coordinates {
+        display: none;
+      }
+
+      .scroll-cue {
+        left: 1rem;
+        transform: none;
+      }
+
+      .runtime {
+        right: 1rem;
+      }
+
+      .chapter-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <main id="conteudo">
+    <section class="hero-shell" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-stage">
+        <div class="fallback-atmosphere" aria-hidden="true"></div>
+        <canvas class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="grid" aria-hidden="true"></div>
+        <div class="vignette" aria-hidden="true"></div>
+        <div class="grain" aria-hidden="true"></div>
+
+        <nav class="site-nav" aria-label="Navegação principal">
+          <a class="brand" href="#inicio" aria-label="Studio DNA — início">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>Studio DNA</span>
+          </a>
+          <span class="nav-index" aria-hidden="true">Campo / Variante B</span>
+          <div class="nav-links">
+            <a href="#projetos">Projetos</a>
+            <a href="#processo">Processo</a>
+            <a href="#projetos">Ver trabalho</a>
+          </div>
+        </nav>
+
+        <div class="hero-content">
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Direção digital / sistemas vivos</p>
+          <h1 id="hero-title" aria-label="Experiências digitais que deixam rastro">
+            <span>Experiências digitais</span>
+            <span class="accent">que deixam rastro.</span>
+          </h1>
+          <p class="hero-lede">Estratégia, design e engenharia para marcas que precisam existir com precisão — não apenas ocupar espaço.</p>
+          <div class="hero-actions" aria-label="Ações principais">
+            <a class="button js-intent" href="#projetos"><span>Explorar projetos</span><span class="button-arrow" aria-hidden="true">↗</span></a>
+            <a class="button button-secondary js-intent" href="#processo"><span>Como trabalhamos</span><span class="button-arrow" aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+
+        <div class="coordinates" aria-hidden="true">23°32′S · 46°38′W / Campo gravitacional</div>
+        <div class="scroll-cue" aria-hidden="true"><span>Continuar</span><span class="scroll-line"></span></div>
+        <div class="runtime" aria-hidden="true">Atmosfera <span id="runtime-state">carregando</span></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="projetos" aria-labelledby="chapter-title">
+      <div class="chapter-inner">
+        <p class="chapter-kicker">Capítulo 01 / método</p>
+        <div id="processo">
+          <h2 id="chapter-title">Forma nasce de contexto.</h2>
+          <p>Produto, público e restrições definem a linguagem. Movimento existe para revelar profundidade, estado e direção — nunca para competir com a mensagem.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <noscript><style>.hero-canvas{display:none}#runtime-state{display:none}</style></noscript>
+
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision highp float;
+
+    varying vec2 vUv;
+    uniform vec2 uResolution;
+    uniform vec2 uPointer;
+    uniform vec2 uLens;
+    uniform vec4 uSafeZone;
+    uniform float uTime;
+    uniform float uScroll;
+    uniform float uPointerEnergy;
+    uniform float uIntent;
+    uniform float uMotion;
+
+    mat2 rotate2d(float angle) {
+      float s = sin(angle);
+      float c = cos(angle);
+      return mat2(c, -s, s, c);
+    }
+
+    float random2d(vec2 point) {
+      point = fract(point * vec2(123.34, 345.45));
+      point += dot(point, point + 34.345);
+      return fract(point.x * point.y);
+    }
+
+    float valueNoise(vec2 point) {
+      vec2 cell = floor(point);
+      vec2 local = fract(point);
+      vec2 blend = local * local * (3.0 - 2.0 * local);
+      float a = random2d(cell);
+      float b = random2d(cell + vec2(1.0, 0.0));
+      float c = random2d(cell + vec2(0.0, 1.0));
+      float d = random2d(cell + vec2(1.0, 1.0));
+      return mix(mix(a, b, blend.x), mix(c, d, blend.x), blend.y);
+    }
+
+    float fbm(vec2 point) {
+      float value = 0.0;
+      float amplitude = 0.54;
+      mat2 basis = rotate2d(0.53);
+      for (int octave = 0; octave < 5; octave++) {
+        value += valueNoise(point) * amplitude;
+        point = basis * point * 2.04 + vec2(17.1, 9.2);
+        amplitude *= 0.51;
+      }
+      return value;
+    }
+
+    float safeZone(vec2 uv) {
+      vec2 halfSize = max(uSafeZone.zw, vec2(0.001));
+      float ellipse = length(abs(uv - uSafeZone.xy) / halfSize);
+      return 1.0 - smoothstep(0.72, 1.3, ellipse);
+    }
+
+    void main() {
+      float aspect = uResolution.x / max(uResolution.y, 1.0);
+      float time = uTime * uMotion;
+      vec2 uv = vUv;
+      vec2 lens = uLens;
+      vec2 lensDelta = uv - lens;
+      lensDelta.x *= aspect;
+      float lensDistance = length(lensDelta);
+
+      // Lente ampla: magnifica o núcleo e comprime a borda sem tocar no DOM.
+      float lensRadius = mix(0.34, 0.43, uPointerEnergy);
+      float lensMask = 1.0 - smoothstep(lensRadius * 0.25, lensRadius, lensDistance);
+      float lensFalloff = exp(-lensDistance * lensDistance * 13.0);
+      float bend = lensMask * (0.16 + uPointerEnergy * 0.09 + uIntent * 0.035);
+      vec2 bent = lensDelta * (1.0 + bend / (lensDistance + 0.13));
+      bent.x /= aspect;
+      uv = mix(uv, lens + bent, lensMask * 0.88);
+
+      vec2 point = uv - 0.5;
+      point.x *= aspect;
+      vec2 pointer = uPointer - 0.5;
+      pointer.x *= aspect;
+      vec2 pointerDelta = point - pointer;
+      float pointerDistance = length(pointerDelta);
+      float pointerField = exp(-pointerDistance * pointerDistance * 6.0);
+      point += pointerDelta / max(pointerDistance, 0.04) * pointerField * (0.045 + uPointerEnergy * 0.12) * uMotion;
+      point = rotate2d((uScroll - 0.5) * 0.09) * point;
+      point *= mix(1.0, 1.32, uScroll);
+
+      vec2 driftA = vec2(time * 0.033, -time * 0.021);
+      vec2 driftB = vec2(-time * 0.024, time * 0.029);
+      float broad = fbm(point * 1.42 + driftA);
+      float folded = fbm(point * 2.85 + driftB + vec2(broad * 1.08));
+      float detail = fbm(point * 5.9 - driftA * 1.7 + vec2(folded * 0.66));
+      float ridge = 1.0 - abs(folded * 2.0 - 1.0);
+      float radial = smoothstep(0.03, 0.91, length(point * vec2(0.8, 1.06)));
+      float cloud = broad * 0.58 + folded * 0.37 + detail * 0.19 + ridge * 0.2 + radial * 0.14;
+      cloud = smoothstep(0.28, 0.82, cloud);
+      cloud *= mix(1.0, mix(0.42, 0.26, uIntent), safeZone(vUv));
+
+      float ember = smoothstep(0.56, 0.88, folded + detail * 0.32) * (0.4 + radial * 0.6);
+      float rayBand = pow(max(0.0, sin((point.y + broad * 0.08) * 63.0 + time * 0.17)), 30.0);
+      float rayGate = smoothstep(0.58, 0.92, random2d(floor(point * vec2(4.0, 28.0))));
+      float rays = rayBand * rayGate * smoothstep(0.24, 0.9, cloud) * 0.62;
+
+      vec2 starGrid = fract((point + 8.0) * vec2(94.0, 61.0)) - 0.5;
+      vec2 starCell = floor((point + 8.0) * vec2(94.0, 61.0));
+      float stars = (1.0 - smoothstep(0.012, 0.052, length(starGrid))) * step(0.958, random2d(starCell));
+
+      float lensRing = exp(-pow((lensDistance - lensRadius * 0.62) / 0.028, 2.0));
+      float lensCore = exp(-lensDistance * lensDistance * 42.0);
+      float lensArc = lensRing * (0.38 + 0.62 * smoothstep(-0.65, 0.65, sin(atan(lensDelta.y, lensDelta.x) * 2.0 + time * 0.22)));
+
+      vec3 coal = vec3(0.018, 0.013, 0.01);
+      vec3 umber = vec3(0.19, 0.068, 0.024);
+      vec3 rust = vec3(0.57, 0.22, 0.075);
+      vec3 sand = vec3(0.91, 0.6, 0.31);
+      vec3 color = mix(coal, umber, cloud * 0.98);
+      color = mix(color, rust, ember * 0.74);
+      color += sand * rays;
+      color += vec3(0.95, 0.73, 0.48) * stars * (0.3 + cloud * 0.7);
+      color += vec3(0.83, 0.34, 0.11) * lensArc * 0.34;
+      color *= 1.0 - lensCore * 0.72;
+      color += vec3(0.38, 0.11, 0.035) * lensFalloff * 0.09;
+      color *= 1.0 - smoothstep(0.3, 0.92, length(point)) * 0.48;
+      color *= mix(1.0, 0.62, uScroll);
+      color = pow(color, vec3(0.87));
+      gl_FragColor = vec4(color, 1.0);
+    }
+  </script>
+
+  <script type="module">
+    const stage = document.querySelector(".hero-stage");
+    const shell = document.querySelector(".hero-shell");
+    const content = document.querySelector(".hero-content");
+    const canvas = document.querySelector(".hero-canvas");
+    const runtime = document.querySelector("#runtime-state");
+    const reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
+    const state = {
+      pointerTarget: { x: 0.68, y: 0.52 },
+      pointer: { x: 0.68, y: 0.52 },
+      lens: { x: 0.68, y: 0.52 },
+      previous: { x: 0.68, y: 0.52 },
+      scrollTarget: 0,
+      scroll: 0,
+      intentTarget: 0,
+      intent: 0,
+      energy: 0,
+      visible: true,
+      reduced: reducedQuery.matches
+    };
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const damp = (current, target, lambda, delta) => current + (target - current) * (1 - Math.exp(-lambda * delta));
+
+    function updateScroll() {
+      const rect = shell.getBoundingClientRect();
+      const travel = Math.max(1, shell.offsetHeight - innerHeight);
+      state.scrollTarget = clamp(-rect.top / travel, 0, 1);
+      const eased = state.scrollTarget * state.scrollTarget * (3 - 2 * state.scrollTarget);
+      document.documentElement.style.setProperty("--copy-opacity", clamp(1 - eased * 1.42, 0, 1));
+      document.documentElement.style.setProperty("--copy-shift", `${-eased * 7}vh`);
+      document.documentElement.style.setProperty("--copy-scale", 1 - eased * 0.045);
+    }
+
+    addEventListener("pointermove", event => {
+      const rect = stage.getBoundingClientRect();
+      if (event.clientY < rect.top || event.clientY > rect.bottom) return;
+      state.pointerTarget.x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      state.pointerTarget.y = clamp(1 - (event.clientY - rect.top) / rect.height, 0, 1);
+      stage.style.setProperty("--pointer-x", `${state.pointerTarget.x * 100}%`);
+      stage.style.setProperty("--pointer-y", `${(1 - state.pointerTarget.y) * 100}%`);
+    }, { passive: true });
+
+    addEventListener("scroll", updateScroll, { passive: true });
+    addEventListener("resize", updateScroll, { passive: true });
+    reducedQuery.addEventListener("change", event => { state.reduced = event.matches; });
+    document.querySelectorAll(".js-intent").forEach(control => {
+      control.addEventListener("pointerenter", () => { state.intentTarget = 1; });
+      control.addEventListener("pointerleave", () => { state.intentTarget = 0; });
+      control.addEventListener("focus", () => { state.intentTarget = 1; });
+      control.addEventListener("blur", () => { state.intentTarget = 0; });
+    });
+    new IntersectionObserver(([entry]) => { state.visible = entry.isIntersecting; }).observe(stage);
+    updateScroll();
+
+    function seededRandom(seed) {
+      let value = seed >>> 0;
+      return () => {
+        value += 0x6d2b79f5;
+        let mixed = value;
+        mixed = Math.imul(mixed ^ mixed >>> 15, mixed | 1);
+        mixed ^= mixed + Math.imul(mixed ^ mixed >>> 7, mixed | 61);
+        return ((mixed ^ mixed >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function createCloudTexture(THREE) {
+      const textureCanvas = document.createElement("canvas");
+      textureCanvas.width = 256;
+      textureCanvas.height = 160;
+      const context = textureCanvas.getContext("2d");
+      const random = seededRandom(0x51d3a7);
+      context.globalCompositeOperation = "lighter";
+      for (let blob = 0; blob < 22; blob++) {
+        const x = textureCanvas.width * (0.12 + random() * 0.76);
+        const y = textureCanvas.height * (0.25 + random() * 0.5);
+        const radius = 22 + random() * 50;
+        const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
+        gradient.addColorStop(0, "rgba(255,255,255,0.38)");
+        gradient.addColorStop(0.34, "rgba(255,255,255,0.18)");
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+        context.fillStyle = gradient;
+        context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      }
+      const texture = new THREE.CanvasTexture(textureCanvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+      return texture;
+    }
+
+    async function createAtmosphere() {
+      let THREE;
+      try {
+        THREE = await import("https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js");
+      } catch (error) {
+        document.body.classList.add("is-static-fallback");
+        runtime.textContent = "estática";
+        console.warn("Three.js indisponível; fallback visual mantido.", error);
+        return;
+      }
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
+      } catch (error) {
+        document.body.classList.add("is-static-fallback");
+        runtime.textContent = "estática";
+        console.warn("WebGL indisponível; fallback visual mantido.", error);
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2);
+      camera.position.z = 1;
+      const uniforms = {
+        uResolution: { value: new THREE.Vector2(1, 1) },
+        uPointer: { value: new THREE.Vector2(state.pointer.x, state.pointer.y) },
+        uLens: { value: new THREE.Vector2(state.lens.x, state.lens.y) },
+        uSafeZone: { value: new THREE.Vector4(0.5, 0.5, 0.28, 0.26) },
+        uTime: { value: 0 },
+        uScroll: { value: 0 },
+        uPointerEnergy: { value: 0 },
+        uIntent: { value: 0 },
+        uMotion: { value: state.reduced ? 0 : 1 }
+      };
+
+      const field = new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 2),
+        new THREE.ShaderMaterial({
+          uniforms,
+          vertexShader: document.querySelector("#vertex-shader").textContent,
+          fragmentShader: document.querySelector("#fragment-shader").textContent,
+          depthTest: false,
+          depthWrite: false
+        })
+      );
+      field.frustumCulled = false;
+      field.renderOrder = 0;
+      scene.add(field);
+
+      const cloudCount = 28;
+      const cloudGeometry = new THREE.PlaneGeometry(1, 1);
+      const cloudMaterial = new THREE.MeshBasicMaterial({
+        color: 0x9d4b24,
+        map: createCloudTexture(THREE),
+        transparent: true,
+        opacity: 0.27,
+        depthTest: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        toneMapped: false
+      });
+      const cloudsMesh = new THREE.InstancedMesh(cloudGeometry, cloudMaterial, cloudCount);
+      const dummy = new THREE.Object3D();
+      const cloudColor = new THREE.Color();
+      const cloudRandom = seededRandom(0xc10d5);
+      const clouds = [];
+
+      for (let index = 0; index < cloudCount; index++) {
+        let x = cloudRandom() * 2.4 - 1.2;
+        let y = cloudRandom() * 2.0 - 1;
+        if (Math.abs(x) < 0.42 && Math.abs(y) < 0.4) x = Math.sign(x || 1) * (0.5 + cloudRandom() * 0.62);
+        const depth = 0.24 + cloudRandom() * 0.76;
+        const width = 0.36 + cloudRandom() * 0.62;
+        clouds.push({
+          x, y, depth, width,
+          height: width * (0.2 + cloudRandom() * 0.16),
+          phase: cloudRandom() * Math.PI * 2,
+          speed: 0.075 + cloudRandom() * 0.1,
+          rotation: (cloudRandom() - 0.5) * 0.2
+        });
+        cloudColor.setHSL(0.05 + cloudRandom() * 0.03, 0.52, 0.28 + cloudRandom() * 0.14);
+        cloudsMesh.setColorAt(index, cloudColor);
+      }
+      cloudsMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      cloudsMesh.instanceColor.needsUpdate = true;
+      cloudsMesh.frustumCulled = false;
+      cloudsMesh.renderOrder = 2;
+      scene.add(cloudsMesh);
+
+      function updateSafeZone() {
+        const stageRect = stage.getBoundingClientRect();
+        const contentRect = content.getBoundingClientRect();
+        uniforms.uSafeZone.value.set(
+          (contentRect.left + contentRect.width * 0.5 - stageRect.left) / stageRect.width,
+          1 - (contentRect.top + contentRect.height * 0.5 - stageRect.top) / stageRect.height,
+          clamp(contentRect.width / stageRect.width * 0.55, 0.2, 0.47),
+          clamp(contentRect.height / stageRect.height * 0.62, 0.18, 0.43)
+        );
+      }
+
+      function resize() {
+        const width = stage.clientWidth;
+        const height = stage.clientHeight;
+        const dpr = Math.min(devicePixelRatio || 1, width < 760 ? 1.2 : 1.5);
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(width, height, false);
+        uniforms.uResolution.value.set(width * dpr, height * dpr);
+        updateSafeZone();
+      }
+
+      addEventListener("resize", resize, { passive: true });
+      renderer.setClearColor(0x090705, 1);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      resize();
+      document.body.classList.add("is-three-ready");
+      runtime.textContent = state.reduced ? "pausada" : "ativa";
+
+      let previousTime = performance.now();
+      function render(now) {
+        const delta = Math.min((now - previousTime) / 1000, 0.05);
+        previousTime = now;
+        state.pointer.x = damp(state.pointer.x, state.pointerTarget.x, 8, delta);
+        state.pointer.y = damp(state.pointer.y, state.pointerTarget.y, 8, delta);
+        state.lens.x = damp(state.lens.x, 0.68 + (state.pointer.x - 0.68) * 0.42, 2.7, delta);
+        state.lens.y = damp(state.lens.y, 0.52 + (state.pointer.y - 0.52) * 0.34, 2.7, delta);
+        state.scroll = damp(state.scroll, state.scrollTarget, 6, delta);
+        state.intent = damp(state.intent, state.intentTarget, 8, delta);
+        const speed = Math.hypot(state.pointer.x - state.previous.x, state.pointer.y - state.previous.y) / Math.max(delta, 0.001);
+        state.energy = damp(state.energy, clamp(speed * 0.22, 0, 1), 8, delta);
+        state.previous.x = state.pointer.x;
+        state.previous.y = state.pointer.y;
+
+        uniforms.uPointer.value.set(state.pointer.x, state.pointer.y);
+        uniforms.uLens.value.set(state.lens.x, state.lens.y);
+        uniforms.uScroll.value = state.scroll;
+        uniforms.uPointerEnergy.value = state.reduced ? 0 : state.energy;
+        uniforms.uIntent.value = state.reduced ? 0 : state.intent;
+        uniforms.uMotion.value = state.reduced ? 0 : 1;
+        if (!state.reduced) uniforms.uTime.value += delta;
+
+        for (let index = 0; index < clouds.length; index++) {
+          const cloud = clouds[index];
+          const clock = state.reduced ? cloud.phase : uniforms.uTime.value * cloud.speed + cloud.phase;
+          const lensDx = cloud.x * 0.5 + 0.5 - state.lens.x;
+          const lensDy = cloud.y * 0.5 + 0.5 - state.lens.y;
+          const lensDistance = Math.max(0.12, Math.hypot(lensDx, lensDy));
+          const lensPush = Math.max(0, 0.34 - lensDistance) * 0.34 / lensDistance;
+          const outward = 1 + state.scroll * 0.14;
+          const breathing = 1 + Math.sin(clock * 0.77) * 0.06;
+          dummy.position.set(
+            cloud.x * outward + (state.pointer.x - 0.5) * cloud.depth * -0.18 + lensDx * lensPush + Math.sin(clock) * 0.035,
+            cloud.y * outward + (state.pointer.y - 0.5) * cloud.depth * -0.11 + lensDy * lensPush + Math.cos(clock * 0.83) * 0.024,
+            0
+          );
+          dummy.rotation.set(0, 0, cloud.rotation + Math.sin(clock * 0.34) * 0.026);
+          dummy.scale.set(cloud.width * breathing, cloud.height * breathing, 1);
+          dummy.updateMatrix();
+          cloudsMesh.setMatrixAt(index, dummy.matrix);
+        }
+        cloudMaterial.opacity = 0.27 * (1 - state.scroll * 0.44);
+        cloudsMesh.instanceMatrix.needsUpdate = true;
+
+        if (state.visible) {
+          renderer.render(scene, camera);
+          window.__HERO_DIAGNOSTICS__ = {
+            variant: "B_STANDALONE_GRAVITY",
+            cloudInstances: cloudCount,
+            drawCalls: renderer.info.render.calls,
+            triangles: renderer.info.render.triangles,
+            geometries: renderer.info.memory.geometries,
+            textures: renderer.info.memory.textures,
+            lensRadius: 0.34 + state.energy * 0.09
+          };
+        }
+        runtime.textContent = state.reduced ? "pausada" : "ativa";
+        requestAnimationFrame(render);
+      }
+      requestAnimationFrame(render);
+    }
+
+    createAtmosphere();
+  </script>
+</body>
+</html>

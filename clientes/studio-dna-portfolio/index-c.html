@@ -1,0 +1,3401 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090705">
+  <meta name="color-scheme" content="dark">
+  <meta
+    name="description"
+    content="HubAgents — ambiente de criação, conexão e operação governada de agentes de IA."
+  >
+  <title>HubAgents — mapa orbital / variante C</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --ink: #f3eee6;
+      --ink-muted: rgba(243, 238, 230, 0.66);
+      --ink-faint: rgba(243, 238, 230, 0.38);
+      --coal: #090705;
+      --coal-soft: #110b08;
+      --ember: #d77935;
+      --sand: #e7b77c;
+      --line: rgba(240, 224, 205, 0.16);
+      --line-strong: rgba(240, 224, 205, 0.28);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --hero-progress: 0;
+      --copy-opacity: 1;
+      --copy-shift: 0px;
+      --copy-scale: 1;
+      --pixel-cell: 4px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--coal);
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(101, 51, 24, 0.22), transparent 44%),
+        var(--coal);
+      color: var(--ink);
+      font-family: "Archivo", "Helvetica Neue", sans-serif;
+      font-synthesis: none;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    ::selection {
+      color: #160c07;
+      background: var(--sand);
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--sand);
+      border-radius: 999px;
+      background: var(--coal);
+      color: var(--ink);
+      font: 500 0.75rem/1 "IBM Plex Mono", monospace;
+      text-decoration: none;
+      transform: translateY(-180%);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .hero-shell {
+      position: relative;
+      height: 185svh;
+      min-height: 64rem;
+      background: var(--coal);
+    }
+
+    .hero-stage {
+      --pointer-x: 50%;
+      --pointer-y: 50%;
+      position: sticky;
+      top: 0;
+      isolation: isolate;
+      height: 100svh;
+      min-height: 39rem;
+      overflow: clip;
+      background:
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(231, 183, 124, 0.065), transparent 18%),
+        radial-gradient(ellipse at 27% 52%, rgba(111, 52, 25, 0.18), transparent 33rem),
+        #050403;
+    }
+
+    .hero-canvas,
+    .pixel-fallback,
+    .atmosphere,
+    .grid,
+    .grain,
+    .vignette {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero-canvas {
+      z-index: -5;
+      display: block;
+      opacity: 0;
+      transition: opacity 900ms var(--ease-out);
+    }
+
+    .is-three-ready .hero-canvas {
+      opacity: 1;
+    }
+
+    .pixel-fallback {
+      z-index: -5;
+      display: block;
+      color: rgba(236, 226, 214, 0.54);
+      opacity: 0.9;
+      transition: opacity 300ms ease;
+    }
+
+    .is-three-ready .pixel-fallback {
+      opacity: 0;
+    }
+
+    .pixel-fallback .orbit {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1;
+      stroke-dasharray: 2 9;
+    }
+
+    .pixel-fallback .orbit-accent {
+      stroke: rgba(215, 121, 53, 0.58);
+      stroke-dasharray: 3 13;
+    }
+
+    .pixel-fallback .pixel-star {
+      fill: currentColor;
+    }
+
+    .pixel-fallback .pixel-node {
+      fill: #f3eee6;
+      stroke: rgba(231, 183, 124, 0.64);
+      stroke-width: 5;
+    }
+
+    .atmosphere {
+      z-index: -6;
+      background:
+        radial-gradient(ellipse at 28% 52%, rgba(132, 66, 31, 0.12), transparent 30rem),
+        linear-gradient(180deg, #020202, #090705 58%, #030302);
+    }
+
+    .grid {
+      z-index: -3;
+      opacity: 0.11;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+      background-size: 4rem 4rem;
+      mask-image: radial-gradient(ellipse at 30% 52%, black 0%, transparent 68%);
+    }
+
+    .grain {
+      z-index: 5;
+      opacity: 0.07;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .vignette {
+      z-index: 4;
+      background:
+        linear-gradient(180deg, rgba(4, 3, 2, 0.74) 0%, transparent 22%, transparent 74%, rgba(4, 3, 2, 0.76) 100%),
+        radial-gradient(ellipse at 42% 50%, transparent 30%, rgba(3, 2, 2, 0.68) 100%);
+    }
+
+    .site-nav {
+      position: absolute;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      padding: 1.5rem clamp(1rem, 3.4vw, 3.75rem);
+      border-bottom: 1px solid var(--line);
+      font: 500 0.67rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      animation: enter-down 900ms 120ms var(--ease-out) both;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 1.05rem;
+      aspect-ratio: 1;
+      border: 1px solid rgba(235, 191, 142, 0.78);
+      border-radius: 50%;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      position: absolute;
+      content: "";
+      background: rgba(235, 191, 142, 0.78);
+    }
+
+    .brand-mark::before {
+      top: 50%;
+      left: -0.28rem;
+      width: calc(100% + 0.56rem);
+      height: 1px;
+    }
+
+    .brand-mark::after {
+      top: -0.28rem;
+      left: 50%;
+      width: 1px;
+      height: calc(100% + 0.56rem);
+    }
+
+    .nav-index {
+      justify-self: center;
+      color: var(--ink-faint);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-self: end;
+      gap: clamp(1rem, 2vw, 2rem);
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+
+    .nav-links a::after {
+      position: absolute;
+      bottom: -0.35rem;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      content: "";
+      background: var(--sand);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 280ms var(--ease-out);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--ink);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a:focus-visible::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .hero-content {
+      position: absolute;
+      z-index: 10;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      width: min(78rem, calc(100% - 2rem));
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      opacity: var(--copy-opacity);
+      transform: translate(-50%, calc(-48% + var(--copy-shift))) scale(var(--copy-scale));
+      transform-origin: 50% 60%;
+      will-change: transform, opacity;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 clamp(1.4rem, 2.8vh, 2.25rem);
+      padding: 0.64rem 0.9rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(9, 7, 5, 0.3);
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+      color: rgba(245, 234, 220, 0.72);
+      font: 500 0.64rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      animation: enter-up 900ms 220ms var(--ease-out) both;
+    }
+
+    .signal {
+      position: relative;
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 50%;
+      background: var(--sand);
+      box-shadow: 0 0 0.8rem rgba(231, 183, 124, 0.72);
+    }
+
+    .signal::after {
+      position: absolute;
+      inset: -0.3rem;
+      border: 1px solid rgba(231, 183, 124, 0.35);
+      border-radius: inherit;
+      content: "";
+      animation: pulse 2.4s ease-out infinite;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 0;
+      color: #eee9e2;
+      font-size: clamp(3rem, 7.4vw, 7.15rem);
+      font-stretch: 91%;
+      font-weight: 460;
+      letter-spacing: -0.074em;
+      line-height: 0.91;
+      text-wrap: balance;
+    }
+
+    h1 span {
+      display: block;
+      animation: enter-up 1.1s var(--ease-out) both;
+    }
+
+    h1 span:first-child {
+      animation-delay: 300ms;
+    }
+
+    h1 .accent {
+      padding-bottom: 0.08em;
+      background: linear-gradient(94deg, #f3eee6 8%, #e9c397 38%, #b8622c 74%, #ead0b2 100%);
+      background-clip: text;
+      color: transparent;
+      animation-delay: 390ms;
+    }
+
+    .hero-lede {
+      max-width: 42rem;
+      margin: clamp(1.45rem, 3vh, 2.25rem) auto 0;
+      color: var(--ink-muted);
+      font-size: clamp(0.95rem, 1.35vw, 1.12rem);
+      font-weight: 360;
+      letter-spacing: -0.018em;
+      line-height: 1.55;
+      text-wrap: balance;
+      animation: enter-up 1s 480ms var(--ease-out) both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-top: clamp(1.65rem, 3.8vh, 2.75rem);
+      animation: enter-up 1s 570ms var(--ease-out) both;
+    }
+
+    .button {
+      --magnetic-x: 0px;
+      --magnetic-y: 0px;
+      position: relative;
+      display: inline-flex;
+      min-height: 3.55rem;
+      align-items: center;
+      justify-content: center;
+      gap: 1.15rem;
+      padding: 0.85rem 1.35rem 0.85rem 1.55rem;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: #1a0e08;
+      font: 500 0.73rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.045em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transform: translate(var(--magnetic-x), var(--magnetic-y));
+      transition:
+        border-color 250ms ease,
+        color 250ms ease,
+        background 250ms ease,
+        transform 500ms var(--ease-out);
+    }
+
+    .button::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(110deg, #eee9df 0%, #e4bd8c 55%, #bf6e39 120%);
+      transition: transform 440ms var(--ease-out);
+    }
+
+    .button > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .button:hover::before,
+    .button:focus-visible::before {
+      transform: scale(1.06);
+    }
+
+    .button-secondary {
+      border-color: var(--line-strong);
+      background: rgba(10, 8, 6, 0.28);
+      color: var(--ink);
+      backdrop-filter: blur(10px);
+    }
+
+    .button-secondary::before {
+      display: none;
+    }
+
+    .button-secondary:hover,
+    .button-secondary:focus-visible {
+      border-color: rgba(238, 207, 171, 0.56);
+      background: rgba(231, 183, 124, 0.1);
+    }
+
+    .button-arrow {
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      line-height: 1.35rem;
+      transition: transform 320ms var(--ease-out);
+    }
+
+    .button:hover .button-arrow,
+    .button:focus-visible .button-arrow {
+      transform: translateX(0.18rem) rotate(-18deg);
+    }
+
+    .coordinates {
+      position: absolute;
+      z-index: 8;
+      top: 50%;
+      left: clamp(1rem, 3.4vw, 3.75rem);
+      color: var(--ink-faint);
+      font: 400 0.58rem/1.7 "IBM Plex Mono", monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      animation: fade-in 1.2s 750ms ease both;
+    }
+
+    .runtime {
+      position: absolute;
+      z-index: 8;
+      right: clamp(1rem, 3.4vw, 3.75rem);
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--ink-faint);
+      font: 400 0.58rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: fade-in 1.2s 800ms ease both;
+    }
+
+    .runtime::before {
+      width: 1.5rem;
+      height: 1px;
+      content: "";
+      background: currentColor;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      z-index: 8;
+      bottom: 1.45rem;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--ink-faint);
+      font: 400 0.58rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transform: translateX(-50%);
+      animation: fade-in 1.2s 850ms ease both;
+    }
+
+    .scroll-line {
+      position: relative;
+      width: 3rem;
+      height: 1px;
+      overflow: hidden;
+      background: var(--line);
+    }
+
+    .scroll-line::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: var(--sand);
+      transform: translateX(-100%);
+      animation: scan 2.1s 1s ease-in-out infinite;
+    }
+
+    .chapter {
+      position: relative;
+      z-index: 2;
+      min-height: 100svh;
+      padding: clamp(5rem, 11vw, 10rem) clamp(1rem, 6vw, 7rem);
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 80% 20%, rgba(158, 76, 34, 0.13), transparent 24rem),
+        #0c0907;
+    }
+
+    .chapter::before {
+      position: absolute;
+      top: 0;
+      left: 8%;
+      width: 1px;
+      height: 100%;
+      content: "";
+      background: linear-gradient(var(--line), transparent 70%);
+    }
+
+    .chapter-inner {
+      display: grid;
+      width: min(80rem, 100%);
+      min-height: 65svh;
+      margin: 0 auto;
+      grid-template-columns: minmax(10rem, 0.6fr) minmax(18rem, 2fr);
+      gap: clamp(2rem, 8vw, 9rem);
+      align-items: start;
+    }
+
+    .chapter-kicker {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0.4rem 0 0;
+      color: var(--ink-faint);
+      font: 500 0.62rem/1.4 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chapter-kicker::before {
+      width: 1.6rem;
+      height: 1px;
+      content: "";
+      background: var(--ember);
+    }
+
+    .chapter h2 {
+      max-width: 13ch;
+      margin: 0;
+      font-size: clamp(2.8rem, 6vw, 6.1rem);
+      font-stretch: 88%;
+      font-weight: 430;
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+      text-wrap: balance;
+    }
+
+    .chapter-copy {
+      display: grid;
+      max-width: 56rem;
+      margin-top: clamp(3rem, 8vw, 7rem);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .principle {
+      min-height: 12rem;
+      padding: 1.4rem;
+      background: #0c0907;
+    }
+
+    .principle-index {
+      display: block;
+      margin-bottom: 3.8rem;
+      color: var(--ember);
+      font: 500 0.62rem/1 "IBM Plex Mono", monospace;
+    }
+
+    .principle h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+      font-weight: 540;
+      letter-spacing: -0.025em;
+    }
+
+    .principle p {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.83rem;
+      line-height: 1.55;
+    }
+
+    .section-frame {
+      width: min(88rem, calc(100% - clamp(2rem, 8vw, 9rem)));
+      margin-inline: auto;
+    }
+
+    .section-index,
+    .overline,
+    .card-code {
+      margin: 0;
+      font: 500 0.62rem/1.4 "IBM Plex Mono", monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .section-index {
+      color: var(--ink-faint);
+    }
+
+    .overline {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      color: var(--sand);
+    }
+
+    .overline::before {
+      width: 1.6rem;
+      height: 1px;
+      content: "";
+      background: currentColor;
+    }
+
+    .display-heading {
+      margin: 0;
+      font-size: clamp(2.7rem, 5.9vw, 6rem);
+      font-stretch: 86%;
+      font-weight: 430;
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+      text-wrap: balance;
+    }
+
+    .intro-section {
+      position: relative;
+      z-index: 3;
+      padding-block: clamp(7rem, 15vw, 14rem);
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 82% 24%, rgba(177, 87, 39, 0.13), transparent 24rem),
+        #0b0806;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: minmax(8rem, 0.5fr) minmax(20rem, 2fr);
+      gap: clamp(2rem, 8vw, 10rem);
+    }
+
+    .intro-copy {
+      max-width: 45rem;
+      margin: clamp(2.5rem, 5vw, 4.5rem) 0 0 auto;
+      color: var(--ink-muted);
+      font-size: clamp(1.1rem, 1.75vw, 1.55rem);
+      font-weight: 340;
+      letter-spacing: -0.025em;
+      line-height: 1.55;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition: opacity 800ms ease, transform 900ms var(--ease-out);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .system-story {
+      position: relative;
+      z-index: 4;
+      height: 610svh;
+      border-top: 1px solid var(--line);
+      background: #0e0a07;
+    }
+
+    .story-sticky {
+      position: sticky;
+      top: 0;
+      display: grid;
+      min-height: 100svh;
+      align-items: center;
+      overflow: clip;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        radial-gradient(circle at 72% 52%, rgba(168, 81, 33, 0.1), transparent 31rem),
+        #0e0a07;
+      background-size: 12.5% 100%, auto, auto;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: minmax(17rem, 0.68fr) minmax(31rem, 1.52fr);
+      gap: clamp(2rem, 5vw, 6.5rem);
+      align-items: center;
+      padding-block: 4.5rem 2.5rem;
+    }
+
+    .story-copy .display-heading {
+      max-width: 10ch;
+      margin-top: 1.2rem;
+      font-size: clamp(2.5rem, 4.6vw, 5rem);
+    }
+
+    .story-intro {
+      max-width: 29rem;
+      margin: 1.6rem 0 0;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .story-steps {
+      display: grid;
+      margin-top: clamp(2rem, 5vh, 3.8rem);
+      border-top: 1px solid var(--line);
+    }
+
+    .story-step {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.8rem;
+      padding: 0.78rem 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink-faint);
+      text-align: left;
+      cursor: pointer;
+      transition: color 260ms ease, padding-left 420ms var(--ease-out);
+    }
+
+    .story-step:hover,
+    .story-step:focus-visible,
+    .story-step.is-active {
+      padding-left: 0.55rem;
+      color: var(--ink);
+    }
+
+    .step-number {
+      color: var(--ember);
+      font: 500 0.61rem/1.5 "IBM Plex Mono", monospace;
+    }
+
+    .story-step strong,
+    .story-step small {
+      display: block;
+    }
+
+    .story-step strong {
+      font-size: 0.92rem;
+      font-weight: 560;
+      letter-spacing: -0.015em;
+    }
+
+    .story-step small {
+      max-height: 0;
+      margin-top: 0;
+      overflow: hidden;
+      color: var(--ink-muted);
+      font-size: 0.74rem;
+      font-weight: 380;
+      line-height: 1.45;
+      opacity: 0;
+      transition: max-height 420ms ease, margin 420ms ease, opacity 300ms ease;
+    }
+
+    .story-step.is-active small {
+      max-height: 3rem;
+      margin-top: 0.35rem;
+      opacity: 1;
+    }
+
+    .machine-card {
+      --machine-paper: #110d0a;
+      --machine-lo: #211710;
+      --machine-mid: #362218;
+      --machine-hi: #56301c;
+      --machine-line: rgba(236, 212, 183, 0.66);
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 0.35rem;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        var(--machine-paper);
+      background-size: 2rem 2rem;
+      box-shadow: 0 2rem 7rem rgba(0, 0, 0, 0.35);
+    }
+
+    .machine-meta,
+    .machine-caption {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      color: var(--ink-faint);
+      font: 500 0.58rem/1.3 "IBM Plex Mono", monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .machine-meta {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .machine-meta strong {
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    .machine-stage {
+      position: relative;
+      touch-action: pan-y;
+    }
+
+    .machine-stage::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(115deg, transparent 35%, rgba(231, 183, 124, 0.035), transparent 65%);
+      pointer-events: none;
+    }
+
+    .machine-stage svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .machine-stage:focus-visible {
+      outline: 1px solid var(--sand);
+      outline-offset: -0.5rem;
+    }
+
+    .machine-caption {
+      border-top: 1px solid var(--line);
+    }
+
+    .machine-caption output {
+      color: var(--sand);
+      text-align: right;
+    }
+
+    .machine-shadow {
+      fill: rgba(0, 0, 0, 0.56);
+    }
+
+    .machine-floor-glow {
+      fill: url(#machine-wash);
+    }
+
+    .part-lo { fill: var(--machine-lo); stroke: var(--machine-line); stroke-width: 0.75; }
+    .part-mid { fill: var(--machine-mid); stroke: var(--machine-line); stroke-width: 0.75; }
+    .part-hi { fill: var(--machine-hi); stroke: var(--machine-line); stroke-width: 0.75; }
+    .part-top { fill: #412819; stroke: var(--machine-line); stroke-width: 0.85; }
+    .part-side { fill: #2b1a12; stroke: var(--machine-line); stroke-width: 0.85; }
+    .part-side-dark { fill: #1b120d; stroke: var(--machine-line); stroke-width: 0.85; }
+    .part-line { fill: none; stroke: var(--machine-line); stroke-width: 0.85; stroke-linecap: round; stroke-linejoin: round; }
+    .part-faint { opacity: 0.32; }
+
+    .machine-screws circle,
+    .machine-rivet,
+    .cable-terminal {
+      fill: #ba8051;
+      stroke: #efd6b8;
+      stroke-width: 0.65;
+    }
+
+    .exchange-module {
+      opacity: 0.62;
+      transition: opacity 360ms ease;
+    }
+
+    .exchange-module.is-past,
+    .exchange-module.is-active {
+      opacity: 1;
+    }
+
+    .machine-label-plate {
+      fill: rgba(9, 7, 5, 0.84);
+      stroke: rgba(231, 183, 124, 0.42);
+      stroke-width: 0.75;
+    }
+
+    .machine-label {
+      fill: rgba(243, 238, 230, 0.6);
+      font: 500 7px/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.11em;
+    }
+
+    .exchange-module .lit-target,
+    .agent-lamp,
+    .permission-window {
+      fill: #332117;
+      stroke: #c39567;
+      stroke-width: 1;
+      transition: fill 300ms ease, filter 300ms ease;
+    }
+
+    .exchange-module.is-active .lit-target,
+    .exchange-module.is-active .permission-window,
+    .agent-module.is-selected .agent-lamp {
+      fill: #f0c28e;
+      filter: drop-shadow(0 0 7px rgba(231, 183, 124, 0.72));
+    }
+
+    .exchange-route {
+      fill: none;
+      stroke: rgba(209, 150, 96, 0.22);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 2 8;
+      transition: stroke 280ms ease, opacity 280ms ease;
+    }
+
+    .exchange-route.is-past {
+      stroke: rgba(209, 150, 96, 0.48);
+    }
+
+    .exchange-route.is-active {
+      stroke: rgba(242, 211, 174, 0.9);
+      animation: route-flow 1.25s linear infinite;
+    }
+
+    .request-card,
+    .context-drawer,
+    .context-reader,
+    .authority-key,
+    .lock-bar,
+    .router-wiper,
+    .agent-lift,
+    .agent-piston,
+    .evidence-paper,
+    .evidence-stamp {
+      will-change: transform;
+    }
+
+    .request-card {
+      fill: #d7b388;
+      stroke: #fff0db;
+      stroke-width: 0.9;
+    }
+
+    .card-hole,
+    .matrix-dot,
+    .switch-contact {
+      fill: #f0d2aa;
+    }
+
+    .machine-window {
+      fill: #090705;
+      stroke: rgba(238, 214, 185, 0.62);
+      stroke-width: 1;
+    }
+
+    .agent-module {
+      opacity: 0.46;
+      transition: opacity 320ms ease;
+    }
+
+    .agent-module.is-selected {
+      opacity: 1;
+    }
+
+    .agent-window-dot {
+      fill: #a8754e;
+      opacity: 0.42;
+    }
+
+    .agent-module.is-selected .agent-window-dot {
+      fill: #f0c28e;
+      opacity: 0.92;
+    }
+
+    .router-core {
+      fill: #15100c;
+      stroke: #e7b77c;
+      stroke-width: 1.1;
+    }
+
+    .router-index {
+      fill: none;
+      stroke: rgba(231, 183, 124, 0.64);
+      stroke-width: 1;
+      stroke-dasharray: 1 6;
+    }
+
+    .evidence-ink {
+      fill: #f0c28e;
+      opacity: 0.78;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes route-flow {
+      to { stroke-dashoffset: -20; }
+    }
+
+    .capabilities-section {
+      position: relative;
+      z-index: 5;
+      padding-block: clamp(7rem, 13vw, 13rem);
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 20% 42%, rgba(127, 58, 27, 0.13), transparent 28rem),
+        #090705;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 0.6fr 1.5fr;
+      gap: clamp(2rem, 7vw, 8rem);
+      align-items: end;
+      margin-bottom: clamp(4rem, 8vw, 8rem);
+    }
+
+    .section-header .display-heading {
+      max-width: 12ch;
+    }
+
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .capability-card {
+      --card-x: 50%;
+      --card-y: 50%;
+      --figure-x: 0px;
+      --figure-y: 0px;
+      position: relative;
+      display: flex;
+      min-height: clamp(29rem, 34vw, 34rem);
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.35rem;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.012);
+      transition: background 400ms ease, border-color 400ms ease;
+    }
+
+    .capability-card::before {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background: radial-gradient(circle at var(--card-x) var(--card-y), rgba(231, 183, 124, 0.105), transparent 24%);
+      content: "";
+      opacity: 0;
+      transition: opacity 320ms ease;
+      pointer-events: none;
+    }
+
+    .capability-card::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--sand), transparent);
+      content: "";
+      opacity: 0;
+      transform: scaleX(0.25);
+      transition: opacity 300ms ease, transform 700ms var(--ease-out);
+    }
+
+    .capability-card:hover {
+      border-color: rgba(231, 183, 124, 0.3);
+      background:
+        radial-gradient(circle at 54% 40%, rgba(215, 121, 53, 0.09), transparent 44%),
+        rgba(231, 183, 124, 0.028);
+    }
+
+    .capability-card:hover::after {
+      opacity: 0.72;
+      transform: scaleX(1);
+    }
+
+    .capability-card:hover::before {
+      opacity: 1;
+    }
+
+    .capability-card-wide {
+      grid-column: span 2;
+    }
+
+    .card-top {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .card-code,
+    .card-state,
+    .card-tags {
+      font: 500 0.61rem/1.35 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-code {
+      color: var(--ink-faint);
+    }
+
+    .card-state {
+      color: rgba(231, 183, 124, 0.52);
+      text-align: right;
+    }
+
+    .capability-card h3 {
+      max-width: 17ch;
+      margin: 0 0 0.85rem;
+      font-size: clamp(1.35rem, 2.1vw, 2rem);
+      font-weight: 470;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .capability-card p {
+      max-width: 35rem;
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .capability-copy {
+      position: relative;
+      z-index: 3;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.85rem;
+      margin: 1.1rem 0 0;
+      padding: 0;
+      color: rgba(231, 183, 124, 0.54);
+      list-style: none;
+    }
+
+    .card-tags li::before {
+      margin-right: 0.4rem;
+      color: var(--ember);
+      content: "·";
+    }
+
+    .capability-figure {
+      position: absolute;
+      z-index: 1;
+      top: 14%;
+      left: 50%;
+      width: min(24rem, 82%);
+      height: 52%;
+      margin: 0;
+      transform: translate(calc(-50% + var(--figure-x)), var(--figure-y));
+      transition: transform 650ms var(--ease-out), filter 400ms ease;
+    }
+
+    .capability-card-wide .capability-figure {
+      width: min(34rem, 66%);
+    }
+
+    .capability-card:hover .capability-figure {
+      filter: drop-shadow(0 0 1.5rem rgba(215, 121, 53, 0.12));
+      transform: translate(calc(-50% + var(--figure-x)), calc(var(--figure-y) - 0.3rem));
+    }
+
+    .capability-figure svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .diagram-shell,
+    .diagram-panel,
+    .diagram-chip,
+    .diagram-port,
+    .diagram-gate {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .diagram-shell { fill: rgba(13, 9, 7, 0.92); stroke: rgba(240, 224, 205, 0.27); stroke-width: 1; }
+    .diagram-panel { fill: rgba(44, 27, 18, 0.58); stroke: rgba(240, 224, 205, 0.22); stroke-width: 1; }
+    .diagram-panel-raised { transition: transform 500ms var(--ease-out); }
+    .diagram-chip { fill: rgba(215, 121, 53, 0.12); stroke: rgba(231, 183, 124, 0.54); stroke-width: 1; }
+    .diagram-line { fill: none; stroke: rgba(240, 224, 205, 0.27); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .diagram-flow { fill: none; stroke: rgba(231, 183, 124, 0.66); stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 3 7; vector-effect: non-scaling-stroke; }
+    .diagram-active { fill: var(--sand); stroke: #ffe3bf; stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+    .diagram-warm { fill: rgba(215, 121, 53, 0.28); stroke: var(--ember); stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .diagram-port { fill: var(--coal); stroke: rgba(231, 183, 124, 0.75); stroke-width: 1; }
+    .diagram-dot { fill: rgba(240, 210, 170, 0.72); }
+    .diagram-muted { fill: rgba(243, 238, 230, 0.18); }
+    .diagram-label { fill: rgba(243, 238, 230, 0.43); font: 500 7px/1 "IBM Plex Mono", monospace; letter-spacing: 0.08em; }
+    .diagram-scan,
+    .diagram-rotor,
+    .diagram-packet { transform-box: fill-box; transform-origin: center; }
+    .diagram-scan { transition: transform 750ms var(--ease-out); }
+    .diagram-rotor { transition: transform 900ms var(--ease-out); }
+    .diagram-packet { transition: transform 650ms var(--ease-out); }
+
+    .capability-card:hover .diagram-panel-raised { transform: translateY(-4px); }
+    .capability-card:hover .diagram-scan { transform: translateX(46px); }
+    .capability-card:hover .diagram-rotor { transform: rotate(42deg); }
+    .capability-card:hover .diagram-packet { transform: translate(38px, -18px); }
+    .capability-card:hover .diagram-flow { animation: diagram-flow 1s linear infinite; }
+    .capability-card:hover .diagram-active { animation: diagram-breathe 1.4s ease-in-out infinite alternate; }
+
+    @keyframes diagram-flow {
+      to { stroke-dashoffset: -20; }
+    }
+
+    @keyframes diagram-breathe {
+      to { opacity: 0.52; }
+    }
+
+    .evidence-section {
+      position: relative;
+      z-index: 5;
+      padding-block: clamp(7rem, 14vw, 14rem);
+      border-top: 1px solid var(--line);
+      background: #100b08;
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: minmax(20rem, 0.9fr) minmax(28rem, 1.15fr);
+      gap: clamp(3rem, 9vw, 10rem);
+      align-items: start;
+    }
+
+    .evidence-copy .display-heading {
+      max-width: 10ch;
+      margin-top: 1.25rem;
+    }
+
+    .evidence-copy > p:last-child {
+      max-width: 35rem;
+      margin: 2rem 0 0;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
+
+    .evidence-ledger {
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 2.5rem minmax(7rem, 0.7fr) 1.3fr;
+      gap: 1rem;
+      align-items: baseline;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ledger-row span {
+      color: var(--ember);
+      font: 500 0.62rem/1 "IBM Plex Mono", monospace;
+    }
+
+    .ledger-row strong {
+      font-size: 0.95rem;
+      font-weight: 540;
+    }
+
+    .ledger-row small {
+      color: var(--ink-muted);
+      font-size: 0.77rem;
+      line-height: 1.45;
+    }
+
+    .ledger-result {
+      color: #1a0e08;
+      background: var(--sand);
+      box-shadow: 1.25rem 0 var(--sand), -1.25rem 0 var(--sand);
+    }
+
+    .ledger-result span,
+    .ledger-result small {
+      color: rgba(26, 14, 8, 0.72);
+    }
+
+    .ascii-bridge {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      min-height: 92svh;
+      place-items: center;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      background: #070604;
+      text-align: center;
+    }
+
+    .ascii-field {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(231, 183, 124, 0.12);
+      font: 400 clamp(0.45rem, 1.3vw, 0.78rem)/1.5 "IBM Plex Mono", monospace;
+      transform: scale(1.25) rotate(-3deg);
+    }
+
+    .ascii-field pre {
+      margin: 0;
+      white-space: pre;
+    }
+
+    .ascii-bridge > p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(2.7rem, 7vw, 7rem);
+      font-stretch: 84%;
+      font-weight: 430;
+      letter-spacing: -0.07em;
+      line-height: 0.92;
+    }
+
+    .footer-reveal {
+      --atlas-shift: 3rem;
+      --atlas-scale: 0.94;
+      --atlas-opacity: 0.28;
+      --footer-copy-shift: 1.5rem;
+      position: relative;
+      z-index: 3;
+      min-height: 100svh;
+      background: var(--coal);
+    }
+
+    .site-footer {
+      position: sticky;
+      top: 0;
+      display: flex;
+      height: 100svh;
+      min-height: 42rem;
+      flex-direction: column;
+      padding: 0 clamp(1.1rem, 3vw, 3rem);
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 27% 51%, rgba(168, 81, 33, 0.13), transparent 31rem),
+        radial-gradient(circle at 74% 32%, rgba(231, 183, 124, 0.035), transparent 25rem),
+        var(--coal);
+      color: var(--ink);
+    }
+
+    .site-footer::before {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(243, 238, 230, 0.76) 0 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(231, 183, 124, 0.42) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(215, 121, 53, 0.56) 0 1.2px, transparent 1.8px);
+      background-position: 7px 11px, 38px 54px, 81px 29px;
+      background-size: 97px 83px, 131px 109px, 173px 151px;
+      content: "";
+      opacity: 0.62;
+      pointer-events: none;
+    }
+
+    .site-footer::after {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background: linear-gradient(rgba(243, 238, 230, 0.025) 1px, transparent 1px);
+      background-size: 100% var(--pixel-cell);
+      content: "";
+      mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 88%, transparent);
+      pointer-events: none;
+    }
+
+    .footer-rail,
+    .footer-kicker,
+    .footer-figure figcaption,
+    .footer-meta {
+      font: 500 0.64rem/1.4 "IBM Plex Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .footer-rail,
+    .footer-meta {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      min-height: 5.4rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink-faint);
+    }
+
+    .footer-rail strong {
+      color: var(--ink);
+      font-family: "Arial Narrow", "IBM Plex Sans", sans-serif;
+      font-size: clamp(1rem, 1.55vw, 1.45rem);
+      font-style: italic;
+      letter-spacing: 0.06em;
+    }
+
+    .footer-layout {
+      position: relative;
+      z-index: auto;
+      display: grid;
+      min-height: 0;
+      flex: 1;
+      grid-template-columns: minmax(20rem, 0.82fr) minmax(28rem, 1.18fr);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 7rem);
+    }
+
+    .footer-figure {
+      position: relative;
+      height: min(72svh, 50rem);
+      margin: 0;
+    }
+
+    .footer-figure::before,
+    .footer-figure::after {
+      position: absolute;
+      z-index: 0;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      content: "";
+      pointer-events: none;
+    }
+
+    .footer-figure::before {
+      top: 7%;
+      left: 11%;
+      width: min(33vw, 29rem);
+      aspect-ratio: 1;
+    }
+
+    .footer-figure::after {
+      bottom: 5%;
+      left: 18%;
+      width: min(16vw, 13rem);
+      aspect-ratio: 1;
+      border-color: rgba(231, 183, 124, 0.13);
+    }
+
+    .footer-atlas {
+      position: absolute;
+      z-index: 1;
+      inset: -4% -10% -8% -12%;
+      width: 122%;
+      height: 112%;
+      object-fit: contain;
+      object-position: center bottom;
+      opacity: var(--atlas-opacity);
+      transform: translate3d(0, var(--atlas-shift), 0) scale(var(--atlas-scale));
+      transform-origin: 50% 82%;
+      transition: opacity 120ms linear;
+      filter: sepia(1) saturate(0.62) hue-rotate(342deg) contrast(1.12) brightness(0.94);
+      mix-blend-mode: screen;
+      -webkit-mask-image: radial-gradient(ellipse 78% 88% at 49% 54%, #000 62%, transparent 100%);
+      mask-image: radial-gradient(ellipse 78% 88% at 49% 54%, #000 62%, transparent 100%);
+    }
+
+    .footer-figure figcaption {
+      position: absolute;
+      z-index: 2;
+      bottom: 4%;
+      left: 0;
+      display: flex;
+      width: min(92%, 32rem);
+      justify-content: space-between;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--line-strong);
+      color: var(--ink-faint);
+    }
+
+    .footer-copy {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 47rem);
+      padding: clamp(1.2rem, 2.4vw, 2.3rem) 0;
+      transform: translate3d(0, var(--footer-copy-shift), 0);
+    }
+
+    .footer-kicker {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 0 0 1.6rem;
+      color: var(--ink-faint);
+    }
+
+    .footer-kicker::before {
+      width: 2.8rem;
+      height: 1px;
+      background: currentColor;
+      content: "";
+    }
+
+    .footer-statement {
+      max-width: 13ch;
+      margin: 0;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(2.9rem, 5.25vw, 6.6rem);
+      font-weight: 600;
+      letter-spacing: -0.075em;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .footer-statement span {
+      color: rgba(231, 183, 124, 0.64);
+    }
+
+    .footer-body {
+      max-width: 39rem;
+      margin: 1.5rem 0 0;
+      color: var(--ink-muted);
+      font: 400 clamp(0.83rem, 1vw, 1rem)/1.7 "IBM Plex Mono", monospace;
+    }
+
+    .footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      min-height: 3.2rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      min-width: 12rem;
+      padding: 0.8rem 1.1rem;
+      border: 1px solid rgba(231, 183, 124, 0.62);
+      font: 500 0.7rem/1 "IBM Plex Mono", monospace;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 180ms ease, background 180ms ease;
+    }
+
+    .footer-link:hover,
+    .footer-link:focus-visible {
+      background: var(--sand);
+      color: var(--coal);
+    }
+
+    .footer-meta {
+      min-height: 4.2rem;
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--sand);
+      outline-offset: 4px;
+    }
+
+    @keyframes enter-up {
+      from {
+        opacity: 0;
+        transform: translateY(1.75rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes enter-down {
+      from {
+        opacity: 0;
+        transform: translateY(-1.2rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.7;
+        transform: scale(0.55);
+      }
+      80%,
+      100% {
+        opacity: 0;
+        transform: scale(1.7);
+      }
+    }
+
+    @keyframes scan {
+      0% { transform: translateX(-100%); }
+      45%,
+      55% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }
+
+    @media (min-width: 761px) {
+      .hero-content {
+        left: 65%;
+        width: min(48rem, calc(58vw - 2rem));
+        align-items: flex-start;
+        text-align: left;
+        transform-origin: 35% 60%;
+      }
+
+      .hero-content h1 {
+        max-width: 10ch;
+        font-size: clamp(3.7rem, 6.25vw, 6.35rem);
+      }
+
+      .hero-lede {
+        max-width: 37rem;
+        margin-left: 0;
+      }
+
+      .hero-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .story-grid {
+        grid-template-columns: minmax(17rem, 0.72fr) minmax(25rem, 1.28fr);
+        gap: 2rem;
+      }
+
+      .capability-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .capability-card-wide {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero-shell {
+        height: 165svh;
+        min-height: 54rem;
+      }
+
+      .site-nav {
+        grid-template-columns: 1fr auto;
+        padding-top: 1.1rem;
+        padding-bottom: 1.1rem;
+      }
+
+      .nav-index,
+      .nav-links a:not(:last-child) {
+        display: none;
+      }
+
+      .nav-links {
+        gap: 0;
+      }
+
+      .hero-content {
+        top: 48%;
+        width: calc(100% - 1.75rem);
+      }
+
+      h1 {
+        max-width: 10ch;
+        font-size: clamp(3.1rem, 14vw, 5rem);
+        letter-spacing: -0.068em;
+        line-height: 0.93;
+      }
+
+      .hero-lede {
+        max-width: 31rem;
+        padding-inline: 0.4rem;
+        font-size: 0.94rem;
+      }
+
+      .hero-actions {
+        width: min(24rem, 100%);
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .coordinates {
+        display: none;
+      }
+
+      .scroll-cue {
+        left: 1rem;
+        transform: none;
+      }
+
+      .runtime {
+        right: 1rem;
+      }
+
+      .grid {
+        background-size: 3.75rem 3.75rem;
+      }
+
+      .chapter {
+        padding-top: 6rem;
+      }
+
+      .chapter-inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .chapter-copy {
+        grid-template-columns: 1fr;
+        margin-top: 3rem;
+      }
+
+      .principle {
+        min-height: 10rem;
+      }
+
+      .principle-index {
+        margin-bottom: 2.4rem;
+      }
+
+      .section-frame {
+        width: calc(100% - 2rem);
+      }
+
+      .intro-grid,
+      .section-header,
+      .evidence-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .intro-copy {
+        margin-left: 0;
+      }
+
+      .system-story {
+        height: 650svh;
+      }
+
+      .story-sticky {
+        align-items: start;
+        overflow-y: auto;
+      }
+
+      .story-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        padding-block: 4.5rem 1rem;
+      }
+
+      .story-copy .display-heading {
+        max-width: 12ch;
+        font-size: clamp(2.35rem, 11vw, 3.7rem);
+      }
+
+      .story-intro {
+        display: none;
+      }
+
+      .story-steps {
+        grid-template-columns: repeat(3, 1fr);
+        margin-top: 1.4rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .story-step {
+        display: block;
+        min-height: 3.2rem;
+        padding: 0.8rem 0.3rem;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        text-align: center;
+      }
+
+      .story-step:nth-child(3n) {
+        border-right: 0;
+      }
+
+      .story-step:nth-child(n + 4) {
+        border-bottom: 0;
+      }
+
+      .story-step:hover,
+      .story-step:focus-visible,
+      .story-step.is-active {
+        padding-left: 0.3rem;
+        background: rgba(231, 183, 124, 0.08);
+      }
+
+      .story-step strong {
+        margin-top: 0.25rem;
+        font-size: 0.67rem;
+      }
+
+      .story-step small {
+        display: none;
+      }
+
+      .machine-meta,
+      .machine-caption {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.52rem;
+      }
+
+      .machine-stage svg {
+        width: 114%;
+        margin-left: -7%;
+      }
+
+      .capability-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-card {
+        min-height: 24rem;
+      }
+
+      .ledger-row {
+        grid-template-columns: 2rem 1fr;
+      }
+
+      .ledger-row small {
+        grid-column: 2;
+      }
+
+      .ascii-field {
+        transform: scale(0.74) rotate(-3deg);
+      }
+
+      .site-footer {
+        min-height: 48rem;
+        padding-inline: 1rem;
+      }
+
+      .footer-rail {
+        min-height: 4.5rem;
+      }
+
+      .footer-rail span:last-child {
+        display: none;
+      }
+
+      .footer-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .footer-figure {
+        position: absolute;
+        inset: 0;
+        height: auto;
+        opacity: 0.58;
+      }
+
+      .footer-figure::before {
+        top: 4%;
+        left: -10%;
+        width: 86vw;
+      }
+
+      .footer-figure::after,
+      .footer-figure figcaption {
+        display: none;
+      }
+
+      .footer-atlas {
+        inset: -5% -28% -16% -32%;
+        width: 150%;
+        height: 125%;
+        object-position: left bottom;
+      }
+
+      .footer-copy {
+        align-self: end;
+        margin-bottom: clamp(1rem, 4svh, 3rem);
+        padding: 1.5rem;
+        background: rgba(9, 7, 5, 0.78);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(5px);
+      }
+
+      .footer-statement {
+        max-width: 11ch;
+        font-size: clamp(2.65rem, 11.6vw, 4.5rem);
+      }
+
+      .footer-body {
+        font-size: 0.76rem;
+      }
+
+      .footer-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .footer-link {
+        min-width: 0;
+        justify-content: space-between;
+      }
+
+      .footer-meta {
+        min-height: 3.7rem;
+        font-size: 0.52rem;
+      }
+    }
+
+    @media (max-height: 710px) and (min-width: 761px) {
+      .hero-content {
+        top: 52%;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 6.2vw, 5.5rem);
+      }
+
+      .eyebrow {
+        margin-bottom: 1rem;
+      }
+
+      .hero-lede {
+        margin-top: 1.2rem;
+      }
+
+      .hero-actions {
+        margin-top: 1.4rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      .hero-content {
+        opacity: 1;
+        transform: translate(-50%, -48%);
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .request-card,
+      .context-drawer,
+      .context-reader,
+      .authority-key,
+      .lock-bar,
+      .router-wiper,
+      .agent-lift,
+      .agent-piston,
+      .evidence-paper,
+      .evidence-stamp,
+      .exchange-module,
+      .exchange-route {
+        transition: none !important;
+      }
+
+      .footer-atlas,
+      .footer-copy {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <main id="conteudo">
+    <section class="hero-shell" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-stage">
+        <div class="atmosphere" aria-hidden="true"></div>
+        <svg class="pixel-fallback" viewBox="0 0 1440 900" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+          <defs>
+            <pattern id="fallback-stars" width="113" height="97" patternUnits="userSpaceOnUse">
+              <circle class="pixel-star" cx="11" cy="17" r="1.2"/>
+              <circle class="pixel-star" cx="68" cy="48" r="0.8" opacity=".56"/>
+              <circle class="pixel-star" cx="101" cy="81" r="1" opacity=".72"/>
+              <rect class="pixel-star" x="37" y="77" width="1.5" height="1.5" opacity=".42"/>
+            </pattern>
+          </defs>
+          <rect width="1440" height="900" fill="url(#fallback-stars)" opacity=".68"/>
+          <g transform="translate(382 452)">
+            <ellipse class="orbit" rx="342" ry="144" transform="rotate(-20)"/>
+            <ellipse class="orbit" rx="292" ry="208" transform="rotate(17)" opacity=".62"/>
+            <ellipse class="orbit orbit-accent" rx="374" ry="184" transform="rotate(-4)" opacity=".72"/>
+            <ellipse class="orbit" rx="244" ry="276" transform="rotate(31)" opacity=".48"/>
+            <circle class="pixel-node" cx="-283" cy="-35" r="4"/>
+            <circle class="pixel-node" cx="189" cy="-158" r="3" opacity=".78"/>
+            <circle class="pixel-node" cx="283" cy="89" r="4"/>
+            <circle class="pixel-node" cx="-72" cy="249" r="3" opacity=".72"/>
+            <circle cx="0" cy="0" r="72" fill="none" stroke="rgba(231,183,124,.25)" stroke-dasharray="1 7"/>
+          </g>
+        </svg>
+        <canvas class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="grid" aria-hidden="true"></div>
+        <div class="vignette" aria-hidden="true"></div>
+        <div class="grain" aria-hidden="true"></div>
+
+        <nav class="site-nav" aria-label="Navegação principal">
+          <a class="brand" href="#inicio" aria-label="HubAgents — início">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>HubAgents</span>
+          </a>
+
+          <span class="nav-index" aria-hidden="true">Agent OS / 2026</span>
+
+          <div class="nav-links">
+            <a href="#fluxo">Sistema</a>
+            <a href="#capacidades">Capacidades</a>
+            <a href="#evidencia">Evidência</a>
+          </div>
+        </nav>
+
+        <div class="hero-content">
+          <p class="eyebrow">
+            <span class="signal" aria-hidden="true"></span>
+            Um ambiente para trabalho agêntico
+          </p>
+
+          <h1 id="hero-title" aria-label="Agentes operam. Você mantém o controle.">
+            <span>Agentes operam.</span>
+            <span class="accent">Você mantém o controle.</span>
+          </h1>
+
+          <p class="hero-lede">
+            Crie agentes, conecte conhecimento e capacidades, componha fluxos e acompanhe cada
+            execução sem confundir configuração com realidade observada.
+          </p>
+
+          <div class="hero-actions" aria-label="Ações principais">
+            <a class="button js-intent" href="#fluxo">
+              <span>Conhecer o sistema</span>
+              <span class="button-arrow" aria-hidden="true">↘</span>
+            </a>
+
+            <a class="button button-secondary js-intent" href="#capacidades">
+              <span>Explorar capacidades</span>
+              <span class="button-arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="coordinates" aria-hidden="true">
+          Intenção · contexto · execução · evidência
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+          <span>Entrar no sistema</span>
+          <span class="scroll-line"></span>
+        </div>
+
+        <div class="runtime" aria-hidden="true">
+          Atmosfera <span id="runtime-state">carregando</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro-section" aria-labelledby="intro-title">
+      <div class="section-frame intro-grid">
+        <p class="section-index reveal">01 / tese</p>
+        <div>
+          <p class="overline reveal">Da solicitação à prova</p>
+          <h2 id="intro-title" class="display-heading reveal">Autonomia sem perder a linha de comando.</h2>
+          <p class="intro-copy reveal">
+            O Hub organiza pessoas, agentes, modelos, conhecimento e ferramentas em um plano de
+            trabalho comum. A experiência mostra o que foi pedido, o que está autorizado, o que
+            realmente executou e qual evidência permaneceu.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="system-story" id="fluxo" aria-labelledby="story-title">
+      <div class="story-sticky">
+        <div class="section-frame story-grid">
+          <div class="story-copy">
+            <p class="section-index">02 / anatomia de uma execução</p>
+            <p class="overline">Uma central. Seis mecanismos.</p>
+            <h2 id="story-title" class="display-heading">O Hub compõe trabalho, não apenas o transporta.</h2>
+            <p class="story-intro">Role a página ou use as etapas para operar a central de comutação.</p>
+
+            <div class="story-steps" role="group" aria-label="Etapas de uma execução governada">
+              <button class="story-step is-active" type="button" aria-pressed="true" data-story-step="0">
+                <span class="step-number">01</span>
+                <span><strong>Intenção</strong><small>O pedido entra com objetivo e escopo explícitos.</small></span>
+              </button>
+              <button class="story-step" type="button" aria-pressed="false" data-story-step="1">
+                <span class="step-number">02</span>
+                <span><strong>Contexto</strong><small>Workspace, memória e conhecimento qualificam a ação.</small></span>
+              </button>
+              <button class="story-step" type="button" aria-pressed="false" data-story-step="2">
+                <span class="step-number">03</span>
+                <span><strong>Autoridade</strong><small>Chaves e limites destravam somente as rotas permitidas.</small></span>
+              </button>
+              <button class="story-step" type="button" aria-pressed="false" data-story-step="3">
+                <span class="step-number">04</span>
+                <span><strong>Orquestração</strong><small>O Hub combina agentes, ferramentas e workflows em um plano.</small></span>
+              </button>
+              <button class="story-step" type="button" aria-pressed="false" data-story-step="4">
+                <span class="step-number">05</span>
+                <span><strong>Execução</strong><small>Módulos autorizados operam em paralelo e devolvem eventos.</small></span>
+              </button>
+              <button class="story-step" type="button" aria-pressed="false" data-story-step="5">
+                <span class="step-number">06</span>
+                <span><strong>Evidência</strong><small>Resultado, eventos, custo e estado observado convergem no registro.</small></span>
+              </button>
+            </div>
+          </div>
+
+          <figure class="machine-card" aria-labelledby="machine-title machine-caption">
+            <div class="machine-meta">
+              <span>FIG 01</span>
+              <strong id="machine-title">Central de comutação</strong>
+            </div>
+
+            <div class="machine-stage" tabindex="0" role="slider" aria-label="Central de comutação do Hub. Use as setas para percorrer intenção, contexto, autoridade, orquestração, execução e evidência." aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" aria-valuetext="Intenção: objetivo e escopo recebidos">
+              <svg viewBox="65 75 700 430" role="img" aria-label="Central eletromecânica que recebe uma intenção, associa contexto, confirma autoridade, compõe um plano, aciona agentes em paralelo e registra evidências.">
+                <defs>
+                  <linearGradient id="machine-wash" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f0d2aa" stop-opacity=".18"/>
+                    <stop offset="1" stop-color="#d77935" stop-opacity="0"/>
+                  </linearGradient>
+                  <filter id="machine-shadow" x="-30%" y="-30%" width="160%" height="180%">
+                    <feGaussianBlur stdDeviation="12"/>
+                  </filter>
+                </defs>
+
+                <ellipse class="machine-shadow" cx="414" cy="422" rx="300" ry="52" filter="url(#machine-shadow)"/>
+                <path class="machine-floor-glow" d="M98 326 498 126 731 244 329 446Z"/>
+
+                <g class="machine-feet">
+                  <g transform="translate(126 351)"><ellipse class="part-lo" rx="14" ry="7"/><path class="part-mid" d="M-11-1 0 5 11-1 11 12 0 18-11 12Z"/></g>
+                  <g transform="translate(319 450)"><ellipse class="part-lo" rx="14" ry="7"/><path class="part-mid" d="M-11-1 0 5 11-1 11 12 0 18-11 12Z"/></g>
+                  <g transform="translate(504 149)"><ellipse class="part-lo" rx="14" ry="7"/><path class="part-mid" d="M-11-1 0 5 11-1 11 12 0 18-11 12Z"/></g>
+                  <g transform="translate(704 250)"><ellipse class="part-lo" rx="14" ry="7"/><path class="part-mid" d="M-11-1 0 5 11-1 11 12 0 18-11 12Z"/></g>
+                </g>
+
+                <path class="part-side-dark" d="M98 326 329 446 329 475 98 355Z"/>
+                <path class="part-side" d="M329 446 731 244 731 273 329 475Z"/>
+                <path class="part-top" d="M98 326 498 126 731 244 329 446Z"/>
+                <path class="part-line part-faint" d="M116 329 499 138 711 246 328 438Z"/>
+                <path class="part-line" d="M136 350 327 447M501 151 692 247"/>
+
+                <g class="machine-screws">
+                  <circle cx="123" cy="331" r="4"/><circle cx="327" cy="435" r="4"/>
+                  <circle cx="501" cy="140" r="4"/><circle cx="708" cy="245" r="4"/>
+                </g>
+
+                <g class="machine-bus" aria-hidden="true">
+                  <path class="exchange-route" data-route-step="0" d="M156 345C191 367 211 355 246 328"/>
+                  <path class="exchange-route" data-route-step="1" d="M283 305C316 330 328 330 354 316"/>
+                  <path class="exchange-route" data-route-step="2" d="M380 307C404 323 423 316 438 296"/>
+                  <path class="exchange-route" data-route-step="3" d="M472 273C506 255 526 248 555 247"/>
+                  <path class="exchange-route" data-route-step="4" d="M475 286C510 322 536 344 568 370"/>
+                  <path class="exchange-route" data-route-step="5" d="M607 365C628 353 644 341 662 316"/>
+                  <circle class="cable-terminal" cx="156" cy="345" r="3"/><circle class="cable-terminal" cx="246" cy="328" r="3"/>
+                  <circle class="cable-terminal" cx="354" cy="316" r="3"/><circle class="cable-terminal" cx="438" cy="296" r="3"/>
+                  <circle class="cable-terminal" cx="555" cy="247" r="3"/><circle class="cable-terminal" cx="568" cy="370" r="3"/>
+                </g>
+
+                <g class="exchange-module is-active" data-module="0" aria-label="Leitor da intenção">
+                  <path class="part-side-dark" d="M123 328 168 305 207 325 207 361 162 384 123 364Z"/>
+                  <path class="part-side" d="M162 347 207 325 207 361 162 384Z"/>
+                  <path class="part-top" d="M123 328 168 305 207 325 162 347Z"/>
+                  <path class="part-mid" d="M137 326 169 310 194 323 194 340 162 356 137 343Z"/>
+                  <path class="machine-window" d="M144 329 168 317 187 326 162 339Z"/>
+                  <g data-request-card class="request-card" transform="translate(-42 22)">
+                    <path d="M133 292 171 273 198 287 160 306Z"/>
+                    <circle class="card-hole" cx="146" cy="291" r="2.2"/><circle class="card-hole" cx="155" cy="286" r="2.2"/>
+                    <circle class="card-hole" cx="165" cy="281" r="2.2"/><circle class="card-hole" cx="175" cy="284" r="2.2"/>
+                    <path class="part-line" d="M150 297 187 279M161 299 193 283"/>
+                  </g>
+                  <g class="reader-rollers">
+                    <circle class="part-hi" cx="145" cy="335" r="5"/><circle class="part-hi" cx="181" cy="333" r="5"/>
+                    <path class="part-line" d="M145 335 181 333M149 343 161 349 184 338"/>
+                  </g>
+                  <rect class="lit-target" x="127" y="349" width="10" height="6" rx="1"/>
+                  <circle class="machine-rivet" cx="129" cy="334" r="2"/><circle class="machine-rivet" cx="198" cy="331" r="2"/>
+                </g>
+
+                <g class="exchange-module" data-module="1" aria-label="Banco de contexto">
+                  <path class="part-side-dark" d="M224 278 283 248 323 268 323 327 264 357 224 337Z"/>
+                  <path class="part-side" d="M264 298 323 268 323 327 264 357Z"/>
+                  <path class="part-top" d="M224 278 283 248 323 268 264 298Z"/>
+                  <g class="context-drawer" data-context-drawer data-factor="1">
+                    <path class="part-mid" d="M231 284 260 299 260 311 231 296Z"/>
+                    <path class="part-line" d="M238 288 252 295M238 293 252 300"/><circle class="machine-rivet" cx="255" cy="304" r="2"/>
+                  </g>
+                  <g class="context-drawer" data-context-drawer data-factor="2">
+                    <path class="part-mid" d="M231 302 260 317 260 329 231 314Z"/>
+                    <path class="part-line" d="M238 306 252 313M238 311 252 318"/><circle class="machine-rivet" cx="255" cy="322" r="2"/>
+                  </g>
+                  <g class="context-drawer" data-context-drawer data-factor="3">
+                    <path class="part-mid" d="M231 320 260 335 260 347 231 332Z"/>
+                    <path class="part-line" d="M238 324 252 331M238 329 252 336"/><circle class="machine-rivet" cx="255" cy="340" r="2"/>
+                  </g>
+                  <g class="context-reader" data-context-reader>
+                    <path class="part-hi" d="M275 278 306 262 314 266 283 282Z"/>
+                    <path class="part-line" d="M280 277v-17m8 13v-17m8 13v-17m8 13v-17"/>
+                    <circle class="lit-target" cx="311" cy="284" r="5"/>
+                  </g>
+                  <path class="part-line part-faint" d="M272 300 312 280M272 313 312 293M272 326 312 306M272 339 312 319"/>
+                </g>
+
+                <g class="exchange-module" data-module="2" aria-label="Fechadura de autoridade">
+                  <path class="part-side-dark" d="M329 323 368 303 402 320 402 351 363 371 329 354Z"/>
+                  <path class="part-side" d="M363 340 402 320 402 351 363 371Z"/>
+                  <path class="part-top" d="M329 323 368 303 402 320 363 340Z"/>
+                  <circle class="machine-window" cx="365" cy="321" r="15"/>
+                  <circle class="permission-window" cx="365" cy="321" r="7"/>
+                  <g class="authority-key" data-authority-key>
+                    <circle class="part-hi" cx="365" cy="321" r="4"/>
+                    <path class="part-line" d="M365 321 365 288M365 288h11v6h7"/>
+                    <circle class="part-top" cx="365" cy="283" r="7"/>
+                  </g>
+                  <g class="lock-bar" data-lock-bar data-factor="1"><path class="part-mid" d="M337 337 360 348 360 355 337 344Z"/></g>
+                  <g class="lock-bar" data-lock-bar data-factor="-1"><path class="part-side" d="M371 344 394 332 394 339 371 351Z"/></g>
+                  <circle class="machine-rivet" cx="336" cy="328" r="2"/><circle class="machine-rivet" cx="394" cy="325" r="2"/>
+                </g>
+
+                <g class="exchange-module" data-module="3" aria-label="Comutador de orquestração">
+                  <path class="part-side-dark" d="M399 260 445 237 491 260 491 287 445 311 399 287Z"/>
+                  <path class="part-side" d="M445 283 491 260 491 287 445 311Z"/>
+                  <path class="part-top" d="M399 260 445 237 491 260 445 283Z"/>
+                  <ellipse class="router-core" cx="445" cy="261" rx="32" ry="20"/>
+                  <ellipse class="router-index" cx="445" cy="261" rx="25" ry="15"/>
+                  <g class="switch-contacts">
+                    <circle class="switch-contact" cx="420" cy="261" r="2"/><circle class="switch-contact" cx="423" cy="252" r="2"/>
+                    <circle class="switch-contact" cx="431" cy="247" r="2"/><circle class="switch-contact" cx="441" cy="245" r="2"/>
+                    <circle class="switch-contact" cx="451" cy="246" r="2"/><circle class="switch-contact" cx="460" cy="250" r="2"/>
+                    <circle class="switch-contact" cx="468" cy="257" r="2"/><circle class="switch-contact" cx="469" cy="265" r="2"/>
+                    <circle class="switch-contact" cx="462" cy="273" r="2"/><circle class="switch-contact" cx="452" cy="277" r="2"/>
+                    <circle class="switch-contact" cx="440" cy="277" r="2"/><circle class="switch-contact" cx="429" cy="273" r="2"/>
+                  </g>
+                  <g class="router-wiper" data-router-wiper>
+                    <path class="part-line" d="M445 261 466 253"/><circle class="part-hi" cx="445" cy="261" r="6"/><circle class="lit-target" cx="466" cy="253" r="4"/>
+                  </g>
+                  <path class="part-line part-faint" d="M414 286 445 302 480 284"/>
+                </g>
+
+                <g class="exchange-module" data-module="4" aria-label="Matriz de agentes">
+                  <path class="part-side-dark" d="M500 232 590 187 682 233 682 315 592 360 500 315Z"/>
+                  <path class="part-side" d="M592 278 682 233 682 315 592 360Z"/>
+                  <path class="part-top" d="M500 232 590 187 682 233 592 278Z"/>
+                  <path class="part-line part-faint" d="M515 240 590 202 666 240M592 291 669 252M592 312 669 273M592 333 669 294"/>
+
+                  <g class="agent-module" data-agent="0"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M516 233 540 221 558 230 534 242Z"/><path class="part-side-dark" d="M516 233 534 242 534 265 516 256Z"/><path class="part-side" d="M534 242 558 230 558 253 534 265Z"/>
+                    <rect class="machine-window" x="522" y="240" width="8" height="10"/><circle class="agent-window-dot" cx="525" cy="243" r="1.3"/><circle class="agent-window-dot" cx="528" cy="246" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M537 224v-12"/><circle class="agent-lamp" cx="537" cy="208" r="4"/></g>
+                  </g></g>
+                  <g class="agent-module" data-agent="1"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M554 214 578 202 596 211 572 223Z"/><path class="part-side-dark" d="M554 214 572 223 572 246 554 237Z"/><path class="part-side" d="M572 223 596 211 596 234 572 246Z"/>
+                    <rect class="machine-window" x="560" y="221" width="8" height="10"/><circle class="agent-window-dot" cx="563" cy="224" r="1.3"/><circle class="agent-window-dot" cx="566" cy="227" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M575 205v-12"/><circle class="agent-lamp" cx="575" cy="189" r="4"/></g>
+                  </g></g>
+                  <g class="agent-module" data-agent="2"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M593 214 617 202 635 211 611 223Z"/><path class="part-side-dark" d="M593 214 611 223 611 246 593 237Z"/><path class="part-side" d="M611 223 635 211 635 234 611 246Z"/>
+                    <rect class="machine-window" x="599" y="221" width="8" height="10"/><circle class="agent-window-dot" cx="602" cy="224" r="1.3"/><circle class="agent-window-dot" cx="605" cy="227" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M614 205v-12"/><circle class="agent-lamp" cx="614" cy="189" r="4"/></g>
+                  </g></g>
+                  <g class="agent-module" data-agent="3"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M532 269 556 257 574 266 550 278Z"/><path class="part-side-dark" d="M532 269 550 278 550 301 532 292Z"/><path class="part-side" d="M550 278 574 266 574 289 550 301Z"/>
+                    <rect class="machine-window" x="538" y="277" width="8" height="10"/><circle class="agent-window-dot" cx="541" cy="280" r="1.3"/><circle class="agent-window-dot" cx="544" cy="283" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M553 260v-12"/><circle class="agent-lamp" cx="553" cy="244" r="4"/></g>
+                  </g></g>
+                  <g class="agent-module" data-agent="4"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M571 249 595 237 613 246 589 258Z"/><path class="part-side-dark" d="M571 249 589 258 589 281 571 272Z"/><path class="part-side" d="M589 258 613 246 613 269 589 281Z"/>
+                    <rect class="machine-window" x="577" y="257" width="8" height="10"/><circle class="agent-window-dot" cx="580" cy="260" r="1.3"/><circle class="agent-window-dot" cx="583" cy="263" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M592 240v-12"/><circle class="agent-lamp" cx="592" cy="224" r="4"/></g>
+                  </g></g>
+                  <g class="agent-module" data-agent="5"><g class="agent-lift" data-agent-lift transform="translate(0 9)">
+                    <path class="part-mid" d="M610 249 634 237 652 246 628 258Z"/><path class="part-side-dark" d="M610 249 628 258 628 281 610 272Z"/><path class="part-side" d="M628 258 652 246 652 269 628 281Z"/>
+                    <rect class="machine-window" x="616" y="257" width="8" height="10"/><circle class="agent-window-dot" cx="619" cy="260" r="1.3"/><circle class="agent-window-dot" cx="622" cy="263" r="1.3"/>
+                    <g data-agent-piston><path class="agent-piston part-line" d="M631 240v-12"/><circle class="agent-lamp" cx="631" cy="224" r="4"/></g>
+                  </g></g>
+                  <circle class="lit-target" cx="668" cy="246" r="5"/>
+                </g>
+
+                <g class="exchange-module" data-module="5" aria-label="Registrador de evidências">
+                  <path class="part-side-dark" d="M521 364 587 331 650 363 650 407 584 440 521 408Z"/>
+                  <path class="part-side" d="M584 396 650 363 650 407 584 440Z"/>
+                  <path class="part-top" d="M521 364 587 331 650 363 584 396Z"/>
+                  <circle class="part-hi" cx="546" cy="365" r="13"/><circle class="machine-window" cx="546" cy="365" r="7"/>
+                  <circle class="part-hi" cx="619" cy="365" r="13"/><circle class="machine-window" cx="619" cy="365" r="7"/>
+                  <path class="part-line" d="M546 352C565 337 600 337 619 352M546 378C566 391 600 391 619 378"/>
+                  <g class="evidence-paper" data-evidence-paper>
+                    <path class="request-card" d="M551 354 584 337 617 354 584 371Z"/>
+                    <g class="evidence-ink">
+                      <circle cx="567" cy="353" r="1.5"/><circle cx="573" cy="350" r="1.5"/><circle cx="579" cy="347" r="1.5"/>
+                      <circle cx="580" cy="356" r="1.5"/><circle cx="586" cy="353" r="1.5"/><circle cx="592" cy="350" r="1.5"/>
+                      <circle cx="593" cy="359" r="1.5"/><circle cx="599" cy="356" r="1.5"/><circle cx="605" cy="353" r="1.5"/>
+                    </g>
+                  </g>
+                  <g class="evidence-stamp" data-evidence-stamp>
+                    <path class="part-line" d="M584 349v-31"/><path class="part-hi" d="M573 315 584 309 595 315 584 321Z"/>
+                    <rect class="lit-target" x="579" y="303" width="10" height="8" rx="2"/>
+                  </g>
+                  <path class="part-line part-faint" d="M531 388 574 410M595 405 637 384"/>
+                  <circle class="machine-rivet" cx="530" cy="371" r="2"/><circle class="machine-rivet" cx="640" cy="368" r="2"/>
+                </g>
+
+                <g class="machine-labels" aria-hidden="true">
+                  <g><rect class="machine-label-plate" x="111" y="386" width="72" height="15" rx="2"/><text class="machine-label" x="121" y="396">INTENT / 01</text></g>
+                  <g><rect class="machine-label-plate" x="218" y="362" width="76" height="15" rx="2"/><text class="machine-label" x="228" y="372">CONTEXT / 02</text></g>
+                  <g><rect class="machine-label-plate" x="320" y="379" width="72" height="15" rx="2"/><text class="machine-label" x="330" y="389">AUTH / 03</text></g>
+                  <g><rect class="machine-label-plate" x="409" y="317" width="75" height="15" rx="2"/><text class="machine-label" x="419" y="327">ROUTER / 04</text></g>
+                  <g><rect class="machine-label-plate" x="646" y="326" width="66" height="15" rx="2"/><text class="machine-label" x="656" y="336">AGENTS / 05</text></g>
+                  <g><rect class="machine-label-plate" x="548" y="445" width="77" height="15" rx="2"/><text class="machine-label" x="558" y="455">LEDGER / 06</text></g>
+                </g>
+              </svg>
+              <span class="sr-only" data-machine-status role="status" aria-live="polite"></span>
+            </div>
+
+            <figcaption id="machine-caption" class="machine-caption">
+              <span>6 fases / scroll / setas / Home / End</span>
+              <output data-machine-readout aria-live="off">01 · intenção delimitada</output>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities-section" id="capacidades" aria-labelledby="capabilities-title">
+      <div class="section-frame">
+        <header class="section-header reveal">
+          <div>
+            <p class="section-index">03 / superfícies coordenadas</p>
+            <p class="overline">Seis superfícies, um contexto operacional</p>
+          </div>
+          <h2 id="capabilities-title" class="display-heading">O trabalho muda de forma. O controle continua no Hub.</h2>
+        </header>
+
+        <div class="capability-grid">
+          <article class="capability-card capability-card-wide reveal">
+            <div class="card-top"><span class="card-code">A / WORKBENCH</span><span class="card-state">context / workspace</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 420 210">
+                <rect class="diagram-shell" x="13" y="14" width="394" height="182" rx="5"/>
+                <path class="diagram-line" d="M13 43h394M118 43v153M289 43v153"/>
+                <circle class="diagram-muted" cx="28" cy="29" r="3"/><circle class="diagram-muted" cx="39" cy="29" r="3"/><circle class="diagram-active" cx="50" cy="29" r="3"/>
+                <text class="diagram-label" x="69" y="32">WORKSPACE / ALPHA</text>
+                <g class="diagram-panel-raised">
+                  <rect class="diagram-panel" x="25" y="57" width="78" height="27" rx="3"/><circle class="diagram-port" cx="36" cy="69" r="5"/><path class="diagram-line" d="M47 65h43M47 73h30"/>
+                  <rect class="diagram-panel" x="37" y="94" width="66" height="34" rx="3"/><path class="diagram-line" d="M47 105h45M47 113h34M47 121h40"/>
+                  <rect class="diagram-chip" x="25" y="142" width="78" height="35" rx="3"/><text class="diagram-label" x="35" y="156">MEMORY</text><path class="diagram-line" d="M35 165h55"/>
+                </g>
+                <rect class="diagram-panel" x="132" y="57" width="143" height="105" rx="3"/>
+                <path class="diagram-line" d="M143 72h57M143 83h118M143 94h91M143 105h109M143 116h74"/>
+                <rect class="diagram-chip" x="143" y="130" width="55" height="20" rx="2"/><text class="diagram-label" x="152" y="143">ARTIFACT</text>
+                <circle class="diagram-active" cx="245" cy="139" r="7"/><path class="diagram-line" d="M205 139h31M254 139h11"/>
+                <path class="diagram-flow" d="M95 178C148 188 183 171 216 174S278 183 309 155"/>
+                <g class="diagram-packet"><rect class="diagram-active" x="192" y="170" width="7" height="7" rx="1"/></g>
+                <rect class="diagram-panel" x="303" y="57" width="89" height="28" rx="3"/><text class="diagram-label" x="314" y="69">TOOL CALL</text><circle class="diagram-active" cx="379" cy="71" r="4"/>
+                <rect class="diagram-panel" x="303" y="94" width="89" height="44" rx="3"/><text class="diagram-label" x="314" y="107">CITATIONS</text><circle class="diagram-dot" cx="317" cy="121" r="2"/><circle class="diagram-dot" cx="327" cy="121" r="2"/><circle class="diagram-dot" cx="337" cy="121" r="2"/>
+                <rect class="diagram-panel" x="303" y="147" width="89" height="30" rx="3"/><text class="diagram-label" x="314" y="165">TRACE / 08</text>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Workbench orientado pelo workspace</h3><p>Conversa, artefatos, citações, memória e ferramentas compartilham o mesmo contexto, isolado por workspace.</p><ul class="card-tags"><li>conversa</li><li>artefatos</li><li>citações</li></ul></div>
+          </article>
+          <article class="capability-card reveal">
+            <div class="card-top"><span class="card-code">B / KNOWLEDGE</span><span class="card-state">sources / indexed</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 300 210">
+                <path class="diagram-shell" d="M42 52 143 19 257 60 156 95Z"/>
+                <path class="diagram-panel" d="M42 52 156 95 156 174 42 132Z"/><path class="diagram-panel" d="M156 95 257 60 257 139 156 174Z"/>
+                <g class="diagram-panel-raised"><path class="diagram-chip" d="M63 64 139 38 168 49 91 76Z"/><path class="diagram-line" d="M73 61 137 40M86 68 150 46"/></g>
+                <g class="diagram-panel-raised"><path class="diagram-chip" d="M77 87 153 61 182 72 105 99Z"/><path class="diagram-line" d="M88 84 151 63M100 91 165 69"/></g>
+                <g class="diagram-panel-raised"><path class="diagram-chip" d="M92 111 168 85 197 96 120 123Z"/><path class="diagram-line" d="M102 108 166 87M115 115 180 93"/></g>
+                <path class="diagram-flow" d="M70 138C106 160 174 162 228 127"/>
+                <g class="diagram-scan"><path class="diagram-line" d="M115 30v109"/><rect class="diagram-active" x="108" y="26" width="14" height="7" rx="2"/></g>
+                <circle class="diagram-port" cx="185" cy="129" r="8"/><circle class="diagram-active" cx="185" cy="129" r="3"/>
+                <circle class="diagram-dot" cx="207" cy="121" r="2"/><circle class="diagram-dot" cx="216" cy="117" r="2"/><circle class="diagram-dot" cx="225" cy="113" r="2"/>
+                <text class="diagram-label" x="184" y="154">INDEX / READY</text>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Conhecimento com estado visível</h3><p>Fontes, uploads, recuperação e indexação declaram disponibilidade sem converter ausência em sucesso.</p><ul class="card-tags"><li>fontes</li><li>indexação</li><li>recuperação</li></ul></div>
+          </article>
+          <article class="capability-card reveal">
+            <div class="card-top"><span class="card-code">C / WORKFLOWS</span><span class="card-state">plan / governed</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 300 210">
+                <rect class="diagram-shell" x="23" y="26" width="254" height="157" rx="4"/>
+                <circle class="diagram-active" cx="55" cy="102" r="10"/><text class="diagram-label" x="42" y="124">INTENT</text>
+                <rect class="diagram-panel" x="93" y="82" width="50" height="40" rx="3"/><text class="diagram-label" x="105" y="105">AGENT</text>
+                <path class="diagram-gate diagram-chip" d="M177 78 201 102 177 126 153 102Z"/><text class="diagram-label" x="163" y="105">GATE</text>
+                <rect class="diagram-panel diagram-panel-raised" x="223" y="48" width="37" height="29" rx="3"/><text class="diagram-label" x="230" y="65">TOOL</text>
+                <rect class="diagram-panel diagram-panel-raised" x="223" y="91" width="37" height="29" rx="3"/><text class="diagram-label" x="231" y="108">MCP</text>
+                <rect class="diagram-panel diagram-panel-raised" x="223" y="134" width="37" height="29" rx="3"/><text class="diagram-label" x="228" y="151">HUMAN</text>
+                <path class="diagram-flow" d="M65 102h28M143 102h10M201 102c15 0 8-40 22-40M201 102h22M201 102c15 0 8 47 22 47"/>
+                <g class="diagram-packet"><circle class="diagram-active" cx="77" cy="102" r="3"/></g>
+                <path class="diagram-line" d="M241 77v14M241 120v14"/>
+                <circle class="diagram-port" cx="177" cy="47" r="7"/><path class="diagram-line" d="M177 54v24"/><text class="diagram-label" x="153" y="34">POLICY</text>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Workflows que expõem decisões</h3><p>Agentes, condições, ferramentas e aprovações formam um plano inspecionável antes da execução.</p><ul class="card-tags"><li>condições</li><li>aprovações</li><li>limites</li></ul></div>
+          </article>
+          <article class="capability-card reveal">
+            <div class="card-top"><span class="card-code">D / CAPABILITIES</span><span class="card-state">runtime / observed</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 300 210">
+                <circle class="diagram-shell" cx="150" cy="103" r="76"/><circle class="diagram-panel" cx="150" cy="103" r="46"/><circle class="diagram-chip" cx="150" cy="103" r="22"/>
+                <g class="diagram-rotor"><path class="diagram-flow" d="M150 81V49M170 92l31-18M170 115l31 18M150 125v32M130 115l-31 18M130 92 99 74"/></g>
+                <circle class="diagram-port" cx="150" cy="27" r="9"/><circle class="diagram-port" cx="216" cy="65" r="9"/><circle class="diagram-port" cx="216" cy="141" r="9"/>
+                <circle class="diagram-port" cx="150" cy="179" r="9"/><circle class="diagram-port" cx="84" cy="141" r="9"/><circle class="diagram-port" cx="84" cy="65" r="9"/>
+                <circle class="diagram-active" cx="150" cy="27" r="3"/><circle class="diagram-active" cx="216" cy="141" r="3"/><circle class="diagram-active" cx="84" cy="65" r="3"/>
+                <text class="diagram-label" x="136" y="106">HUB</text><text class="diagram-label" x="135" y="12">SKILL</text><text class="diagram-label" x="228" y="68">MCP</text><text class="diagram-label" x="226" y="145">APP</text>
+                <path class="diagram-line" d="M126 166h48M126 173h48"/>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Capacidades sob autoridade</h3><p>Skills, servidores MCP e integrações passam por catálogo, configuração, permissão e conectividade observada.</p><ul class="card-tags"><li>skills</li><li>MCP</li><li>integrações</li></ul></div>
+          </article>
+          <article class="capability-card reveal">
+            <div class="card-top"><span class="card-code">E / DESIGNER</span><span class="card-state">output / structured</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 300 210">
+                <rect class="diagram-shell" x="24" y="25" width="252" height="160" rx="4"/><path class="diagram-line" d="M24 50h252M68 50v135M232 50v135"/>
+                <circle class="diagram-muted" cx="37" cy="38" r="3"/><circle class="diagram-active" cx="48" cy="38" r="3"/>
+                <path class="diagram-line" d="M35 66h22M35 78h22M35 90h15M35 113h22M35 125h18"/>
+                <rect class="diagram-panel diagram-panel-raised" x="82" y="65" width="135" height="98" rx="2"/>
+                <path class="diagram-warm" d="M95 139 126 98 148 120 172 85 205 139Z"/><circle class="diagram-active" cx="188" cy="82" r="9"/>
+                <rect class="diagram-line" x="91" y="73" width="117" height="78"/>
+                <circle class="diagram-active" cx="91" cy="73" r="3"/><circle class="diagram-active" cx="208" cy="73" r="3"/><circle class="diagram-active" cx="91" cy="151" r="3"/><circle class="diagram-active" cx="208" cy="151" r="3"/>
+                <path class="diagram-line" d="M241 68h25M241 78h18M241 103h25M241 113h14M241 138h25M241 148h20"/>
+                <g class="diagram-scan"><path class="diagram-flow" d="M100 158V66"/></g>
+                <text class="diagram-label" x="82" y="178">ARTBOARD / PREVIEW</text>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Designer para artefatos estruturados</h3><p>Mídia e interfaces viram artefatos revisáveis; preview permanece separado da execução de provedor.</p><ul class="card-tags"><li>mídia</li><li>GenUI</li><li>preview</li></ul></div>
+          </article>
+          <article class="capability-card capability-card-wide reveal">
+            <div class="card-top"><span class="card-code">F / CONTROL PLANE</span><span class="card-state">control / traceable</span></div>
+            <figure class="capability-figure" aria-hidden="true">
+              <svg viewBox="0 0 420 210">
+                <rect class="diagram-shell" x="15" y="20" width="390" height="170" rx="4"/><path class="diagram-line" d="M15 49h390M247 49v141"/>
+                <text class="diagram-label" x="29" y="37">EVENT LEDGER / OBSERVED STATE</text>
+                <g class="diagram-panel-raised">
+                  <rect class="diagram-panel" x="29" y="63" width="202" height="24" rx="2"/><circle class="diagram-active" cx="43" cy="75" r="4"/><path class="diagram-line" d="M54 72h64M54 78h111M185 75h32"/>
+                  <rect class="diagram-panel" x="29" y="96" width="202" height="24" rx="2"/><circle class="diagram-warm" cx="43" cy="108" r="4"/><path class="diagram-line" d="M54 105h83M54 111h124M194 108h23"/>
+                  <rect class="diagram-panel" x="29" y="129" width="202" height="24" rx="2"/><circle class="diagram-active" cx="43" cy="141" r="4"/><path class="diagram-line" d="M54 138h70M54 144h96M172 141h45"/>
+                  <rect class="diagram-panel" x="29" y="162" width="202" height="14" rx="2"/>
+                </g>
+                <path class="diagram-flow" d="M260 155 281 133 302 142 326 94 350 112 382 70"/>
+                <path class="diagram-line" d="M260 164h125M260 140h125M260 116h125M260 92h125M260 68h125"/>
+                <circle class="diagram-active" cx="326" cy="94" r="4"/><circle class="diagram-port" cx="382" cy="70" r="6"/>
+                <rect class="diagram-chip" x="260" y="58" width="45" height="17" rx="2"/><text class="diagram-label" x="269" y="69">POLICY</text>
+                <rect class="diagram-chip" x="336" y="156" width="49" height="17" rx="2"/><text class="diagram-label" x="346" y="167">DEPLOY</text>
+                <g class="diagram-scan"><rect class="diagram-active" x="249" y="52" width="2" height="128"/></g>
+              </svg>
+            </figure>
+            <div class="capability-copy"><h3>Plano de controle e prova operacional</h3><p>Identidade, políticas, eventos, custos e deploy permanecem na mesma leitura — e ausência de evidência continua desconhecida.</p><ul class="card-tags"><li>identidade</li><li>auditoria</li><li>custos</li><li>deploy</li></ul></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence-section" id="evidencia" aria-labelledby="evidence-title">
+      <div class="section-frame evidence-grid">
+        <div class="evidence-copy reveal">
+          <p class="section-index">04 / contrato de verdade</p>
+          <p class="overline">Controle é saber o que aconteceu</p>
+          <h2 id="evidence-title" class="display-heading">Estado declarado não substitui estado observado.</h2>
+          <p>O Hub preserva as diferenças que normalmente desaparecem em dashboards: disponível, configurado, autorizado, executado e comprovado não são a mesma coisa.</p>
+        </div>
+
+        <div class="evidence-ledger reveal" aria-label="Fluxo de estados de uma capacidade">
+          <div class="ledger-row"><span>01</span><strong>Catalogado</strong><small>A capacidade existe no inventário.</small></div>
+          <div class="ledger-row"><span>02</span><strong>Configurado</strong><small>Credenciais e parâmetros foram persistidos.</small></div>
+          <div class="ledger-row"><span>03</span><strong>Autorizado</strong><small>Política e escopo permitem a intenção.</small></div>
+          <div class="ledger-row"><span>04</span><strong>Observado</strong><small>Handshake, evento ou execução confirmam o estado.</small></div>
+          <div class="ledger-row ledger-result"><span>→</span><strong>Evidência</strong><small>O resultado pode ser revisado sem inferência.</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ascii-bridge" aria-label="Transição entre operação e apresentação">
+      <div class="ascii-field" aria-hidden="true">
+        <pre>+---------------- HUB / CONTROL PATH ----------------+
+ intent  ::  context  ::  authority  ::  orchestration
+    \            \            |               \
+     [ workspace ]---[ agents + tools ]---[ events ]
+                observed state  ::  evidence
++----------------------------------------------------+</pre>
+      </div>
+      <p class="reveal">A autonomia escala.<br>A responsabilidade permanece legível.</p>
+    </section>
+
+    <section class="footer-reveal" id="contato">
+      <footer class="site-footer">
+        <div class="footer-rail" aria-label="Identificação do sistema">
+          <strong>HUBAGENTS</strong>
+          <span>Agent OS / est. 2026</span>
+          <span>Autoridade · contexto · evidência</span>
+        </div>
+
+        <div class="footer-layout">
+          <figure class="footer-figure">
+            <img
+              class="footer-atlas"
+              src="assets/atlas-system.webp"
+              alt="Atlas em retícula sustenta uma esfera formada por órbitas e pontos técnicos."
+              width="1024"
+              height="1536"
+              loading="lazy"
+              decoding="async"
+            >
+            <figcaption><span>carga / distribuída</span><span>órbita / governada</span></figcaption>
+          </figure>
+
+          <div class="footer-copy">
+            <p class="footer-kicker"><span aria-hidden="true">∞</span> Responsabilidade distribuída</p>
+            <p class="footer-statement">A operação não precisa <span>pesar sozinha.</span></p>
+            <p class="footer-body">O Hub distribui trabalho entre agentes enquanto contexto, autoridade e evidência permanecem sob responsabilidade humana.</p>
+            <div class="footer-actions">
+              <a class="footer-link" href="#fluxo">Rever o sistema <span aria-hidden="true">↑</span></a>
+              <a class="footer-link" href="#inicio">Voltar ao início <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-meta"><span>System / traceable</span><span>Frame / observed</span><span>Brasil · 2026</span></div>
+      </footer>
+    </section>
+  </main>
+
+  <noscript>
+    <style>
+      #runtime-state { display: none; }
+      .hero-canvas { display: none; }
+    </style>
+  </noscript>
+
+  <script id="hero-vertex-shader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  </script>
+
+  <script id="hero-fragment-shader" type="x-shader/x-fragment">
+    precision highp float;
+
+    varying vec2 vUv;
+
+    uniform vec2 uResolution;
+    uniform vec2 uPointer;
+    uniform vec4 uSafeZone;
+    uniform float uTime;
+    uniform float uScroll;
+    uniform float uPointerEnergy;
+    uniform float uIntent;
+    uniform float uMotion;
+
+    #define PI 3.14159265359
+
+    mat2 rotate2d(float angle) {
+      float s = sin(angle);
+      float c = cos(angle);
+      return mat2(c, -s, s, c);
+    }
+
+    float random2d(vec2 point) {
+      point = fract(point * vec2(123.34, 345.45));
+      point += dot(point, point + 34.345);
+      return fract(point.x * point.y);
+    }
+
+    float valueNoise(vec2 point) {
+      vec2 cell = floor(point);
+      vec2 local = fract(point);
+      vec2 blend = local * local * (3.0 - 2.0 * local);
+
+      float a = random2d(cell);
+      float b = random2d(cell + vec2(1.0, 0.0));
+      float c = random2d(cell + vec2(0.0, 1.0));
+      float d = random2d(cell + vec2(1.0, 1.0));
+
+      return mix(mix(a, b, blend.x), mix(c, d, blend.x), blend.y);
+    }
+
+    float fbm(vec2 point) {
+      float value = 0.0;
+      float amplitude = 0.53;
+      mat2 basis = rotate2d(0.52);
+
+      for (int octave = 0; octave < 5; octave++) {
+        value += valueNoise(point) * amplitude;
+        point = basis * point * 2.03 + vec2(17.1, 9.2);
+        amplitude *= 0.5;
+      }
+
+      return value;
+    }
+
+    float ellipseTrack(vec2 point, vec2 axes, float angle, float segments, float routeId, float cellWorld) {
+      vec2 local = rotate2d(-angle) * point;
+      vec2 ellipsePoint = local / axes;
+      float distanceToTrack = abs(length(ellipsePoint) - 1.0) * min(axes.x, axes.y);
+      float theta = atan(ellipsePoint.y, ellipsePoint.x);
+      float segment = floor((theta + PI) / (2.0 * PI) * segments);
+      float segmentGate = smoothstep(0.34, 0.7, random2d(vec2(segment, routeId * 83.0)));
+      return (1.0 - smoothstep(cellWorld * 0.55, cellWorld * 1.8, distanceToTrack)) * segmentGate;
+    }
+
+    vec2 orbitPoint(vec2 axes, float angle, float phase) {
+      return rotate2d(angle) * (axes * vec2(cos(phase), sin(phase)));
+    }
+
+    float pixelMote(vec2 point, vec2 at, float cellWorld) {
+      return 1.0 - smoothstep(cellWorld * 1.1, cellWorld * 3.2, length(point - at));
+    }
+
+    float roundedSafeZone(vec2 uv) {
+      vec2 halfSize = max(uSafeZone.zw, vec2(0.001));
+      vec2 normalized = abs(uv - uSafeZone.xy) / halfSize;
+      float ellipse = length(normalized);
+      return 1.0 - smoothstep(0.72, 1.28, ellipse);
+    }
+
+    void main() {
+      float side = min(uResolution.x, uResolution.y);
+      float cellPx = clamp(floor(side / 420.0), 2.0, 3.0);
+      float cellWorld = cellPx / side;
+      vec2 pixelCell = floor(gl_FragCoord.xy / cellPx);
+      vec2 samplePx = (pixelCell + 0.5) * cellPx;
+      vec2 point = (samplePx - 0.5 * uResolution.xy) / side;
+      vec2 apertureUv = abs(fract(gl_FragCoord.xy / cellPx) - 0.5);
+      float aperture = 1.0 - smoothstep(0.28, 0.49, max(apertureUv.x, apertureUv.y));
+
+      float portrait = 1.0 - smoothstep(0.78, 1.05, uResolution.x / max(uResolution.y, 1.0));
+      float time = mix(13.0, uTime, uMotion);
+      vec2 pointerPoint = (vec2(uPointer.x * uResolution.x, uPointer.y * uResolution.y) - 0.5 * uResolution.xy) / side;
+      vec2 parallax = (uPointer - 0.5) * vec2(0.024, 0.016) * uMotion;
+      vec2 center = mix(vec2(-0.31, -0.015), vec2(0.0, 0.1), portrait) + parallax;
+      vec2 orbitalPoint = point - center;
+
+      float safeZone = roundedSafeZone(vUv);
+      float outsideCopy = mix(1.0, 0.08, safeZone);
+      float routing = smoothstep(0.08, 0.38, uScroll);
+      float evidence = smoothstep(0.58, 0.9, uScroll);
+      float exitFade = smoothstep(0.78, 1.0, uScroll);
+
+      vec2 starCell = floor(gl_FragCoord.xy / (cellPx * 3.0));
+      float starSeed = random2d(starCell);
+      float twinkle = 0.94 + 0.06 * sin(time * 0.72 + starSeed * 19.0);
+      float stars = step(0.978, starSeed) * mix(0.13, 0.7, random2d(starCell + 19.73)) * twinkle;
+      float microSeed = random2d(pixelCell + vec2(91.7, 37.1));
+      float microStars = step(0.996, microSeed) * mix(0.06, 0.3, random2d(pixelCell + 43.2));
+
+      vec2 sphereUv = orbitalPoint / 0.245;
+      float sphereRadius = length(sphereUv);
+      float sphereMask = 1.0 - smoothstep(0.94, 1.02, sphereRadius);
+      float sphereDepth = sqrt(max(0.0, 1.0 - sphereRadius * sphereRadius));
+      vec2 halftoneCell = floor(orbitalPoint / (cellWorld * 1.8));
+      float terrain = valueNoise(sphereUv * 4.8 + vec2(8.2, 3.7));
+      float surfaceDetail = valueNoise(sphereUv * 12.0 + vec2(19.4, 11.2));
+      float sphereDensity = 0.16 + sphereDepth * 0.57;
+      sphereDensity *= 0.58 + smoothstep(0.3, 0.76, terrain) * 0.58 + surfaceDetail * 0.12;
+      float sphereDots = step(random2d(halftoneCell + 7.0), sphereDensity) * sphereMask;
+      float latitude = 1.0 - smoothstep(0.035, 0.11, abs(sin(sphereUv.y * 18.0)));
+      float longitude = 1.0 - smoothstep(0.035, 0.11, abs(sin((sphereUv.x / (sphereDepth + 0.24)) * 10.0)));
+      float sphereGridGate = step(0.46, random2d(pixelCell + vec2(13.0, 71.0)));
+      float sphereGrid = max(latitude, longitude) * sphereGridGate * sphereMask * 0.72;
+      float sphereContour = 1.0 - smoothstep(cellWorld * 0.8, cellWorld * 2.0, abs(length(orbitalPoint) - 0.245));
+      float sphereAngle = atan(sphereUv.y, sphereUv.x);
+      float tickIndex = floor((sphereAngle + PI) / (2.0 * PI) * 84.0);
+      float tickGate = step(0.48, random2d(vec2(tickIndex, 27.0)));
+      float sphereTicks = (1.0 - smoothstep(cellWorld * 0.7, cellWorld * 2.1, abs(sphereRadius - 1.105))) * tickGate;
+
+      vec2 axes0 = vec2(0.42, 0.215);
+      vec2 axes1 = vec2(0.36, 0.29);
+      vec2 axes2 = vec2(0.515, 0.255);
+      vec2 axes3 = vec2(0.31, 0.385);
+      float angle0 = -0.349;
+      float angle1 = 0.297;
+      float angle2 = -0.07;
+      float angle3 = 0.541;
+
+      float track0 = ellipseTrack(orbitalPoint, axes0, angle0, 64.0, 1.0, cellWorld);
+      float track1 = ellipseTrack(orbitalPoint, axes1, angle1, 72.0, 2.0, cellWorld);
+      float track2 = ellipseTrack(orbitalPoint, axes2, angle2, 80.0, 3.0, cellWorld);
+      float track3 = ellipseTrack(orbitalPoint, axes3, angle3, 88.0, 4.0, cellWorld);
+      float tracks = track0 * 0.52 + track1 * 0.4 + track2 * 0.62 + track3 * 0.34;
+      tracks *= mix(0.48, 1.0, routing);
+      float trackNodes = tracks * step(0.87, random2d(pixelCell + vec2(61.0, 5.0)));
+
+      float phase0 = time * 0.12 + 0.4;
+      float phase1 = time * -0.094 + 2.1;
+      float phase2 = time * 0.146 + 4.0;
+      float phase3 = time * -0.08 + 5.3;
+      vec2 mote0 = center + orbitPoint(axes0, angle0, phase0);
+      vec2 mote1 = center + orbitPoint(axes1, angle1, phase1);
+      vec2 mote2 = center + orbitPoint(axes2, angle2, phase2);
+      vec2 mote3 = center + orbitPoint(axes3, angle3, phase3);
+      float motes = pixelMote(point, mote0, cellWorld) + pixelMote(point, mote1, cellWorld);
+      motes += pixelMote(point, mote2, cellWorld) + pixelMote(point, mote3, cellWorld);
+      motes += 0.52 * pixelMote(point, center + orbitPoint(axes0, angle0, phase0 - 0.045), cellWorld);
+      motes += 0.22 * pixelMote(point, center + orbitPoint(axes2, angle2, phase2 - 0.055), cellWorld);
+
+      vec2 pointerDelta = point - pointerPoint;
+      float probe = exp(-dot(pointerDelta, pointerDelta) / 0.026) * uPointerEnergy * uMotion;
+      float probeRing = 1.0 - smoothstep(cellWorld * 0.6, cellWorld * 2.1, abs(length(pointerDelta) - 0.075));
+      float inspected = tracks * probe * 0.7 + probeRing * probe * 0.2;
+
+      float columnBand = 1.0 - smoothstep(cellWorld, cellWorld * 2.4, min(abs(orbitalPoint.x - 0.56), abs(orbitalPoint.x + 0.56)));
+      float columnCells = step(0.67, random2d(vec2(floor(orbitalPoint.y / (cellWorld * 3.0)), floor(orbitalPoint.x * 10.0))));
+      float evidenceColumns = columnBand * columnCells * evidence * (1.0 - smoothstep(0.08, 0.5, abs(orbitalPoint.y)));
+
+      float exitDots = 0.0;
+      for (int i = 0; i < 3; i++) {
+        vec2 exitAt = center + vec2(0.0, -0.31 - float(i) * 0.035);
+        exitDots += pixelMote(point, exitAt, cellWorld) * uIntent * (1.0 - float(i) * 0.22);
+      }
+
+      vec3 coal = vec3(0.018, 0.013, 0.01);
+      vec3 chalk = vec3(0.93, 0.89, 0.84);
+      vec3 sand = vec3(0.82, 0.62, 0.4);
+      vec3 rust = vec3(0.48, 0.18, 0.06);
+      float warmGround = exp(-dot(orbitalPoint, orbitalPoint) / 0.22) * 0.045;
+      vec3 color = coal + rust * warmGround;
+      color += chalk * stars * aperture * outsideCopy;
+      color += chalk * microStars * aperture * outsideCopy;
+      color += mix(rust, sand, routing) * tracks * aperture * outsideCopy * 0.58;
+      color += chalk * trackNodes * aperture * outsideCopy * 0.34;
+      color += chalk * sphereDots * aperture * outsideCopy * 0.25;
+      color += sand * sphereGrid * aperture * outsideCopy * 0.17;
+      color += chalk * sphereContour * aperture * outsideCopy * 0.24;
+      color += sand * sphereTicks * aperture * outsideCopy * 0.32;
+      color += chalk * motes * aperture * outsideCopy * (0.66 + uIntent * 0.18);
+      color += sand * inspected * aperture;
+      color += chalk * evidenceColumns * aperture * outsideCopy * 0.34;
+      color += sand * exitDots * aperture * outsideCopy * 0.72;
+      color *= mix(1.0, 0.44, exitFade);
+      color *= 1.0 - smoothstep(0.38, 0.96, length(point)) * 0.38;
+      color = pow(color, vec3(0.9));
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  </script>
+
+  <script type="module">
+    const heroShell = document.querySelector(".hero-shell");
+    const heroStage = document.querySelector(".hero-stage");
+    const heroContent = document.querySelector(".hero-content");
+    const canvas = document.querySelector(".hero-canvas");
+    const runtimeState = document.querySelector("#runtime-state");
+    const intentControls = document.querySelectorAll(".js-intent");
+    const capabilityCards = document.querySelectorAll(".capability-card");
+    const storySection = document.querySelector(".system-story");
+    const machineStage = document.querySelector(".machine-stage");
+    const machineReadout = document.querySelector("[data-machine-readout]");
+    const machineStatus = document.querySelector("[data-machine-status]");
+    const storySteps = [...document.querySelectorAll("[data-story-step]")];
+    const machineModules = [...document.querySelectorAll("[data-module]")];
+    const machineRoutes = [...document.querySelectorAll("[data-route-step]")];
+    const requestCard = document.querySelector("[data-request-card]");
+    const contextDrawers = [...document.querySelectorAll("[data-context-drawer]")];
+    const contextReader = document.querySelector("[data-context-reader]");
+    const authorityKey = document.querySelector("[data-authority-key]");
+    const lockBars = [...document.querySelectorAll("[data-lock-bar]")];
+    const routerWiper = document.querySelector("[data-router-wiper]");
+    const agents = [...document.querySelectorAll("[data-agent]")];
+    const agentLifts = [...document.querySelectorAll("[data-agent-lift]")];
+    const agentPistons = [...document.querySelectorAll("[data-agent-piston]")];
+    const evidencePaper = document.querySelector("[data-evidence-paper]");
+    const evidenceStamp = document.querySelector("[data-evidence-stamp]");
+    const footerReveal = document.querySelector(".footer-reveal");
+    const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const STORY_COUNT = 6;
+    const selectedAgents = new Set([0, 2, 4]);
+
+    const storyLabels = [
+      "Intenção: objetivo e escopo recebidos",
+      "Contexto: workspace, memória e conhecimento associados",
+      "Autoridade: rotas permitidas destravadas",
+      "Orquestração: plano composto no comutador",
+      "Execução: módulos autorizados em operação",
+      "Evidência: eventos e resultado preservados"
+    ];
+
+    const storyReadouts = [
+      "01 · intenção delimitada",
+      "02 · contexto associado",
+      "03 · autoridade confirmada",
+      "04 · plano composto",
+      "05 · agentes em operação",
+      "06 · evidência preservada"
+    ];
+
+    const state = {
+      pointerTarget: { x: 0.5, y: 0.5 },
+      pointer: { x: 0.5, y: 0.5 },
+      previousPointer: { x: 0.5, y: 0.5 },
+      scrollTarget: 0,
+      scroll: 0,
+      intentTarget: 0,
+      intent: 0,
+      energy: 0,
+      isVisible: true,
+      reducedMotion: reduceMotionQuery.matches
+    };
+
+    const storyState = {
+      target: 0,
+      current: 0,
+      frame: 0,
+      last: 0,
+      visible: false,
+      active: -1,
+      clock: 0,
+      stampAge: 2
+    };
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const smoothstep = (start, end, value) => {
+      const progress = clamp((value - start) / (end - start), 0, 1);
+      return progress * progress * (3 - 2 * progress);
+    };
+    const damp = (current, target, lambda, delta) =>
+      current + (target - current) * (1 - Math.exp(-lambda * delta));
+    let requestAtmosphereFrame = () => {};
+
+    function updateScrollState() {
+      const rect = heroShell.getBoundingClientRect();
+      const travel = Math.max(1, heroShell.offsetHeight - window.innerHeight);
+      state.scrollTarget = clamp(-rect.top / travel, 0, 1);
+
+      const eased = state.scrollTarget * state.scrollTarget * (3 - 2 * state.scrollTarget);
+      document.documentElement.style.setProperty("--hero-progress", eased.toFixed(4));
+      document.documentElement.style.setProperty("--copy-opacity", clamp(1 - eased * 1.42, 0, 1).toFixed(4));
+      document.documentElement.style.setProperty("--copy-shift", (-eased * 7).toFixed(3) + "vh");
+      document.documentElement.style.setProperty("--copy-scale", (1 - eased * 0.045).toFixed(4));
+
+      const footerRect = footerReveal.getBoundingClientRect();
+      const footerProgress = state.reducedMotion
+        ? 1
+        : clamp((window.innerHeight - footerRect.top) / (window.innerHeight * 0.9), 0, 1);
+      footerReveal.style.setProperty("--atlas-shift", ((1 - footerProgress) * 3).toFixed(3) + "rem");
+      footerReveal.style.setProperty("--atlas-scale", (0.94 + footerProgress * 0.06).toFixed(4));
+      footerReveal.style.setProperty("--atlas-opacity", (0.28 + footerProgress * 0.72).toFixed(4));
+      footerReveal.style.setProperty("--footer-copy-shift", ((1 - footerProgress) * 1.5).toFixed(3) + "rem");
+      if (state.reducedMotion) requestAtmosphereFrame();
+    }
+
+    function updatePointerTarget(event) {
+      const rect = heroStage.getBoundingClientRect();
+      if (event.clientY < rect.top || event.clientY > rect.bottom) return;
+
+      state.pointerTarget.x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      state.pointerTarget.y = clamp(1 - (event.clientY - rect.top) / rect.height, 0, 1);
+
+      heroStage.style.setProperty("--pointer-x", (state.pointerTarget.x * 100).toFixed(2) + "%");
+      heroStage.style.setProperty("--pointer-y", ((1 - state.pointerTarget.y) * 100).toFixed(2) + "%");
+    }
+
+    function setReducedMotion(event) {
+      state.reducedMotion = event.matches;
+      if (state.reducedMotion) {
+        capabilityCards.forEach((card) => {
+          card.style.setProperty("--figure-x", "0px");
+          card.style.setProperty("--figure-y", "0px");
+        });
+      }
+      updateScrollState();
+      runStory();
+      requestAtmosphereFrame();
+    }
+
+    function drawStory() {
+      const active = clamp(Math.round(storyState.current), 0, STORY_COUNT - 1);
+      const gate = (index) => smoothstep(index - 0.72, index, storyState.current);
+      const intention = gate(0);
+      const context = gate(1);
+      const authority = gate(2);
+      const orchestration = gate(3);
+      const execution = gate(4);
+      const evidence = gate(5);
+
+      requestCard.setAttribute("transform", `translate(${(-42 * (1 - intention)).toFixed(2)} ${(22 * (1 - intention)).toFixed(2)})`);
+      contextDrawers.forEach((drawer) => {
+        const factor = Number(drawer.dataset.factor);
+        drawer.setAttribute("transform", `translate(${(-4 * factor * (1 - context)).toFixed(2)} ${(2 * factor * (1 - context)).toFixed(2)})`);
+      });
+      contextReader.setAttribute("transform", `translate(0 ${(12 * (1 - context)).toFixed(2)})`);
+      authorityKey.setAttribute("transform", `rotate(${(-52 * (1 - authority)).toFixed(2)} 365 321)`);
+      lockBars.forEach((bar) => {
+        const factor = Number(bar.dataset.factor);
+        bar.setAttribute("transform", `translate(${(8 * factor * (1 - authority)).toFixed(2)} ${(4 * factor * (1 - authority)).toFixed(2)})`);
+      });
+
+      const routerAngle = -95 + orchestration * 165 + Math.max(0, storyState.current - 3) * 18;
+      routerWiper.setAttribute("transform", `rotate(${routerAngle.toFixed(2)} 445 261)`);
+
+      agentLifts.forEach((lift, index) => {
+        const selected = selectedAgents.has(index);
+        const pulse = selected && !state.reducedMotion
+          ? Math.sin(storyState.clock * (3.2 + index * 0.18) + index) * 2.4 * execution
+          : 0;
+        lift.setAttribute("transform", `translate(0 ${(9 * (1 - execution) + pulse).toFixed(2)})`);
+        agentPistons[index].setAttribute("transform", `translate(0 ${(-pulse * 0.75).toFixed(2)})`);
+        agents[index].classList.toggle("is-selected", selected && execution > 0.45);
+      });
+
+      evidencePaper.setAttribute("transform", `translate(0 ${(12 * (1 - evidence)).toFixed(2)})`);
+      evidencePaper.style.opacity = String(0.32 + evidence * 0.68);
+      const stampCycle = state.reducedMotion || storyState.stampAge >= 0.72
+        ? 0
+        : Math.sin(clamp(storyState.stampAge / 0.72, 0, 1) * Math.PI) * 14;
+      evidenceStamp.setAttribute("transform", `translate(0 ${(-12 * (1 - evidence) + stampCycle).toFixed(2)})`);
+
+      machineStage.style.setProperty("--story-progress", (storyState.current / (STORY_COUNT - 1)).toFixed(4));
+      machineModules.forEach((module, index) => {
+        module.classList.toggle("is-active", index === active);
+        module.classList.toggle("is-past", index < active);
+      });
+      machineRoutes.forEach((route) => {
+        const index = Number(route.dataset.routeStep);
+        route.classList.toggle("is-active", index === active);
+        route.classList.toggle("is-past", index < active);
+      });
+
+      if (active === storyState.active) return;
+      if (active === STORY_COUNT - 1) storyState.stampAge = 0;
+      storyState.active = active;
+      machineStage.setAttribute("aria-valuenow", String(active + 1));
+      machineStage.setAttribute("aria-valuetext", storyLabels[active]);
+      machineReadout.textContent = storyReadouts[active];
+      machineStatus.textContent = storyLabels[active];
+
+      storySteps.forEach((step, index) => {
+        const selected = index === active;
+        step.classList.toggle("is-active", selected);
+        step.setAttribute("aria-pressed", String(selected));
+        step.tabIndex = selected ? 0 : -1;
+      });
+    }
+
+    function tickStory(now) {
+      const delta = storyState.last ? Math.min((now - storyState.last) / 1000, 1 / 30) : 1 / 60;
+      storyState.last = now;
+      storyState.clock += delta;
+      storyState.stampAge += delta;
+      storyState.current = state.reducedMotion
+        ? storyState.target
+        : damp(storyState.current, storyState.target, 6.2, delta);
+
+      if (Math.abs(storyState.target - storyState.current) < 0.001) {
+        storyState.current = storyState.target;
+      }
+
+      drawStory();
+      const settled = storyState.current === storyState.target;
+      const mechanismMoving = activeStoryStep() === 4 || storyState.stampAge < 0.72;
+      storyState.frame = storyState.visible && (!settled || mechanismMoving) && !state.reducedMotion
+        ? requestAnimationFrame(tickStory)
+        : 0;
+    }
+
+    function activeStoryStep() {
+      return clamp(Math.round(storyState.current), 0, STORY_COUNT - 1);
+    }
+
+    function runStory() {
+      if (!storyState.visible || state.reducedMotion) {
+        if (storyState.frame) cancelAnimationFrame(storyState.frame);
+        storyState.frame = 0;
+        storyState.current = storyState.target;
+        drawStory();
+        return;
+      }
+
+      if (!storyState.frame) {
+        storyState.last = 0;
+        storyState.frame = requestAnimationFrame(tickStory);
+      }
+    }
+
+    function updateStoryFromScroll() {
+      const rect = storySection.getBoundingClientRect();
+      const travel = Math.max(1, storySection.offsetHeight - window.innerHeight);
+      storyState.target = clamp(-rect.top / travel, 0, 1) * (STORY_COUNT - 1);
+      runStory();
+    }
+
+    function goToStoryStep(index, focus = false) {
+      const next = clamp(index, 0, STORY_COUNT - 1);
+      const rect = storySection.getBoundingClientRect();
+      const top = window.scrollY + rect.top;
+      const travel = Math.max(1, storySection.offsetHeight - window.innerHeight);
+      window.scrollTo({ top: top + travel * (next / (STORY_COUNT - 1)), behavior: state.reducedMotion ? "auto" : "smooth" });
+      if (focus) storySteps[next].focus({ preventScroll: true });
+    }
+
+    window.addEventListener("pointermove", updatePointerTarget, { passive: true });
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState, { passive: true });
+    window.addEventListener("scroll", updateStoryFromScroll, { passive: true });
+    window.addEventListener("resize", updateStoryFromScroll, { passive: true });
+    reduceMotionQuery.addEventListener("change", setReducedMotion);
+
+    storySteps.forEach((step, index) => {
+      step.addEventListener("click", () => goToStoryStep(index));
+      step.addEventListener("keydown", (event) => {
+        let next = null;
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") next = Math.min(STORY_COUNT - 1, index + 1);
+        if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = Math.max(0, index - 1);
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = STORY_COUNT - 1;
+        if (next === null) return;
+        event.preventDefault();
+        goToStoryStep(next, true);
+      });
+    });
+
+    machineStage.addEventListener("keydown", (event) => {
+      const current = clamp(Math.round(storyState.target), 0, STORY_COUNT - 1);
+      let next = null;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") next = Math.min(STORY_COUNT - 1, current + 1);
+      if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = Math.max(0, current - 1);
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = STORY_COUNT - 1;
+      if (next === null) return;
+      event.preventDefault();
+      goToStoryStep(next);
+    });
+
+    const storyVisibilityObserver = new IntersectionObserver(
+      (entries) => {
+        storyState.visible = entries[entries.length - 1].isIntersecting;
+        if (storyState.visible) runStory();
+      },
+      { rootMargin: "120px 0px" }
+    );
+    storyVisibilityObserver.observe(storySection);
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -12%", threshold: 0.08 }
+    );
+    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+
+    intentControls.forEach((control) => {
+      control.addEventListener("pointerenter", () => {
+        state.intentTarget = 1;
+      });
+      control.addEventListener("pointerleave", () => {
+        state.intentTarget = 0;
+      });
+      control.addEventListener("focus", () => {
+        state.intentTarget = 1;
+      });
+      control.addEventListener("blur", () => {
+        state.intentTarget = 0;
+      });
+
+      control.addEventListener("pointermove", (event) => {
+        if (state.reducedMotion || event.pointerType === "touch") return;
+        const rect = control.getBoundingClientRect();
+        const x = (event.clientX - rect.left - rect.width * 0.5) * 0.08;
+        const y = (event.clientY - rect.top - rect.height * 0.5) * 0.08;
+        control.style.setProperty("--magnetic-x", x.toFixed(2) + "px");
+        control.style.setProperty("--magnetic-y", y.toFixed(2) + "px");
+      });
+
+      control.addEventListener("pointerleave", () => {
+        control.style.setProperty("--magnetic-x", "0px");
+        control.style.setProperty("--magnetic-y", "0px");
+      });
+    });
+
+    capabilityCards.forEach((card) => {
+      card.addEventListener("pointermove", (event) => {
+        if (state.reducedMotion || event.pointerType === "touch") return;
+        const rect = card.getBoundingClientRect();
+        const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+        const y = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+        card.style.setProperty("--card-x", `${(x * 100).toFixed(2)}%`);
+        card.style.setProperty("--card-y", `${(y * 100).toFixed(2)}%`);
+        card.style.setProperty("--figure-x", `${((x - 0.5) * 8).toFixed(2)}px`);
+        card.style.setProperty("--figure-y", `${((y - 0.5) * 6).toFixed(2)}px`);
+      });
+
+      card.addEventListener("pointerleave", () => {
+        card.style.setProperty("--card-x", "50%");
+        card.style.setProperty("--card-y", "50%");
+        card.style.setProperty("--figure-x", "0px");
+        card.style.setProperty("--figure-y", "0px");
+      });
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        state.isVisible = entry.isIntersecting;
+        requestAtmosphereFrame();
+      },
+      { threshold: 0 }
+    );
+    observer.observe(heroStage);
+
+    updateScrollState();
+    updateStoryFromScroll();
+    drawStory();
+
+    async function createAtmosphere() {
+      let THREE;
+
+      try {
+        THREE = await import("https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js");
+      } catch (error) {
+        document.body.classList.add("is-static-fallback");
+        runtimeState.textContent = "estática";
+        console.warn("Three.js não pôde ser carregado; fallback visual mantido.", error);
+        return;
+      }
+
+      let renderer;
+
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: false,
+          alpha: false,
+          powerPreference: "high-performance"
+        });
+      } catch (error) {
+        document.body.classList.add("is-static-fallback");
+        runtimeState.textContent = "estática";
+        console.warn("WebGL indisponível; fallback visual mantido.", error);
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const geometry = new THREE.PlaneGeometry(2, 2);
+      const uniforms = {
+        uResolution: { value: new THREE.Vector2(1, 1) },
+        uPointer: { value: new THREE.Vector2(0.5, 0.5) },
+        uSafeZone: { value: new THREE.Vector4(0.5, 0.5, 0.28, 0.26) },
+        uTime: { value: 0 },
+        uScroll: { value: 0 },
+        uPointerEnergy: { value: 0 },
+        uIntent: { value: 0 },
+        uMotion: { value: state.reducedMotion ? 0 : 1 }
+      };
+
+      const material = new THREE.ShaderMaterial({
+        uniforms,
+        vertexShader: document.querySelector("#hero-vertex-shader").textContent,
+        fragmentShader: document.querySelector("#hero-fragment-shader").textContent,
+        depthTest: false,
+        depthWrite: false
+      });
+
+      const field = new THREE.Mesh(geometry, material);
+      field.frustumCulled = false;
+      scene.add(field);
+
+      renderer.setClearColor(0x090705, 1);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      function updateSafeZone() {
+        const stageRect = heroStage.getBoundingClientRect();
+        const contentRect = heroContent.getBoundingClientRect();
+        const centerX = (contentRect.left + contentRect.width * 0.5 - stageRect.left) / stageRect.width;
+        const centerY = 1 - (contentRect.top + contentRect.height * 0.5 - stageRect.top) / stageRect.height;
+        const halfWidth = clamp((contentRect.width / stageRect.width) * 0.55, 0.2, 0.47);
+        const halfHeight = clamp((contentRect.height / stageRect.height) * 0.62, 0.18, 0.43);
+        uniforms.uSafeZone.value.set(centerX, centerY, halfWidth, halfHeight);
+      }
+
+      function resizeRenderer() {
+        const width = Math.max(1, heroStage.clientWidth);
+        const height = Math.max(1, heroStage.clientHeight);
+        const pixelRatio = 1;
+
+        renderer.setPixelRatio(1);
+        renderer.setSize(width, height, false);
+        uniforms.uResolution.value.set(width * pixelRatio, height * pixelRatio);
+        updateSafeZone();
+      }
+
+      let previousTime = performance.now();
+      let lastDraw = 0;
+      let heroFrame = 0;
+      let hasDrawn = false;
+
+      function drawAtmosphere(currentTime, force = false) {
+        if (!force && currentTime - lastDraw < 32) return;
+        const delta = Math.min((currentTime - previousTime) / 1000, 0.05);
+        previousTime = currentTime;
+        lastDraw = currentTime;
+
+        state.pointer.x = damp(state.pointer.x, state.pointerTarget.x, 7.5, delta);
+        state.pointer.y = damp(state.pointer.y, state.pointerTarget.y, 7.5, delta);
+        state.scroll = damp(state.scroll, state.scrollTarget, 6, delta);
+        state.intent = damp(state.intent, state.intentTarget, 8, delta);
+
+        const pointerSpeed = Math.hypot(
+          state.pointer.x - state.previousPointer.x,
+          state.pointer.y - state.previousPointer.y
+        ) / Math.max(delta, 0.001);
+
+        state.energy = damp(state.energy, clamp(pointerSpeed * 0.2, 0, 1), 9, delta);
+        state.previousPointer.x = state.pointer.x;
+        state.previousPointer.y = state.pointer.y;
+
+        uniforms.uPointer.value.set(state.pointer.x, state.pointer.y);
+        uniforms.uScroll.value = state.scroll;
+        uniforms.uPointerEnergy.value = state.reducedMotion ? 0 : state.energy;
+        uniforms.uIntent.value = state.reducedMotion ? 0 : state.intent;
+        uniforms.uMotion.value = state.reducedMotion ? 0 : 1;
+
+        if (!state.reducedMotion) {
+          uniforms.uTime.value += delta;
+        }
+
+        renderer.render(scene, camera);
+        if (!hasDrawn) {
+          hasDrawn = true;
+          document.body.classList.remove("is-static-fallback");
+          document.body.classList.add("is-three-ready");
+        }
+      }
+
+      function tickAtmosphere(currentTime) {
+        heroFrame = 0;
+        if (!state.isVisible || state.reducedMotion || document.hidden) return;
+        drawAtmosphere(currentTime);
+        heroFrame = requestAnimationFrame(tickAtmosphere);
+      }
+
+      function runAtmosphere() {
+        if (!state.isVisible || document.hidden) {
+          if (heroFrame) cancelAnimationFrame(heroFrame);
+          heroFrame = 0;
+          return;
+        }
+
+        if (state.reducedMotion) {
+          if (heroFrame) cancelAnimationFrame(heroFrame);
+          heroFrame = 0;
+          drawAtmosphere(performance.now(), true);
+          runtimeState.textContent = "pausada";
+          return;
+        }
+
+        runtimeState.textContent = "ativa";
+        if (!heroFrame) {
+          previousTime = performance.now();
+          heroFrame = requestAnimationFrame(tickAtmosphere);
+        }
+      }
+
+      requestAtmosphereFrame = runAtmosphere;
+      window.addEventListener("resize", () => {
+        resizeRenderer();
+        runAtmosphere();
+      }, { passive: true });
+      document.addEventListener("visibilitychange", runAtmosphere);
+      canvas.addEventListener("webglcontextlost", (event) => {
+        event.preventDefault();
+        if (heroFrame) cancelAnimationFrame(heroFrame);
+        heroFrame = 0;
+        hasDrawn = false;
+        document.body.classList.remove("is-three-ready");
+        document.body.classList.add("is-static-fallback");
+        runtimeState.textContent = "estática";
+      });
+      canvas.addEventListener("webglcontextrestored", () => {
+        resizeRenderer();
+        runAtmosphere();
+      });
+
+      resizeRenderer();
+      runAtmosphere();
+    }
+
+    createAtmosphere();
+  </script>
+</body>
+</html>

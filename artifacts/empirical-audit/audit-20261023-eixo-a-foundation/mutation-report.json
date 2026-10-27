@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-10-23T16:10:42.173Z",
+  "total_mutants": 3,
+  "killed_mutants": 0,
+  "survived_mutants": 3,
+  "mutation_score_percent": 0,
+  "mutations": [
+    {
+      "id": "MUT-01-DAG-LOCKS",
+      "file": "src/orchestration/dag-scheduler.js",
+      "description": "Bypass path intersection check in dag-scheduler (always return false)",
+      "killed": false,
+      "status": "SURVIVED"
+    },
+    {
+      "id": "MUT-02-DAG-CONFLICTS",
+      "file": "src/orchestration/dag-scheduler.js",
+      "description": "Disable conflict detection between tasks (always return false)",
+      "killed": false,
+      "status": "SURVIVED"
+    },
+    {
+      "id": "MUT-03-BLUEPRINT-CYCLES",
+      "file": "src/orchestration/blueprint.js",
+      "description": "Disable cycle detection in blueprint validator",
+      "killed": false,
+      "status": "SURVIVED"
+    }
+  ]
+}

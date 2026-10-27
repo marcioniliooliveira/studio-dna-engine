@@ -489,7 +489,7 @@ html.nogpu #cv{display:none}
 /* poster mode (software GL): the one rendered hero frame stays for the hero and leaves with it */
 /* no fade here: every frame of a canvas opacity transition is a full software recomposite (measured: a 570 ms stall) */
 html.poster.away #cv{visibility:hidden}
-html.poster .rev,html.poster #strip .stack b,html.poster #engines .strip b,html.poster #connect .port,html.poster #strip .idx i,html.poster #seq .cell,html.poster #seq .cell::before,html.poster #seq .vu i,html.poster #seq .steps i,html.poster #flip .plate,html.poster #seq .recdot,html.poster #seq .phbar{transition:none}
+html.poster .rev,html.poster #strip .stack b,html.poster #engines .strip b,html.poster #engines .strip b *,html.poster #connect .port,html.poster #strip .idx i,html.poster #seq .cell,html.poster #seq .cell::before,html.poster #seq .vu i,html.poster #seq .steps i,html.poster #flip .plate,html.poster #seq .recdot,html.poster #seq .phbar{transition:none !important}
 /* and nothing that costs a software painter: no vignette, no shadows, no grain, no masks */
 html.poster #vig,html.poster .deck::after,html.poster .deck .sweep{display:none}
 html.poster .cell,html.poster .deck{box-shadow:none}
@@ -545,7 +545,8 @@ p{margin:0;color:var(--text-2)}
 /* every beat is a tall section with a sticky 100vh stage; the camera travels over its first third.
 The stages let the pointer THROUGH to the canvas (the keys are hoverable); only their children catch it. */
 .beat{position:relative;pointer-events:none}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;pointer-events:none}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;pointer-events:none;opacity:0}
+#hero .stage{opacity:1}
 .stage > *{pointer-events:auto}
 #page{pointer-events:none}
 /* ── 1 · hero · the wordmark bottom-left, the claim top-right, the product between them ── */
@@ -1858,8 +1859,86 @@ async function bootScene({ MODEL_URL }) {
     return arr;
   }
 
+  // ── Token Preservation & Dynamic Color Engine ──
+  OPXY._tokenSteps = null;
+  OPXY._engineGlowActive = false;
+
+  OPXY.getBaseSteps = function() {
+    if (OPXY._tokenSteps && OPXY._tokenSteps.length === 16) {
+      return OPXY._tokenSteps;
+    }
+    const activeBtn = document.querySelector('.dna-preset-btn.active');
+    const key = activeBtn ? activeBtn.getAttribute('data-preset') : (OPXY._activePresetKey || 'swiss');
+    const cfg = (window.PRESET_CONFIGS && window.PRESET_CONFIGS[key]) || window.PRESET_CONFIGS?.swiss;
+    if (cfg && cfg.gradient) {
+      return get16Steps(cfg.gradient.startHex, cfg.gradient.endHex);
+    }
+    return get16EngineSteps('#121314', '#c0c8d2');
+  };
+
+  OPXY.setBaseSteps = function(steps) {
+    if (Array.isArray(steps) && steps.length === 16) {
+      OPXY._tokenSteps = steps;
+    }
+  };
+
+  OPXY.restoreBaseTones = function() {
+    if (!controls) return;
+    const baseSteps = (typeof OPXY.getBaseSteps === 'function') ? OPXY.getBaseSteps() : null;
+
+    if (baseSteps) {
+      // 1. Restore Sequencer Step Buttons (key-22..key-37) to base token colors
+      for (let i = 0; i < 16; i++) {
+        const kId = 'key-' + (22 + i);
+        const c = controls[kId];
+        const s = baseSteps[i];
+        if (c && s) {
+          c.traverse(o => {
+            if (o.isMesh && o.material) {
+              const isStep = /base|cap/i.test(o.name) || /Grayscale step/i.test(o.material.name || '');
+              const isLed = /LED|cavity/i.test(o.name) || /Soft white LED/i.test(o.material.name || '');
+              if (isStep && !isLed) {
+                if (o.material.color && typeof o.material.color.setRGB === 'function') {
+                  o.material.color.setRGB(s.r, s.g, s.b);
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // 2. Restore Backdrop Bars to base token tones
+      if (Array.isArray(bars)) {
+        bars.forEach((b, i) => {
+          if (b.material && b.material.color) {
+            const s = baseSteps[i];
+            b.userData.toneR = s.r;
+            b.userData.toneG = s.g;
+            b.userData.toneB = s.b;
+            b.material.color.setRGB(s.r, s.g, s.b);
+          }
+        });
+      }
+    }
+
+    // 3. Extinguish OLED Display emissive glow
+    if (OPXY.display && OPXY.display.emissive) {
+      OPXY.display.emissive.setRGB(0, 0, 0);
+      OPXY.display.emissiveIntensity = 0;
+      OPXY.display.needsUpdate = true;
+    }
+
+    OPXY._engineGlowActive = false;
+    OPXY._currentCenterColor = null;
+    OPXY.dirty?.();
+  };
+
   OPXY.setCenterGlow = function(hexColor, intensity = 1.0) {
-    if (!hexColor) return;
+    if (!hexColor || intensity <= 0) {
+      OPXY.restoreBaseTones();
+      return;
+    }
+    OPXY._engineGlowActive = true;
     OPXY._currentCenterColor = hexColor;
     if (centerLight) centerLight.intensity = 0; // Pure studio lighting, zero blown out glare!
 
@@ -1937,6 +2016,26 @@ async function bootScene({ MODEL_URL }) {
   const steps = keys.filter(k => { const n = +k.slice(4); return n >= 22 && n <= 37; });
   const record = 'key-39';
   OPXY.keys = keys; OPXY.whites = whites; OPXY.blacks = blacks; OPXY.steps = steps; OPXY.controls = controls;
+
+  // Capture baseline GLTF token steps
+  const initSteps = [];
+  for (let i = 0; i < 16; i++) {
+    const kId = 'key-' + (22 + i);
+    const c = controls[kId];
+    let col = null;
+    if (c) {
+      c.traverse(o => {
+        if (o.isMesh && /base|cap/i.test(o.name) && o.material && o.material.color) {
+          col = { r: o.material.color.r, g: o.material.color.g, b: o.material.color.b };
+        }
+      });
+    }
+    if (!col) {
+      col = { r: 0.01 + (i / 15) * 0.38, g: 0.01 + (i / 15) * 0.41, b: 0.01 + (i / 15) * 0.42 };
+    }
+    initSteps.push(col);
+  }
+  OPXY._tokenSteps = initSteps;
 
   /* ── the rain-in film · per-part start/duration/offset, computed once ── */
   const R = (seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(11);
@@ -2364,6 +2463,7 @@ async function bootSite() {
     let cur = 'hero';
     els.forEach((el, i) => { const r = el.getBoundingClientRect(); const len = Math.max(1, r.height - innerHeight); prog[beats[i]] = Math.max(0, Math.min(1, -r.top / len)); if (r.top <= 0.5) cur = beats[i]; });
     PAGE.beat = cur;
+    beats.forEach((id, i) => { const sEl = $('#' + id + ' .stage'); if (sEl) sEl.style.opacity = (id === cur) ? '1' : '0'; });
   };
   PAGE.measure();
 
@@ -2427,13 +2527,19 @@ function buildEngines() {
   });
   ENG.swatches.forEach((sw, i) => {
     sw.addEventListener('click', () => {
+      ENG.hover = i;
       setEngine(i, true);
       const sec = $('#engines');
       if (sec && window.lenis) {
         const top = sec.offsetTop;
         const h = sec.offsetHeight - innerHeight;
         const targetScroll = top + ((i + 0.5) / 8) * h;
-        window.lenis.scrollTo(targetScroll, { duration: 0.8 });
+        window.lenis.scrollTo(targetScroll, { 
+          duration: 0.8,
+          onComplete: () => { setTimeout(() => { if (ENG.hover === i) ENG.hover = -1; }, 200); }
+        });
+      } else {
+        setTimeout(() => { if (ENG.hover === i) ENG.hover = -1; }, 800);
       }
     });
     sw.addEventListener('pointerenter', () => {
@@ -2449,8 +2555,8 @@ function buildEngines() {
   }
 }
 
-function setEngine(i, play) {
-  if (i === ENG.active && ENG.swatches.length && ENG.swatches[i]?.classList.contains('on')) return;
+function setEngine(i, play, force = false) {
+  if (!force && i === ENG.active && ENG.swatches.length && ENG.swatches[i]?.classList.contains('on')) return;
   const prevIdx = ENG.active;
   ENG.active = i;
   const col = ENGINE_COLORS[i]?.hex || '#00f0ff';
@@ -2763,19 +2869,24 @@ function afterScene() {
       if (a === 'connect') { /* the tracking shot starts where the travel ends */ }
       if (b === 'connect') { OPXY.setCam(S.io2, S[STATION[a]], t, true); }
       if (b === 'hero') { $('#hero .claim').style.opacity = 0; $('#hero .wm').style.opacity = 0; }
-      if (b === 'engines' && a !== 'engines') { OPXY.setCenterGlow?.(null, 0); }
+      if ((b === 'engines' && a !== 'engines') || (a !== 'engines' && OPXY._engineGlowActive)) {
+        OPXY.restoreBaseTones?.();
+      }
     } else if (b === 'hero') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       OPXY.setCam(S.hero);
       /* the hero HOLDS for a viewport: its copy leaves first, then the sweep */
       const out = 1 - S_((p - 0.05) / 0.3); $('#hero .claim').style.opacity = out; $('#hero .wm').style.opacity = out;
       backdropT = 1 - S_((p - 0.35) / 0.45);
     } else if (b === 'strip') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       OPXY.setCam(S.top); setWord(Math.min(3, Math.floor(p * 4)));
     } else if (b === 'macro') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       /* the rail: three legs between four close-ups, eased per leg so the camera rests on each subject */
       const leg = Math.min(2, Math.floor(p * 3)), u = S_((p * 3 - leg) * 1.25 - 0.125);
       OPXY.setCam(S[MK[leg]], S[MK[leg + 1]], u);
-      const row = p < 0.2 ? 0 : p < 0.45 ? 1 : p < 0.75 ? 2 : 3; $$('#slate .row').forEach((el, i) => el.classList.toggle('on', i === row));
+      const row = p < 0.2 ? 0 : p < 0.45 ? 1 : p < 0.75 ? 2 : 3; $('#slate .row').forEach((el, i) => el.classList.toggle('on', i === row));
     } else if (b === 'engines') {
       OPXY.setCam(S.engines); setWord(-2);
       const q = Math.max(0, Math.min(1, p));
@@ -2783,17 +2894,21 @@ function afterScene() {
       if (ENG.hover === undefined || ENG.hover < 0) setEngine(Math.min(7, Math.floor(q * 8)), true);
       OPXY.turnEncoder(Math.floor(q * 8) % 4, (p - lastP) * 14);
     } else if (b === 'seq') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       OPXY.setCam(S.seq);
     } else if (b === 'connect') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       /* the tracking shot along the I/O end, then the caption band follows the camera */
       OPXY.setCam(S.io, S.io2, p);
       const camZ = OPXY.cam.pos.z * 1000; let best = 0, bd = 1e9;
       PORTS.els.forEach((el, i) => { const d = Math.abs(+el.dataset.z - camZ); if (d < bd) { bd = d; best = i; } });
       setPort(best);
     } else if (b === 'flip') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       OPXY.setCam(S.flip); rollTarget = p > 0.12 ? 1 : 0; groundT = 1 - S_((p - 0.5) / 0.3);
       $('#flip').classList.toggle('dark', groundT < 0.5);
     } else if (b === 'close') {
+      if (OPXY._engineGlowActive) OPXY.restoreBaseTones?.();
       OPXY.setCam(S.close); rollTarget = 0; autoYaw = true; $('#flip').classList.add('dark');
     }
     if (b !== 'connect') setPort(-1);
@@ -2805,7 +2920,7 @@ function afterScene() {
     st.floatAmt = floatAmt; st.hoverT = hoverT; st.backdropT = backdropT; st.smokeT = smokeT; st.poolT = poolT; st.dofT = dofT;
     /* copy hands over inside the slide: the outgoing stage is gone by mid-slide, the incoming arrives after */
     /* (poster tier: no fades · every opacity change is a full software repaint that stalls the page for half a second) */
-    if (OPXY.quality > 0) beats.forEach((id, i) => { const el = $('#' + id + ' .stage'); if (!el) return; let o = 1;
+    beats.forEach((id, i) => { const el = $('#' + id + ' .stage'); if (!el) return; let o = 1;
       if (arriving > 0) { if (i === cur) o = 1 - S_(tSlide / 0.45); else if (i === arriving) o = S_((tSlide - 0.55) / 0.45); else o = 0; }
       else o = i === cur ? 1 : 0;
       if (id === 'hero' && !(arriving > 0)) o = 1;
@@ -4703,6 +4818,11 @@ function playKey(k) {
     const cfg = PRESET_CONFIGS[key] || PRESET_CONFIGS.swiss;
     const steps = get16Steps(cfg.gradient.startHex, cfg.gradient.endHex);
 
+    if (window.OPXY) {
+      window.OPXY.setBaseSteps?.(steps);
+      window.OPXY._activePresetKey = key;
+    }
+
     // 1. Sincroniza Three.js Backdrop Bars
     if (window.OPXY && Array.isArray(window.OPXY.bars)) {
       window.OPXY.bars.forEach((b, i) => {
@@ -4815,7 +4935,7 @@ function playKey(k) {
       grp.style.display = isMatch ? 'block' : 'none';
     });
     if (window.ENG && window.ENG.active >= 0 && typeof window.setEngine === 'function') {
-      window.setEngine(window.ENG.active, false);
+      window.setEngine(window.ENG.active, false, true);
     }
   };
   window.OPXY_SET_TRANSITION_STYLE('morph');

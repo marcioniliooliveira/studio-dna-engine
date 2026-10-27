@@ -1,0 +1,1 @@
+{"version":1,"runs":[{"runId":"adv-run-004","taskId":"task-004","model":"gemini-3.7-flash","inputTokens":10,"outputTokens":10,"retries":0,"status":"running","gates":{},"artifactHash":"pending","events":[{"type":"executor","status":"completed","taskId":"task-rogue","attempt":0,"inputTokens":10,"outputTokens":10}]}]}

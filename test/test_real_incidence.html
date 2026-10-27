@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tone-Mapped Cloud Incidence Test</title>
+  <style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+    canvas { width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const gl = canvas.getContext('webgl2');
+
+    const vsSource = `#version 300 es
+    precision highp float;
+    in vec4 position;
+    void main() { gl_Position = position; }`;
+
+    const fsSource = `#version 300 es
+    precision highp float;
+    out vec4 O;
+    uniform vec2 resolution;
+    uniform float time;
+    #define FC gl_FragCoord.xy
+    #define T time
+    #define R resolution
+    #define MN min(R.x,R.y)
+
+    float rnd(vec2 p) {
+      p = fract(p * vec2(12.9898, 78.233));
+      p += dot(p, p + 34.56);
+      return fract(p.x * p.y);
+    }
+
+    float noise(in vec2 p) {
+      vec2 i = floor(p), f = fract(p), u = f * f * (3. - 2. * f);
+      float a = rnd(i),
+            b = rnd(i + vec2(1, 0)),
+            c = rnd(i + vec2(0, 1)),
+            d = rnd(i + 1.);
+      return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+    }
+
+    float fbm(vec2 p) {
+      float t = .0, a = 1.; 
+      mat2 m = mat2(1., -.5, .2, 1.2);
+      for (int i = 0; i < 5; i++) {
+        t += a * noise(p);
+        p *= 2. * m;
+        a *= .5;
+      }
+      return t;
+    }
+
+    // Volumetric cloud density with multi-octave swirls
+    float clouds(vec2 p) {
+      float d = 1., t = .0;
+      for (float i = .0; i < 3.; i++) {
+        float a = d * fbm(i * 10. + p.x * .22 + .2 * (1. + i) * p.y + d + i * i + p + vec2(T * 0.025, -T * 0.012));
+        t = mix(t, d, a);
+        d = a;
+        p *= 2. / (i + 1.);
+      }
+      return t;
+    }
+
+    // Independent puffy cloud cluster with smooth ellipsoidal envelope and surface gradient
+    float cloudCluster(vec2 p, vec2 center, vec2 radii, out vec2 normal) {
+      vec2 dxy = p - center;
+      float dNorm = length(dxy / radii);
+      float env = smoothstep(1.0, 0.2, dNorm);
+      if (env <= 0.001) {
+        normal = vec2(0.0);
+        return 0.0;
+      }
+      float c = clouds(dxy * 1.6) * env;
+      normal = -normalize((dxy / radii) + 0.001);
+      return c;
+    }
+
+    void main(void) {
+      vec2 uv = (FC - .5 * R) / MN;
+      vec3 col = vec3(0.0);
+
+      float zoom = 1. - .3 * (sin(T * .2) * .5 + .5);
+
+      // 1. Calculate the 11 Projectile positions and bow-shock displacement
+      vec2 uv_proj = uv * zoom;
+      vec2 wakeDisplacement = vec2(0.0);
+
+      vec2 pCoords[11];
+      float pDists[11];
+
+      for (float i = 1.; i < 12.; i++) {
+        int idx = int(i - 1.0);
+        uv_proj += .1 * cos(i * vec2(.1 + .01 * i, .8) + i * i + T * .5 + .1 * uv_proj.x);
+        vec2 p = uv_proj;
+        float d = length(p);
+
+        pCoords[idx] = p;
+        pDists[idx] = d;
+
+        // Smooth aerodynamic displacement field (no step discontinuities!)
+        float wakeDist = length(vec2(p.x * 0.7, p.y * 2.2));
+        float wakeFactor = exp(-wakeDist * 4.8);
+        vec2 bowShock = (p / (d + 0.035)) * 0.028 * wakeFactor;
+        vec2 wakePush = vec2(-0.025, 0.0) * wakeFactor;
+        vec2 microVortex = vec2(-p.y, p.x * 0.35) * 0.02 * exp(-d * 5.5);
+        wakeDisplacement += (bowShock + wakePush + microVortex);
+      }
+
+      // 2. Sample Independent Drei-Style Clouds with Wake Interaction
+      vec2 pCloud = uv + wakeDisplacement;
+
+      vec2 n1, n2, n3, n4;
+      // Main cloud bank on right traversed directly by the supersonic projectiles
+      float c1 = cloudCluster(pCloud, vec2(0.35, 0.02), vec2(0.85, 0.65), n1);
+      // Floating puffy cumulus upper center-left
+      float c2 = cloudCluster(pCloud, vec2(-0.25, 0.45), vec2(0.65, 0.38), n2);
+      // Exit cumulus bank on left
+      float c3 = cloudCluster(pCloud, vec2(-0.65, -0.25), vec2(0.55, 0.42), n3);
+      // Deep lower-right cumulus
+      float c4 = cloudCluster(pCloud, vec2(0.65, -0.42), vec2(0.55, 0.35), n4);
+
+      float cloudDensity = c1 + c2 + c3 + c4;
+      vec2 cloudNormal = normalize(n1 * c1 + n2 * c2 + n3 * c3 + n4 * c4 + vec2(0.0001));
+
+      // Realistic vertical cloud shading (ambient light from above, self-shadow below)
+      float verticalShading = mix(0.5, 1.3, clamp(uv.y + 0.45, 0.0, 1.0));
+
+      // Base warm amber / mahogany cloud body
+      vec3 cloudAmbient = vec3(cloudDensity * 0.22, cloudDensity * 0.12, cloudDensity * 0.04) * verticalShading;
+
+      // 3. Calibrated Light Incidence from each of the 11 plasma projectiles
+      vec3 cloudIncidence = vec3(0.0);
+
+      for (float i = 1.; i < 12.; i++) {
+        int idx = int(i - 1.0);
+        vec2 p = pCoords[idx];
+        float d = pDists[idx];
+        vec3 pCol = cos(sin(i) * vec3(1, 2, 3)) + 1.;
+
+        // Incident light direction vector from projectile to cloud
+        vec2 L = -normalize(p + vec2(0.0001));
+
+        // Diffuse surface incidence (Lambertian N . L)
+        float NdotL = max(0.0, dot(cloudNormal, L));
+        float directIncidence = NdotL * (0.004 / (d + 0.07)) * cloudDensity;
+
+        // Subsurface volumetric scatter inside the vapor
+        float internalGlow = (0.0022 / (d * d + 0.055)) * cloudDensity;
+
+        // Soft rim-light along cloud boundary when projectile is behind/inside edge
+        float rim = (0.003 / (d + 0.06)) * smoothstep(0.45, 0.05, abs(cloudDensity - 0.35));
+
+        cloudIncidence += pCol * (directIncidence + internalGlow + rim);
+      }
+
+      vec3 finalCloud = cloudAmbient + cloudIncidence;
+
+      // 4. Projectiles with Anamorphic Flares and Cloud Transmission
+      uv_proj = uv * zoom;
+      vec3 projectileEmission = vec3(0.0);
+
+      for (float i = 1.; i < 12.; i++) {
+        uv_proj += .1 * cos(i * vec2(.1 + .01 * i, .8) + i * i + T * .5 + .1 * uv_proj.x);
+        vec2 p = uv_proj;
+        float d = length(p);
+        vec3 pCol = cos(sin(i) * vec3(1, 2, 3)) + 1.;
+
+        // Fog transmission (projectiles penetrate through the clouds)
+        float transmission = mix(1.0, 0.65, clamp(cloudDensity * 1.2, 0.0, 1.0));
+        float core = 0.00125 / (d + 0.0005);
+
+        // Original horizontal anamorphic flare equation
+        float b = noise(i + p + d);
+        float flare = 0.0024 * b / length(max(p, vec2(b * p.x * .02, p.y)));
+
+        projectileEmission += (core * transmission + flare) * pCol;
+      }
+
+      // 5. Filmic / Reinhard Tone Mapping to combine brilliant flares and illuminated clouds seamlessly
+      vec3 rawColor = finalCloud + projectileEmission;
+      vec3 mappedColor = rawColor / (vec3(1.0) + rawColor * 0.62);
+
+      O = vec4(mappedColor, 1.0);
+    }
+    `;
+
+    function createShader(gl, type, source) {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, source);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.error('Shader error:', gl.getShaderInfoLog(s));
+      }
+      return s;
+    }
+
+    const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Program error:', gl.getProgramInfoLog(program));
+    }
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+
+    const pos = gl.getAttribLocation(program, 'position');
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    const resLoc = gl.getUniformLocation(program, 'resolution');
+    const timeLoc = gl.getUniformLocation(program, 'time');
+
+    function render(now) {
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.useProgram(program);
+      gl.uniform2f(resLoc, canvas.width, canvas.height);
+      gl.uniform1f(timeLoc, now * 0.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

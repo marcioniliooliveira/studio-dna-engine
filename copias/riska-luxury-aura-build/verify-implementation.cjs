@@ -1381,6 +1381,162 @@ async function runTests() {
     assert(syncAndA11yTest.closedVis === 'hidden', 'Collapsed accordion panels have visibility: hidden preventing phantom keyboard focus');
     assert(syncAndA11yTest.openVis === 'visible', 'Expanded accordion panels transition visibility: visible for full content accessibility');
 
+    console.log('\n--- Test 25: Slide 005 (The Silas Shirt) Fluid Dimensions & Zero-Jump Pin Stability (R1) ---');
+    const r1Data = await page.evaluate(async () => {
+      const ps = document.getElementById('productStory');
+      const inlineStyle = ps ? ps.getAttribute('style') || '' : '';
+      const hasInlineFixedDimensions = inlineStyle.includes('1920px') || inlineStyle.includes('1080px');
+      const inner = ps ? ps.firstElementChild : null;
+      const innerHasSticky = inner ? inner.classList.contains('sticky') : false;
+
+      // Unpin boundary stability check
+      const track = document.getElementById('productTrack');
+      const slide5 = track ? track.querySelector('.product-slide:nth-child(5)') : null;
+      const pdp = document.getElementById('atelierPDP');
+      const st = (typeof ScrollTrigger !== 'undefined') ? ScrollTrigger.getAll().find(s => s.vars && s.vars.trigger === ps) : null;
+
+      let slide5RestLeft = null;
+      let pdpAbutsCleanly = false;
+
+      if (st && track && slide5 && pdp) {
+        window.scrollTo(0, st.end);
+        await new Promise(r => setTimeout(r, 200));
+        const s5Rect = slide5.getBoundingClientRect();
+        const pdpRect = pdp.getBoundingClientRect();
+        slide5RestLeft = Math.abs(s5Rect.left);
+        pdpAbutsCleanly = Math.abs(pdpRect.top - window.innerHeight) <= 2;
+      }
+
+      return {
+        hasInlineFixedDimensions,
+        innerHasSticky,
+        slide5RestLeft,
+        pdpAbutsCleanly
+      };
+    });
+
+    assert(!r1Data.hasInlineFixedDimensions, '#productStory has removed fixed inline dimensions (1920x1080px)');
+    assert(!r1Data.innerHasSticky, '#productStory child container has eliminated conflicting sticky top-0');
+    assert(r1Data.slide5RestLeft !== null && r1Data.slide5RestLeft < 1.0, `Slide 005 rests stationary at unpin (got: ${r1Data.slide5RestLeft ? r1Data.slide5RestLeft.toFixed(2) : 'null'}px)`);
+    assert(r1Data.pdpAbutsCleanly, '#atelierPDP enters flush with bottom of viewport without vertical coordinate jump');
+
+    console.log('\n--- Test 26: Header Swap & Switcher top: 0 Elevation (R2) ---');
+    const r2Data = await page.evaluate(async () => {
+      const header = document.getElementById('siteHeader');
+      const pdp = document.getElementById('atelierPDP');
+      const switcher = pdp ? pdp.querySelector('.piece-switcher') : null;
+
+      // Scroll inside #atelierPDP
+      if (pdp) pdp.scrollIntoView({ block: 'start' });
+      if (window.__checkPDP) window.__checkPDP();
+      await new Promise(r => setTimeout(r, 800));
+
+      const headerInside = header ? {
+        hasHiddenClass: header.classList.contains('header--hidden'),
+        opacity: window.getComputedStyle(header).opacity,
+        pointerEvents: window.getComputedStyle(header).pointerEvents,
+        bottom: header.getBoundingClientRect().bottom
+      } : {};
+
+      const switcherInside = switcher ? {
+        top: window.getComputedStyle(switcher).top,
+        zIndex: window.getComputedStyle(switcher).zIndex,
+        rectTop: switcher.getBoundingClientRect().top
+      } : {};
+
+      // Scroll past to footer
+      window.scrollTo(0, document.body.scrollHeight);
+      if (window.__checkPDP) window.__checkPDP();
+      await new Promise(r => setTimeout(r, 800));
+
+      const headerFooter = header ? {
+        hasHiddenClass: header.classList.contains('header--hidden'),
+        opacity: window.getComputedStyle(header).opacity,
+        pointerEvents: window.getComputedStyle(header).pointerEvents
+      } : {};
+
+      // Scroll back up into #atelierPDP
+      if (pdp) pdp.scrollIntoView({ block: 'start' });
+      if (window.__checkPDP) window.__checkPDP();
+      await new Promise(r => setTimeout(r, 800));
+
+      const headerReEnter = header ? {
+        hasHiddenClass: header.classList.contains('header--hidden'),
+        opacity: window.getComputedStyle(header).opacity
+      } : {};
+
+      // Scroll back up to top
+      window.scrollTo(0, 0);
+      if (window.__checkPDP) window.__checkPDP();
+      await new Promise(r => setTimeout(r, 800));
+
+      const headerTop = header ? {
+        hasHiddenClass: header.classList.contains('header--hidden'),
+        opacity: window.getComputedStyle(header).opacity
+      } : {};
+
+      return {
+        headerInside,
+        switcherInside,
+        headerFooter,
+        headerReEnter,
+        headerTop
+      };
+    });
+
+    assert(r2Data.headerInside.hasHiddenClass && r2Data.headerInside.bottom <= 0, '#siteHeader is translated offscreen when inside #atelierPDP');
+    assert(parseFloat(r2Data.headerInside.opacity) < 0.05, '#siteHeader opacity is 0 when inside #atelierPDP');
+    assert(r2Data.headerInside.pointerEvents === 'none', '#siteHeader pointer-events are disabled when inside #atelierPDP');
+    assert(r2Data.switcherInside.top === '0px', '.piece-switcher is positioned at top: 0px');
+    assert(parseInt(r2Data.switcherInside.zIndex, 10) >= 50, '.piece-switcher has elevated z-index >= 50');
+    assert(Math.abs(r2Data.switcherInside.rectTop) <= 2, '.piece-switcher docks flush at viewport top (0px)');
+    assert(!r2Data.headerFooter.hasHiddenClass && parseFloat(r2Data.headerFooter.opacity) > 0.9, '#siteHeader re-appears when scrolling past #atelierPDP to footer');
+    assert(r2Data.headerReEnter.hasHiddenClass, '#siteHeader re-hides when reverse scrolling back into #atelierPDP');
+    assert(!r2Data.headerTop.hasHiddenClass && parseFloat(r2Data.headerTop.opacity) > 0.9, '#siteHeader is fully restored when scrolling back to page top');
+
+    console.log('\n--- Test 27: Poeza Bride Text Reveal Engine & Dual-Layer Accessibility (R3) ---');
+    const r3Data = await page.evaluate(() => {
+      const titles = Array.from(document.querySelectorAll('.word-reveal, #storyTitle, #newsletterTitle'));
+      const words = Array.from(document.querySelectorAll('.reveal-word'));
+      const srLayers = Array.from(document.querySelectorAll('.word-reveal .sr-only, #storyTitle .sr-only'));
+
+      // Check that dual layer exists
+      const hasSrLayers = srLayers.length > 0;
+      const srAccessible = srLayers.every(sr => {
+        const text = sr.textContent.trim();
+        return text.length > 0;
+      });
+
+      // Check words exist and have hardware acceleration transform properties
+      const wordsCount = words.length;
+      const wordsHaveTransforms = words.slice(0, 10).every(w => {
+        const cs = window.getComputedStyle(w);
+        return cs.display === 'inline-block';
+      });
+
+      // Check no rotateX distortion on story title
+      const storyTitleWords = Array.from(document.querySelectorAll('#storyTitle .reveal-word'));
+      const zero3DTilt = storyTitleWords.every(w => {
+        const transform = window.getComputedStyle(w).transform;
+        return !transform.includes('matrix3d') || transform === 'none';
+      });
+
+      return {
+        titlesCount: titles.length,
+        hasSrLayers,
+        srAccessible,
+        wordsCount,
+        wordsHaveTransforms,
+        zero3DTilt
+      };
+    });
+
+    assert(r3Data.titlesCount >= 3, `Found editorial titles configured for text reveal (count: ${r3Data.titlesCount})`);
+    assert(r3Data.hasSrLayers && r3Data.srAccessible, 'Dual-layer text reveal maintains accessible unsegmented .sr-only layer for WCAG');
+    assert(r3Data.wordsCount >= 10, `Found segmented reveal words in visual layer (count: ${r3Data.wordsCount})`);
+    assert(r3Data.wordsHaveTransforms, 'Visual reveal words have display: inline-block for hardware accelerated transform');
+    assert(r3Data.zero3DTilt, 'Text reveal eliminates unwanted 3D rotateX distortion in accordance with Poeza Bride reference');
+
     await rmTestPage.close();
     await touchContext.close();
     await page.close();
