@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silvio Iwata Imobiliária · Seção 07 (Atendimento Especializado) & Seção 08 (Footer Institucional)</title>
+
+  <!-- Fontes Oficiais P0 (Instrument Serif + DM Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       LOCK DNA P0 — SILVIO IWATA IMOBILIÁRIA (MARINGÁ / PR)
+       Seção 07 (3 Variantes de Conversão Direta) + Seção 08 (Footer Arquitetónico)
+       ========================================================================== */
+    :root {
+      /* Paleta P0 Inegociável */
+      --bg-sand: #F4F1E8;
+      --bg-sand-elevated: #FAF8F3;
+      --bg-sand-warm: #EAE5D7;
+      --bg-forest: #0B2A1A;
+      --bg-forest-deep: #071D12;
+      --bg-forest-card: #103522;
+      --brand-primary: #055227;
+      --brand-deep: #005023;
+      --accent-lime: #A6C83A;
+      --accent-lime-hover: #96B82E;
+      --accent-lime-soft: rgba(166, 200, 58, 0.16);
+      --text-ink: #0D0F14;
+      --text-white: #FFFFFF;
+      --text-muted: #6B7A6E;
+      --text-muted-light: #9BA89E;
+
+      /* Linhas & Bordas Arquitetónicas */
+      --border-light: rgba(5, 82, 39, 0.13);
+      --border-light-strong: rgba(5, 82, 39, 0.24);
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --border-dark-subtle: rgba(255, 255, 255, 0.07);
+      --border-lime: rgba(166, 200, 58, 0.38);
+
+      /* Tipografia P0 */
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Curvas Cinematográficas */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-sand);
+      color: var(--text-ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button, input {
+      font-family: inherit;
+      background: none;
+      border: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ==========================================================================
+       BARRA SUPERIOR DE PROTÓTIPO: SELETOR DAS 3 VARIANTES DA SEÇÃO 07
+       ========================================================================== */
+    .prototype-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(7, 29, 18, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .proto-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--bg-sand);
+    }
+
+    .proto-badge-s {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bg-sand);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .proto-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .proto-tag {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--accent-lime-soft);
+      color: var(--accent-lime);
+      border: 1px solid var(--border-lime);
+    }
+
+    .variant-switcher {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dark);
+      padding: 3px;
+      border-radius: 999px;
+      gap: 4px;
+    }
+
+    .variant-pill {
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 232, 0.72);
+      transition: all 0.3s var(--ease-spring);
+    }
+
+    .variant-pill:hover {
+      color: var(--text-white);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .variant-pill.is-active {
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      font-weight: 700;
+    }
+
+    .contact-variant-view {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.45s var(--ease-out-expo);
+    }
+
+    .contact-variant-view.is-active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       VARIANTE 01: "THE INTENT CONCIERGE" (CONFIGURADOR TÁTIL EM 2 PASSOS)
+       Fundo Marfim #F4F1E8 + Card de Despacho Direto #0B2A1A (Zero Burocracia)
+       ========================================================================== */
+    .v1-concierge-section {
+      background-color: var(--bg-sand);
+      color: var(--text-ink);
+      padding: 96px 48px 112px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .v1-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .v1-header-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+    }
+
+    .v1-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+      margin-bottom: 10px;
+    }
+
+    .v1-eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+    }
+
+    .v1-headline {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      max-width: 660px;
+    }
+
+    .v1-headline em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--brand-primary);
+    }
+
+    .v1-sla-badge {
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--bg-sand-elevated);
+      border: 1px solid var(--border-light-strong);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+
+    .sla-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      box-shadow: 0 0 0 4px rgba(166, 200, 58, 0.25);
+    }
+
+    /* Grelha Principal: Esquerda Seletores Táteis / Direita Cartão do Especialista */
+    .v1-concierge-grid {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 48px;
+      align-items: stretch;
+    }
+
+    .v1-steps-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 36px;
+    }
+
+    .v1-step-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .v1-step-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .v1-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-forest);
+      color: var(--accent-lime);
+      font-size: 0.70rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Grelha 2x2 de Intenções */
+    .v1-intent-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .v1-intent-btn {
+      padding: 22px 24px;
+      border-radius: 16px;
+      background: var(--bg-sand-elevated);
+      border: 1.5px solid var(--border-light);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.28s var(--ease-spring);
+    }
+
+    .v1-intent-btn:hover {
+      border-color: var(--brand-primary);
+      background: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    .v1-intent-btn.is-active {
+      background: var(--bg-forest);
+      color: var(--bg-sand);
+      border-color: var(--bg-forest);
+      box-shadow: 0 14px 32px rgba(11, 42, 26, 0.14);
+    }
+
+    .v1-intent-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .v1-intent-btn.is-active .v1-intent-top {
+      color: var(--accent-lime);
+    }
+
+    .v1-intent-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+    }
+
+    .v1-intent-desc {
+      font-size: 0.80rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .v1-intent-btn.is-active .v1-intent-desc {
+      color: var(--text-muted-light);
+    }
+
+    /* Passo 2: Pílulas de Foco / Empreendimento */
+    .v1-focus-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .v1-focus-pill {
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: var(--bg-sand-elevated);
+      border: 1px solid var(--border-light-strong);
+      font-size: 0.80rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      transition: all 0.22s var(--ease-spring);
+    }
+
+    .v1-focus-pill:hover {
+      border-color: var(--brand-primary);
+      background: #FFFFFF;
+    }
+
+    .v1-focus-pill.is-active {
+      background: var(--brand-primary);
+      color: var(--text-white);
+      border-color: var(--brand-primary);
+    }
+
+    /* Passo 3: Canal / Formato de Reunião */
+    .v1-channel-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .v1-channel-pill {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-light-strong);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: all 0.22s ease;
+    }
+
+    .v1-channel-pill.is-active {
+      background: var(--bg-sand-warm);
+      color: var(--text-ink);
+      border-color: var(--text-ink);
+    }
+
+    /* Card Direito: Despacho Direto com o Especialista CRECI (#0B2A1A) */
+    .v1-dispatch-card {
+      background: var(--bg-forest);
+      color: var(--bg-sand);
+      border-radius: 22px;
+      padding: 40px 38px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      box-shadow: 0 28px 60px rgba(11, 42, 26, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dispatch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .dispatch-desk-tag {
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .dispatch-creci {
+      font-size: 0.70rem;
+      font-weight: 600;
+      color: var(--text-muted-light);
+      letter-spacing: 0.08em;
+    }
+
+    .dispatch-specialist-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .specialist-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--bg-forest-card);
+      border: 1.5px solid var(--accent-lime);
+      color: var(--accent-lime);
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .specialist-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .specialist-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .specialist-role {
+      font-size: 0.80rem;
+      color: var(--text-muted-light);
+    }
+
+    /* Pré-visualização da Mensagem Gerada Automaticamente */
+    .dispatch-preview-box {
+      background: rgba(7, 29, 18, 0.72);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .preview-message {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.18rem;
+      line-height: 1.35;
+      color: var(--bg-sand);
+    }
+
+    .dispatch-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-whatsapp-lime {
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .btn-whatsapp-lime:hover {
+      background: var(--accent-lime-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(166, 200, 58, 0.28);
+    }
+
+    .dispatch-footnote {
+      font-size: 0.73rem;
+      color: var(--text-muted-light);
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       VARIANTE 02: "THE PRIVATE DESK SPLIT 50/50" (MASTERS / ZORGE STAGE)
+       Esquerda #F4F1E8 Diretório de Mesas & Sede | Direita #0B2A1A Agendador Private
+       ========================================================================== */
+    .v2-split-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 680px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .v2-left-desks {
+      background-color: var(--bg-sand);
+      color: var(--text-ink);
+      padding: 88px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .v2-desks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .v2-desk-item {
+      padding: 22px 24px;
+      border-radius: 16px;
+      background: var(--bg-sand-elevated);
+      border: 1px solid var(--border-light-strong);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .v2-desk-item:hover,
+    .v2-desk-item.is-selected {
+      background: #FFFFFF;
+      border-color: var(--brand-primary);
+      transform: translateX(4px);
+      box-shadow: 0 12px 28px rgba(5, 82, 39, 0.08);
+    }
+
+    .v2-desk-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .v2-desk-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .v2-desk-name {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text-ink);
+    }
+
+    .v2-desk-sub {
+      font-size: 0.80rem;
+      color: var(--text-muted);
+    }
+
+    .v2-desk-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(5, 82, 39, 0.08);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      transition: all 0.25s ease;
+    }
+
+    .v2-desk-item.is-selected .v2-desk-arrow {
+      background: var(--bg-forest);
+      color: var(--accent-lime);
+    }
+
+    /* Lado Direito: Agendador Private em Verde Floresta (#0B2A1A) */
+    .v2-right-scheduler {
+      background-color: var(--bg-forest);
+      color: var(--bg-sand);
+      padding: 88px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 36px;
+      border-left: 1px solid var(--border-dark);
+    }
+
+    .v2-scheduler-box {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .v2-slot-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .v2-slot-lbl {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .v2-pills-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .v2-dark-pill {
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      font-size: 0.80rem;
+      font-weight: 600;
+      color: var(--bg-sand);
+      transition: all 0.22s ease;
+    }
+
+    .v2-dark-pill:hover {
+      border-color: var(--accent-lime);
+    }
+
+    .v2-dark-pill.is-active {
+      background: var(--bg-sand);
+      color: var(--bg-forest);
+      border-color: var(--bg-sand);
+      font-weight: 700;
+    }
+
+    .v2-code-input-bar {
+      display: flex;
+      align-items: center;
+      background: rgba(7, 29, 18, 0.75);
+      border: 1px solid var(--border-dark);
+      border-radius: 999px;
+      padding: 6px 8px 6px 20px;
+      gap: 12px;
+    }
+
+    .v2-code-input {
+      flex: 1;
+      font-size: 0.88rem;
+      color: var(--bg-sand);
+      outline: none;
+    }
+
+    .v2-code-input::placeholder {
+      color: var(--text-muted-light);
+    }
+
+    /* ==========================================================================
+       VARIANTE 03: "THE ARCHITECTURAL MONOLITH & LOUNGE" (CÁPSULA PANORÂMICA)
+       Monólito #0B2A1A Emoldurado em Marfim + 3 Portas de Intenção + Busca Código
+       ========================================================================== */
+    .v3-lounge-section {
+      background-color: var(--bg-sand);
+      padding: 88px 48px 104px;
+    }
+
+    .v3-monolith-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      background: var(--bg-forest);
+      color: var(--bg-sand);
+      border-radius: 28px;
+      padding: 64px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      box-shadow: 0 32px 72px rgba(11, 42, 26, 0.20);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .v3-top-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .v3-doors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .v3-door-card {
+      padding: 32px 28px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      transition: all 0.3s var(--ease-spring);
+      cursor: pointer;
+    }
+
+    .v3-door-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent-lime);
+      transform: translateY(-4px);
+    }
+
+    .v3-door-eyebrow {
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .v3-door-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text-white);
+      margin-top: 6px;
+    }
+
+    .v3-door-desc {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--text-muted-light);
+      margin-top: 8px;
+    }
+
+    .v3-door-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-dark-subtle);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bg-sand);
+    }
+
+    /* ==========================================================================
+       SEÇÃO 08: FOOTER INSTITUCIONAL ARQUITETÓNICO (ARCHITECTURAL FOOTER)
+       Unidades Físicas Maringá · Links Flagships & Bairros · CRECI J-1033
+       ========================================================================== */
+    .architectural-footer {
+      background-color: var(--bg-forest-deep);
+      color: var(--bg-sand);
+      padding: 88px 48px 40px;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .footer-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Topo do Footer: Marca + Unidades Físicas em Maringá */
+    .footer-top-grid {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      gap: 64px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .footer-brand-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-sand);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .footer-logo-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-white);
+    }
+
+    .footer-tagline {
+      font-size: 0.90rem;
+      line-height: 1.6;
+      color: var(--text-muted-light);
+      max-width: 340px;
+    }
+
+    .footer-creci-seal {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      align-self: flex-start;
+    }
+
+    /* Colunas de Navegação e Endereços Físicos */
+    .footer-nav-columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .footer-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: 4px;
+    }
+
+    .footer-link {
+      font-size: 0.85rem;
+      color: var(--text-muted-light);
+      transition: color 0.2s ease, transform 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-link:hover {
+      color: var(--text-white);
+      transform: translateX(3px);
+    }
+
+    .footer-hq-address {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text-muted-light);
+    }
+
+    .footer-hq-address strong {
+      color: var(--bg-sand);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Wordmark Monumental Editorial no Fecho */
+    .footer-monumental-brand {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-dark-subtle);
+      padding-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .footer-giant-wordmark {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(3.6rem, 9vw, 8.2rem);
+      line-height: 0.88;
+      color: rgba(244, 241, 232, 0.12);
+      letter-spacing: -0.02em;
+      user-select: none;
+    }
+
+    .footer-giant-city {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted-light);
+    }
+
+    /* Legal & Copyright Bottom Bar */
+    .footer-bottom-legal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 0.76rem;
+      color: var(--text-muted-light);
+    }
+
+    .footer-legal-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-legal-links a:hover {
+      color: var(--text-white);
+    }
+
+    /* Responsividade */
+    @media (max-width: 1080px) {
+      .v1-concierge-grid,
+      .v2-split-section,
+      .v3-doors-grid,
+      .footer-top-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-nav-columns {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .v1-concierge-section,
+      .v2-left-desks,
+      .v2-right-scheduler,
+      .v3-lounge-section,
+      .architectural-footer {
+        padding: 64px 20px;
+      }
+      .v1-intent-cards,
+      .footer-nav-columns {
+        grid-template-columns: 1fr;
+      }
+      .v3-monolith-shell {
+        padding: 40px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR DE PROTÓTIPO: 3 VARIANTES DA SEÇÃO 07 + FOOTER (SEÇÃO 08)
+       ======================================================================== -->
+  <nav class="prototype-bar" aria-label="Controlo de Variantes da Seção 07">
+    <div class="proto-brand">
+      <div class="proto-badge-s">S</div>
+      <span class="proto-title">Silvio Iwata · Seção 07 (Atendimento) + Seção 08 (Footer)</span>
+      <span class="proto-tag">Conversão Direta Sem Formulários Longos</span>
+    </div>
+
+    <div class="variant-switcher" role="tablist">
+      <button class="variant-pill is-active" data-sec7-variant="v1" role="tab" aria-selected="true">
+        <span>01 · The Intent Concierge</span>
+      </button>
+      <button class="variant-pill" data-sec7-variant="v2" role="tab" aria-selected="false">
+        <span>02 · Private Desk Split 50/50</span>
+      </button>
+      <button class="variant-pill" data-sec7-variant="v3" role="tab" aria-selected="false">
+        <span>03 · Architectural Lounge</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       VARIANTE 01: "THE INTENT CONCIERGE" (CONFIGURADOR DE JORNADA EM 2 PASSOS)
+       ======================================================================== -->
+  <main id="sec7-view-v1" class="contact-variant-view is-active">
+    <section class="v1-concierge-section" id="atendimento-v1">
+      <div class="v1-container">
+
+        <header class="v1-header-row">
+          <div>
+            <span class="v1-eyebrow">
+              <span class="v1-eyebrow-dot"></span>
+              <span>07 · Canal de Atendimento Especializado</span>
+            </span>
+            <h2 class="v1-headline">
+              Qual movimento imobiliário faz sentido <em>para si agora?</em>
+            </h2>
+          </div>
+
+          <div class="v1-sla-badge">
+            <span class="sla-live-dot"></span>
+            <span>Consultores CRECI Online · Resposta média &lt; 4 min</span>
+          </div>
+        </header>
+
+        <div class="v1-concierge-grid">
+
+          <!-- Coluna Esquerda: Seleção Tátil de Intenção e Bairro/Flagship -->
+          <div class="v1-steps-col">
+
+            <!-- Passo 1 -->
+            <div class="v1-step-block">
+              <span class="v1-step-label">
+                <span class="v1-step-num">01</span>
+                <span>Selecione o seu objetivo principal</span>
+              </span>
+
+              <div class="v1-intent-cards" role="radiogroup" aria-label="Objetivo Imobiliário">
+                <button class="v1-intent-btn is-active" data-intent="flagships">
+                  <div class="v1-intent-top">
+                    <span>Alta Liquidez</span>
+                    <span>→</span>
+                  </div>
+                  <strong class="v1-intent-title">Lançamentos Flagship</strong>
+                  <span class="v1-intent-desc">Plantas, decorados e tabela zero do Lithos, La Vie e Reserva do Porto.</span>
+                </button>
+
+                <button class="v1-intent-btn" data-intent="comprar">
+                  <div class="v1-intent-top">
+                    <span>Escolha com Clareza</span>
+                    <span>→</span>
+                  </div>
+                  <strong class="v1-intent-title">Comprar Imóvel Pronto</strong>
+                  <span class="v1-intent-desc">Seleção curada de apartamentos, coberturas e casas em condomínio.</span>
+                </button>
+
+                <button class="v1-intent-btn" data-intent="alugar">
+                  <div class="v1-intent-top">
+                    <span>Rotina sem Atrito</span>
+                    <span>→</span>
+                  </div>
+                  <strong class="v1-intent-title">Alugar com Agilidade</strong>
+                  <span class="v1-intent-desc">Processo 100% digital, vistoria precisa e opções sem fiador em Maringá.</span>
+                </button>
+
+                <button class="v1-intent-btn" data-intent="investir">
+                  <div class="v1-intent-top">
+                    <span>Perspetiva Patrimonial</span>
+                    <span>→</span>
+                  </div>
+                  <strong class="v1-intent-title">Investir ou Anunciar</strong>
+                  <span class="v1-intent-desc">Avaliação pericial, permutas estratégicas e gestão de carteira.</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="v1-step-block">
+              <span class="v1-step-label">
+                <span class="v1-step-num">02</span>
+                <span>Localização ou Empreendimento de preferência</span>
+              </span>
+
+              <div class="v1-focus-pills" role="radiogroup" aria-label="Foco Geográfico">
+                <button class="v1-focus-pill is-active" data-focus="Lithos Residencial (Zona 01)">Lithos · Zona 01</button>
+                <button class="v1-focus-pill" data-focus="La Vie Concept (Novo Centro)">La Vie · Novo Centro</button>
+                <button class="v1-focus-pill" data-focus="Reserva do Porto (Gleba Palhano)">Reserva do Porto · Gleba Palhano</button>
+                <button class="v1-focus-pill" data-focus="Condomínios Horizontais (Zona Sul)">Condomínios Zona Sul</button>
+                <button class="v1-focus-pill" data-focus="Curadoria Geral em Maringá">Aberto a Sugestões</button>
+              </div>
+            </div>
+
+            <!-- Passo 3 -->
+            <div class="v1-step-block">
+              <span class="v1-step-label">
+                <span class="v1-step-num">03</span>
+                <span>Formato de atendimento preferido</span>
+              </span>
+
+              <div class="v1-channel-pills">
+                <button class="v1-channel-pill is-active" data-format="Atendimento via WhatsApp">Dossiê via WhatsApp</button>
+                <button class="v1-channel-pill" data-format="Visita Presencial Guiada">Visita Presencial Guiada</button>
+                <button class="v1-channel-pill" data-format="Reunião Private por Vídeo">Videochamada Private</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Coluna Direita: Cartão de Despacho Direto sem Formulário -->
+          <aside class="v1-dispatch-card" aria-live="polite">
+            <div class="dispatch-header">
+              <span class="dispatch-desk-tag" id="v1-desk-tag">DIVISÃO PRIVATE &amp; LANÇAMENTOS</span>
+              <span class="dispatch-creci">CRECI J-1033</span>
+            </div>
+
+            <div class="dispatch-specialist-box">
+              <div class="specialist-avatar" id="v1-desk-monogram">SI</div>
+              <div class="specialist-meta">
+                <h3 class="specialist-title" id="v1-desk-title">Mesa Especialista Flagships</h3>
+                <span class="specialist-role" id="v1-desk-sub">Consultor Sénior dedicado à Zona 01, Novo Centro e Gleba Palhano</span>
+              </div>
+            </div>
+
+            <div class="dispatch-preview-box">
+              <span class="preview-label">Síntese preparada para o consultor:</span>
+              <p class="preview-message" id="v1-preview-msg">
+                “Olá, gostaria de receber o dossiê atualizado e condições de Lançamentos Flagship com foco em Lithos Residencial (Zona 01) — Atendimento via WhatsApp.”
+              </p>
+            </div>
+
+            <div class="dispatch-actions">
+              <a href="https://wa.me/5544991000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-lime" id="v1-whatsapp-link">
+                <span>Iniciar Conversa no WhatsApp</span>
+                <span>↗</span>
+              </a>
+              <span class="dispatch-footnote">
+                Atendimento humano direto, sem robôs ou formulários extensos.
+              </span>
+            </div>
+          </aside>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       VARIANTE 02: "THE PRIVATE DESK SPLIT 50/50" (PALCO DUAL-TONE)
+       ======================================================================== -->
+  <main id="sec7-view-v2" class="contact-variant-view">
+    <section class="v2-split-section">
+
+      <!-- Lado Esquerdo: Diretório de Mesas Especializadas -->
+      <div class="v2-left-desks">
+        <div>
+          <span class="v1-eyebrow">
+            <span class="v1-eyebrow-dot"></span>
+            <span>07 · Atendimento Direto por Especialidade</span>
+          </span>
+          <h2 class="v1-headline" style="font-size:clamp(2.1rem,3.4vw,3.1rem);">
+            Fale diretamente com a divisão certa para o <em>seu património.</em>
+          </h2>
+        </div>
+
+        <div class="v2-desks-list">
+          <article class="v2-desk-item is-selected" data-v2-desk="Mesa Private & Lançamentos Flagship">
+            <div class="v2-desk-info">
+              <span class="v2-desk-tag">01 · Lançamentos &amp; Alto Padrão</span>
+              <h3 class="v2-desk-name">Mesa Private &amp; Flagships</h3>
+              <span class="v2-desk-sub">Atendimento exclusivo para Lithos, La Vie, Reserva do Porto e coberturas.</span>
+            </div>
+            <div class="v2-desk-arrow">→</div>
+          </article>
+
+          <article class="v2-desk-item" data-v2-desk="Consultoria de Compra & Avaliação Patrimonial">
+            <div class="v2-desk-info">
+              <span class="v2-desk-tag">02 · Mercado Secundário &amp; Investimento</span>
+              <h3 class="v2-desk-name">Consultoria de Compra &amp; Venda</h3>
+              <span class="v2-desk-sub">Residências prontas, condomínios fechados e ativos comerciais em Maringá.</span>
+            </div>
+            <div class="v2-desk-arrow">→</div>
+          </article>
+
+          <article class="v2-desk-item" data-v2-desk="Divisão de Locação Ágil & Administração">
+            <div class="v2-desk-info">
+              <span class="v2-desk-tag">03 · Locação Residencial &amp; Corporativa</span>
+              <h3 class="v2-desk-name">Gestão de Locação Digital</h3>
+              <span class="v2-desk-sub">Contratos digitais rápidos, garantia locatícia e administração de bens.</span>
+            </div>
+            <div class="v2-desk-arrow">→</div>
+          </article>
+        </div>
+
+        <div style="font-size:0.82rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--border-light);padding-top:18px;">
+          <span><strong>Sede Matriz Zona 01:</strong> Av. Brasil, Maringá — PR</span>
+          <span><strong>Telefone Direto:</strong> (44) 3226-2000</span>
+        </div>
+      </div>
+
+      <!-- Lado Direito: Agendador Express em Verde Floresta (#0B2A1A) -->
+      <div class="v2-right-scheduler">
+        <div>
+          <span class="dispatch-desk-tag" id="v2-selected-desk-label">MESA PRIVATE &amp; LANÇAMENTOS FLAGSHIP</span>
+          <h3 style="font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:400;color:var(--text-white);margin-top:8px;line-height:1.1;">
+            Agende uma visita ou solicite atendimento <em class="serif-italic" style="color:var(--accent-lime);">imediato.</em>
+          </h3>
+        </div>
+
+        <div class="v2-scheduler-box">
+          <div class="v2-slot-group">
+            <span class="v2-slot-lbl">Modalidade de Encontro</span>
+            <div class="v2-pills-row">
+              <button class="v2-dark-pill is-active" data-v2-slot="Conversa Imediata no WhatsApp">WhatsApp Imediato</button>
+              <button class="v2-dark-pill" data-v2-slot="Visita ao Decorado / Imóvel">Visita ao Imóvel</button>
+              <button class="v2-dark-pill" data-v2-slot="Café na Sede Zona 01">Café na Sede Zona 01</button>
+            </div>
+          </div>
+
+          <div class="v2-slot-group">
+            <span class="v2-slot-lbl">Período de Preferência</span>
+            <div class="v2-pills-row">
+              <button class="v2-dark-pill is-active" data-v2-time="Agora / Hoje">Agora / Hoje</button>
+              <button class="v2-dark-pill" data-v2-time="Período da Manhã">Manhã (08h–12h)</button>
+              <button class="v2-dark-pill" data-v2-time="Período da Tarde">Tarde (14h–18h)</button>
+              <button class="v2-dark-pill" data-v2-time="Horário Flexível / Sábado">Horário Especial</button>
+            </div>
+          </div>
+
+          <div class="v2-slot-group">
+            <span class="v2-slot-lbl">Tem um código de imóvel específico? (Opcional)</span>
+            <div class="v2-code-input-bar">
+              <input type="text" class="v2-code-input" id="v2-property-code" placeholder="Ex: SI-4092 ou nome do edifício...">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <a href="https://wa.me/5544991000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-lime" id="v2-cta-link">
+            <span>Confirmar e Falar com Especialista</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       VARIANTE 03: "THE ARCHITECTURAL LOUNGE" (MONÓLITO EMOLDURADO)
+       ======================================================================== -->
+  <main id="sec7-view-v3" class="contact-variant-view">
+    <section class="v3-lounge-section">
+      <div class="v3-monolith-shell">
+
+        <div class="v3-top-row">
+          <div>
+            <span class="dispatch-desk-tag">07 · CONCIERGE SILVIO IWATA · MARINGÁ</span>
+            <h2 style="font-size:clamp(2.2rem,3.8vw,3.4rem);font-weight:400;color:var(--text-white);line-height:1.05;margin-top:8px;">
+              A próxima chave começa numa <em class="serif-italic" style="color:var(--accent-lime);">conversa direta.</em>
+            </h2>
+          </div>
+
+          <a href="https://wa.me/5544991000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-lime" style="width:auto;padding:14px 28px;">
+            <span>WhatsApp Central CRECI</span>
+            <span>↗</span>
+          </a>
+        </div>
+
+        <!-- 3 Portas de Intenção (Inspiradas nos Intents Oficiais do Projeto) -->
+        <div class="v3-doors-grid">
+          <a href="https://wa.me/5544991000000?text=Ol%C3%A1%2C%20quero%20explorar%20im%C3%B3veis%20para%20comprar%20em%20Maring%C3%A1." target="_blank" rel="noopener noreferrer" class="v3-door-card">
+            <div>
+              <span class="v3-door-eyebrow">01 · Escolha com Clareza</span>
+              <h3 class="v3-door-title">Comprar</h3>
+              <p class="v3-door-desc">
+                Percorra uma seleção curada de lançamentos e imóveis prontos nos quadrantes mais nobres de Maringá.
+              </p>
+            </div>
+            <div class="v3-door-cta">
+              <span>Falar com Consultor de Vendas</span>
+              <span style="color:var(--accent-lime);">→</span>
+            </div>
+          </a>
+
+          <a href="https://wa.me/5544991000000?text=Ol%C3%A1%2C%20quero%20explorar%20im%C3%B3veis%20para%20alugar%20em%20Maring%C3%A1." target="_blank" rel="noopener noreferrer" class="v3-door-card">
+            <div>
+              <span class="v3-door-eyebrow">02 · O Lugar da Sua Rotina</span>
+              <h3 class="v3-door-title">Alugar</h3>
+              <p class="v3-door-desc">
+                Uma jornada visual e sem burocracia para organizar localização, tipologia e ritmo de mudança.
+              </p>
+            </div>
+            <div class="v3-door-cta">
+              <span>Falar com Consultor de Locação</span>
+              <span style="color:var(--accent-lime);">→</span>
+            </div>
+          </a>
+
+          <a href="https://wa.me/5544991000000?text=Ol%C3%A1%2C%20quero%20conversar%20sobre%20investimento%20e%20patrim%C3%B3nio%20imobili%C3%A1rio%20em%20Maring%C3%A1." target="_blank" rel="noopener noreferrer" class="v3-door-card">
+            <div>
+              <span class="v3-door-eyebrow">03 · Património Pede Perspetiva</span>
+              <h3 class="v3-door-title">Investir &amp; Anunciar</h3>
+              <p class="v3-door-desc">
+                Avaliação técnica baseada em dados reais, permutas e gestão de ativos com a segurança do CRECI J-1033.
+              </p>
+            </div>
+            <div class="v3-door-cta">
+              <span>Falar com Mesa Patrimonial</span>
+              <span style="color:var(--accent-lime);">→</span>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       SEÇÃO 08: FOOTER INSTITUCIONAL ARQUITETÓNICO (ARCHITECTURAL FOOTER)
+       Presente como fecho canónico do Portal Imobiliário Silvio Iwata
+       ======================================================================== -->
+  <footer class="architectural-footer" id="footer-institucional">
+    <div class="footer-container">
+
+      <div class="footer-top-grid">
+        <!-- Coluna da Marca & Credencial -->
+        <div class="footer-brand-col">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <a href="#" class="footer-logo-lockup">
+              <div class="footer-logo-mark">S</div>
+              <span class="footer-logo-name">Silvio Iwata</span>
+            </a>
+            <p class="footer-tagline">
+              A imobiliária de Maringá que transforma o seu jeito de viver e investir com tradição e segurança desde 1978.
+            </p>
+          </div>
+
+          <div class="footer-creci-seal">
+            <span class="sla-live-dot"></span>
+            <span>CRECI J-1033 · Maringá / PR</span>
+          </div>
+        </div>
+
+        <!-- 4 Colunas de Navegação Arquitetónica -->
+        <div class="footer-nav-columns">
+
+          <div class="footer-col">
+            <span class="footer-col-title">Lançamentos Flagship</span>
+            <a href="#flagships" class="footer-link">01 · Lithos Residencial</a>
+            <a href="#flagships" class="footer-link">02 · La Vie Concept</a>
+            <a href="#flagships" class="footer-link">03 · Reserva do Porto</a>
+            <a href="#catalogo" class="footer-link">Catálogo de Exclusivos</a>
+          </div>
+
+          <div class="footer-col">
+            <span class="footer-col-title">Bairros de Maringá</span>
+            <a href="#secao-radar-maringa" class="footer-link">Zona 01 &amp; Parque do Ingá</a>
+            <a href="#secao-radar-maringa" class="footer-link">Novo Centro</a>
+            <a href="#secao-radar-maringa" class="footer-link">Gleba Palhano</a>
+            <a href="#secao-radar-maringa" class="footer-link">Zona 02 &amp; Bosque II</a>
+            <a href="#secao-radar-maringa" class="footer-link">Eurogarden &amp; Zona Sul</a>
+          </div>
+
+          <div class="footer-col">
+            <span class="footer-col-title">Serviços &amp; Cliente</span>
+            <a href="#catalogo" class="footer-link">Comprar Imóvel</a>
+            <a href="#catalogo" class="footer-link">Alugar sem Fiador</a>
+            <a href="#atendimento-v1" class="footer-link">Anunciar Meu Imóvel</a>
+            <a href="#atendimento-v1" class="footer-link">2.ª Via de Boleto / Área Cliente</a>
+            <a href="#sec6-scroll-track" class="footer-link">Nossa História (1978)</a>
+          </div>
+
+          <div class="footer-col">
+            <span class="footer-col-title">Unidades em Maringá</span>
+            <p class="footer-hq-address">
+              <strong>Sede Matriz · Zona 01</strong>
+              Av. Brasil, 3920 · Centro<br>
+              Maringá — PR, 87013-000
+            </p>
+            <p class="footer-hq-address">
+              <strong>Central de Atendimento</strong>
+              (44) 3226-2000<br>
+              Seg a Sex: 08h às 18h · Sáb: 08h às 12h
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Wordmark Editorial Monumental -->
+      <div class="footer-monumental-brand">
+        <span class="footer-giant-wordmark">Silvio Iwata</span>
+        <span class="footer-giant-city">Maringá · Paraná · Desde 1978</span>
+      </div>
+
+      <!-- Rodapé Legal & Regulatório -->
+      <div class="footer-bottom-legal">
+        <span>© 1978–2026 Imobiliária Silvio Iwata Ltda. Todos os direitos reservados · CRECI J-1033/PR.</span>
+        <div class="footer-legal-links">
+          <a href="#">Política de Privacidade (LGPD)</a>
+          <a href="#">Termos de Uso</a>
+          <a href="#">Conformidade Cofeci-Creci</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MOTOR INTERATIVO VANILLA JS (CONCIERGE DINÂMICO & VARIANTES)
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* 1. Alternador das 3 Variantes da Seção 07 */
+      const variantBtns = document.querySelectorAll('[data-sec7-variant]');
+      const views = {
+        v1: document.getElementById('sec7-view-v1'),
+        v2: document.getElementById('sec7-view-v2'),
+        v3: document.getElementById('sec7-view-v3')
+      };
+
+      variantBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-sec7-variant');
+          variantBtns.forEach(b => {
+            const active = b.getAttribute('data-sec7-variant') === target;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+          Object.entries(views).forEach(([k, v]) => {
+            v.classList.toggle('is-active', k === target);
+          });
+        });
+      });
+
+      /* 2. Motor do Concierge Interativo (Variante 01) */
+      const INTENT_DESKS = {
+        flagships: {
+          label: 'Lançamentos Flagship',
+          deskTag: 'DIVISÃO PRIVATE & LANÇAMENTOS',
+          monogram: 'SI',
+          title: 'Mesa Especialista Flagships',
+          sub: 'Consultor Sénior dedicado à Zona 01, Novo Centro e Gleba Palhano'
+        },
+        comprar: {
+          label: 'Comprar Imóvel Pronto',
+          deskTag: 'DIVISÃO DE VENDAS & PATRIMÓNIO',
+          monogram: 'CV',
+          title: 'Consultoria de Aquisição Imobiliária',
+          sub: 'Curadoria personalizada de apartamentos nobres e condomínios fechados'
+        },
+        alugar: {
+          label: 'Alugar Imóvel',
+          deskTag: 'DIVISÃO DE LOCAÇÃO ÁGIL',
+          monogram: 'LA',
+          title: 'Mesa de Locação Digital sem Atrito',
+          sub: 'Atendimento rápido para locação residencial e corporativa em Maringá'
+        },
+        investir: {
+          label: 'Investimento ou Avaliação de Imóvel',
+          deskTag: 'DIVISÃO DE INTELIGÊNCIA PATRIMONIAL',
+          monogram: 'IP',
+          title: 'Assessoria de Investimentos & Captação',
+          sub: 'Avaliação pericial, estudo de rentabilidade e comercialização exclusiva'
+        }
+      };
+
+      const v1State = {
+        intent: 'flagships',
+        focus: 'Lithos Residencial (Zona 01)',
+        format: 'Atendimento via WhatsApp'
+      };
+
+      function updateV1Dispatch() {
+        const desk = INTENT_DESKS[v1State.intent] || INTENT_DESKS.flagships;
+        document.getElementById('v1-desk-tag').textContent = desk.deskTag;
+        document.getElementById('v1-desk-monogram').textContent = desk.monogram;
+        document.getElementById('v1-desk-title').textContent = desk.title;
+        document.getElementById('v1-desk-sub').textContent = desk.sub;
+
+        const msg = `Olá, gostaria de receber atendimento especializado sobre ${desk.label} com foco em ${v1State.focus} (${v1State.format}).`;
+        document.getElementById('v1-preview-msg').textContent = `“${msg}”`;
+
+        const encoded = encodeURIComponent(msg);
+        document.getElementById('v1-whatsapp-link').href = `https://wa.me/5544991000000?text=${encoded}`;
+      }
+
+      document.querySelectorAll('[data-intent]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          v1State.intent = btn.getAttribute('data-intent');
+          document.querySelectorAll('[data-intent]').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          updateV1Dispatch();
+        });
+      });
+
+      document.querySelectorAll('[data-focus]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          v1State.focus = pill.getAttribute('data-focus');
+          document.querySelectorAll('[data-focus]').forEach(p => p.classList.remove('is-active'));
+          pill.classList.add('is-active');
+          updateV1Dispatch();
+        });
+      });
+
+      document.querySelectorAll('[data-format]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          v1State.format = pill.getAttribute('data-format');
+          document.querySelectorAll('[data-format]').forEach(p => p.classList.remove('is-active'));
+          pill.classList.add('is-active');
+          updateV1Dispatch();
+        });
+      });
+
+      /* 3. Motor da Variante 02 (Private Desk Split) */
+      const v2State = {
+        desk: 'Mesa Private & Lançamentos Flagship',
+        slot: 'Conversa Imediata no WhatsApp',
+        time: 'Agora / Hoje'
+      };
+
+      function updateV2Link() {
+        const codeVal = document.getElementById('v2-property-code').value.trim();
+        const codePart = codeVal ? ` [Ref: ${codeVal}]` : '';
+        const text = `Olá, solicito contacto com a ${v2State.desk} · Formato: ${v2State.slot} (${v2State.time})${codePart}.`;
+        document.getElementById('v2-cta-link').href = `https://wa.me/5544991000000?text=${encodeURIComponent(text)}`;
+      }
+
+      document.querySelectorAll('[data-v2-desk]').forEach(item => {
+        item.addEventListener('click', () => {
+          v2State.desk = item.getAttribute('data-v2-desk');
+          document.querySelectorAll('[data-v2-desk]').forEach(i => i.classList.remove('is-selected'));
+          item.classList.add('is-selected');
+          document.getElementById('v2-selected-desk-label').textContent = v2State.desk.toUpperCase();
+          updateV2Link();
+        });
+      });
+
+      document.querySelectorAll('[data-v2-slot]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          v2State.slot = pill.getAttribute('data-v2-slot');
+          document.querySelectorAll('[data-v2-slot]').forEach(p => p.classList.remove('is-active'));
+          pill.classList.add('is-active');
+          updateV2Link();
+        });
+      });
+
+      document.querySelectorAll('[data-v2-time]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          v2State.time = pill.getAttribute('data-v2-time');
+          document.querySelectorAll('[data-v2-time]').forEach(p => p.classList.remove('is-active'));
+          pill.classList.add('is-active');
+          updateV2Link();
+        });
+      });
+
+      document.getElementById('v2-property-code').addEventListener('input', updateV2Link);
+
+      updateV1Dispatch();
+      updateV2Link();
+    })();
+  </script>
+</body>
+</html>

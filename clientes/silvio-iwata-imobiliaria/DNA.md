@@ -1,136 +1,90 @@
-# 🔒 DNA LOCK — FlashTech silvio-iwata-imobiliaria
-> **Dossiê 3: Produto Único D2C High-Ticket**
-> Gerado por: `node scripts/dna-extractor.js --project C:\Users\USER\Documents\scraper e extracor\studio-dna-engine\clientes\silvio-iwata-imobiliaria`
-> Gerado em: 2026-09-21T13:28:09.468Z
+# 🔒 DNA LOCK — Imobiliária Silvio Iwata (Maringá / PR)
+> **Dossiê: Portal Imobiliário Premium & Flagship Showcase**  
+> **Status:** 100% Autêntico — Tokens FlashTech expurgados  
+> **Fontes de Verdade:** Identidade Silvio Iwata + Referências Alinhadas (`mellem.ca`, `azimuteresidencial.com.br`, `dviga.marketing/masters-en`)
 
 ---
 
-## ⚠️ COMO USAR ESTE ARQUIVO
+## ⚠️ PROTOCOLO DE AUTORIDADE DO CLIENTE
 
-Este é o **único documento de autoridade** do projeto. Toda IA, agente ou desenvolvedor
-que trabalhar neste projeto DEVE:
+Este é o **único documento de autoridade** deste projeto. Todo agente, IA ou desenvolvedor que operar em `clientes/silvio-iwata-imobiliaria/` DEVE:
 
-1. **Ler este arquivo INTEIRO** antes de escrever qualquer linha de código
-2. **Listar verbalmente os P0 invariantes** antes de começar
-3. **Declarar explicitamente** qualquer intenção de alterar um P0:
-   `⚠️ OVERRIDE DNA P0 [tokenName]: [razão explícita do negócio]`
-4. **Aguardar confirmação explícita do usuário** antes de executar um override
-
-Se não existe DNA.md no projeto → rode `node scripts/dna-extractor.js --project <path>`
+1. **Declarar verbalmente os invariantes P0** antes de gerar qualquer código (`dna-lock`).
+2. **Nunca injetar tokens externos ou de outros clientes** (ex: proibição estrita de tokens FlashTech como `#02040A` ou `#00F0FF`).
+3. **Respeitar a paleta autêntica** da Silvio Iwata e a tipografia editorial acordada.
+4. Qualquer proposta de alteração de P0 exige declaração explícita prévia:
+   `⚠️ OVERRIDE DNA P0 [tokenName]: [justificativa explícita de negócio]`
 
 ---
 
-## HIERARQUIA DE DECISÃO
+## 🔴 P0 — INVARIANTES INEGOCIÁVEIS DO PROJETO
+
+### 1. Paleta de Cores P0 (Identidade Autêntica Silvio Iwata)
+
+| Token | Hex | Papel | Justificativa |
+|---|---|---|---|
+| `bg-sand` | `#F4F1E8` | Background Base Claro | Marfim arquitetônico acolhedor e sofisticado para o catálogo e seções de conteúdo. |
+| `bg-forest` | `#0B2A1A` | Base Profunda / Hero / Drawer | Verde floresta noturno profundo. Usado na Hero panorâmica, Drawer de navegação e painel técnico. |
+| `brand-primary` | `#055227` | Verde Institucional | Cor histórica da Silvio Iwata. Usada em elementos de marca, botões de ação e títulos de prestígio. |
+| `brand-deep` | `#005023` | Verde Escuro de Apoio | Tom escuro para hover states, bordas de cards e superfícies de destaque. |
+| `accent-lime` | `#A6C83A` | Acento Vibrante | Lima / Chartreuse para badges de 'Lançamento', chips de status ativos e indicadores de foco. |
+| `text-ink` | `#0D0F14` | Tipografia sobre Fundo Claro | Alto contraste e legibilidade máxima em textos de catálogo e fichas técnicas. |
+| `text-white` | `#FFFFFF` | Tipografia sobre Fundo Escuro | Texto puro sobre o verde floresta profundo (`#0B2A1A`). |
+| `text-muted` | `#6B7A6E` | Textos de Apoio / Metadados | Verde-cinza equilibrado para metadados, legendas e subtítulos. |
+
+### 2. Tipografia P0
+
+| Família | Papel | Estilo Chave | Justificativa |
+|---|---|---|---|
+| `Instrument Serif` | Display / Títulos de Destaque | Regular + Italic Editorial | Confere o prestígio cinematográfico da referência Azimute (`azimuteresidencial.com.br`). |
+| `DM Sans` | Interface, Body, Filtros e Dados | 400, 500, 600, 700 | Clareza geométrica contemporânea inspirada na Mellem (`mellem.ca`) e Masters (`dviga.marketing`). |
+
+### 3. Regras de UX & Conversão Imobiliária P0
+
+| Regra | Valor | Justificativa de Negócio |
+|---|---|---|
+| **Cápsula de Busca** | Multi-parâmetro (`Comprar/Alugar`, `Tipo`, `Bairro`, `Código`) | Busca sem atrito no primeiro fold com atalho `/` para busca direta de código do imóvel. |
+| **Drawer Expansivo** | Navegação em tela cheia categorizada | Organização calma e espaçosa (`mellem.ca`), sem sobrecarga visual de menus suspensos tradicionais. |
+| **Stage Split 50/50** | Galeria + Painel Técnico para Lançamentos | Formato de alto impacto (`dviga.marketing`) para valorização dos edifícios emblemáticos de Maringá. |
+| **Conversão Direta** | WhatsApp e Consultor Especialista CRECI | Contato direto sem formulários longos e burocráticos. |
+
+---
+
+## 🟡 P1 — VARIÁVEIS DE COMPOSIÇÃO E SUPORTE
+
+- `border-soft`: `rgba(5, 82, 39, 0.12)` (bordas delicadas sobre marfim)
+- `border-dark`: `rgba(255, 255, 255, 0.10)` (linhas sutis sobre floresta profunda)
+- `surface-card`: `#FFFFFF` (superfície limpa de cards de imóveis)
+- `badge-exclusive`: `#E8F3E8` com texto `#055227`
+
+---
+
+## 🟢 P2 — CONTEÚDO E IMÓVEIS (Dinâmico)
+
+- Relação de empreendimentos: *Lithos Residencial*, *La Vie*, *Reserva do Porto*, *Forte de Arundel*.
+- Bairros de Maringá: *Zona 01*, *Zona 03*, *Novo Centro*, *Gleba Palhano*, *Jardim Aclimação*.
+- Dados técnicos: Metragem (`m²`), suítes, vagas de garagem, fotos dos ambientes.
+
+---
+
+## 📐 ESTRUTURA DE SEÇÕES DO PORTAL (Arquitetura Aprovada)
 
 ```
-P0 (este arquivo)  → INEGOCIÁVEL
-P1 (ESTRUTURA_ANALITICA.md §Dossiê 3)  → Metodologia de conversão
-P2 (frontend-specialist.md)  → Preferências do agente
-P3 (preferência estética da sessão)  → Mais baixa prioridade
-```
-
-**Conflito entre camadas → a camada MAIS ALTA sempre vence.**
-
----
-
-## 🔴 P0 — INVARIANTES (NUNCA alterar sem override explícito aprovado pelo usuário)
-
-### Cores P0 Identificadas no Projeto
-
-| Hex | Token FlashTech | Papel | Justificativa de Negócio |
-|-----|-----------------|-------|--------------------------|
-| `#02040a` | obsidian | background-base | Von Restorff: alto contraste para isolamento visual do CTA (Dossiê 03) |
-| `#00f0ff` | cyan | conversion-cta-only | Von Restorff: grava ponto de conversão na memória curto prazo. EXCLUSIVO no CTA primário e garantia |
-| `#0072ff` | blue | gradient-mid | Gradiente de marca FlashTech — meio do span #64CEFB→#0072FF→#00F0FF |
-| `#64cefb` | cyanLight | gradient-start | Gradiente de marca FlashTech — início do span |
-
-### Cores P0 Ausentes no HTML (adicionar obrigatoriamente)
-
-| Hex | Token | Papel | Status |
-|-----|-------|-------|--------|
-_Todos os tokens P0 estão presentes ✅_
-
-### Tipografia P0
-
-| Família | Papel | Justificativa |
-|---------|-------|---------------|
-| Archivo | Display / Headlines | Consistência de portfólio FlashTech — reconhecimento de marca entre casos |
-| JetBrains Mono | Dados técnicos / métricas | Credibilidade técnica em métricas e specs |
-
-### Regras de UX P0 (Lei de Hick + Funil Fechado)
-
-| Regra | Valor | Justificativa |
-|-------|-------|---------------|
-| CTA máximo por fold | **1** | Lei de Hick-Hyman: decisão binária maximiza conversão (Dossiê 03) |
-| Links externos no funil | **0** | Funil fechado: links externos dispersam atenção e geram perda de ROI de tráfego (Dossiê 03) |
-
----
-
-## 🟡 P1 — VARIÁVEIS DE MARCA (adaptável, sem sobrepor P0)
-
-### Paleta Secundária Identificada
-
-| Hex | Frequência | Observação |
-|-----|------------|------------|
-| `#055227` | freq:5 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#005023` | freq:4 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#8dbc2a` | freq:15 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#ffffff` | freq:17 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#0d0f14` | freq:6 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#3a4455` | freq:4 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#8a95a8` | freq:15 | Variável de marca do cliente — não pode sobrepor P0 |
-| `#e8edf4` | freq:3 | Variável de marca do cliente — não pode sobrepor P0 |
-
-### Tipografia P1 (fontes do cliente)
-
-- `Plus Jakarta Sans`
-- `Inter`
-- `inherit`
-
----
-
-## 🟢 P2 — CONTEÚDO (sempre variável, sem restrição)
-
-- Copy: headline, subheadline, bullets de benefício, depoimentos
-- Imagens, mockups, vídeos do produto, modelos 3D (.glb)
-- Ícones e micro-ilustrações
-- Estrutura de seções (a ordem pode mudar, as regras de conversão não)
-
----
-
-## ESTRUTURA DE SEÇÕES — Dossiê 3 (Storytelling Técnico Progressivo)
-
-Ordem recomendada pelo Dossiê 3:
-
-```
-1. Hero → Promessa Central + Prova Imediata
-2. Mecanismo → Raio-X do produto (sem vídeo pesado)
-3. Comparativo → Nós vs Soluções Convencionais
-4. Garantia + Checkout → Segundo (e último) CTA
-5. Footer → Mínimo, sem links de fuga
+1. [HEADER]           → Floating Pill Nav + Botão Drawer Expansivo + CTA WhatsApp
+2. [HERO SECTION]     → Panorama Maringá (Pôr do Sol Catedral) + Instrument Serif + Cápsula de Busca (#0B2A1A)
+3. [FLAGSHIPS STAGE]  → Split 50/50 Alternado Masters (Galeria de Renders + Ficha Editorial com Watermark)
+4. [VITRINE IMÓVEIS]  → Grid Curado (Venda / Locação) com Cards Minimalistas e Badges de Status
+5. [BAIRROS GUIA]     → Mapeamento Visual dos Bairros Mais Valorizados de Maringá
+6. [AUTORIDADE]       → 45+ Anos de História, Credenciais CRECI e Volume Transacionado
+7. [ATENDIMENTO]      → Canal Direto com Corretores Especialistas
+8. [FOOTER]           → Dados Institucionais, Unidades Físicas em Maringá e Links Regulatórios
 ```
 
 ---
 
-## CHECKLIST PRÉ-CÓDIGO (completar antes de escrever qualquer HTML)
+## ✅ CHECKLIST PRÉ-CÓDIGO (Validação Obrigatória)
 
-- [ ] Li e internalizei todos os tokens P0 acima
-- [ ] Confirmei que nenhuma cor P1 sobrepõe uma cor P0
-- [ ] A estrutura de seções segue o Storytelling Progressivo acima
-- [ ] Máximo 1 CTA por fold está planejado no layout
-- [ ] Fontes Archivo + JetBrains Mono estão no `<head>`
-- [ ] Background base é `#02040A` (obsidiana)
-- [ ] Gradiente `#64CEFB → #0072FF → #00F0FF` está reservado APENAS para CTA e garantia
-- [ ] Nenhum link externo no body da página (funil fechado)
-
----
-
-## AUDITORIA CONTÍNUA
-
-Para validar o HTML contra este DNA a qualquer momento:
-
-```bash
-node scripts/dna-extractor.js --audit C:\Users\USER\Documents\scraper e extracor\studio-dna-engine\clientes\silvio-iwata-imobiliaria/site/index.html
-```
-
-Saída esperada: `✅ 0 violações de P0 tokens`
+- [x] Tokens FlashTech (`#02040A`, `#00F0FF`, `Archivo`, etc.) 100% purgados deste projeto.
+- [x] P0 Backgrounds são `#F4F1E8` (marfim) e `#0B2A1A` (verde floresta profundo).
+- [x] Tipografia é `Instrument Serif` + `DM Sans`.
+- [x] Estrutura é a de um portal imobiliário premium de Maringá, não landing page D2C genérica.
