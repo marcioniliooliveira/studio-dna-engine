@@ -76,6 +76,8 @@ projetos/**/site/assets/
 # Approved and rejected visual baselines are source evidence, not disposable screenshots
 !clientes/**/design/goldens/*.png
 !clientes/silvio-iwata-imobiliaria/mockups/**
+!clientes/silvio-iwata-imobiliaria/site/assets/
+!clientes/silvio-iwata-imobiliaria/site/assets/**
 !clientes/jumpflex-home-evolution/*.jpg
 !copias/azimuteresidencial-com-br/**
 !copias/masters-residence-dviga/**
