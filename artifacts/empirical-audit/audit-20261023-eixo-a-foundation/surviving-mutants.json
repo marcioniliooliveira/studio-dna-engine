@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-23T16:10:42.174Z",
+  "count": 3,
+  "surviving_mutants": [
+    {
+      "id": "MUT-01-DAG-LOCKS",
+      "file": "src/orchestration/dag-scheduler.js",
+      "description": "Bypass path intersection check in dag-scheduler (always return false)",
+      "implication": "Defeito introduzido não foi detectado pela suíte de testes existente!"
+    },
+    {
+      "id": "MUT-02-DAG-CONFLICTS",
+      "file": "src/orchestration/dag-scheduler.js",
+      "description": "Disable conflict detection between tasks (always return false)",
+      "implication": "Defeito introduzido não foi detectado pela suíte de testes existente!"
+    },
+    {
+      "id": "MUT-03-BLUEPRINT-CYCLES",
+      "file": "src/orchestration/blueprint.js",
+      "description": "Disable cycle detection in blueprint validator",
+      "implication": "Defeito introduzido não foi detectado pela suíte de testes existente!"
+    }
+  ]
+}

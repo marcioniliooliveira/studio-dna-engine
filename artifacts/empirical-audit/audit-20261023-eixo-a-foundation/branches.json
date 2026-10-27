@@ -1,0 +1,119 @@
+{
+  "target_branch": "integration/v2-dna-orchestrator",
+  "target_sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+  "timestamp": "2026-10-23T16:02:42.412Z",
+  "branches": [
+    {
+      "name": "feature/clone-khanhnguyen-portfolio",
+      "sha": "a36457ecf06d1706243c30ded89ab465ac281720",
+      "upstream": null,
+      "behind_head": 42,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "feature/clone-likova-portfolio",
+      "sha": "5c2666b47c0d5497afef9a974124d68253091bce",
+      "upstream": "origin/feature/clone-likova-portfolio",
+      "behind_head": 44,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "feature/clone-op-xy-76-aura",
+      "sha": "866c4636fc433ec6276ba7d17306bfd34100e662",
+      "upstream": "origin/feature/clone-op-xy-76-aura",
+      "behind_head": 37,
+      "ahead_of_head": 4
+    },
+    {
+      "name": "fix/ide-recovery-foundation",
+      "sha": "dd678b179147ae0e451e0256bd11326cee9a0fed",
+      "upstream": null,
+      "behind_head": 60,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "integration/ide-recovery-merge",
+      "sha": "5a8a662bfefa2315ddcb524493e14935d4fc8da1",
+      "upstream": null,
+      "behind_head": 61,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "integration/v2-dna-orchestrator",
+      "sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "upstream": "origin/integration/v2-dna-orchestrator",
+      "behind_head": 0,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "main",
+      "sha": "75e809cf5c04b85866601bce8bcf4d12f28c4e5c",
+      "upstream": "origin/main",
+      "behind_head": 42,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "refactor/verified-production-pipeline",
+      "sha": "5ed6e5318e78a06c01aff04866a41224865e369c",
+      "upstream": "origin/refactor/verified-production-pipeline",
+      "behind_head": 59,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin",
+      "sha": "684e691fdcc8829c4035f96e84309b57ee27952d",
+      "upstream": null,
+      "behind_head": 3,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin/feat/program-a-continuity-antigravity",
+      "sha": "d26fedd735f4a15cc37eafd81f976aca9b1d6be7",
+      "upstream": null,
+      "behind_head": 60,
+      "ahead_of_head": 42
+    },
+    {
+      "name": "origin/feature/clone-likova-portfolio",
+      "sha": "5c2666b47c0d5497afef9a974124d68253091bce",
+      "upstream": null,
+      "behind_head": 44,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin/feature/clone-op-xy-76-aura",
+      "sha": "866c4636fc433ec6276ba7d17306bfd34100e662",
+      "upstream": null,
+      "behind_head": 37,
+      "ahead_of_head": 4
+    },
+    {
+      "name": "origin/fix/ide-recovery-foundation",
+      "sha": "dd678b179147ae0e451e0256bd11326cee9a0fed",
+      "upstream": null,
+      "behind_head": 60,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin/integration/v2-dna-orchestrator",
+      "sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "upstream": null,
+      "behind_head": 0,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin/main",
+      "sha": "684e691fdcc8829c4035f96e84309b57ee27952d",
+      "upstream": null,
+      "behind_head": 3,
+      "ahead_of_head": 0
+    },
+    {
+      "name": "origin/refactor/verified-production-pipeline",
+      "sha": "5ed6e5318e78a06c01aff04866a41224865e369c",
+      "upstream": null,
+      "behind_head": 59,
+      "ahead_of_head": 0
+    }
+  ]
+}
