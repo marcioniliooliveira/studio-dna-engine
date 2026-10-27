@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Negocia Bem · Aura Bento Grid (Cantos Retos 0px + Dual Text Reveal + Resizing no Hover)</title>
+
+  <!-- Tipografia Oficial Negocia Bem (Fontes Nativas do Site) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            nbDark: '#0D1117',
+            nbPanel: '#161B22',
+            nbCard: '#21262D',
+            nbGreen: '#3E9B67',
+            nbGreenLight: '#4EBA7E',
+            nbInk: '#F5F6F2',
+            nbMuted: '#8B949E'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS FUNDAMENTAIS NEGOCIA BEM
+       ========================================================================== */
+    :root {
+      --dark: #0D1117;
+      --panel: #161B22;
+      --card: #21262D;
+      --green: #3E9B67;
+      --green-light: #4EBA7E;
+      --green-hover: #2E7D52;
+      --white: #FFFFFF;
+      --ink: #F5F6F2;
+      --muted: #8B949E;
+      --line: rgba(255, 255, 255, 0.08);
+      --max: 1440px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      background-color: var(--dark);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      padding-top: 56px;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 48px));
+      margin: 0 auto;
+    }
+    @media (min-width: 1024px) {
+      .wrap { width: min(var(--max), calc(100% - 96px)); }
+    }
+
+    /* ==========================================================================
+       BARRA DE COMANDO SUPERIOR: VARIANT SWITCHER
+       ========================================================================== */
+    .variant-switcher-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      z-index: 1000;
+      background: rgba(13, 17, 23, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    @media (min-width: 768px) {
+      .variant-switcher-bar { padding: 0 28px; }
+    }
+
+    .switcher-pill-group {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      gap: 2px;
+    }
+
+    .variant-btn {
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .variant-btn:hover { color: var(--ink); }
+    .variant-btn.active {
+      background: var(--green);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ==========================================================================
+       TOP BAR COLAPSÁVEL INTELIGENTE
+       ========================================================================== */
+    .site-header {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      height: 84px;
+      z-index: 100;
+      background: transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transition: transform 0.42s cubic-bezier(0.28, 0.11, 0.32, 1), background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+      will-change: transform;
+    }
+    .site-header.header--hidden {
+      transform: translate3d(0, -105%, 0);
+    }
+    .site-header.header--scrolled {
+      background: rgba(13, 17, 23, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .nav {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      color: #FFFFFF;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      letter-spacing: .08em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand b { color: var(--green-light); font-weight: 800; }
+    .brand .creci {
+      font-size: 10px;
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
+      letter-spacing: 0.08em;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    .nav-links { display: none; align-items: center; gap: 28px; }
+    @media (min-width: 900px) { .nav-links { display: flex; } }
+    .nav-links button {
+      background: transparent;
+      border: none;
+      color: #c9d1d9;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      text-transform: uppercase;
+    }
+    .nav-links button:hover { color: var(--green-light); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.1);
+      color: var(--green-light);
+      padding: 10px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .nav-cta:hover { background: var(--green); color: #FFFFFF; }
+
+    /* ==========================================================================
+       HERO COM VÍDEO & DUAL TEXT REVEAL REFINADO
+       ========================================================================== */
+    .hero {
+      min-height: calc(100vh - 56px);
+      position: relative;
+      background: var(--dark);
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+    @media (max-width: 880px) {
+      .hero {
+        min-height: 100svh;
+        padding-top: 100px;
+        padding-bottom: 30px;
+        align-items: center;
+      }
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: saturate(.75) contrast(1.05);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to bottom, rgba(13, 17, 23, 0.45) 0%, rgba(13, 17, 23, 0.75) 55%, #0D1117 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 6vw;
+      align-items: flex-end;
+    }
+    @media (max-width: 880px) {
+      .hero-grid { display: block; }
+    }
+
+    /* TIPOGRAFIA HERO NATIVA (SEM ALTERAÇÃO DE FONTES) */
+    .eyebrow {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 20px;
+      font-family: 'Inter', sans-serif;
+    }
+    .eyebrow .reveal-highlight {
+      color: var(--green-light) !important;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(48px, 6.8vw, 104px);
+      font-weight: 800;
+      line-height: .95;
+      letter-spacing: -.035em;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+    .hero-title .line-mask-inner {
+      display: inline-flex !important;
+      gap: 0.22em;
+      align-items: baseline;
+    }
+    .hero-title .hero-main-word {
+      display: inline-block;
+      vertical-align: baseline;
+    }
+
+    .hero-copy {
+      max-width: 460px;
+      padding-bottom: 8px;
+    }
+    @media (max-width: 880px) {
+      .hero-copy { margin-top: 24px; max-width: 100%; }
+    }
+    .hero-copy p {
+      margin: 0 0 24px;
+      color: #E6EDF3;
+      font: 400 15px/1.65 'Inter', sans-serif;
+    }
+    .hero-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.1);
+      color: var(--green-light);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      text-decoration: none;
+      border-radius: 0px !important;
+      transition: all 0.25s ease;
+    }
+    .hero-cta-btn:hover {
+      background: var(--green);
+      color: #FFFFFF;
+      border-color: var(--green);
+    }
+
+    /* REGRAS ESTRITAS DO DUAL REVEAL:
+       1. Sem alterar fontes (font-family: inherit; font-style: normal;)
+       2. Apenas cor de destaque (var(--green-light) / #4EBA7E)
+       3. Palavras principais 40% mais lentas */
+    .reveal-highlight {
+      font-family: inherit !important;
+      font-style: normal !important;
+      color: var(--green-light) !important;
+      font-weight: 700;
+    }
+
+    .line-mask-wrap {
+      display: block;
+      overflow: hidden;
+      line-height: inherit;
+    }
+    .line-mask-inner {
+      display: block;
+      will-change: transform, opacity;
+    }
+
+    .reveal-normal-line {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .reveal-highlight-char {
+      display: inline-block;
+      color: var(--green-light);
+      font-family: inherit !important;
+      font-style: normal !important;
+      font-weight: inherit !important;
+      will-change: transform, opacity, filter;
+    }
+
+    /* ==========================================================================
+       ÁREA DE BUSCA NA HERO & ANCORAGEM DOCKING PERSISTENTE
+       ========================================================================== */
+    .hero-search-area {
+      margin-top: 36px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 10;
+      min-height: 52px;
+    }
+
+    /* CALHA STICKY NO CATÁLOGO: DOCKING REAL QUE ACOMPANHA O SCROLL */
+    .catalog-sticky-bridge {
+      position: sticky;
+      top: 96px;
+      z-index: 80;
+      width: 100%;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .catalog-sticky-bridge > * { pointer-events: auto; }
+
+    /* ESTILO FIXO FLUTUANTE DA BARRA (ACOMPANHA O SCROLL) */
+    .variant-search-component.is-scrolling-dock {
+      position: fixed;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.98);
+      z-index: 95;
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.75);
+      border-color: var(--green);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      animation: dockSlideDown 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes dockSlideDown {
+      from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+      to { opacity: 1; transform: translate(-50%, 0) scale(0.98); }
+    }
+
+    @media (max-width: 880px) {
+      .variant-search-component.is-scrolling-dock {
+        position: static;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    /* ==========================================================================
+       3 VARIANTES AURA BENTO GRID COM CANTOS RETOS (BORDER-RADIUS: 0PX)
+       ========================================================================== */
+
+    /* --- VARIANTE 1: MONOLITHIC BENTO SLATE (0PX RADIUS) --- */
+    .search-bento-v1 {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      background: #161B22;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 0px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      max-width: 840px;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 880px) {
+      .search-bento-v1 { grid-template-columns: 1fr; border-radius: 0px !important; }
+    }
+    .bento-tabs-v1 {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      height: 100%;
+    }
+    .tab-btn-v1 {
+      padding: 12px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0px !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn-v1.active {
+      color: #FFFFFF;
+      background: rgba(62, 155, 103, 0.15);
+      border-bottom: 2px solid var(--green-light);
+    }
+    .input-wrap-v1 {
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-v1 {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFFFFF;
+      font-size: 13px;
+      width: 100%;
+      border-radius: 0px !important;
+    }
+    .input-v1::placeholder { color: rgba(255, 255, 255, 0.55); }
+    .code-wrap-v1 {
+      padding: 0 14px;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-submit-v1 {
+      padding: 0 24px;
+      min-height: 52px;
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.12);
+      color: var(--green-light);
+      border-radius: 0px !important;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-submit-v1:hover {
+      background: var(--green);
+      color: #FFFFFF;
+    }
+
+    /* --- VARIANTE 2: ATELIER IMOBILIÁRIO / CONSOLE ARQUITETÔNICO (0PX RADIUS) --- */
+    .search-bento-v2 {
+      background: #141A21;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0px !important;
+      max-width: 880px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+    .atelier-header-bar {
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .atelier-brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green-light);
+    }
+    .atelier-bullet {
+      width: 6px;
+      height: 6px;
+      background: var(--green-light);
+    }
+    .atelier-status-tag {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 11px;
+    }
+    .atelier-grid-row {
+      display: grid;
+      grid-template-columns: 180px 1.4fr 1.2fr 110px 120px;
+    }
+    @media (max-width: 880px) {
+      .atelier-grid-row { grid-template-columns: 1fr; }
+    }
+    .atelier-col {
+      padding: 10px 14px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .atelier-label {
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 3px;
+      letter-spacing: 0.06em;
+    }
+    .atelier-select, .atelier-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      border-radius: 0px !important;
+      width: 100%;
+    }
+    .atelier-select option {
+      background: #161B22;
+      color: #FFFFFF;
+    }
+    .atelier-input::placeholder {
+      color: rgba(255, 255, 255, 0.60);
+    }
+    .btn-atelier-submit {
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.12);
+      color: var(--green-light);
+      border-radius: 0px !important;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+    }
+    .btn-atelier-submit:hover {
+      background: var(--green);
+      color: #FFFFFF;
+    }
+
+    /* --- VARIANTE 3: BENTO DUAL-TIER MODULAR (0PX RADIUS) --- */
+    .search-bento-v3 {
+      background: #141c24;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 0px !important;
+      max-width: 780px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.65);
+    }
+    .tier-top {
+      padding: 8px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tier-tabs { display: flex; gap: 4px; }
+    .tier-tab {
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0px !important;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tier-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #FFFFFF;
+    }
+    .tier-bottom {
+      display: grid;
+      grid-template-columns: 1fr 140px 150px;
+    }
+    @media (max-width: 680px) {
+      .tier-bottom { grid-template-columns: 1fr; }
+    }
+    .tier-input-cell {
+      padding: 10px 14px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+    }
+    .tier-btn-submit {
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.12);
+      color: var(--green-light);
+      border-radius: 0px !important;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+    }
+    .tier-btn-submit:hover {
+      background: var(--green);
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       AURA BENTO CARD GRID (RESIZING NO HOVER + DADOS TERRITORIAIS)
+       ========================================================================== */
+    .catalog-section {
+      background-color: var(--dark);
+      padding: 60px 0 120px 0;
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .bento-grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 28px;
+    }
+    @media (max-width: 1080px) {
+      .bento-grid-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 680px) {
+      .bento-grid-container { grid-template-columns: 1fr; gap: 18px; }
+    }
+
+    /* CARD HERO SHOWCASE DUPLO */
+    .bento-hero-card {
+      grid-column: span 2;
+    }
+    @media (max-width: 680px) {
+      .bento-hero-card { grid-column: span 1; }
+    }
+
+    /* CARD GERAL BENTO */
+    .aura-bento-card {
+      background: #161B22;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0px !important; /* Cantos estritamente retos */
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .aura-bento-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+      border-color: var(--green);
+    }
+
+    .card-media-wrap {
+      position: relative;
+      background-color: #0D1117;
+      overflow: hidden;
+    }
+    .card-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .aura-bento-card:hover .card-photo { transform: scale(1.06); }
+    .card-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(13, 17, 23, 0.85) 0%, rgba(13, 17, 23, 0.15) 50%, transparent 100%);
+    }
+
+    /* BADGES SUPERIORES */
+    .card-badge {
+      background: rgba(13, 17, 23, 0.90);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--green-light) !important;
+      border: 1px solid rgba(78, 186, 126, 0.45);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 0px !important;
+    }
+
+    .bento-spotlight-tag {
+      background: var(--green);
+      color: white;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: 0px !important;
+    }
+
+    .territorial-chip {
+      background: rgba(13, 17, 23, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 4px 10px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 0px !important;
+    }
+
+    .card-code {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* MECÂNICA DE RESIZING SUAVIZADA NO HOVER: GAVETA DINÂMICA DE DADOS EXTRAS */
+    .card-drawer-extra {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: max-height, opacity;
+    }
+    .aura-bento-card:hover .card-drawer-extra {
+      max-height: 140px;
+      opacity: 1;
+    }
+
+    /* COMPONENTE DA DIREITA (AO LADO DO HERO CARD):
+       Já expandido para atingir o tamanho do asset da esquerda; demonstra os dados desde o início sem depender de hover */
+    .bento-companion-card .card-drawer-extra {
+      max-height: none !important;
+      opacity: 1 !important;
+      overflow: visible !important;
+    }
+
+    /* BOTÕES VAZADOS COMO [FALAR NO WHATSAPP] E PREENCHIDOS NO HOVER */
+    .card-whatsapp-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--green);
+      background: rgba(62, 155, 103, 0.1);
+      color: var(--green-light);
+      padding: 10px 14px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      border-radius: 0px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .card-whatsapp-btn:hover,
+    .aura-bento-card:hover .card-whatsapp-btn:hover {
+      background: var(--green);
+      color: #FFFFFF;
+      border-color: var(--green);
+    }
+    .aura-bento-card:hover .card-whatsapp-btn {
+      border-color: var(--green);
+      background: rgba(62, 155, 103, 0.18);
+      color: #FFFFFF;
+    }
+
+    .online-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4EBA7E;
+    }
+
+    /* ==========================================================================
+       SESSÃO 02 (PIN & NARRATIVA ORIGINAL)
+       ========================================================================== */
+    .s02-word-mask { display: inline-block; overflow: hidden; vertical-align: bottom; }
+    .s02-word { display: inline-block; }
+    @media (max-width: 767px) {
+      .s02-pin { position: relative !important; top: auto !important; }
+      .s02-media { height: 68vh !important; min-height: 440px; }
+      .s02-story { min-height: 560px !important; }
+    }
+  </style>
+</head>
+<body data-active-variant="v1">
+
+  <!-- ==========================================================================
+       BARRA DE CONTROLE: 3 VARIANTES AURA BENTO (CANTOS RETOS 0PX)
+       ========================================================================== */ -->
+  <aside class="variant-switcher-bar" aria-label="Controle de Variantes Aura Bento Grid">
+    <div class="flex items-center gap-3">
+      <span class="text-xs font-bold text-white tracking-widest uppercase font-['Plus_Jakarta_Sans']">
+        NEGOCIA <b class="text-[var(--green-light)]">BEM</b>
+      </span>
+      <span class="hidden sm:inline-block text-[11px] font-['Inter'] font-medium text-[var(--muted)] border border-white/10 px-2 py-0.5">
+        AURA BENTO · 0PX RADIUS
+      </span>
+    </div>
+
+    <div class="switcher-pill-group" role="tablist">
+      <button class="variant-btn active" data-variant-toggle="v1" role="tab" aria-selected="true" type="button">
+        <span>01 · Monolithic Slate</span>
+      </button>
+      <button class="variant-btn" data-variant-toggle="v2" role="tab" aria-selected="false" type="button">
+        <span>02 · Atelier Imobiliário</span>
+      </button>
+      <button class="variant-btn" data-variant-toggle="v3" role="tab" aria-selected="false" type="button">
+        <span>03 · Bento Dual-Tier</span>
+      </button>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-2 text-xs text-[var(--muted)]">
+      <span id="variant-desc-label">01 · Monolithic Slate: Bloco contínuo ardósia + 0px radius + acento esmeralda</span>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       HEADER FIXO COLAPSÁVEL INTELIGENTE
+       ========================================================================== -->
+  <header class="site-header" id="site-header">
+    <nav class="nav wrap" aria-label="Navegação principal">
+      <a class="brand" href="#inicio">
+        NEGOCIA <b>BEM</b>
+        <span class="creci">CRECI 9314-J</span>
+      </a>
+      <div class="nav-links">
+        <button data-filter-quick="comprar" type="button">COMPRAR CASAS</button>
+        <button data-filter-quick="alugar" type="button">ALUGAR IMÓVEIS</button>
+        <button data-filter-quick="terrenos" type="button">INVESTIR EM LOTES</button>
+      </div>
+      <a class="nav-cta" href="https://wa.me/554438016654" target="_blank" rel="noreferrer">
+        FALAR NO WHATSAPP
+      </a>
+    </nav>
+  </header>
+
+  <!-- ==========================================================================
+       SEÇÃO 01: HERO COM VÍDEO & DUAL TEXT REVEAL (40% MAIS LENTO NAS PRINCIPAIS)
+       ========================================================================== -->
+  <section class="hero" id="inicio" aria-label="Apresentação Negocia Bem">
+    <video autoplay muted loop playsinline preload="metadata" poster="./assets/hero-poster.webp" class="hero-video">
+      <source src="https://cdn.prod.website-files.com/69372e47ab695bf5546b46ec/69610a0c261bf5a0d9012dd6_hero%203%20%281%29_mp4.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow" data-dual-reveal>
+              A escolha certa para <span class="reveal-highlight">conquistar</span> o seu <span class="reveal-highlight">sonho</span>
+            </div>
+            <h1 class="hero-title" data-dual-reveal>
+              <span class="hero-main-word">NEGOCIA</span>
+              <span class="reveal-highlight hero-main-word">BEM</span>
+            </h1>
+          </div>
+          <div class="hero-copy">
+            <p data-dual-reveal>
+              Seja para <span class="reveal-highlight">conquistar a casa própria</span> a 15 minutos de Maringá, alugar com <span class="reveal-highlight">agilidade</span> e sem fiador, ou <span class="reveal-highlight">vender seu terreno</span> com assessoria jurídica e avaliação real, a Negocia Bem cuida de cada detalhe.
+            </p>
+            <a href="#catalogo-grid" class="hero-cta-btn">
+              <span>EXPLORAR OPORTUNIDADES</span> <span>↓</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ÁREA DA BARRA DE PESQUISA NA HERO (3 VARIANTES AURA BENTO - 0PX RADIUS) -->
+        <div class="hero-search-area" id="hero-search-anchor">
+          
+          <!-- VARIANTE 1: MONOLITHIC BENTO SLATE (0PX RADIUS) -->
+          <div class="search-bento-v1 variant-search-component" id="capsule-v1" role="search">
+            <div class="bento-tabs-v1" role="tablist">
+              <button class="tab-btn-v1 active" data-search-tab="comprar" type="button">Comprar</button>
+              <button class="tab-btn-v1" data-search-tab="alugar" type="button">Alugar</button>
+              <button class="tab-btn-v1" data-search-tab="terrenos" type="button">Vender Terreno</button>
+            </div>
+            <div class="input-wrap-v1">
+              <i data-lucide="search" class="w-4 h-4 text-white/40 shrink-0"></i>
+              <input type="text" class="input-v1" id="v1-bairro" placeholder="Bairro, condomínio ou referência em Paiçandu...">
+            </div>
+            <div class="code-wrap-v1">
+              <span class="text-[11px] text-white/60 font-semibold tracking-wider">CÓDIGO:</span>
+              <input type="text" class="input-v1 w-24 text-xs uppercase" id="v1-codigo" placeholder="EX: NB-101">
+            </div>
+            <button class="btn-submit-v1" id="v1-submit" type="button">
+              <span>Buscar</span> <span>→</span>
+            </button>
+          </div>
+
+          <!-- VARIANTE 2: ATELIER IMOBILIÁRIO / CONSOLE ARQUITETÔNICO (0PX RADIUS) -->
+          <div class="search-bento-v2 variant-search-component hidden" id="capsule-v2" role="search">
+            <div class="atelier-header-bar">
+              <div class="atelier-brand-tag">
+                <span class="atelier-bullet"></span>
+                <span>ATELIER NEGOCIA BEM · CURADORIA IMOBILIÁRIA</span>
+              </div>
+              <div class="atelier-status-tag">
+                <span>PAIÇANDU & MARINGÁ · CATÁLOGO EXCLUSIVO</span>
+              </div>
+            </div>
+            <div class="atelier-grid-row">
+              <div class="atelier-col">
+                <label class="atelier-label" for="v2-tab-select">FINALIDADE</label>
+                <select class="atelier-select" id="v2-tab-select">
+                  <option value="comprar">Comprar Casas</option>
+                  <option value="alugar">Alugar Imóveis</option>
+                  <option value="terrenos">Vender Terreno</option>
+                </select>
+              </div>
+              <div class="atelier-col flex-[1.4]">
+                <label class="atelier-label" for="v2-bairro">LOCALIZAÇÃO OU CONDOMÍNIO</label>
+                <input type="text" class="atelier-input" id="v2-bairro" placeholder="Bairro, condomínio ou região...">
+              </div>
+              <div class="atelier-col flex-[1.1]">
+                <label class="atelier-label" for="v2-tipo">TIPO DE IMÓVEL</label>
+                <select class="atelier-select" id="v2-tipo">
+                  <option value="todos">Todos os tipos</option>
+                  <option value="casa">Casas em Condomínio / Térreas</option>
+                  <option value="terreno">Terrenos & Lotes</option>
+                  <option value="comercial">Comercial / Barracão</option>
+                </select>
+              </div>
+              <div class="atelier-col w-28">
+                <label class="atelier-label" for="v2-codigo">REF. CÓDIGO</label>
+                <input type="text" class="atelier-input text-center uppercase" id="v2-codigo" placeholder="EX: NB-101">
+              </div>
+              <button class="btn-atelier-submit" id="v2-submit" type="button">
+                <span>Buscar</span> <span>→</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- VARIANTE 3: BENTO DUAL-TIER MODULAR (0PX RADIUS) -->
+          <div class="search-bento-v3 variant-search-component hidden" id="capsule-v3" role="search">
+            <div class="tier-top">
+              <div class="tier-tabs" role="tablist">
+                <button class="tier-tab active" data-search-tab="comprar" type="button">Comprar</button>
+                <button class="tier-tab" data-search-tab="alugar" type="button">Alugar</button>
+                <button class="tier-tab" data-search-tab="terrenos" type="button">Vender Terreno</button>
+              </div>
+              <div class="flex items-center gap-2 text-[11px] text-[var(--green-light)]">
+                <span class="text-white/60">OPORTUNIDADES:</span>
+                <span class="bg-white/10 px-2 py-0.5 text-white/90">MCMV</span>
+                <span class="bg-white/10 px-2 py-0.5 text-white/90">SEM FIADOR</span>
+                <span class="bg-white/10 px-2 py-0.5 text-white/90">LOTES PR-323</span>
+              </div>
+            </div>
+            <div class="tier-bottom">
+              <div class="tier-input-cell">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-[var(--green-light)] mr-2 shrink-0"></i>
+                <input type="text" class="bg-transparent border-0 outline-none text-white text-xs w-full" id="v3-bairro" placeholder="Bairro ou proximidade em Paiçandu/Maringá...">
+              </div>
+              <div class="tier-input-cell">
+                <span class="text-white/60 text-[11px] mr-2">CÓDIGO:</span>
+                <input type="text" class="bg-transparent border-0 outline-none text-white text-xs w-full uppercase" id="v3-codigo" placeholder="EX: NB-101">
+              </div>
+              <button class="tier-btn-submit" id="v3-submit" type="button">
+                Buscar Imóveis →
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-[var(--muted)] font-['Inter'] font-medium border-t border-white/10 pt-4 mt-6">
+          <span>PAIÇANDU · REGIÃO METROPOLITANA DE MARINGÁ</span>
+          <span>ROLE PARA O CATÁLOGO ↓</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SEÇÃO 02: CATÁLOGO DE IMÓVEIS (AURA BENTO GRID + RESIZING NO HOVER)
+       ========================================================================== -->
+  <section class="catalog-section" id="catalogo-grid" aria-label="Catálogo de Imóveis e Oportunidades Negocia Bem">
+    <div class="wrap">
+      
+      <!-- CALHA STICKY DE DOCKING QUE ACOMPANHA O SCROLL -->
+      <div class="catalog-sticky-bridge" id="catalog-sticky-bridge"></div>
+
+      <!-- Cabeçalho do Catálogo -->
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-6 border-b border-white/10 pb-5">
+        <div>
+          <span class="font-['Inter'] text-xs uppercase tracking-widest text-[var(--green-light)] font-semibold mb-1 block">
+            PORTFÓLIO DE OPORTUNIDADES · PAIÇANDU & MARINGÁ
+          </span>
+          <h2 class="font-['Plus_Jakarta_Sans'] text-3xl sm:text-4xl lg:text-5xl font-light text-[var(--ink)] tracking-tight">
+            Imóveis selecionados com inteligência territorial
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-['Inter'] font-semibold text-[var(--muted)] border border-white/10 px-4 py-2 bg-white/[0.03]" id="catalog-count-label">
+            Exibindo 10 imóveis em destaque
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtro Rápido de Categorias -->
+      <div class="flex flex-wrap items-center gap-2 mb-6">
+        <button class="category-filter-btn active px-4 py-2 text-xs font-bold font-['Inter'] tracking-wider uppercase bg-[var(--green)] text-white" data-cat-filter="todos">
+          Todos (10)
+        </button>
+        <button class="category-filter-btn px-4 py-2 text-xs font-bold font-['Inter'] tracking-wider uppercase bg-white/5 hover:bg-white/10 text-white/80" data-cat-filter="comprar">
+          Comprar Casas (5)
+        </button>
+        <button class="category-filter-btn px-4 py-2 text-xs font-bold font-['Inter'] tracking-wider uppercase bg-white/5 hover:bg-white/10 text-white/80" data-cat-filter="alugar">
+          Alugar Imóveis (2)
+        </button>
+        <button class="category-filter-btn px-4 py-2 text-xs font-bold font-['Inter'] tracking-wider uppercase bg-white/5 hover:bg-white/10 text-white/80" data-cat-filter="terrenos">
+          Vender Terreno / Lotes (3)
+        </button>
+      </div>
+
+      <!-- AURA BENTO GRID (COM RESIZING NO HOVER PARA DADOS EXTRAS) -->
+      <div class="bento-grid-container" id="bento-grid-catalog">
+        
+    <article class="property-card aura-bento-card bento-hero-card" data-category="comprar" data-bairro="jardim bela vista · paiçandu / pr" data-codigo="NB-101">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/9] lg:aspect-[21/10]">
+        <img src="./assets/catalogo-casa-clarina.jpg" alt="Casa Pronta Clarina" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">COMPRAR</span>
+          <span class="bento-spotlight-tag">★ Oportunidade da Semana</span>
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>A 14 min de Maringá</span>
+          </div>
+        </div>
+
+        <!-- Dados Principais Sobre a Foto (para o Hero Card) ou Rodapé -->
+        
+          <div class="absolute bottom-3 left-4 right-4 z-10 flex items-end justify-between">
+            <div>
+              <span class="text-[11px] font-['Inter'] text-[var(--green-light)] uppercase tracking-wider block font-bold">CÓD. NB-101 · MCMV & FGTS</span>
+              <h3 class="text-white font-bold text-xl lg:text-2xl drop-shadow">Casa Pronta Clarina</h3>
+            </div>
+            <strong class="text-white font-bold text-xl bg-black/60 backdrop-blur px-3 py-1.5 border border-white/10">R$ 240.000</strong>
+          </div>
+        
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-101</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">MCMV & FGTS</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Casa Pronta Clarina</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim Bela Vista · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">68 m² · 2 quartos · 1 vaga</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 240.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Aprox. R$ 980 / mês (Caixa)</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Subsídio MCMV até R$ 55 mil · Entrada facilitada</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card bento-companion-card" data-category="comprar" data-bairro="jardim pioneiros · paiçandu / pr" data-codigo="NB-102">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/catalogo-casa-villa.jpg" alt="Casa Térrea Villa di Paiçandu" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">COMPRAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>A 15 min do Catuaí Maringá</span>
+          </div>
+        </div>
+
+        <!-- Dados Principais Sobre a Foto (para o Hero Card) ou Rodapé -->
+        
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-102</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Suíte + Gourmet</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Casa Térrea Villa di Paiçandu</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim Pioneiros · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">92 m² · 3 quartos (1 suíte) · 2 vagas</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 315.000</strong>
+        </div>
+
+        <!-- GAVETA DEMONSTRADA DESDE O INÍCIO (COMPONENTE COMPANHEIRO DO HERO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Aprox. R$ 1.450 / mês (SBPE)</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Aceita FGTS e financiamento bancário</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="comprar" data-bairro="jardim catedral · divisa maringá / pr" data-codigo="NB-103">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/catalogo-sobrado-horizon.jpg" alt="Sobrado Horizon Catedral" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">COMPRAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Divisa imediata com Maringá</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-103</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Alto Padrão</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Sobrado Horizon Catedral</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim Catedral · Divisa Maringá / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">124 m² · 3 quartos (1 suíte) · Sacada</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 460.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Aprox. R$ 2.300 / mês</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Varanda gourmet com churrasqueira integrada</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="comprar" data-bairro="eixo paiçandu-maringá / pr" data-codigo="NB-104">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/oportunidades-casas-main.webp" alt="Residencial Jardim Canadá" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">COMPRAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>A 10 min da Catedral de Maringá</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-104</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">3 Suítes</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Residencial Jardim Canadá</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Eixo Paiçandu-Maringá / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">138 m² · 3 suítes · Pé direito duplo</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 449.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Aprox. R$ 2.450 / mês</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Arquitetura moderna e acabamento em porcelanato</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="comprar" data-bairro="jardim capital · paiçandu / pr" data-codigo="NB-105">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/oportunidades-casas-accent.webp" alt="Casa Contemporânea Eco Park" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">COMPRAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Bairro residencial planejado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-105</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Doc. Grátis</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Casa Contemporânea Eco Park</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim Capital · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">74 m² · 2 quartos · Quintal amplo</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 265.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Aprox. R$ 1.150 / mês (Caixa)</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Documentação cartorial inclusa na compra</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="alugar" data-bairro="jardim américa · paiçandu / pr" data-codigo="NB-201">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/catalogo-locacao-duplex.jpg" alt="Casa Conforto Jardim América" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">ALUGAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Próximo a supermercados e linhas de ônibus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-201</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Sem Fiador</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Casa Conforto Jardim América</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim América · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">72 m² · 2 quartos · Quintal privativo</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 1.550 / mês</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Análise cadastral em 15 minutos</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Locação ágil sem caução ou fiador tradicional</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="alugar" data-bairro="corredor comercial · paiçandu / pr" data-codigo="NB-204">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/oportunidades-aluguel-accent.webp" alt="Salão Comercial Av. Ivaí" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">ALUGAR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Principal avenida comercial de Paiçandu</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-204</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Ponto Comercial</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Salão Comercial Av. Ivaí</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Corredor Comercial · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">140 m² · 2 banheiros · Vitrine ampla</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 2.800 / mês</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Ideal para lojas, clínicas e serviços</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Ponto estratégico de intenso fluxo de veículos</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="terrenos" data-bairro="região sul · paiçandu / pr" data-codigo="NB-301">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/catalogo-lote-azimute.webp" alt="Loteamento Azimute Sul" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">INVESTIR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Asfalto, iluminação em LED e esgoto pronto</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-301</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Liberado p/ Construir</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Loteamento Azimute Sul</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Região Sul · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">300 m² (12x25) · Topografia plana</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">A partir de R$ 115.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Parcelas a partir de R$ 890 / mês</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Entrada de R$ 10.000 + saldo em até 180x</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="terrenos" data-bairro="jardim versalhes · paiçandu / pr" data-codigo="NB-302">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/oportunidades-terrenos-main.webp" alt="Terreno Jardim Versalhes" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">INVESTIR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Bairro consolidado com vizinhança formada</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-302</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Pronto p/ Construir</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Terreno Jardim Versalhes</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Jardim Versalhes · Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">360 m² (12x30) · Sol da manhã</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">R$ 138.000</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Escritura imediata</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Aceita veículo na negociação como parte do pagamento</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+
+    <article class="property-card aura-bento-card" data-category="terrenos" data-bairro="eixo maringá - paiçandu / pr" data-codigo="NB-303">
+      <!-- Imagem e Badges Superiores -->
+      <div class="card-media-wrap aspect-[16/10]">
+        <img src="./assets/oportunidades-terrenos-accent.webp" alt="Gleba Comercial Rodovia PR-323" class="card-photo" loading="lazy">
+        <div class="card-gradient-overlay"></div>
+        
+        <!-- Badges Superiores: apenas a palavra em verde no topo superior esquerdo -->
+        <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span class="card-badge">INVESTIR</span>
+          
+          <div class="territorial-chip">
+            <i data-lucide="map-pin" class="w-3 h-3 text-[var(--green-light)] inline-block"></i>
+            <span>Margem da Rodovia PR-323</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do Card -->
+      <div class="card-info p-4 bg-[#161B22] flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="card-code">CÓD. NB-303</span>
+            <span class="text-[11px] font-['Inter'] font-semibold bg-white/5 px-2 py-0.5 text-[var(--green-light)] border border-white/10">Investimento / Barracão</span>
+          </div>
+          <h3 class="card-title text-base lg:text-lg font-bold text-[var(--ink)]">Gleba Comercial Rodovia PR-323</h3>
+          <p class="card-location text-xs text-[var(--muted)] mt-0.5">Eixo Maringá - Paiçandu / PR</p>
+        </div>
+
+        <div class="card-specs-row mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+          <span class="card-specs text-[11px] font-['Inter'] text-white/70">2.400 m² · Frente para a Rodovia Duplicada</span>
+          <strong class="card-price text-lg font-extrabold text-[var(--green-light)]">Sob Consulta</strong>
+        </div>
+
+        <!-- GAVETA EXPANSÍVEL: RESIZING NO HOVER COM DADOS EXTRAS TERRITORIAIS (SEM POLUIÇÃO NO REPOUSO) -->
+        <div class="card-drawer-extra">
+          <div class="drawer-inner-content pt-3 mt-3 border-t border-white/10 flex flex-col gap-2.5">
+            
+            <!-- Box de Simulação Estimada Territorial -->
+            <div class="bg-black/45 border border-white/10 p-2.5 text-xs">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="text-[var(--muted)]">Simulação Estimada:</span>
+                <span class="text-[var(--green-light)] font-['Inter'] font-bold">Excelente para centro de distribuição ou mall</span>
+              </div>
+              <div class="text-[11px] text-white/60 truncate">Zoneamento comercial e industrial de grande visibilidade</div>
+            </div>
+
+            <!-- Botão com Link Direcionado e Estilo Vazado -->
+            <a href="http://127.0.0.1:4000/clientes/negocia-bem/site/index.html#comprar-casas" class="card-whatsapp-btn">
+              <span>Consultar Oportunidade</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SEÇÃO 03: SESSÃO 02 NARRATIVA ORIGINAL NEGOCIA BEM (PINNING & STORYTELLING)
+       ========================================================================== -->
+  <section aria-labelledby="sessao-02-title" class="overflow-x-clip bg-[#0D1117] text-white font-[Inter]" id="sessao-02">
+      <div class="mx-auto max-w-[1440px] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div class="mb-16 grid grid-cols-1 gap-8 border-t border-white/12 pt-5 lg:grid-cols-[minmax(180px,0.42fr)_minmax(0,1fr)] lg:mb-24">
+          <div class="flex flex-col justify-between h-full py-1">
+            <div>
+              <p class="font-['Inter'] text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8bc7a4]">
+                02 // PROPÓSITO & JORNADA
+              </p>
+              <div class="mt-4 mb-6 h-px w-9 bg-[#3E9B67]/60"></div>
+            </div>
+            <div class="space-y-1 text-[11px] font-['Inter'] uppercase tracking-[0.16em] text-white/40">
+              <p>CRECI 9314-J · CONSULTORIA HUMANIZADA</p>
+              <p>PAIÇANDU · MARINGÁ E REGIÃO</p>
+            </div>
+          </div>
+          <div class="max-w-3xl">
+            <h2 class="font-[Plus_Jakarta_Sans] text-3xl font-light leading-tight tracking-[-0.035em] text-white sm:text-4xl lg:text-5xl" id="sessao-02-title">
+              Toda conquista começa com um desejo.
+            </h2>
+            <p class="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
+              Cada pessoa chega até um imóvel com um sonho diferente. Pode ser a primeira chave nas mãos, a tranquilidade de uma renda que cresce ou um lugar para recomeçar sem burocracia.
+            </p>
+          </div>
+        </div>
+        <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:gap-20">
+          <div class="s02-pin sticky top-8 h-fit">
+            <figure class="s02-media relative h-[calc(100vh-64px)] min-h-[640px] overflow-hidden border border-white/12 bg-[#161B22]">
+              <img id="s02-img-1" alt="Casa contemporânea iluminada com jardim em Paiçandu" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-100" decoding="async" loading="eager" src="./assets/s02-casa-propria.webp"/>
+              <img id="s02-img-2" alt="Empreendimento imobiliário contemporâneo e sustentável" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-0" decoding="async" loading="lazy" src="./assets/s02-investimento.webp"/>
+              <img id="s02-img-3" alt="Ambiente residencial confortável e pronto para locação" class="s02-slide-img absolute inset-0 h-[112%] w-full object-cover brightness-[.78] saturate-[.85] transition-opacity duration-700 ease-out opacity-0" decoding="async" loading="lazy" src="./assets/s02-aluguel.webp"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0D1117]/90 via-transparent to-[#0D1117]/10 pointer-events-none"></div>
+              <figcaption class="absolute bottom-7 left-7 right-7 z-10 flex items-end justify-between gap-5">
+                <div>
+                  <span id="s02-caption-tag" class="block text-[11px] uppercase tracking-[0.28em] text-[#4EBA7E]">
+                    (Com você em cada etapa)
+                  </span>
+                  <span id="s02-caption-title" class="mt-3 block max-w-xs font-[Plus_Jakarta_Sans] text-xl font-light leading-snug">
+                    Um lugar para viver o que importa.
+                  </span>
+                </div>
+                <span id="s02-counter" class="mb-1 text-xs text-white/45 font-['Inter']">
+                  01 / 03
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="border-y border-white/12" id="s02-narrative">
+            <article aria-labelledby="s02-heading-1" class="s02-story flex min-h-[700px] flex-col justify-center border-b border-white/12 py-20 lg:min-h-[85vh]">
+              <div class="s02-reveal mb-12 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-white/45">
+                <span class="text-[#4EBA7E]">01</span>
+                <span>Casa própria</span>
+                <span class="h-px w-10 bg-white/20"></span>
+              </div>
+              <h3 class="s02-reveal font-[Plus_Jakarta_Sans] text-4xl font-light leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.2rem]" id="s02-heading-1">
+                O sonho de ter um lugar para chamar de seu
+              </h3>
+              <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
+                A primeira chave nas mãos carrega histórias inteiras. A Negocia Bem cuida de cada detalhe para sua família encontrar segurança, clareza e um endereço que tenha a sua cara — com acolhimento desde a primeira conversa.
+              </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-[var(--green)] bg-[rgba(62,155,103,0.1)] px-6 py-4 text-xs font-['Inter'] font-bold uppercase tracking-[0.16em] text-[var(--green-light)] transition-all duration-300 hover:bg-[var(--green)] hover:text-white" data-route="comprar-casas" type="button">
+                  EXPLORAR CASAS DISPONÍVEIS <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Casas prontas para morar a partir de R$ 249 mil · Financiamento Minha Casa Minha Vida
+                </p>
+              </div>
+            </article>
+            <article aria-labelledby="s02-heading-2" class="s02-story flex min-h-[700px] flex-col justify-center border-b border-white/12 bg-[#161B22] py-20 lg:min-h-[85vh] lg:-mx-8 lg:px-8">
+              <div class="s02-reveal mb-12 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-white/45">
+                <span class="text-[#4EBA7E]">02</span>
+                <span>Renda passiva</span>
+                <span class="h-px w-10 bg-white/20"></span>
+              </div>
+              <h3 class="s02-reveal font-[Plus_Jakarta_Sans] text-4xl font-light leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.2rem]" id="s02-heading-2">
+                A liberdade de fazer o seu imóvel trabalhar por você
+              </h3>
+              <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
+                Investir também é cuidar do futuro. A gente apresenta oportunidades reais, explica cada cenário com transparência e acompanha a escolha para que seu patrimônio cresça com tranquilidade.
+              </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-[var(--green)] bg-[rgba(62,155,103,0.1)] px-6 py-4 text-xs font-['Inter'] font-bold uppercase tracking-[0.16em] text-[var(--green-light)] transition-all duration-300 hover:bg-[var(--green)] hover:text-white" data-route="comprar-terrenos" type="button">
+                  VER TERRENOS & LOTES PARA INVESTIR <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Loteamentos residenciais com alto potencial de valorização em Paiçandu e Maringá
+                </p>
+              </div>
+            </article>
+            <article aria-labelledby="s02-heading-3" class="s02-story flex min-h-[700px] flex-col justify-center border-b border-white/12 py-20 lg:min-h-[85vh]">
+              <div class="s02-reveal mb-12 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-white/45">
+                <span class="text-[#4EBA7E]">03</span>
+                <span>Aluguel sem dor de cabeça</span>
+                <span class="h-px w-10 bg-white/20"></span>
+              </div>
+              <h3 class="s02-reveal font-[Plus_Jakarta_Sans] text-4xl font-light leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.2rem]" id="s02-heading-3">
+                A tranquilidade de alugar sem dor de cabeça
+              </h3>
+              <p class="s02-reveal mt-9 max-w-xl text-base leading-8 text-white/60">
+                Da curadoria do imóvel ao contrato, você conta com suporte próximo e explicações simples. Menos burocracia, mais confiança para começar uma nova fase com leveza.
+              </p>
+              <div class="s02-reveal mt-10">
+                <button class="group inline-flex items-center border border-[var(--green)] bg-[rgba(62,155,103,0.1)] px-6 py-4 text-xs font-['Inter'] font-bold uppercase tracking-[0.16em] text-[var(--green-light)] transition-all duration-300 hover:bg-[var(--green)] hover:text-white" data-route="alugar-imoveis" type="button">
+                  CONSULTAR IMÓVEIS PARA LOCAÇÃO <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
+                </button>
+                <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
+                  Processo ágil e descomplicado · Atendimento humanizado direto pelo WhatsApp
+                </p>
+              </div>
+            </article>
+            <div class="s02-reveal flex min-h-[300px] flex-col justify-center py-16">
+              <span class="text-[11px] uppercase tracking-[0.3em] text-[#4EBA7E]">
+                (Negocia Bem)
+              </span>
+              <p class="mt-5 max-w-xl font-[Plus_Jakarta_Sans] text-3xl font-light leading-tight tracking-[-0.03em] sm:text-4xl">
+                Em cada escolha, a NegociaBem está com você.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <!-- ==========================================================================
+       FOOTER MÍNIMO INSTITUCIONAL
+       ========================================================================== -->
+  <footer class="bg-black/90 border-t border-white/10 py-12 text-center text-xs text-[var(--muted)]">
+    <div class="wrap flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="font-bold text-white tracking-widest uppercase">NEGOCIA BEM CONSULTORIA IMOBILIÁRIA</span> · CRECI 9314-J
+      </div>
+      <div>
+        Paiçandu e Região Metropolitana de Maringá / PR · Atendimento com Assessoria Jurídica
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       SCRIPTS: DUAL TEXT REVEAL (40% MAIS LENTO), DOCKING, FILTERING, PINNING
+       ========================================================================== -->
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // ==========================================================================
+    // 1. DUAL TEXT REVEAL REFINADO:
+    //    - SEM ALTERAR FONTES (font-family e font-style mantidos nativos)
+    //    - SOMENTE COR DE DESTAQUE (var(--green-light))
+    //    - PALAVRAS PRINCIPAIS EXATAMENTE 40% MAIS LENTAS
+    // ==========================================================================
+    (async function initRefinedDualTextReveal() {
+      if (typeof gsap === 'undefined') return;
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+      const revealContainers = document.querySelectorAll('.hero [data-dual-reveal]');
+      if (!revealContainers.length) return;
+
+      revealContainers.forEach(container => {
+        // Encontra as palavras destacadas (.reveal-highlight)
+        const highlights = container.querySelectorAll('.reveal-highlight');
+        highlights.forEach(hl => {
+          const text = hl.textContent;
+          hl.innerHTML = '';
+          for (let char of text) {
+            const span = document.createElement('span');
+            span.className = 'reveal-highlight-char';
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            hl.appendChild(span);
+          }
+        });
+
+        // Envelopa o conteúdo na máscara física de linha
+        const rawHtml = container.innerHTML;
+        container.innerHTML = '<span class="line-mask-wrap"><span class="line-mask-inner">' + rawHtml + '</span></span>';
+      });
+
+      // TIMELINE DE DUPLA VELOCIDADE MATEMÁTICA:
+      // T_NORMAL = 0.90s
+      // T_HIGHLIGHT = 0.90s * 1.40 = 1.26s (EXATAMENTE 40% MAIS LENTO!)
+      const T_NORMAL = 0.90;
+      const T_HIGHLIGHT = T_NORMAL * 1.40;
+
+      const masterTl = gsap.timeline({ delay: 0.2 });
+
+      // 1. Linhas estruturais e texto normal: firmes e com parada arquitetônica sólida
+      masterTl.fromTo('.hero [data-dual-reveal] .line-mask-inner',
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: T_NORMAL,
+          stagger: 0.12,
+          ease: 'power3.out'
+        }
+      );
+
+      // 2. Palavras de destaque: desabrocham 40% mais lentas, com desfoque óptico
+      const highlightChars = document.querySelectorAll('.hero [data-dual-reveal] .reveal-highlight-char');
+      if (highlightChars.length) {
+        masterTl.fromTo(highlightChars,
+          {
+            y: 14,
+            opacity: 0,
+            filter: 'blur(4px)'
+          },
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: T_HIGHLIGHT, // 1.26s (EXATAMENTE 40% MAIS LENTO)
+            stagger: 0, // Todas as palavras em destaque desabrocham AO MESMO TEMPO (simultâneas)
+            ease: 'power2.out' // curva de desaceleração suave
+          },
+          '<0.15'
+        );
+      }
+    })();
+
+    // ==========================================================================
+    // 2. DOCKING REAL DA BARRA DE PESQUISA (ACOMPANHA O SCROLL ATÉ O CATÁLOGO)
+    // ==========================================================================
+    (function initSearchDockingScroll() {
+      const heroAnchor = document.getElementById('hero-search-anchor');
+      const catalog = document.getElementById('catalogo-grid');
+      const bridge = document.getElementById('catalog-sticky-bridge');
+
+      window.addEventListener('scroll', () => {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const heroHeight = document.querySelector('.hero')?.offsetHeight || 700;
+        const catalogTop = catalog ? catalog.offsetTop : heroHeight;
+        const catalogBottom = catalog ? (catalogTop + catalog.offsetHeight) : (heroHeight + 1400);
+
+        const activeCapsule = document.querySelector('.variant-search-component:not(.hidden)');
+        if (!activeCapsule) return;
+
+        // Quando o scroll ultrapassa a Hero e entra na área do Catálogo de Imóveis:
+        if (scrollY > (heroHeight - 110) && scrollY < (catalogBottom - 180)) {
+          activeCapsule.classList.add('is-scrolling-dock');
+        } else {
+          activeCapsule.classList.remove('is-scrolling-dock');
+        }
+      }, { passive: true });
+    })();
+
+    // ==========================================================================
+    // 3. GERENCIADOR DE VARIANTES AURA BENTO (0PX RADIUS)
+    // ==========================================================================
+    (function initVariantSwitcher() {
+      const buttons = document.querySelectorAll('[data-variant-toggle]');
+      const searchComponents = document.querySelectorAll('.variant-search-component');
+      const descLabel = document.getElementById('variant-desc-label');
+
+      const descriptions = {
+        v1: '01 · Monolithic Slate: Bloco contínuo ardósia + 0px radius + acento esmeralda',
+        v2: '02 · Atelier Imobiliário: Console arquitetônico segmentado + curadoria refinada + 0px radius',
+        v3: '03 · Bento Dual-Tier: Modular de dois níveis + tags imobiliárias + 0px radius'
+      };
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const v = btn.getAttribute('data-variant-toggle');
+          document.body.setAttribute('data-active-variant', v);
+
+          buttons.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+
+          searchComponents.forEach(el => el.classList.add('hidden'));
+          const targetCapsule = document.getElementById('capsule-' + v);
+          if (targetCapsule) targetCapsule.classList.remove('hidden');
+
+          if (descLabel && descriptions[v]) {
+            descLabel.textContent = descriptions[v];
+          }
+
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+      });
+    })();
+
+    // ==========================================================================
+    // 4. HEADER COLAPSÁVEL INTELIGENTE
+    // ==========================================================================
+    (function initCollapsibleHeader() {
+      const header = document.getElementById('site-header');
+      if (!header) return;
+
+      let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+      const threshold = 60;
+      const deltaMin = 6;
+
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const delta = currentScrollY - lastScrollY;
+
+        if (currentScrollY > 80) {
+          header.classList.add('header--scrolled');
+        } else {
+          header.classList.remove('header--scrolled');
+        }
+
+        if (delta > deltaMin && currentScrollY > threshold) {
+          header.classList.add('header--hidden');
+        } else if (delta < -deltaMin || currentScrollY <= threshold) {
+          header.classList.remove('header--hidden');
+        }
+
+        lastScrollY = currentScrollY;
+      }, { passive: true });
+    })();
+
+    // ==========================================================================
+    // 5. ATALHO GLOBAL / E FILTRAGEM REATIVA DE IMÓVEIS
+    // ==========================================================================
+    (function initSearchAndFilterEngine() {
+      window.addEventListener('keydown', (e) => {
+        const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        const isEditable = document.activeElement && document.activeElement.isContentEditable;
+        if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select' || isEditable) return;
+
+        if (e.key === '/') {
+          e.preventDefault();
+          const activeCodeInput = document.querySelector('.variant-search-component:not(.hidden) input[id$="codigo"]');
+          if (activeCodeInput) {
+            activeCodeInput.focus();
+            activeCodeInput.select();
+          }
+        }
+      });
+
+      let currentTab = 'todos';
+
+      // Abas de busca em todas as variantes
+      document.querySelectorAll('[data-search-tab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const parent = tab.parentElement;
+          parent.querySelectorAll('[data-search-tab]').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentTab = tab.getAttribute('data-search-tab') || 'todos';
+
+          // Sincroniza filtro rápido
+          document.querySelectorAll('.category-filter-btn').forEach(b => {
+            if (b.getAttribute('data-cat-filter') === currentTab) {
+              b.classList.add('bg-[var(--green)]', 'text-white');
+              b.classList.remove('bg-white/5', 'text-white/80');
+            } else {
+              b.classList.remove('bg-[var(--green)]', 'text-white');
+              b.classList.add('bg-white/5', 'text-white/80');
+            }
+          });
+
+          applyFilter();
+        });
+      });
+
+      // Select na Variante 2 (Atelier Imobiliário)
+      const atelierSelect = document.getElementById('v2-tab-select');
+      atelierSelect?.addEventListener('change', () => {
+        currentTab = atelierSelect.value;
+        applyFilter();
+      });
+
+      // Botões de filtro rápido
+      document.querySelectorAll('.category-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.category-filter-btn').forEach(b => {
+            b.classList.remove('bg-[var(--green)]', 'text-white');
+            b.classList.add('bg-white/5', 'text-white/80');
+          });
+          btn.classList.add('bg-[var(--green)]', 'text-white');
+          btn.classList.remove('bg-white/5', 'text-white/80');
+
+          currentTab = btn.getAttribute('data-cat-filter') || 'todos';
+          applyFilter();
+        });
+      });
+
+      // Disparos de busca por texto / código
+      ['v1', 'v2', 'v3'].forEach(v => {
+        const btn = document.getElementById(v + '-submit');
+        const inputB = document.getElementById(v + '-bairro');
+        const inputC = document.getElementById(v + '-codigo');
+
+        const trigger = () => {
+          if (currentTab === 'terrenos' && !inputB?.value.trim() && !inputC?.value.trim()) {
+            window.open('https://wa.me/554438016654?text=' + encodeURIComponent('Olá! Gostaria de avaliar meu terreno em Paiçandu para venda com a Negocia Bem.'), '_blank');
+            return;
+          }
+          applyFilter();
+          const cat = document.getElementById('catalogo-grid');
+          if (cat) cat.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        btn?.addEventListener('click', trigger);
+        inputB?.addEventListener('keydown', (e) => { if (e.key === 'Enter') trigger(); });
+        inputC?.addEventListener('keydown', (e) => { if (e.key === 'Enter') trigger(); });
+      });
+
+      function applyFilter() {
+        const cards = document.querySelectorAll('.aura-bento-card');
+        const inputB = document.querySelector('.variant-search-component:not(.hidden) input[id$="bairro"]');
+        const inputC = document.querySelector('.variant-search-component:not(.hidden) input[id$="codigo"]');
+        const bairroVal = (inputB?.value || '').toLowerCase().trim();
+        const codVal = (inputC?.value || '').toLowerCase().trim();
+
+        let count = 0;
+        cards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const cardBairro = (card.getAttribute('data-bairro') || '').toLowerCase();
+          const cardCod = (card.getAttribute('data-codigo') || '').toLowerCase();
+
+          const matchCategory = (currentTab === 'todos') || (cat === currentTab);
+          const matchBairro = !bairroVal || cardBairro.includes(bairroVal) || card.textContent.toLowerCase().includes(bairroVal);
+          const matchCod = !codVal || cardCod.includes(codVal);
+
+          if (matchCategory && matchBairro && matchCod) {
+            card.style.display = 'flex';
+            count++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        const label = document.getElementById('catalog-count-label');
+        if (label) {
+          label.textContent = count > 0 
+            ? ('Exibindo ' + count + (count === 1 ? ' imóvel' : ' imóveis') + ' em destaque')
+            : 'Nenhum imóvel encontrado. Fale com um corretor no WhatsApp!';
+        }
+      }
+    })();
+
+    // ==========================================================================
+    // 6. SESSÃO 02: PINNING & NARRATIVA ORIGINAL NEGOCIA BEM
+    // ==========================================================================
+    (function initSession02() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const items = gsap.utils.toArray('.s02-reveal');
+      items.forEach(el => {
+        if (el.tagName === 'H3') {
+          const words = el.innerText.split(' ').map(w => '<span class="s02-word-mask"><span class="s02-word">' + w + '</span></span>').join(' ');
+          el.innerHTML = words;
+        }
+      });
+
+      const slides = gsap.utils.toArray('.s02-slide');
+      const dots = gsap.utils.toArray('.s02-dot');
+      const counter = document.getElementById('s02-counter');
+      let activeSlide = 0;
+
+      function setS02Slide(idx) {
+        if (idx === activeSlide || !slides[idx]) return;
+        slides.forEach((s, i) => {
+          gsap.to(s, {
+            autoAlpha: i === idx ? 1 : 0,
+            scale: i === idx ? 1 : 1.04,
+            duration: 0.85,
+            ease: 'power3.out'
+          });
+        });
+        dots.forEach((d, i) => d.classList.toggle('bg-white', i === idx));
+        if (counter) counter.textContent = '0' + (idx + 1);
+        activeSlide = idx;
+      }
+
+      if (!reduce) {
+        document.querySelectorAll('.s02-story').forEach(story => {
+          gsap.to(story.querySelectorAll('.s02-reveal'), {
+            autoAlpha: 1,
+            yPercent: 0,
+            stagger: .035,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: story,
+              start: 'top 72%',
+              end: 'top 34%',
+              scrub: 1
+            }
+          });
+        });
+
+        document.querySelectorAll('.s02-story').forEach((story, idx) => {
+          ScrollTrigger.create({
+            trigger: story,
+            start: 'top 55%',
+            end: 'bottom 55%',
+            onEnter: () => setS02Slide(idx),
+            onEnterBack: () => setS02Slide(idx)
+          });
+        });
+
+        gsap.to('.s02-slide-img', {
+          yPercent: -8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#s02-narrative',
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
