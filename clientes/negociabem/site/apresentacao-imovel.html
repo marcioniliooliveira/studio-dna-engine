@@ -250,7 +250,7 @@
     }
 
     /* ==========================================================================
-       SCROLL-DRIVEN DOCKING SEARCH BAR (GSAP / SCROLL SCRUB)
+       SCROLL-DRIVEN DOCKING SEARCH BAR (NEUTRAL ARCHITECTURE + OPTICAL FADE IN/OUT)
        ========================================================================== */
     .hero-search-wrapper {
       margin-top: 36px;
@@ -258,10 +258,11 @@
       z-index: 20;
     }
 
+    /* Clean Neutral Slate Search Bar (Zero neon, zero colorful borders) */
     .search-bento-dockable {
-      background: rgba(22, 27, 34, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(18, 22, 28, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       padding: 16px 20px;
       display: flex;
@@ -270,8 +271,16 @@
       gap: 16px;
       width: 100%;
       max-width: 1040px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
       border-radius: 0px !important;
+      opacity: 1;
+      filter: blur(0px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  background-color 0.4s ease,
+                  border-color 0.4s ease,
+                  box-shadow 0.4s ease !important;
     }
 
     .catalog-sticky-bridge {
@@ -286,6 +295,7 @@
       pointer-events: auto;
     }
 
+    /* Neutral Docked State: Zero neon green, pure dark glass, deep occlusion shadow */
     .is-scrolling-dock {
       position: fixed !important;
       top: 64px !important;
@@ -293,10 +303,40 @@
       transform: translateX(-50%) !important;
       width: min(calc(100% - 32px), 1180px) !important;
       z-index: 950 !important;
-      background: rgba(13, 17, 23, 0.96) !important;
-      border: 1px solid var(--green) !important;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(62, 155, 103, 0.25) !important;
+      background: rgba(18, 22, 28, 0.97) !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85) !important;
       padding: 10px 18px !important;
+      opacity: 1 !important;
+      filter: blur(0px) !important;
+      pointer-events: auto !important;
+    }
+
+    /* Smooth Optical Fade Out when leaving catalog into Sessão 02 / footer */
+    .dock-fading-out {
+      opacity: 0 !important;
+      transform: translateX(-50%) translateY(-12px) !important;
+      filter: blur(6px) !important;
+      pointer-events: none !important;
+    }
+
+    /* Search submit button with neutral titanium frame */
+    .search-submit-btn {
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.05);
+      color: #FFFFFF;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 0px !important;
+      cursor: pointer;
+    }
+
+    .search-submit-btn:hover {
+      background: var(--green);
+      color: #0D1117;
+      border-color: var(--green);
+      box-shadow: 0 0 20px rgba(62, 155, 103, 0.4);
     }
 
     /* ==========================================================================
@@ -354,7 +394,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.3s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .presentation-thumbs-track {
@@ -427,13 +467,20 @@
       position: relative;
       overflow: hidden;
       border-radius: 0px !important;
+      cursor: pointer;
       transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
     }
 
     .aura-bento-card:hover {
-      border-color: rgba(62, 155, 103, 0.5);
+      border-color: rgba(62, 155, 103, 0.6) !important;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
       transform: translateY(-2px);
+    }
+
+    /* Selected Card in Catalog */
+    .aura-bento-card.is-selected-card {
+      border-color: var(--green-light) !important;
+      box-shadow: 0 0 25px rgba(62, 155, 103, 0.3) !important;
     }
 
     .bento-hero-card {
@@ -514,7 +561,7 @@
       font-family: 'Inter', sans-serif;
     }
 
-    /* CARD HOVER RESIZING DRAWER (EXPANSÃO SUAVE E NATURAL) */
+    /* CARD HOVER RESIZING DRAWER — SINCRONIZADO POR LINHA/COLUNA HORIZONTAL */
     .card-drawer-extra {
       max-height: 0;
       overflow: hidden;
@@ -524,12 +571,18 @@
       background: rgba(13, 17, 23, 0.5);
     }
 
-    .aura-bento-card:hover .card-drawer-extra {
+    /* Todos os cards da mesma linha horizontal abrem juntos */
+    .aura-bento-card:hover .card-drawer-extra,
+    .aura-bento-card.is-row-hovered .card-drawer-extra {
       max-height: 220px;
       opacity: 1;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding-top: 14px;
       padding-bottom: 14px;
+    }
+
+    .aura-bento-card.is-row-hovered {
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
     /* HERO CTA & UTILITIES */
@@ -611,16 +664,16 @@
         </a>
       </div>
 
-      <!-- BARRA DE BUSCA ANCORADA NA HERO QUE SE DESLOCA COM O SCROLL -->
+      <!-- BARRA DE BUSCA ANCORADA NA HERO QUE SE DESLOCA COM O SCROLL (SEM NEON, PURA ARDÓSIA) -->
       <div class="hero-search-wrapper" id="hero-search-anchor">
         <div class="search-bento-dockable" id="main-dockable-search">
           <div class="flex items-center gap-2 flex-1 min-w-[220px] bg-black/40 border border-white/10 px-3 py-2.5">
-            <i data-lucide="search" class="w-4 h-4 text-[#4EBA7E]"></i>
+            <i data-lucide="search" class="w-4 h-4 text-white/60"></i>
             <input type="text" placeholder="Bairro ou cidade (ex: Jardim América, Paiçandu)" class="w-full bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-['Inter']">
           </div>
 
           <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
-            <i data-lucide="home" class="w-4 h-4 text-[#4EBA7E]"></i>
+            <i data-lucide="home" class="w-4 h-4 text-white/60"></i>
             <select class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
               <option value="todos" class="bg-[#161B22] text-white">Todos os Tipos</option>
               <option value="comprar" class="bg-[#161B22] text-white">Comprar Casas</option>
@@ -630,7 +683,7 @@
           </div>
 
           <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
-            <i data-lucide="banknote" class="w-4 h-4 text-[#4EBA7E]"></i>
+            <i data-lucide="banknote" class="w-4 h-4 text-white/60"></i>
             <select class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
               <option value="todas" class="bg-[#161B22] text-white">Faixa de Preço</option>
               <option value="ate-250k" class="bg-[#161B22] text-white">Até R$ 250.000</option>
@@ -639,7 +692,7 @@
             </select>
           </div>
 
-          <button type="button" onclick="location.href='#catalogo-grid'" class="btn-vazado px-6 py-3 text-xs font-bold tracking-wider uppercase flex items-center gap-2">
+          <button type="button" onclick="location.href='#catalogo-grid'" class="search-submit-btn px-6 py-3 text-xs font-bold tracking-wider uppercase flex items-center gap-2">
             <span>FILTRAR OPORTUNIDADES</span>
             <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
           </button>
@@ -665,10 +718,10 @@
             <span class="w-2 h-2 bg-[#3E9B67] inline-block"></span>
             DOSSIÊ ARQUITETÔNICO & APRESENTAÇÃO PRINCIPAL EXPANDIDA
           </div>
-          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Plus_Jakarta_Sans'] text-white tracking-tight">
+          <h2 id="presentation-main-heading" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Plus_Jakarta_Sans'] text-white tracking-tight">
             Casa Contemporânea Jardim América
           </h2>
-          <p class="text-sm text-white/60 font-['Inter'] mt-1">
+          <p id="presentation-main-subheading" class="text-sm text-white/60 font-['Inter'] mt-1">
             CÓD. NB-105455 · Jardim América, Paiçandu / Região de Maringá · Curadoria com dados de decisão reais
           </p>
         </div>
@@ -698,7 +751,7 @@
             <div class="presentation-main-photo-wrap aspect-[16/10]">
               <img id="presentation-main-photo" class="presentation-main-photo" src="https://www.encontraimoveis.com.br/img/im20-000105455.jpg" alt="Casa Contemporânea Jardim América">
               <div class="absolute top-4 left-4 z-10">
-                <span class="card-badge">COMPRAR</span>
+                <span id="v1-badge" class="card-badge">COMPRAR</span>
               </div>
               <div class="absolute bottom-4 right-4 z-10 bg-black/80 px-3 py-1 border border-white/10 text-xs font-semibold text-white/90" id="featured-photo-counter">
                 Foto 1 de 8
@@ -742,8 +795,8 @@
               
             </div>
             <div class="flex items-center justify-between text-[11px] text-white/50 px-1 font-['Inter']">
-              <span>Navegue pelas 8 fotos em alta definição do imóvel real</span>
-              <span class="text-[#4EBA7E]">Imagens capturadas no local em Paiçandu</span>
+              <span>Navegue pelas fotos em alta definição do imóvel real</span>
+              <span class="text-[#4EBA7E]">Imagens capturadas no local</span>
             </div>
           </div>
 
@@ -753,13 +806,13 @@
               <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
                 <div>
                   <span class="text-xs uppercase tracking-widest text-[#4EBA7E] font-bold block mb-1">Valor de Venda</span>
-                  <div class="text-3xl sm:text-4xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
+                  <div id="v1-preco" class="text-3xl sm:text-4xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
                     R$ 350.000
                   </div>
                 </div>
                 <div class="text-right">
                   <span class="text-xs text-white/50 block font-['Inter']">Código</span>
-                  <span class="text-sm font-bold text-white font-['Inter']">NB-105455</span>
+                  <span id="v1-codigo" class="text-sm font-bold text-white font-['Inter']">NB-105455</span>
                 </div>
               </div>
 
@@ -772,14 +825,14 @@
                 <div class="grid grid-cols-2 gap-3 text-xs font-['Inter'] mb-3">
                   <div>
                     <span class="text-white/50 block">Entrada Sugerida:</span>
-                    <strong class="text-white text-sm font-semibold">A partir de R$ 35.000 (FGTS / MCMV)</strong>
+                    <strong id="v1-simulacao-entrada" class="text-white text-sm font-semibold">A partir de R$ 35.000 (FGTS / MCMV)</strong>
                   </div>
                   <div>
                     <span class="text-white/50 block">Parcelas a partir de:</span>
-                    <strong class="text-[#4EBA7E] text-sm font-bold">Aprox. R$ 1.450 / mês (Caixa)</strong>
+                    <strong id="v1-simulacao-parcela" class="text-[#4EBA7E] text-sm font-bold">Aprox. R$ 1.450 / mês (Caixa)</strong>
                   </div>
                 </div>
-                <p class="text-[11px] text-white/60 font-['Inter'] border-t border-white/10 pt-2">
+                <p id="v1-simulacao-taxa" class="text-[11px] text-white/60 font-['Inter'] border-t border-white/10 pt-2">
                   Juros reduzidos Caixa Econômica Federal · Prazo de undefined. Financiamento com aprovação ágil.
                 </p>
               </div>
@@ -788,25 +841,25 @@
               <div class="grid grid-cols-2 gap-3 mb-6 text-xs font-['Inter']">
                 <div class="bg-white/5 p-3 border border-white/5">
                   <span class="text-white/50 block">Área Construída:</span>
-                  <strong class="text-white text-sm font-semibold">70,49 m²</strong>
-                  <span class="text-[11px] text-white/40 block mt-0.5">Terreno 150 m²</span>
+                  <strong id="v1-area" class="text-white text-sm font-semibold">70,49 m²</strong>
+                  <span id="v1-terreno" class="text-[11px] text-white/40 block mt-0.5">Terreno 150 m²</span>
                 </div>
                 <div class="bg-white/5 p-3 border border-white/5">
                   <span class="text-white/50 block">Quartos & Conforto:</span>
-                  <strong class="text-white text-sm font-semibold">3 dormitórios (1 suíte master)</strong>
-                  <span class="text-[11px] text-white/40 block mt-0.5">2 banheiros com nicho · 2 vagas</span>
+                  <strong id="v1-quartos" class="text-white text-sm font-semibold">3 dormitórios (1 suíte master)</strong>
+                  <span id="v1-vagas" class="text-[11px] text-white/40 block mt-0.5">2 banheiros com nicho · 2 vagas</span>
                 </div>
                 <div class="bg-white/5 p-3 border border-white/5 col-span-2">
                   <span class="text-white/50 block">Inteligência Territorial:</span>
-                  <strong class="text-[#4EBA7E] text-sm font-semibold">A 12 min da Catedral de Maringá</strong>
-                  <span class="text-[11px] text-white/60 block mt-0.5">Localização consolidada no Jardim América, próximo ao polo de serviços de Paiçandu.</span>
+                  <strong id="v1-distancia" class="text-[#4EBA7E] text-sm font-semibold">A 12 min da Catedral de Maringá</strong>
+                  <span id="v1-bairro-info" class="text-[11px] text-white/60 block mt-0.5">Localização consolidada no Jardim América, próximo ao polo de serviços de Paiçandu.</span>
                 </div>
               </div>
 
               <!-- DIFERENCIAIS ARQUITETÔNICOS -->
               <div class="mb-6">
                 <span class="text-xs uppercase tracking-wider text-white/70 font-bold block mb-2 font-['Inter']">Diferenciais do Imóvel</span>
-                <div class="flex flex-wrap gap-1.5">
+                <div id="v1-diferenciais" class="flex flex-wrap gap-1.5">
                   
                     <span class="text-[11px] bg-white/5 border border-white/10 px-2.5 py-1 text-white/80 font-['Inter']">
                       ✓ Varanda gourmet com churrasqueira
@@ -837,12 +890,12 @@
 
               <!-- DESCRIÇÃO AUTÊNTICA -->
               <div class="mb-6 text-xs text-white/70 leading-relaxed font-['Inter'] border-t border-white/10 pt-4">
-                <p>Casa com 3 quartos, sendo 1 suíte, no Jardim América. Excelente oportunidade para quem busca uma casa funcional, confortável e com ambientes bem distribuídos. O imóvel possui aproximadamente 70,49 m² de área construída, com uma planta pensada para aproveitar bem cada espaço. São 3 dormitórios, sendo 1 suíte, proporcionando maior privacidade e conforto ao casal, além de banheiro social. A casa conta ainda com sala de estar, cozinha independente, área de serviço e varanda gourmet. Localizada no Jardim América, frente para a Rua Florianópolis, a 12 min de Maringá.</p>
+                <p id="v1-desc">Casa com 3 quartos, sendo 1 suíte, no Jardim América. Excelente oportunidade para quem busca uma casa funcional, confortável e com ambientes bem distribuídos. O imóvel possui aproximadamente 70,49 m² de área construída, com uma planta pensada para aproveitar bem cada espaço. São 3 dormitórios, sendo 1 suíte, proporcionando maior privacidade e conforto ao casal, além de banheiro social. A casa conta ainda com sala de estar, cozinha independente, área de serviço e varanda gourmet. Localizada no Jardim América, frente para a Rua Florianópolis, a 12 min de Maringá.</p>
               </div>
             </div>
 
             <!-- CTA WHATSAPP VAZADO COM HOVER GREEN -->
-            <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20em%20analisar%20a%20oportunidade%20NB-105455%20-Casa%20Contempor%C3%A2nea%20Jardim%20Am%C3%A9rica" target="_blank" class="presentation-cta-btn btn-vazado w-full py-4 text-xs font-bold tracking-widest uppercase">
+            <a id="v1-whatsapp-btn" href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20em%20analisar%20a%20oportunidade%20NB-105455%20-Casa%20Contempor%C3%A2nea%20Jardim%20Am%C3%A9rica" target="_blank" class="presentation-cta-btn btn-vazado w-full py-4 text-xs font-bold tracking-widest uppercase">
               Consultar Oportunidade no WhatsApp ↗
             </a>
           </div>
@@ -858,21 +911,21 @@
 
           <!-- WIDESCREEN 21:9 CINEMATIC HERO VIEWPORT -->
           <div class="presentation-main-photo-wrap aspect-[21/9] w-full border border-white/10 relative">
-            <img class="presentation-main-photo-v2 w-full h-full object-cover" src="https://www.encontraimoveis.com.br/img/im20-000105455.jpg" alt="Casa Contemporânea Jardim América">
+            <img id="v2-main-photo" class="presentation-main-photo-v2 w-full h-full object-cover" src="https://www.encontraimoveis.com.br/img/im20-000105455.jpg" alt="Casa Contemporânea Jardim América">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-8">
               <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <span class="card-badge mb-2">COMPRAR</span>
-                  <h3 class="text-2xl sm:text-4xl font-extrabold text-white font-['Plus_Jakarta_Sans']">
+                  <span id="v2-badge" class="card-badge mb-2">COMPRAR</span>
+                  <h3 id="v2-title" class="text-2xl sm:text-4xl font-extrabold text-white font-['Plus_Jakarta_Sans']">
                     Casa Contemporânea Jardim América
                   </h3>
-                  <p class="text-xs sm:text-sm text-white/80 font-['Inter']">
+                  <p id="v2-telemetry" class="text-xs sm:text-sm text-white/80 font-['Inter']">
                     Jardim América, Paiçandu · A 12 min da Catedral de Maringá
                   </p>
                 </div>
                 <div class="text-right">
                   <span class="text-xs text-white/60 uppercase tracking-widest block font-['Inter']">Preço de Referência</span>
-                  <div class="text-3xl sm:text-5xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
+                  <div id="v2-preco" class="text-3xl sm:text-5xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
                     R$ 350.000
                   </div>
                 </div>
@@ -893,13 +946,13 @@
                 <div class="space-y-2 text-xs font-['Inter']">
                   <div>
                     <span class="text-white/50 block">Entrada Mínima:</span>
-                    <strong class="text-white font-semibold">A partir de R$ 35.000 (FGTS / MCMV)</strong>
+                    <strong id="v2-simulacao-entrada" class="text-white font-semibold">A partir de R$ 35.000 (FGTS / MCMV)</strong>
                   </div>
                   <div>
                     <span class="text-white/50 block">Parcela Estimada:</span>
-                    <strong class="text-[#4EBA7E] font-bold text-sm">Aprox. R$ 1.450 / mês (Caixa)</strong>
+                    <strong id="v2-simulacao-parcela" class="text-[#4EBA7E] font-bold text-sm">Aprox. R$ 1.450 / mês (Caixa)</strong>
                   </div>
-                  <div class="text-[11px] text-white/60 pt-2 border-t border-white/5">
+                  <div id="v2-simulacao-taxa" class="text-[11px] text-white/60 pt-2 border-t border-white/5">
                     Juros reduzidos Caixa Econômica Federal · Programa Minha Casa Minha Vida.
                   </div>
                 </div>
@@ -916,13 +969,13 @@
                 <div class="space-y-2 text-xs font-['Inter']">
                   <div>
                     <span class="text-white/50 block">Área Construída:</span>
-                    <strong class="text-white font-semibold text-sm">70,49 m²</strong>
+                    <strong id="v2-area" class="text-white font-semibold text-sm">70,49 m²</strong>
                   </div>
                   <div>
                     <span class="text-white/50 block">Dormitórios & Suíte:</span>
-                    <strong class="text-white font-semibold">3 dormitórios (1 suíte master)</strong>
+                    <strong id="v2-quartos" class="text-white font-semibold">3 dormitórios (1 suíte master)</strong>
                   </div>
-                  <div class="text-[11px] text-white/60 pt-2 border-t border-white/5">
+                  <div id="v2-metrics-extra" class="text-[11px] text-white/60 pt-2 border-t border-white/5">
                     Terreno de 150 m² · 2 vagas · 2 banheiros com nicho
                   </div>
                 </div>
@@ -939,11 +992,11 @@
                 <div class="space-y-2 text-xs font-['Inter']">
                   <div>
                     <span class="text-white/50 block">Distância de Maringá:</span>
-                    <strong class="text-[#4EBA7E] font-semibold">A 12 min da Catedral de Maringá</strong>
+                    <strong id="v2-distancia" class="text-[#4EBA7E] font-semibold">A 12 min da Catedral de Maringá</strong>
                   </div>
                   <div>
                     <span class="text-white/50 block">Localização Exata:</span>
-                    <strong class="text-white">Jardim América, Paiçandu/PR</strong>
+                    <strong id="v2-bairro" class="text-white">Jardim América, Paiçandu/PR</strong>
                   </div>
                   <div class="text-[11px] text-white/60 pt-2 border-t border-white/5">
                     Rápido acesso à PR-323 e ao centro de Maringá.
@@ -963,7 +1016,7 @@
                   Análise de crédito Caixa gratuita e agendamento de visita acompanhada.
                 </p>
               </div>
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Quero%20visitar%20o%20im%C3%B3vel%20NB-105455%20-Casa%20Contempor%C3%A2nea%20Jardim%20Am%C3%A9rica" target="_blank" class="presentation-cta-btn btn-vazado w-full py-3 text-xs font-bold tracking-wider">
+              <a id="v2-whatsapp-btn" href="https://wa.me/554438016654?text=Ol%C3%A1!%20Quero%20visitar%20o%20im%C3%B3vel%20NB-105455%20-Casa%20Contempor%C3%A2nea%20Jardim%20Am%C3%A9rica" target="_blank" class="presentation-cta-btn btn-vazado w-full py-3 text-xs font-bold tracking-wider">
                 FALAR NO WHATSAPP ↗
               </a>
             </div>
@@ -979,49 +1032,49 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           <!-- MOSAICO ARQUITETÔNICO MULTI-FOTO (55% = 7 COLS) -->
-          <div class="lg:col-span-7 grid grid-cols-2 gap-3">
+          <div class="lg:col-span-7 grid grid-cols-2 gap-3" id="v3-photo-mosaic">
             <div class="col-span-2 aspect-[16/9] border border-white/10 overflow-hidden bg-black">
-              <img src="https://www.encontraimoveis.com.br/img/im20-000105455.jpg" class="w-full h-full object-cover" alt="Fachada Casa Contemporânea Jardim América">
+              <img id="v3-photo-0" src="https://www.encontraimoveis.com.br/img/im20-000105455.jpg" class="w-full h-full object-cover" alt="Fachada Casa Contemporânea Jardim América">
             </div>
             <div class="aspect-[4/3] border border-white/10 overflow-hidden bg-black">
-              <img src="https://www.encontraimoveis.com.br/img/im21-000105455.jpg" class="w-full h-full object-cover" alt="Interior 1 Casa Contemporânea Jardim América">
+              <img id="v3-photo-1" src="https://www.encontraimoveis.com.br/img/im21-000105455.jpg" class="w-full h-full object-cover" alt="Interior 1 Casa Contemporânea Jardim América">
             </div>
             <div class="aspect-[4/3] border border-white/10 overflow-hidden bg-black">
-              <img src="https://www.encontraimoveis.com.br/img/im22-000105455.jpg" class="w-full h-full object-cover" alt="Interior 2 Casa Contemporânea Jardim América">
+              <img id="v3-photo-2" src="https://www.encontraimoveis.com.br/img/im22-000105455.jpg" class="w-full h-full object-cover" alt="Interior 2 Casa Contemporânea Jardim América">
             </div>
           </div>
 
           <!-- DOSSIÊ EDITORIAL (45% = 5 COLS) -->
           <div class="lg:col-span-5 bg-[#161B22] border border-white/10 p-8">
             <div class="border-b border-white/10 pb-5 mb-6">
-              <span class="card-badge mb-3">COMPRAR</span>
-              <h3 class="text-3xl font-extrabold text-white font-['Plus_Jakarta_Sans'] leading-tight">
+              <span id="v3-badge" class="card-badge mb-3">COMPRAR</span>
+              <h3 id="v3-title" class="text-3xl font-extrabold text-white font-['Plus_Jakarta_Sans'] leading-tight">
                 Casa Contemporânea Jardim América
               </h3>
-              <p class="text-xs text-white/50 font-['Inter'] mt-1">
+              <p id="v3-subtitle" class="text-xs text-white/50 font-['Inter'] mt-1">
                 Ref. NB-105455 · Jardim América, Paiçandu · A 12 min da Catedral de Maringá
               </p>
-              <div class="mt-4 text-3xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
+              <div id="v3-preco" class="mt-4 text-3xl font-extrabold text-[#4EBA7E] font-['Plus_Jakarta_Sans']">
                 R$ 350.000
               </div>
             </div>
 
             <div class="space-y-4 text-xs font-['Inter'] text-white/80 leading-relaxed mb-6">
-              <p>Casa com 3 quartos, sendo 1 suíte, no Jardim América. Excelente oportunidade para quem busca uma casa funcional, confortável e com ambientes bem distribuídos. O imóvel possui aproximadamente 70,49 m² de área construída, com uma planta pensada para aproveitar bem cada espaço. São 3 dormitórios, sendo 1 suíte, proporcionando maior privacidade e conforto ao casal, além de banheiro social. A casa conta ainda com sala de estar, cozinha independente, área de serviço e varanda gourmet. Localizada no Jardim América, frente para a Rua Florianópolis, a 12 min de Maringá.</p>
+              <p id="v3-desc">Casa com 3 quartos, sendo 1 suíte, no Jardim América. Excelente oportunidade para quem busca uma casa funcional, confortável e com ambientes bem distribuídos. O imóvel possui aproximadamente 70,49 m² de área construída, com uma planta pensada para aproveitar bem cada espaço. São 3 dormitórios, sendo 1 suíte, proporcionando maior privacidade e conforto ao casal, além de banheiro social. A casa conta ainda com sala de estar, cozinha independente, área de serviço e varanda gourmet. Localizada no Jardim América, frente para a Rua Florianópolis, a 12 min de Maringá.</p>
               <div class="bg-black/40 p-4 border border-white/5">
                 <strong class="text-[#4EBA7E] block mb-1">Métricas Chave de Decisão:</strong>
                 <ul class="space-y-1 text-white/70">
-                  <li>• Área Total Construída: <strong>70,49 m²</strong></li>
-                  <li>• Terreno Exclusivo: <strong>150 m²</strong></li>
-                  <li>• Configuração: <strong>3 dormitórios com 1 suíte master</strong></li>
-                  <li>• Garagem & Banheiros: <strong>2 vagas · 2 banheiros com nicho</strong></li>
-                  <li>• Simulação Caixa: <strong>Aprox. R$ 1.450 / mês (Caixa)</strong> (Entrada de A partir de R$ 35.000 (FGTS / MCMV))</li>
+                  <li>• Área Total Construída: <strong id="v3-area">70,49 m²</strong></li>
+                  <li>• Terreno Exclusivo: <strong id="v3-terreno">150 m²</strong></li>
+                  <li>• Configuração: <strong id="v3-quartos">3 dormitórios com 1 suíte master</strong></li>
+                  <li>• Garagem & Banheiros: <strong id="v3-vagas">2 vagas · 2 banheiros com nicho</strong></li>
+                  <li>• Simulação Caixa: <strong id="v3-parcela">Aprox. R$ 1.450 / mês (Caixa)</strong> (Entrada de <span id="v3-entrada">A partir de R$ 35.000 (FGTS / MCMV)</span>)</li>
                   <li>• Enquadramento: <strong>Programa Minha Casa Minha Vida (MCMV) e FGTS</strong></li>
                 </ul>
               </div>
             </div>
 
-            <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20receber%20o%20dossi%C3%AA%20completo%20do%20im%C3%B3vel%20NB-105455" target="_blank" class="presentation-cta-btn btn-vazado w-full py-4 text-xs font-bold tracking-widest uppercase">
+            <a id="v3-whatsapp-btn" href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20receber%20o%20dossi%C3%AA%20completo%20do%20im%C3%B3vel%20NB-105455" target="_blank" class="presentation-cta-btn btn-vazado w-full py-4 text-xs font-bold tracking-widest uppercase">
               RECEBER DOSSIÊ NO WHATSAPP ↗
             </a>
           </div>
@@ -1034,9 +1087,9 @@
 
   <!-- ==========================================================================
        CATÁLOGO AURA BENTO GRID: EXATAMENTE 3 FILEIRAS (8 CARDS NO TOTAL)
-       Row 1: 1 Hero Card (span 2) + 1 Companion Card (span 1) = 3 cols
-       Row 2: 3 Cards (span 1 cada) = 3 cols
-       Row 3: 3 Cards (span 1 cada) = 3 cols
+       Row 1: 1 Hero Card (span 2) + 1 Companion Card (span 1) = 3 cols [data-row-index="1"]
+       Row 2: 3 Cards (span 1 cada) = 3 cols [data-row-index="2"]
+       Row 3: 3 Cards (span 1 cada) = 3 cols [data-row-index="3"]
        ========================================================================== -->
   <section class="catalog-section" id="catalogo-grid" aria-label="Catálogo de Imóveis e Oportunidades Negocia Bem">
     <div class="max-w-[1440px] mx-auto px-6">
@@ -1052,7 +1105,7 @@
             Imóveis selecionados com inteligência territorial
           </h2>
           <p class="text-sm text-white/60 font-['Inter'] mt-1">
-            Opções reais em Paiçandu e região metropolitana de Maringá com análise de viabilidade e financiamento.
+            Opções reais em Paiçandu e região metropolitana de Maringá. Clique em qualquer card para inspecionar no Dossiê Expandido acima.
           </p>
         </div>
 
@@ -1077,8 +1130,8 @@
       <div class="catalog-bento-grid" id="bento-cards-container">
 
         
-          <!-- CARD 1: NB-106504 (COMPRAR) -->
-          <article class="aura-bento-card bento-hero-card" data-category="comprar" data-codigo="NB-106504" data-bairro="jardim itaipu">
+          <!-- CARD 1: NB-106504 (COMPRAR) — LINHA HORIZONTAL 1 -->
+          <article class="aura-bento-card bento-hero-card" data-category="comprar" data-codigo="NB-106504" data-bairro="jardim itaipu" data-row-index="1" onclick="selectPropertyForPresentation('NB-106504')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000106504.jpg","https://www.encontraimoveis.com.br/img/im21-000106504.jpg","https://www.encontraimoveis.com.br/img/im22-000106504.jpg","https://www.encontraimoveis.com.br/img/im23-000106504.jpg","https://www.encontraimoveis.com.br/img/im24-000106504.jpg","https://www.encontraimoveis.com.br/img/im25-000106504.jpg","https://www.encontraimoveis.com.br/img/im26-000106504.jpg"]' data-photo-index="0">
@@ -1127,13 +1180,13 @@
                   <span>• <strong>1 vaga</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1145,15 +1198,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106504%20-Casa%20Nova%20Jardim%20Itaipu" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106504%20-Casa%20Nova%20Jardim%20Itaipu" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 2: NB-106160 (COMPRAR) -->
-          <article class="aura-bento-card bento-companion-card" data-category="comprar" data-codigo="NB-106160" data-bairro="jardim monte cristo">
+          <!-- CARD 2: NB-106160 (COMPRAR) — LINHA HORIZONTAL 1 -->
+          <article class="aura-bento-card bento-companion-card" data-category="comprar" data-codigo="NB-106160" data-bairro="jardim monte cristo" data-row-index="1" onclick="selectPropertyForPresentation('NB-106160')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000106160.jpg","https://www.encontraimoveis.com.br/img/im21-000106160.jpg","https://www.encontraimoveis.com.br/img/im22-000106160.jpg","https://www.encontraimoveis.com.br/img/im23-000106160.jpg","https://www.encontraimoveis.com.br/img/im24-000106160.jpg","https://www.encontraimoveis.com.br/img/im25-000106160.jpg","https://www.encontraimoveis.com.br/img/im26-000106160.jpg","https://www.encontraimoveis.com.br/img/im27-000106160.jpg"]' data-photo-index="0">
@@ -1202,13 +1255,13 @@
                   <span>• <strong>2 vagas</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1220,15 +1273,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106160%20-Casa%20T%C3%A9rrea%20Jardim%20Monte%20Cristo" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106160%20-Casa%20T%C3%A9rrea%20Jardim%20Monte%20Cristo" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 3: NB-107432 (COMPRAR) -->
-          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-107432" data-bairro="jardim capital">
+          <!-- CARD 3: NB-107432 (COMPRAR) — LINHA HORIZONTAL 2 -->
+          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-107432" data-bairro="jardim capital" data-row-index="2" onclick="selectPropertyForPresentation('NB-107432')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000107432.jpg","https://www.encontraimoveis.com.br/img/im21-000107432.jpg","https://www.encontraimoveis.com.br/img/im22-000107432.jpg","https://www.encontraimoveis.com.br/img/im23-000107432.jpg","https://www.encontraimoveis.com.br/img/im24-000107432.jpg","https://www.encontraimoveis.com.br/img/im25-000107432.jpg","https://www.encontraimoveis.com.br/img/im26-000107432.jpg","https://www.encontraimoveis.com.br/img/im27-000107432.jpg"]' data-photo-index="0">
@@ -1277,13 +1330,13 @@
                   <span>• <strong>2 vagas</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1295,15 +1348,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-107432%20-Casa%20Planejada%20Jardim%20Capital" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-107432%20-Casa%20Planejada%20Jardim%20Capital" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 4: NB-107426 (COMPRAR) -->
-          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-107426" data-bairro="jardim dona marcelina">
+          <!-- CARD 4: NB-107426 (COMPRAR) — LINHA HORIZONTAL 2 -->
+          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-107426" data-bairro="jardim dona marcelina" data-row-index="2" onclick="selectPropertyForPresentation('NB-107426')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000107426.jpg","https://www.encontraimoveis.com.br/img/im21-000107426.jpg","https://www.encontraimoveis.com.br/img/im22-000107426.jpg","https://www.encontraimoveis.com.br/img/im23-000107426.jpg","https://www.encontraimoveis.com.br/img/im24-000107426.jpg","https://www.encontraimoveis.com.br/img/im25-000107426.jpg","https://www.encontraimoveis.com.br/img/im26-000107426.jpg","https://www.encontraimoveis.com.br/img/im27-000107426.jpg"]' data-photo-index="0">
@@ -1352,13 +1405,13 @@
                   <span>• <strong>2 vagas cobertas</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1370,15 +1423,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-107426%20-Residencial%20Jardim%20Dona%20Marcelina" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-107426%20-Residencial%20Jardim%20Dona%20Marcelina" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 5: NB-103543 (COMPRAR) -->
-          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-103543" data-bairro="jardim maziero">
+          <!-- CARD 5: NB-103543 (COMPRAR) — LINHA HORIZONTAL 2 -->
+          <article class="aura-bento-card" data-category="comprar" data-codigo="NB-103543" data-bairro="jardim maziero" data-row-index="2" onclick="selectPropertyForPresentation('NB-103543')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000103543.jpg","https://www.encontraimoveis.com.br/img/im21-000103543.jpg","https://www.encontraimoveis.com.br/img/im22-000103543.jpg","https://www.encontraimoveis.com.br/img/im23-000103543.jpg","https://www.encontraimoveis.com.br/img/im24-000103543.jpg","https://www.encontraimoveis.com.br/img/im25-000103543.jpg","https://www.encontraimoveis.com.br/img/im26-000103543.jpg"]' data-photo-index="0">
@@ -1427,13 +1480,13 @@
                   <span>• <strong>2 vagas</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1445,15 +1498,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-103543%20-Sobrado%20Conforto%20Jardim%20Maziero" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-103543%20-Sobrado%20Conforto%20Jardim%20Maziero" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 6: NB-106918 (ALUGAR) -->
-          <article class="aura-bento-card" data-category="alugar" data-codigo="NB-106918" data-bairro="jardim são miguel">
+          <!-- CARD 6: NB-106918 (ALUGAR) — LINHA HORIZONTAL 3 -->
+          <article class="aura-bento-card" data-category="alugar" data-codigo="NB-106918" data-bairro="jardim são miguel" data-row-index="3" onclick="selectPropertyForPresentation('NB-106918')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000106918.jpg","https://www.encontraimoveis.com.br/img/im21-000106918.jpg","https://www.encontraimoveis.com.br/img/im22-000106918.jpg","https://www.encontraimoveis.com.br/img/im23-000106918.jpg","https://www.encontraimoveis.com.br/img/im24-000106918.jpg","https://www.encontraimoveis.com.br/img/im25-000106918.jpg","https://www.encontraimoveis.com.br/img/im26-000106918.jpg"]' data-photo-index="0">
@@ -1502,13 +1555,13 @@
                   <span>• <strong>2 vagas</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1520,15 +1573,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106918%20-Casa%20Residencial%20Jardim%20S%C3%A3o%20Miguel" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106918%20-Casa%20Residencial%20Jardim%20S%C3%A3o%20Miguel" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 7: NB-106892 (ALUGAR) -->
-          <article class="aura-bento-card" data-category="alugar" data-codigo="NB-106892" data-bairro="jardim laranjeiras 2">
+          <!-- CARD 7: NB-106892 (ALUGAR) — LINHA HORIZONTAL 3 -->
+          <article class="aura-bento-card" data-category="alugar" data-codigo="NB-106892" data-bairro="jardim laranjeiras 2" data-row-index="3" onclick="selectPropertyForPresentation('NB-106892')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000106892.jpg","https://www.encontraimoveis.com.br/img/im21-000106892.jpg","https://www.encontraimoveis.com.br/img/im22-000106892.jpg","https://www.encontraimoveis.com.br/img/im23-000106892.jpg","https://www.encontraimoveis.com.br/img/im24-000106892.jpg","https://www.encontraimoveis.com.br/img/im25-000106892.jpg","https://www.encontraimoveis.com.br/img/im26-000106892.jpg"]' data-photo-index="0">
@@ -1577,13 +1630,13 @@
                   <span>• <strong>1 vaga coberta</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1595,15 +1648,15 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106892%20-Casa%20Conforto%20Jardim%20Laranjeiras%202" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-106892%20-Casa%20Conforto%20Jardim%20Laranjeiras%202" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
 
           </article>
           
-          <!-- CARD 8: NB-87865 (INVESTIR) -->
-          <article class="aura-bento-card" data-category="terrenos" data-codigo="NB-87865" data-bairro="condomínio mandijuba ii">
+          <!-- CARD 8: NB-87865 (INVESTIR) — LINHA HORIZONTAL 3 -->
+          <article class="aura-bento-card" data-category="terrenos" data-codigo="NB-87865" data-bairro="condomínio mandijuba ii" data-row-index="3" onclick="selectPropertyForPresentation('NB-87865')" title="Clique para analisar este imóvel na apresentação expandida">
 
             <!-- WRAPPER DE MÍDIA COM GALERIA DE FOTOS INTERATIVA -->
             <div class="card-media-wrap" data-photos='["https://www.encontraimoveis.com.br/img/im20-000087865.jpg","https://www.encontraimoveis.com.br/img/im21-000087865.jpg","https://www.encontraimoveis.com.br/img/im22-000087865.jpg","https://www.encontraimoveis.com.br/img/im23-000087865.jpg"]' data-photo-index="0">
@@ -1652,13 +1705,13 @@
                   <span>• <strong>Espaço amplo</strong></span>
                 </div>
 
-                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center gap-1.5">
-                  <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                  <span>undefined</span>
+                <div class="text-xs text-[#8bc7a4] font-medium font-['Inter'] flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> undefined</span>
+                  <span class="text-[11px] text-white/40 group-hover:text-white/80">Analisar ↗</span>
                 </div>
               </div>
 
-              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SUAVE) -->
+              <!-- DRAWER RESIZING COM HOVER (EXPANSÃO SINCRONIZADA NA LINHA HORIZONTAL) -->
               <div class="card-drawer-extra">
                 <div class="text-xs text-white/70 space-y-1.5 font-['Inter']">
                   <div class="text-[11px] text-white/50">Simulação Estimada:</div>
@@ -1670,7 +1723,7 @@
               </div>
 
               <!-- BOTÃO DE AÇÃO VAZADO UNIVERSAL -->
-              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-87865%20-Lote%20Condom%C3%ADnio%20Mandijuba%20II" target="_blank" class="card-whatsapp-btn btn-vazado">
+              <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Tenho%20interesse%20no%20im%C3%B3vel%20NB-87865%20-Lote%20Condom%C3%ADnio%20Mandijuba%20II" target="_blank" onclick="event.stopPropagation();" class="card-whatsapp-btn btn-vazado">
                 Consultar Oportunidade no WhatsApp ↗
               </a>
             </div>
@@ -1812,7 +1865,7 @@
     }
 
     // ==========================================================================
-    // 1. DUAL TEXT REVEAL: PALAVRAS EM DESTAQUE SIMULTÂNEAS (STAGGER: 0)
+    // 1. DUAL TEXT REVEAL & FADE-IN ÓPTICO DA BARRA DE PESQUISA (HERO TIMELINE)
     // ==========================================================================
     (async function initRefinedDualTextReveal() {
       if (typeof gsap === 'undefined') return;
@@ -1873,10 +1926,30 @@
           '<0.1'
         );
       }
+
+      // FADE-IN ÓPTICO DA BARRA DE PESQUISA INTEGRADO AO FINAL DO TEXT REVEAL
+      const heroSearch = document.getElementById('main-dockable-search');
+      if (heroSearch) {
+        masterTl.fromTo('#main-dockable-search',
+          {
+            y: 26,
+            opacity: 0,
+            filter: 'blur(6px)'
+          },
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 1.1,
+            ease: 'power3.out'
+          },
+          '-=0.35'
+        );
+      }
     })();
 
     // ==========================================================================
-    // 2. MOVIMENTAÇÃO FÍSICA DA BARRA DE PESQUISA ATRELADA AO SCROLL (SCRUB / DOCKING)
+    // 2. MOVIMENTAÇÃO FÍSICA E FADE-IN / FADE-OUT NO SCROLL (DOCKING SCRUB)
     // ==========================================================================
     function initSearchScrollScrub() {
       const heroSearch = document.getElementById('main-dockable-search');
@@ -1889,13 +1962,19 @@
       window.addEventListener('scroll', () => {
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         const heroHeight = document.querySelector('.hero')?.offsetHeight || 700;
-        const catalogBottom = catalog ? (catalog.offsetTop + catalog.offsetHeight) : 3000;
+        const catalogBottom = catalog ? (catalog.offsetTop + catalog.offsetHeight) : 3200;
 
-        // Ativa o estado de docking quando o usuário rola além da Hero
-        if (scrollY > (heroHeight - 120) && scrollY < (catalogBottom - 180)) {
+        // Quando o usuário rola além da Hero para a zona de Apresentação e Catálogo:
+        if (scrollY > (heroHeight - 120) && scrollY < (catalogBottom - 200)) {
           heroSearch.classList.add('is-scrolling-dock');
+          heroSearch.classList.remove('dock-fading-out');
+        } else if (scrollY >= (catalogBottom - 200)) {
+          // Fade-out suave ao ultrapassar o catálogo em direção à Sessão 02 / rodapé
+          heroSearch.classList.add('dock-fading-out');
         } else {
+          // De volta à Hero: desativa estado dock e remove fade-out
           heroSearch.classList.remove('is-scrolling-dock');
+          heroSearch.classList.remove('dock-fading-out');
         }
       }, { passive: true });
     }
@@ -1933,9 +2012,10 @@
     // ==========================================================================
     // 4. GALERIA INTERATIVA DE FOTOS NA APRESENTAÇÃO EXPANDIDA DO IMÓVEL
     // ==========================================================================
+    let currentFeaturedPhotos = (window.NEGOCIA_BEM_DATA && window.NEGOCIA_BEM_DATA.featured && window.NEGOCIA_BEM_DATA.featured.photos) || [];
+
     function changeFeaturedPhoto(photoIndex) {
-      const dataset = window.NEGOCIA_BEM_DATA || {};
-      const photos = (dataset.featured && dataset.featured.photos) || [];
+      const photos = currentFeaturedPhotos;
       if (!photos[photoIndex]) return;
 
       const mainImg = document.getElementById('presentation-main-photo');
@@ -1962,7 +2042,150 @@
     }
 
     // ==========================================================================
-    // 5. TROCA DINÂMICA DE FOTOS NOS CARDS DO CATÁLOGO (PREV / NEXT)
+    // 5. TROCA DINÂMICA DO IMÓVEL NA APRESENTAÇÃO PRINCIPAL AO CLICAR NOS CARDS
+    // ==========================================================================
+    window.selectPropertyForPresentation = function(propertyId) {
+      const dataset = window.NEGOCIA_BEM_DATA;
+      if (!dataset) return;
+
+      // Localiza o imóvel no dataset
+      let prop = null;
+      if (dataset.featured && dataset.featured.id === propertyId) {
+        prop = dataset.featured;
+      } else if (dataset.gridProperties) {
+        prop = dataset.gridProperties.find(p => p.id === propertyId);
+      }
+      if (!prop) return;
+
+      currentFeaturedPhotos = prop.photos || [];
+
+      // 1. Atualiza Cabeçalho da Apresentação
+      const mainHeading = document.getElementById('presentation-main-heading');
+      const mainSubheading = document.getElementById('presentation-main-subheading');
+      if (mainHeading) mainHeading.textContent = prop.title;
+      if (mainSubheading) mainSubheading.textContent = 'CÓD. ' + prop.id + ' · ' + prop.bairro + ', Paiçandu/PR · Curadoria com dados de decisão reais';
+
+      // 2. Atualiza Variante 1 (Atelier Split 62/38)
+      const mainImg = document.getElementById('presentation-main-photo');
+      const badgeV1 = document.getElementById('v1-badge');
+      const counter = document.getElementById('featured-photo-counter');
+      const precoV1 = document.getElementById('v1-preco');
+      const codigoV1 = document.getElementById('v1-codigo');
+      const simulacaoEntrada = document.getElementById('v1-simulacao-entrada');
+      const simulacaoParcela = document.getElementById('v1-simulacao-parcela');
+      const areaV1 = document.getElementById('v1-area');
+      const quartosV1 = document.getElementById('v1-quartos');
+      const distanciaV1 = document.getElementById('v1-distancia');
+      const descV1 = document.getElementById('v1-desc');
+      const whatsappBtnV1 = document.getElementById('v1-whatsapp-btn');
+      const thumbsTrack = document.getElementById('presentation-thumbs-track');
+
+      if (mainImg && prop.photos && prop.photos.length) {
+        mainImg.style.opacity = '0.3';
+        mainImg.src = prop.photos[0];
+        setTimeout(() => { mainImg.style.opacity = '1'; }, 150);
+      }
+      if (badgeV1 && prop.badge) badgeV1.textContent = prop.badge;
+      if (counter && prop.photos) counter.textContent = 'Foto 1 de ' + prop.photos.length;
+      if (precoV1) precoV1.textContent = prop.preco;
+      if (codigoV1) codigoV1.textContent = prop.id;
+      if (simulacaoEntrada) simulacaoEntrada.textContent = prop.simulacao ? (prop.simulacao.entrada || 'R$ 35.000') : 'Consulte';
+      if (simulacaoParcela) simulacaoParcela.textContent = prop.simulacao ? (prop.simulacao.parcela || prop.preco) : prop.preco;
+      if (areaV1) areaV1.textContent = prop.area || prop.areaConstruida || 'Consulte';
+      if (quartosV1) quartosV1.textContent = prop.quartos || '2 quartos';
+      if (distanciaV1) distanciaV1.textContent = prop.distancia || prop.distanciaMaringa || 'A 12 min de Maringá';
+      if (descV1) descV1.textContent = prop.desc || '';
+      if (whatsappBtnV1) {
+        whatsappBtnV1.href = 'https://wa.me/554438016654?text=' + encodeURIComponent('Olá! Tenho interesse em analisar a oportunidade ' + prop.id + ' - ' + prop.title);
+      }
+
+      // Reconstrói miniaturas da galeria
+      if (thumbsTrack && prop.photos) {
+        thumbsTrack.innerHTML = prop.photos.map((p, idx) => `
+          <button type="button" class="presentation-thumb ${idx === 0 ? 'active' : ''}" data-thumb-idx="${idx}" onclick="changeFeaturedPhoto(${idx})" aria-label="Ver foto ${idx + 1}">
+            <img src="${p}" alt="Miniatura ${idx + 1} de ${prop.title}">
+          </button>
+        `).join('');
+      }
+
+      // 3. Atualiza Variante 2 (Panoramic Monolith HUD)
+      const v2Photo = document.getElementById('v2-main-photo');
+      const v2Badge = document.getElementById('v2-badge');
+      const v2Title = document.getElementById('v2-title');
+      const v2Telemetry = document.getElementById('v2-telemetry');
+      const v2Preco = document.getElementById('v2-preco');
+      const v2Entrada = document.getElementById('v2-simulacao-entrada');
+      const v2Parcela = document.getElementById('v2-simulacao-parcela');
+      const v2Area = document.getElementById('v2-area');
+      const v2Quartos = document.getElementById('v2-quartos');
+      const v2Distancia = document.getElementById('v2-distancia');
+      const v2Bairro = document.getElementById('v2-bairro');
+      const v2Whatsapp = document.getElementById('v2-whatsapp-btn');
+
+      if (v2Photo && prop.photos && prop.photos.length) v2Photo.src = prop.photos[0];
+      if (v2Badge && prop.badge) v2Badge.textContent = prop.badge;
+      if (v2Title) v2Title.textContent = prop.title;
+      if (v2Telemetry) v2Telemetry.textContent = prop.bairro + ', Paiçandu · ' + (prop.distancia || prop.distanciaMaringa || 'A 12 min de Maringá');
+      if (v2Preco) v2Preco.textContent = prop.preco;
+      if (v2Entrada) v2Entrada.textContent = prop.simulacao ? (prop.simulacao.entrada || 'R$ 35.000') : 'Consulte';
+      if (v2Parcela) v2Parcela.textContent = prop.simulacao ? (prop.simulacao.parcela || prop.preco) : prop.preco;
+      if (v2Area) v2Area.textContent = prop.area || prop.areaConstruida || 'Consulte';
+      if (v2Quartos) v2Quartos.textContent = prop.quartos || '2 quartos';
+      if (v2Distancia) v2Distancia.textContent = prop.distancia || prop.distanciaMaringa || 'A 12 min de Maringá';
+      if (v2Bairro) v2Bairro.textContent = prop.bairro + ', Paiçandu/PR';
+      if (v2Whatsapp) {
+        v2Whatsapp.href = 'https://wa.me/554438016654?text=' + encodeURIComponent('Olá! Quero visitar o imóvel ' + prop.id + ' - ' + prop.title);
+      }
+
+      // 4. Atualiza Variante 3 (Editorial Revista)
+      const v3Photo0 = document.getElementById('v3-photo-0');
+      const v3Photo1 = document.getElementById('v3-photo-1');
+      const v3Photo2 = document.getElementById('v3-photo-2');
+      const v3Badge = document.getElementById('v3-badge');
+      const v3Title = document.getElementById('v3-title');
+      const v3Subtitle = document.getElementById('v3-subtitle');
+      const v3Preco = document.getElementById('v3-preco');
+      const v3Desc = document.getElementById('v3-desc');
+      const v3Area = document.getElementById('v3-area');
+      const v3Quartos = document.getElementById('v3-quartos');
+      const v3Parcela = document.getElementById('v3-parcela');
+      const v3Entrada = document.getElementById('v3-entrada');
+      const v3Whatsapp = document.getElementById('v3-whatsapp-btn');
+
+      if (v3Photo0 && prop.photos && prop.photos[0]) v3Photo0.src = prop.photos[0];
+      if (v3Photo1 && prop.photos && prop.photos[1]) v3Photo1.src = prop.photos[1];
+      if (v3Photo2 && prop.photos && prop.photos[2]) v3Photo2.src = prop.photos[2];
+      if (v3Badge && prop.badge) v3Badge.textContent = prop.badge;
+      if (v3Title) v3Title.textContent = prop.title;
+      if (v3Subtitle) v3Subtitle.textContent = 'Ref. ' + prop.id + ' · ' + prop.bairro + ', Paiçandu · ' + (prop.distancia || prop.distanciaMaringa || 'A 12 min de Maringá');
+      if (v3Preco) v3Preco.textContent = prop.preco;
+      if (v3Desc) v3Desc.textContent = prop.desc || '';
+      if (v3Area) v3Area.textContent = prop.area || prop.areaConstruida || 'Consulte';
+      if (v3Quartos) v3Quartos.textContent = prop.quartos || '2 quartos';
+      if (v3Parcela) v3Parcela.textContent = prop.simulacao ? (prop.simulacao.parcela || prop.preco) : prop.preco;
+      if (v3Entrada) v3Entrada.textContent = prop.simulacao ? (prop.simulacao.entrada || 'R$ 35.000') : 'Consulte';
+      if (v3Whatsapp) {
+        v3Whatsapp.href = 'https://wa.me/554438016654?text=' + encodeURIComponent('Olá! Gostaria de receber o dossiê completo do imóvel ' + prop.id);
+      }
+
+      // Marca o card selecionado com destaque no catálogo
+      document.querySelectorAll('.aura-bento-card').forEach(card => {
+        if (card.getAttribute('data-codigo') === propertyId) {
+          card.classList.add('is-selected-card');
+        } else {
+          card.classList.remove('is-selected-card');
+        }
+      });
+
+      // Rola suavemente até a sessão expandida
+      const presentationSection = document.getElementById('imovel-destaque');
+      if (presentationSection) {
+        presentationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    // ==========================================================================
+    // 6. TROCA DINÂMICA DE FOTOS NOS CARDS DO CATÁLOGO (PREV / NEXT)
     // ==========================================================================
     function changeCardPhoto(cardEl, direction) {
       if (!cardEl) return;
@@ -2000,7 +2223,29 @@
     }
 
     // ==========================================================================
-    // 6. FILTRO DE CATEGORIAS NO CATÁLOGO DE CARDS
+    // 7. HOVER SINCRONIZADO NA LINHA / COLUNA HORIZONTAL DE CARDS
+    // ==========================================================================
+    (function initRowHoverSync() {
+      const cards = document.querySelectorAll('.aura-bento-card[data-row-index]');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          const rowIndex = card.getAttribute('data-row-index');
+          if (!rowIndex) return;
+          const rowCards = document.querySelectorAll('.aura-bento-card[data-row-index="' + rowIndex + '"]');
+          rowCards.forEach(c => c.classList.add('is-row-hovered'));
+        });
+
+        card.addEventListener('mouseleave', () => {
+          const rowIndex = card.getAttribute('data-row-index');
+          if (!rowIndex) return;
+          const rowCards = document.querySelectorAll('.aura-bento-card[data-row-index="' + rowIndex + '"]');
+          rowCards.forEach(c => c.classList.remove('is-row-hovered'));
+        });
+      });
+    })();
+
+    // ==========================================================================
+    // 8. FILTRO DE CATEGORIAS NO CATÁLOGO DE CARDS
     // ==========================================================================
     function filterCatalog(category) {
       const filterButtons = document.querySelectorAll('.category-filter-btn');
@@ -2024,7 +2269,7 @@
     }
 
     // ==========================================================================
-    // 7. SESSÃO 02: PINNING & NARRATIVA ORIGINAL NEGOCIA BEM
+    // 9. SESSÃO 02: PINNING & NARRATIVA ORIGINAL NEGOCIA BEM
     // ==========================================================================
     (function initSession02() {
       if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
