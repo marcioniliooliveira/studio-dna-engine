@@ -445,6 +445,101 @@ const tests = [
 
       return true;
     }
+  },
+
+  // Test 16: Search Bar Neutralization (Zero Neon & Zero Colorful Borders)
+  {
+    id: 16,
+    name: 'Search Bar Neutralization (Zero neon green glow, zero colorful borders; pure slate architecture)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      if (html.includes('rgba(62, 155, 103, 0.25)')) {
+        throw new Error('Detected neon green glow shadow (rgba(62, 155, 103, 0.25)) in search bar! Must be pure neutral shadow.');
+      }
+
+      if (html.includes('.is-scrolling-dock {\n      position: fixed !important;\n      top: 64px !important;\n      left: 50% !important;\n      transform: translateX(-50%) !important;\n      width: min(calc(100% - 32px), 1180px) !important;\n      z-index: 950 !important;\n      background: rgba(13, 17, 23, 0.96) !important;\n      border: 1px solid var(--green) !important;')) {
+        throw new Error('Detected "border: 1px solid var(--green)" on .is-scrolling-dock! Search bar must have neutral architectural borders.');
+      }
+
+      // Ensure search dock has neutral border
+      const hasNeutralDock = html.includes('border: 1px solid rgba(255, 255, 255,') ||
+                             html.includes('border: 1px solid var(--line);');
+      if (!hasNeutralDock) {
+        throw new Error('Missing neutral architectural border on search bar docking state');
+      }
+
+      return true;
+    }
+  },
+
+  // Test 17: Search Bar Optical Fade-In and Fade-Out Animation
+  {
+    id: 17,
+    name: 'Search Bar Optical Fade-In & Fade-Out Animation (Coreographed with Text Reveal physics & scroll scrub)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      const hasTimelineEntry = html.includes('#main-dockable-search') &&
+                               (html.includes('masterTl.fromTo') || html.includes('gsap.fromTo'));
+      if (!hasTimelineEntry) {
+        throw new Error('Missing GSAP master timeline entry for #main-dockable-search with text reveal choreography');
+      }
+
+      const hasFadeTransitions = html.includes('dock-fading-out') ||
+                                 (html.includes('opacity') && html.includes('filter: blur') && html.includes('search-bento-dockable'));
+      if (!hasFadeTransitions) {
+        throw new Error('Missing fade-in/fade-out transition logic in search bar CSS/JS');
+      }
+
+      return true;
+    }
+  },
+
+  // Test 18: Dynamic Property Selection on Card Click (selectPropertyForPresentation)
+  {
+    id: 18,
+    name: 'Dynamic Property Selection on Card Click (selectPropertyForPresentation updates all 3 variants)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      if (!html.includes('selectPropertyForPresentation')) {
+        throw new Error('Missing selectPropertyForPresentation function in JavaScript');
+      }
+
+      // Check card invocation
+      const hasCardClick = html.includes('onclick="selectPropertyForPresentation') ||
+                           html.includes('selectPropertyForPresentation(');
+      if (!hasCardClick) {
+        throw new Error('Catalog cards do not call selectPropertyForPresentation on click');
+      }
+
+      return true;
+    }
+  },
+
+  // Test 19: Synchronized Horizontal Row Hover (data-row-index & is-row-hovered)
+  {
+    id: 19,
+    name: 'Synchronized Horizontal Row Hover (data-row-index present, all cards in row expand together)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      const hasRow1 = html.includes('data-row-index="1"') || html.includes("data-row-index='1'");
+      const hasRow2 = html.includes('data-row-index="2"') || html.includes("data-row-index='2'");
+      const hasRow3 = html.includes('data-row-index="3"') || html.includes("data-row-index='3'");
+
+      if (!hasRow1 || !hasRow2 || !hasRow3) {
+        throw new Error(`Missing horizontal row attributes: Row 1=${hasRow1}, Row 2=${hasRow2}, Row 3=${hasRow3}`);
+      }
+
+      const hasRowHoverClass = html.includes('is-row-hovered') || html.includes('row-hover-active');
+      if (!hasRowHoverClass) {
+        throw new Error('Missing is-row-hovered CSS selector or JS handler for row-synchronized expansion');
+      }
+
+      return true;
+    }
   }
 ];
 
@@ -471,7 +566,7 @@ console.log(`Summary: ${passed} passed, ${failed} failed (Total: ${tests.length}
 console.log('----------------------------------------------------------------------');
 
 if (failed === 0) {
-  console.log('🎉 ALL 15 RIGOROUS ACCEPTANCE TESTS PASSED (100% SUCCESS)');
+  console.log('🎉 ALL 19 RIGOROUS ACCEPTANCE TESTS PASSED (100% SUCCESS)');
   process.exit(0);
 } else {
   console.log(`⚠️  ${failed} test(s) failed as expected in RED phase prior to implementation.`);
