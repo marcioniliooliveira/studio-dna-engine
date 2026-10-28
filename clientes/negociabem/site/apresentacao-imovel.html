@@ -97,7 +97,7 @@
     .card-whatsapp-btn:hover {
       background: var(--green);
       color: #0D1117;
-      box-shadow: 0 0 20px rgba(62, 155, 103, 0.45);
+      box-shadow: none !important;
     }
 
     .btn-vazado,
@@ -129,7 +129,7 @@
     .variant-toggle-btn:hover {
       background: var(--green) !important;
       color: #0D1117 !important;
-      box-shadow: 0 0 24px rgba(62, 155, 103, 0.45) !important;
+      box-shadow: none !important;
       transform: translateY(-1px);
     }
 
@@ -275,12 +275,20 @@
       border-radius: 0px !important;
       opacity: 1;
       filter: blur(0px);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                  filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
                   background-color 0.4s ease,
                   border-color 0.4s ease,
                   box-shadow 0.4s ease !important;
+    }
+
+    /* Hero Search Bar Optical Exit on Scroll (matches Text Reveal physics) */
+    .hero-search-wrapper .search-bento-dockable.hero-search-fading-out {
+      opacity: 0 !important;
+      transform: translateY(-20px) !important;
+      filter: blur(8px) !important;
+      pointer-events: none !important;
     }
 
     .catalog-sticky-bridge {
@@ -295,12 +303,36 @@
       pointer-events: auto;
     }
 
+    /* Top Floating Docked Bar (Hidden by default until user scrolls past hero) */
+    .docked-search-bar {
+      position: fixed !important;
+      top: 64px !important;
+      left: 50% !important;
+      transform: translateX(-50%) translateY(-16px) !important;
+      width: min(calc(100% - 32px), 1180px) !important;
+      z-index: 950 !important;
+      background: rgba(18, 22, 28, 0.97) !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85) !important;
+      padding: 10px 18px !important;
+      opacity: 0 !important;
+      filter: blur(8px) !important;
+      pointer-events: none !important;
+      border-radius: 0px !important;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
     /* Neutral Docked State: Zero neon green, pure dark glass, deep occlusion shadow */
+    .docked-search-bar.is-docked-visible,
     .is-scrolling-dock {
       position: fixed !important;
       top: 64px !important;
       left: 50% !important;
-      transform: translateX(-50%) !important;
+      transform: translateX(-50%) translateY(0px) !important;
       width: min(calc(100% - 32px), 1180px) !important;
       z-index: 950 !important;
       background: rgba(18, 22, 28, 0.97) !important;
@@ -315,10 +347,11 @@
     }
 
     /* Smooth Optical Fade Out when leaving catalog into Sessão 02 / footer */
+    .docked-search-bar.dock-fading-out,
     .dock-fading-out {
       opacity: 0 !important;
-      transform: translateX(-50%) translateY(-12px) !important;
-      filter: blur(6px) !important;
+      transform: translateX(-50%) translateY(-14px) !important;
+      filter: blur(8px) !important;
       pointer-events: none !important;
     }
 
@@ -336,7 +369,7 @@
       background: var(--green);
       color: #0D1117;
       border-color: var(--green);
-      box-shadow: 0 0 20px rgba(62, 155, 103, 0.4);
+      box-shadow: none !important;
     }
 
     /* ==========================================================================
@@ -422,7 +455,7 @@
     .presentation-thumb:hover {
       opacity: 1;
       border-color: var(--green-light);
-      box-shadow: 0 0 12px rgba(62, 155, 103, 0.4);
+      box-shadow: none !important;
     }
 
     .presentation-thumb img {
@@ -480,7 +513,7 @@
     /* Selected Card in Catalog */
     .aura-bento-card.is-selected-card {
       border-color: var(--green-light) !important;
-      box-shadow: 0 0 25px rgba(62, 155, 103, 0.3) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
     }
 
     .bento-hero-card {
@@ -669,12 +702,12 @@
         <div class="search-bento-dockable" id="main-dockable-search">
           <div class="flex items-center gap-2 flex-1 min-w-[220px] bg-black/40 border border-white/10 px-3 py-2.5">
             <i data-lucide="search" class="w-4 h-4 text-white/60"></i>
-            <input type="text" placeholder="Bairro ou cidade (ex: Jardim América, Paiçandu)" class="w-full bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-['Inter']">
+            <input type="text" data-sync="keyword" placeholder="Bairro ou cidade (ex: Jardim América, Paiçandu)" class="w-full bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-['Inter']">
           </div>
 
           <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
             <i data-lucide="home" class="w-4 h-4 text-white/60"></i>
-            <select class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
+            <select data-sync="type" class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
               <option value="todos" class="bg-[#161B22] text-white">Todos os Tipos</option>
               <option value="comprar" class="bg-[#161B22] text-white">Comprar Casas</option>
               <option value="alugar" class="bg-[#161B22] text-white">Alugar Imóveis</option>
@@ -684,7 +717,7 @@
 
           <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
             <i data-lucide="banknote" class="w-4 h-4 text-white/60"></i>
-            <select class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
+            <select data-sync="price" class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
               <option value="todas" class="bg-[#161B22] text-white">Faixa de Preço</option>
               <option value="ate-250k" class="bg-[#161B22] text-white">Até R$ 250.000</option>
               <option value="250k-350k" class="bg-[#161B22] text-white">R$ 250.000 a R$ 350.000</option>
@@ -701,8 +734,40 @@
     </div>
   </section>
 
-  <!-- PONTE STICKY DE DOCKING ENTRE SESSÕES -->
-  <div class="catalog-sticky-bridge" id="catalog-sticky-bridge"></div>
+  <!-- PONTE STICKY DE DOCKING ENTRE SESSÕES COM SEGUNDA BARRA HARMONIZADA -->
+  <div class="catalog-sticky-bridge" id="catalog-sticky-bridge">
+    <div class="docked-search-bar search-bento-dockable" id="main-docked-search" aria-label="Busca de Imóveis Fixada">
+      <div class="flex items-center gap-2 flex-1 min-w-[220px] bg-black/40 border border-white/10 px-3 py-2.5">
+        <i data-lucide="search" class="w-4 h-4 text-white/60"></i>
+        <input type="text" data-sync="keyword" placeholder="Bairro ou cidade (ex: Jardim América, Paiçandu)" class="w-full bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-['Inter']">
+      </div>
+
+      <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
+        <i data-lucide="home" class="w-4 h-4 text-white/60"></i>
+        <select data-sync="type" class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
+          <option value="todos" class="bg-[#161B22] text-white">Todos os Tipos</option>
+          <option value="comprar" class="bg-[#161B22] text-white">Comprar Casas</option>
+          <option value="alugar" class="bg-[#161B22] text-white">Alugar Imóveis</option>
+          <option value="investir" class="bg-[#161B22] text-white">Investir em Lotes</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2 min-w-[160px] bg-black/40 border border-white/10 px-3 py-2.5">
+        <i data-lucide="banknote" class="w-4 h-4 text-white/60"></i>
+        <select data-sync="price" class="w-full bg-transparent text-xs text-white focus:outline-none font-['Inter'] cursor-pointer">
+          <option value="todas" class="bg-[#161B22] text-white">Faixa de Preço</option>
+          <option value="ate-250k" class="bg-[#161B22] text-white">Até R$ 250.000</option>
+          <option value="250k-350k" class="bg-[#161B22] text-white">R$ 250.000 a R$ 350.000</option>
+          <option value="acima-350k" class="bg-[#161B22] text-white">Acima de R$ 350.000</option>
+        </select>
+      </div>
+
+      <button type="button" onclick="location.href='#catalogo-grid'" class="search-submit-btn px-6 py-3 text-xs font-bold tracking-wider uppercase flex items-center gap-2">
+        <span>FILTRAR OPORTUNIDADES</span>
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- ==========================================================================
        NOVA SESSÃO EXPANDIDA: APRESENTAÇÃO PRINCIPAL DO IMÓVEL ESCOLHIDO (#imovel-destaque)
@@ -1949,32 +2014,65 @@
     })();
 
     // ==========================================================================
-    // 2. MOVIMENTAÇÃO FÍSICA E FADE-IN / FADE-OUT NO SCROLL (DOCKING SCRUB)
+    // 2. MOVIMENTAÇÃO FÍSICA E FADE-IN / FADE-OUT NO SCROLL (DOCKING SCRUB CINEMATOGRÁFICO)
     // ==========================================================================
     function initSearchScrollScrub() {
       const heroSearch = document.getElementById('main-dockable-search');
-      const bridge = document.getElementById('catalog-sticky-bridge');
-      const heroAnchor = document.getElementById('hero-search-anchor');
+      const dockedSearch = document.getElementById('main-docked-search');
       const catalog = document.getElementById('catalogo-grid');
 
       if (!heroSearch) return;
+
+      // Sincronização bidirecional instantânea entre os inputs da barra Hero e Docked
+      if (dockedSearch) {
+        const syncElements = (source, target) => {
+          const srcInputs = source.querySelectorAll('[data-sync]');
+          srcInputs.forEach(input => {
+            const key = input.getAttribute('data-sync');
+            const tgtInput = target.querySelector('[data-sync="' + key + '"]');
+            if (tgtInput) {
+              input.addEventListener('input', () => { tgtInput.value = input.value; });
+              input.addEventListener('change', () => { tgtInput.value = input.value; });
+            }
+          });
+        };
+        syncElements(heroSearch, dockedSearch);
+        syncElements(dockedSearch, heroSearch);
+      }
 
       window.addEventListener('scroll', () => {
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         const heroHeight = document.querySelector('.hero')?.offsetHeight || 700;
         const catalogBottom = catalog ? (catalog.offsetTop + catalog.offsetHeight) : 3200;
 
-        // Quando o usuário rola além da Hero para a zona de Apresentação e Catálogo:
-        if (scrollY > (heroHeight - 120) && scrollY < (catalogBottom - 200)) {
+        // 1. FADE-OUT ÓPTICO CINEMATOGRÁFICO DA HERO SEARCH (mesma física do Text Reveal)
+        if (scrollY > (heroHeight * 0.35)) {
+          heroSearch.classList.add('hero-search-fading-out');
+        } else {
+          heroSearch.classList.remove('hero-search-fading-out');
+        }
+
+        // 2. FADE-IN ÓPTICO CINEMATOGRÁFICO DA BARRA DOCKED NA APRESENTAÇÃO E CATÁLOGO
+        if (scrollY > (heroHeight - 140) && scrollY < (catalogBottom - 200)) {
+          if (dockedSearch) {
+            dockedSearch.classList.add('is-docked-visible', 'is-scrolling-dock');
+            dockedSearch.classList.remove('dock-fading-out');
+          }
           heroSearch.classList.add('is-scrolling-dock');
           heroSearch.classList.remove('dock-fading-out');
         } else if (scrollY >= (catalogBottom - 200)) {
           // Fade-out suave ao ultrapassar o catálogo em direção à Sessão 02 / rodapé
+          if (dockedSearch) {
+            dockedSearch.classList.remove('is-docked-visible');
+            dockedSearch.classList.add('dock-fading-out');
+          }
           heroSearch.classList.add('dock-fading-out');
         } else {
-          // De volta à Hero: desativa estado dock e remove fade-out
-          heroSearch.classList.remove('is-scrolling-dock');
-          heroSearch.classList.remove('dock-fading-out');
+          // De volta à Hero: desativa estado dock
+          if (dockedSearch) {
+            dockedSearch.classList.remove('is-docked-visible', 'is-scrolling-dock', 'dock-fading-out');
+          }
+          heroSearch.classList.remove('is-scrolling-dock', 'dock-fading-out');
         }
       }, { passive: true });
     }

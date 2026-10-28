@@ -540,6 +540,53 @@ const tests = [
 
       return true;
     }
+  },
+
+  // Test 20: Complete Elimination of Green Button Glows & Neon Halos (Pure Solid Hover)
+  {
+    id: 20,
+    name: 'Zero Button Glow & Zero Neon Halos (Pure Solid Hover Fill, box-shadow: none)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      // Scan all box-shadow rules with green rgba(62, 155, 103, ...)
+      const glowMatches = html.match(/box-shadow:[^;]*rgba\(\s*62\s*,\s*155\s*,\s*103[^;]*/gi) || [];
+      if (glowMatches.length > 0) {
+        throw new Error(`Found ${glowMatches.length} lingering green box-shadow glow rule(s):\n${glowMatches.map(g => '  * ' + g.trim()).join('\n')}\nAll buttons and cards must have zero neon glow (pure crisp solid hover fill)!`);
+      }
+
+      // Explicitly verify button hover styles have box-shadow: none
+      if (!html.includes('.btn-vazado:hover') || (!html.includes('box-shadow: none') && !html.includes('box-shadow: 0 0 0'))) {
+        throw new Error('Button hover must explicitly have box-shadow: none');
+      }
+
+      return true;
+    }
+  },
+
+  // Test 21: Dual Cinematic Search Bar Optical Crossfade (Hero Corner to Top Docked)
+  {
+    id: 21,
+    name: 'Cinematic Search Bar Optical Crossfade (Matching Text Reveal Blur & Opacity Dynamics)',
+    fn: () => {
+      if (!fileExists) throw new Error('Target file missing');
+
+      // Check presence of optical blur fade out on hero search
+      const hasHeroOpticalFade = html.includes('hero-search-fading-out') ||
+                                 (html.includes('filter: blur') && html.includes('opacity') && html.includes('hero-search-wrapper'));
+      if (!hasHeroOpticalFade) {
+        throw new Error('Missing optical blur fade-out class or handler for hero search bar on scroll exit');
+      }
+
+      // Check presence of docked search optical state
+      const hasDockedOpticalState = html.includes('is-docked-visible') ||
+                                    (html.includes('is-scrolling-dock') && html.includes('filter: blur(0px)'));
+      if (!hasDockedOpticalState) {
+        throw new Error('Missing optical fade-in docking state with blur(0px) for fixed scroll position');
+      }
+
+      return true;
+    }
   }
 ];
 
