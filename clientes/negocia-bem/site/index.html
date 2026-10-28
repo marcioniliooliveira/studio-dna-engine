@@ -807,16 +807,16 @@
           <div class="hero-grid">
             <div>
               <div class="eyebrow">A escolha certa para conquistar o seu sonho</div>
-              <h1 class="hero-title">
-                <span>NEGOCIA</span>
-                <span class="green-text">BEM</span>
+              <h1 class="hero-title" data-dual-reveal>
+                <span class="reveal-normal">NEGOCIA</span>
+                <span class="green-text reveal-highlight">BEM</span>
               </h1>
             </div>
             <div class="hero-copy">
               <p>Seja para conquistar a casa própria a 15 minutos de Maringá, alugar com agilidade e sem fiador, ou investir com segurança, a Negocia Bem oferece a assessoria acolhedora e descomplicada que você e sua família merecem.</p>
-              <button class="primary-btn" data-route="comprar-casas" type="button">
+              <a href="catalogo-imoveis.html" class="primary-btn" data-route="comprar-casas">
                 CONHECER OPORTUNIDADES <span>↗</span>
-              </button>
+              </a>
             </div>
           </div>
           <div class="hero-meta">
@@ -892,7 +892,7 @@
                 A primeira chave nas mãos carrega histórias inteiras. A Negocia Bem cuida de cada detalhe para sua família encontrar segurança, clareza e um endereço que tenha a sua cara — com acolhimento desde a primeira conversa.
               </p>
               <div class="s02-reveal mt-10">
-                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-casas" type="button">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-casas" href="catalogo-imoveis.html">
                   EXPLORAR CASAS DISPONÍVEIS <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
                 </button>
                 <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
@@ -913,7 +913,7 @@
                 Investir também é cuidar do futuro. A gente apresenta oportunidades reais, explica cada cenário com transparência e acompanha a escolha para que seu patrimônio cresça com tranquilidade.
               </p>
               <div class="s02-reveal mt-10">
-                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-terrenos" type="button">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="comprar-terrenos" href="catalogo-imoveis.html#investimento-lotes">
                   VER TERRENOS & LOTES PARA INVESTIR <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
                 </button>
                 <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
@@ -934,7 +934,7 @@
                 Da curadoria do imóvel ao contrato, você conta com suporte próximo e explicações simples. Menos burocracia, mais confiança para começar uma nova fase com leveza.
               </p>
               <div class="s02-reveal mt-10">
-                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="alugar-imoveis" type="button">
+                <button class="group inline-flex items-center border border-white/20 px-6 py-4 text-[11px] font-['Inter'] font-semibold uppercase tracking-[0.2em] text-white/85 transition-all duration-300 hover:border-[#3E9B67] hover:bg-[#3E9B67]/10 hover:text-[#4EBA7E]" data-route="alugar-imoveis" href="catalogo-imoveis.html#catalogo-grid">
                   CONSULTAR IMÓVEIS PARA LOCAÇÃO <span class="ml-4 inline-block transition-transform duration-200 group-hover:translate-x-1">↗</span>
                 </button>
                 <p class="mt-3 text-[11px] text-white/40 font-['Inter']">
@@ -1994,6 +1994,18 @@
     }
 
     function openModal(key, { syncHistory = true } = {}) {
+      if (key === 'comprar-casas') {
+        location.href = 'catalogo-imoveis.html';
+        return;
+      }
+      if (key === 'comprar-terrenos') {
+        location.href = 'catalogo-imoveis.html#investimento-lotes';
+        return;
+      }
+      if (key === 'alugar-imoveis') {
+        location.href = 'catalogo-imoveis.html#catalogo-grid';
+        return;
+      }
       if (busy || !DATA[key]) return;
       render(key);
       lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -2183,6 +2195,32 @@
     // ANIMAÇÕES GSAP & SCROLLTRIGGER PARA TODAS AS SESSÕES
     // ==========================================================================
     gsap.registerPlugin(ScrollTrigger);
+
+    // ==========================================================================
+    // HERO DUAL TEXT REVEAL SIMULTÂNEO (STAGGER: 0 & DESFOQUE ÓPTICO)
+    // ==========================================================================
+    (function initHeroDualReveal() {
+      const heroTitle = document.querySelector('.hero-title[data-dual-reveal]');
+      if (!heroTitle) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const T_NORMAL = 0.90;
+      const T_HIGHLIGHT = T_NORMAL * 1.40;
+
+      const heroTl = gsap.timeline({ delay: 0.15 });
+
+      heroTl.fromTo('.hero-title .reveal-normal',
+        { y: 24, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: T_NORMAL, ease: 'power3.out' }
+      );
+
+      heroTl.fromTo('.hero-title .reveal-highlight',
+        { y: 16, opacity: 0, filter: 'blur(6px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: T_HIGHLIGHT, stagger: 0, ease: 'power2.out' },
+        '<0.1'
+      );
+    })();
+
 
     // ==========================================================================
     // HERO DUAL TEXT REVEAL SIMULTÂNEO (STAGGER: 0 & DESFOQUE ÓPTICO)

@@ -79,9 +79,13 @@ const tests = [
       if (!hasDualRevealAttr) {
         throw new Error('Falta atributo data-dual-reveal no título da Hero do index.html');
       }
-      const hasSimultaneousStagger = html.includes('stagger: 0') || html.includes('reveal-highlight');
+      const hasMarkup = html.includes('class="reveal-normal"') && html.includes('reveal-highlight');
+      if (!hasMarkup) {
+        throw new Error('Falta marcação HTML das classes reveal-normal e reveal-highlight no H1');
+      }
+      const hasSimultaneousStagger = html.includes('stagger: 0');
       if (!hasSimultaneousStagger) {
-        throw new Error('Falta configuração de revelação simultânea dos destaques');
+        throw new Error('Falta configuração de revelação simultânea dos destaques (stagger: 0)');
       }
       return true;
     }
@@ -96,6 +100,10 @@ const tests = [
       const hasCatalogoLink = html.includes('catalogo-imoveis.html');
       if (!hasCatalogoLink) {
         throw new Error('Os pontos de entrada de compra de casas devem conectar ao novo catalogo-imoveis.html');
+      }
+      const hasModalRedirect = html.includes("if (key === 'comprar-casas')");
+      if (!hasModalRedirect) {
+        throw new Error('Falta redirecionamento no openModal para a rota comprar-casas');
       }
       return true;
     }

@@ -54,10 +54,7 @@ if (!content.includes('/* BOTÕES VAZADOS COM HOVER SÓLIDO E ZERO GLOW */')) {
 
 // 5. Hero Title com data-dual-reveal e classes reveal-normal / reveal-highlight
 content = content.replace(
-  `<h1 class="hero-title">
-                <span>NEGOCIA</span>
-                <span class="green-text">BEM</span>
-              </h1>`,
+  /<h1 class="hero-title"[\s\S]*?<\/h1>/,
   `<h1 class="hero-title" data-dual-reveal>
                 <span class="reveal-normal">NEGOCIA</span>
                 <span class="green-text reveal-highlight">BEM</span>
@@ -67,23 +64,21 @@ content = content.replace(
 // 6. Conexão dos pontos de entrada com catalogo-imoveis.html
 // 6a. Nav
 content = content.replace(
-  '<button data-route="comprar-casas" type="button">COMPRAR CASAS</button>',
+  /<button data-route="comprar-casas" type="button">COMPRAR CASAS<\/button>/g,
   '<a href="catalogo-imoveis.html" class="nav-link-btn" data-route="comprar-casas">COMPRAR CASAS</a>'
 );
 content = content.replace(
-  '<button data-route="alugar-imoveis" type="button">ALUGAR IMÓVEIS</button>',
+  /<button data-route="alugar-imoveis" type="button">ALUGAR IMÓVEIS<\/button>/g,
   '<a href="catalogo-imoveis.html#catalogo-grid" class="nav-link-btn" data-route="alugar-imoveis">ALUGAR IMÓVEIS</a>'
 );
 content = content.replace(
-  '<button data-route="comprar-terrenos" type="button">INVESTIR EM LOTES</button>',
+  /<button data-route="comprar-terrenos" type="button">INVESTIR EM LOTES<\/button>/g,
   '<a href="catalogo-imoveis.html#investimento-lotes" class="nav-link-btn" data-route="comprar-terrenos">INVESTIR EM LOTES</a>'
 );
 
 // 6b. Hero CTA
 content = content.replace(
-  `<button class="primary-btn" data-route="comprar-casas" type="button">
-                CONHECER OPORTUNIDADES <span>↗</span>
-              </button>`,
+  /<button class="primary-btn" data-route="comprar-casas"[\s\S]*?<\/button>/,
   `<a href="catalogo-imoveis.html" class="primary-btn" data-route="comprar-casas">
                 CONHECER OPORTUNIDADES <span>↗</span>
               </a>`
@@ -91,35 +86,50 @@ content = content.replace(
 
 // 6c. Sessão 02 CTAs
 content = content.replace(
-  `data-route="comprar-casas" type="button">
-                  EXPLORAR CASAS DISPONÍVEIS`,
-  `data-route="comprar-casas" href="catalogo-imoveis.html">
-                  EXPLORAR CASAS DISPONÍVEIS`
+  /data-route="comprar-casas" type="button">(\s*EXPLORAR CASAS DISPONÍVEIS)/g,
+  'data-route="comprar-casas" href="catalogo-imoveis.html">$1'
 );
 content = content.replace(
-  `data-route="comprar-terrenos" type="button">
-                  VER TERRENOS & LOTES PARA INVESTIR`,
-  `data-route="comprar-terrenos" href="catalogo-imoveis.html#investimento-lotes">
-                  VER TERRENOS & LOTES PARA INVESTIR`
+  /data-route="comprar-terrenos" type="button">(\s*VER TERRENOS & LOTES PARA INVESTIR)/g,
+  'data-route="comprar-terrenos" href="catalogo-imoveis.html#investimento-lotes">$1'
 );
 content = content.replace(
-  `data-route="alugar-imoveis" type="button">
-                  CONSULTAR IMÓVEIS PARA LOCAÇÃO`,
-  `data-route="alugar-imoveis" href="catalogo-imoveis.html#catalogo-grid">
-                  CONSULTAR IMÓVEIS PARA LOCAÇÃO`
+  /data-route="alugar-imoveis" type="button">(\s*CONSULTAR IMÓVEIS PARA LOCAÇÃO)/g,
+  'data-route="alugar-imoveis" href="catalogo-imoveis.html#catalogo-grid">$1'
 );
 
-// 7. Roteamento JS para redirecionar rota #comprar-casas para catalogo-imoveis.html
+// 7. Roteamento JS e openModal para redirecionar para o novo catálogo autônomo
 const routerInjection = `
     // Redirecionamento da rota comprar-casas para o novo catálogo autônomo
     if (location.hash === '#comprar-casas') {
       location.href = 'catalogo-imoveis.html';
     }
 `;
-content = content.replace(
-  "const initialRoute = location.hash.slice(1);",
-  `${routerInjection}\n    const initialRoute = location.hash.slice(1);`
-);
+if (!content.includes('location.hash === \'#comprar-casas\'')) {
+  content = content.replace(
+    "const initialRoute = location.hash.slice(1);",
+    `${routerInjection}\n    const initialRoute = location.hash.slice(1);`
+  );
+}
+
+if (!content.includes("if (key === 'comprar-casas')")) {
+  content = content.replace(
+    "function openModal(key, { syncHistory = true } = {}) {",
+    `function openModal(key, { syncHistory = true } = {}) {
+      if (key === 'comprar-casas') {
+        location.href = 'catalogo-imoveis.html';
+        return;
+      }
+      if (key === 'comprar-terrenos') {
+        location.href = 'catalogo-imoveis.html#investimento-lotes';
+        return;
+      }
+      if (key === 'alugar-imoveis') {
+        location.href = 'catalogo-imoveis.html#catalogo-grid';
+        return;
+      }`
+  );
+}
 
 // 8. Script GSAP para o Dual Text Reveal simultâneo na Hero
 const heroDualRevealScript = `
