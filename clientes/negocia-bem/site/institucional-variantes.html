@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Negocia Bem — Sessão Institucional (4 Variantes Arquitetônicas)</title>
+
+  <!-- Tipografia Oficial Negocia Bem: Plus Jakarta Sans + Inter + DM Serif Display (Q&A Editorial) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            nbDark: '#0D1117',
+            nbPanel: '#161B22',
+            nbCard: '#21262D',
+            nbGreen: '#3E9B67',
+            nbGreenLight: '#4EBA7E',
+            nbInk: '#F5F6F2',
+            nbMuted: '#8B949E'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS FUNDAMENTAIS NEGOCIA BEM (QUIET LUXURY & BENTO 0PX)
+       ========================================================================== */
+    :root {
+      --dark: #0D1117;
+      --panel: #161B22;
+      --card: #21262D;
+      --green: #3E9B67;
+      --green-light: #4EBA7E;
+      --green-dark: #2E7D52;
+      --green-tint: rgba(62, 155, 103, 0.12);
+      --white: #FFFFFF;
+      --ink: #F5F6F2;
+      --muted: #8B949E;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --max: 1360px;
+    }
+
+    * {
+      box-sizing: border-box;
+      border-radius: 0px !important; /* STRICT 0PX GEOMETRY */
+    }
+
+    ::selection {
+      background: var(--green);
+      color: #0D1117;
+    }
+
+    /* Custom Scrollbar Themed */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #21262D;
+      border: 1px solid var(--line);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--green);
+    }
+
+    /* Regras Tipográficas Explícitas (WCAG e Escala Definida) */
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: var(--white);
+      margin: 0;
+    }
+
+    h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      margin: 0;
+    }
+
+    h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.2rem, 2vw, 1.65rem);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--white);
+      margin: 0;
+    }
+
+    h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--white);
+      margin: 0;
+    }
+
+    p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    body {
+      background-color: var(--dark);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      padding-top: 58px; /* Altura do switcher */
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 48px));
+      margin: 0 auto;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    @media (min-width: 1024px) {
+      .wrap { 
+        width: min(var(--max), calc(100% - 96px)); 
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+
+    /* ==========================================================================
+       BARRA DE COMANDO SUPERIOR: VARIANT SWITCHER
+       ========================================================================== */
+    .variant-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 58px;
+      z-index: 1000;
+      background: rgba(13, 17, 23, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px;
+    }
+
+    .variant-nav-group {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .variant-tab-btn {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .variant-tab-btn:hover {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .variant-tab-btn.active {
+      color: #0D1117;
+      background: var(--green-light);
+      border-color: var(--green-light);
+    }
+
+    /* ==========================================================================
+       BOTÕES VAZADOS (OUTLINED) & HOVER ACCENT (SEM DARK-GLOW PROIBIDO)
+       ========================================================================== */
+    .btn-vazado {
+      border: 1px solid var(--green) !important;
+      background: var(--green-tint) !important;
+      color: var(--green-light) !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      font-family: 'Inter', sans-serif !important;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: none !important;
+    }
+
+    .btn-vazado:hover {
+      background: var(--green) !important;
+      color: #0D1117 !important;
+      transform: translateY(-1px);
+    }
+
+    /* Animação suave entre variantes */
+    .variant-stage {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .variant-stage.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Detalhes de grid e linhas arquitetônicas com respiro interno explícito */
+    .hairline-b { 
+      border-bottom: 1px solid var(--line); 
+      padding-bottom: 48px;
+    }
+    .hairline-t { 
+      border-top: 1px solid var(--line); 
+      padding-top: 48px;
+    }
+    .hairline-l { 
+      border-left: 1px solid var(--line); 
+      padding-left: 28px;
+      padding-right: 12px;
+    }
+    .hairline-all { 
+      border: 1px solid var(--line); 
+      padding: 24px;
+    }
+
+    .card-padded {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 32px;
+    }
+
+    /* ==========================================================================
+       SISTEMA EDITORIAL Q&A / FAQ IDÊNTICO AO INDEX.HTML
+       ========================================================================== */
+    .faq-display { 
+      font-family: 'DM Serif Display', serif; 
+    }
+
+    .faq-line {
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    .faq-line .faq-answer {
+      opacity: 0.65;
+      transform: translateX(0);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .faq-line.is-active .faq-answer,
+    .faq-line:hover .faq-answer,
+    .faq-line:focus-within .faq-answer {
+      opacity: 1;
+      transform: translateX(12px);
+    }
+
+    .faq-line .faq-question {
+      transition: color 0.35s ease;
+      color: #FFFFFF;
+    }
+
+    .faq-line:hover .faq-question,
+    .faq-line:focus-within .faq-question,
+    .faq-line.is-active .faq-question {
+      color: #4EBA7E;
+    }
+
+    .faq-line:hover .faq-number,
+    .faq-line:focus-within .faq-number,
+    .faq-line.is-active .faq-number {
+      color: #4EBA7E;
+    }
+
+    .faq-line:focus-visible {
+      outline: 1px solid #4EBA7E;
+      outline-offset: -1px;
+    }
+
+    /* Mobile Accordion */
+    .faq-mobile-answer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s ease, opacity 0.35s ease;
+      opacity: 0;
+    }
+    .faq-mobile-answer > div { overflow: hidden; }
+    .faq-mobile-item.is-active .faq-mobile-answer {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .faq-mobile-item .faq-minus { display: none; }
+    .faq-mobile-item.is-active .faq-plus { display: none; }
+    .faq-mobile-item.is-active .faq-minus { display: inline; }
+
+    @media (max-width: 767px) {
+      .faq-desktop-list { display: none !important; }
+      .faq-mobile-list { display: block !important; }
+    }
+    @media (min-width: 768px) {
+      .faq-mobile-list { display: none !important; }
+      .faq-desktop-list { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       BARRA DE COMANDO SUPERIOR: VARIANT SWITCHER
+       ========================================================================== -->
+  <header class="variant-bar">
+    <!-- Identidade & Status -->
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 bg-[#3E9B67]"></div>
+      <div class="flex items-baseline gap-2">
+        <span class="font-['Plus_Jakarta_Sans'] font-extrabold text-sm tracking-wider text-white">NEGOCIA BEM</span>
+        <span class="text-[10px] text-[#8B949E] tracking-widest uppercase hidden lg:inline">CRECI 9314-J · PAIÇANDU / PR</span>
+      </div>
+    </div>
+
+    <!-- Navegador de Variantes (4 Opções) -->
+    <nav class="variant-nav-group" aria-label="Seletor de Variante Institucional">
+      <button class="variant-tab-btn active" data-variant="v4" type="button" title="Síntese Mestra Completa">
+        <span class="text-[10px] font-mono opacity-80">★ 04</span>
+        <span class="font-bold">Síntese Mestra</span>
+      </button>
+      <button class="variant-tab-btn" data-variant="v1" type="button">
+        <span class="text-[10px] font-mono opacity-80">01</span>
+        <span>Manifesto</span>
+      </button>
+      <button class="variant-tab-btn" data-variant="v2" type="button">
+        <span class="text-[10px] font-mono opacity-80">02</span>
+        <span>Dossier Macro</span>
+      </button>
+      <button class="variant-tab-btn" data-variant="v3" type="button">
+        <span class="text-[10px] font-mono opacity-80">03</span>
+        <span>Atelier 3 Funis</span>
+      </button>
+    </nav>
+
+    <!-- Contato Rápido & Links de Apoio -->
+    <div class="flex items-center gap-3">
+      <a href="https://wa.me/554438016654?text=Ol%C3%A1%20Negocia%20Bem!%20Gostaria%20de%20conversar%20sobre%20atendimento%20imobili%C3%A1rio." 
+         target="_blank" rel="noopener" class="btn-vazado px-4 py-2 text-[11px] hidden md:inline-flex">
+        <span>FALAR NO WHATSAPP</span>
+        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 ml-1"></i>
+      </a>
+      <a href="./index.html" class="text-xs text-[#8B949E] hover:text-white transition-colors hidden xl:inline px-2 py-1">
+        Site Principal ↗
+      </a>
+    </div>
+  </header>
+
+
+  <!-- ==========================================================================
+       VARIANTE 04 (NOVA): SÍNTESE MESTRA INSTITUCIONAL NEGOCIA BEM
+       Arquitetura:
+       1. Hero de Manifesto Editorial (Variante 1)
+       2. Conteúdo Central: Dossiê Macroeconômico e Vetor Regional (Variante 2)
+       3. Q&A Editorial com Estilo Idêntico ao Index.html (DM Serif Display Italic)
+       4. CTA Final: Atelier Interativo dos 3 Funis de Atendimento (Variante 3)
+       ========================================================================== -->
+  <main id="variant-v4" class="variant-stage active">
+    
+    <!-- 1. HERO DE MANIFESTO EDITORIAL & MONÓLITO (VARIANTE 1) -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="max-w-4xl">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-6">
+            Consultoria Imobiliária &middot; Paiçandu e Região Metropolitana de Maringá
+          </p>
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-[-0.035em] font-['Plus_Jakarta_Sans'] leading-[1.02] text-white">
+            Mais do que intermediar metros quadrados, asseguramos o patrimônio de uma vida inteira.
+          </h1>
+          <p class="mt-8 text-base sm:text-lg text-[#C9D1D9] leading-relaxed max-w-2xl font-light">
+            Com sede na Avenida Curitiba e atuação contínua no vetor de maior expansão do Norte do Paraná, a Negocia Bem (CRECI 9314-J) une conhecimento técnico cartorário, aprovação bancária desburocratizada e proximidade familiar em cada negócio.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diptych: Fotografia Arquitetônica + 3 Pilares de Governança -->
+    <section class="hairline-b bg-[#161B22] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          <div class="lg:col-span-5 relative">
+            <div class="card-padded bg-[#0D1117]">
+              <img src="./assets/s02-casa-propria.webp" 
+                   alt="Casas Prontas em Paiçandu - Negocia Bem" 
+                   class="w-full h-[460px] object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-700">
+              <div class="p-5 bg-[#161B22] border-t border-white/10 flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-white block font-['Plus_Jakarta_Sans']">Paiçandu / Região de Maringá</span>
+                  <span class="text-[10px] text-[#8B949E] tracking-wider uppercase">Casas Novas & Loteamentos Planejados</span>
+                </div>
+                <span class="text-[10px] font-mono text-[#4EBA7E] px-2.5 py-1 bg-[#3E9B67]/10 border border-[#3E9B67]/30">15 MIN CATEDRAL</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-10">
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">01 &middot; Segurança Jurídica Absoluta</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Auditoria Completa de Matrícula e Certidões
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Nenhum contrato é redigido sem prévia conferência de ônus reais, débitos municipais e integridade registral. Você assina sabendo exatamente onde está investindo, com total proteção patrimonial.
+              </p>
+            </div>
+
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">02 &middot; Correspondência Caixa Habitação</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Do Cálculo de Subsídio à Assinatura na Agência
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Conduzimos todo o processo junto à Caixa Econômica Federal e instituições privadas. Estruturamos o uso do FGTS, simulações na Tabela SAC e enquadramento ideal no programa Minha Casa Minha Vida.
+              </p>
+            </div>
+
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">03 &middot; Presença Física e Conhecimento do Bairro</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Portas Abertas no Centro de Paiçandu
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Não somos uma plataforma virtual impessoal. Nossa equipe vive a cidade, acompanha cada etapa das obras e recebe você na Av. Curitiba para conversar olho no olho e tirar todas as dúvidas.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Grade Bento de 4 Métricas de Autoridade -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Localização Estratégica</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">15 <span class="text-2xl text-[#4EBA7E]">min</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Do centro comercial de Paiçandu até o eixo central e Catedral de Maringá pela PR-323.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Suporte de Financiamento</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">100<span class="text-2xl text-[#4EBA7E]">%</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Assessoria em Minha Casa Minha Vida, crédito habitacional Caixa e bancos privados do início ao fim.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Regularidade Técnica</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">9314<span class="text-2xl text-[#4EBA7E]">-J</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Registro CRECI formalizado que assegura responsabilidade legal e transparência em todas as operações.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Patrimônio Real</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">+1.000</div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Famílias, inquilinos e investidores atendidos em Paiçandu e região metropolitana.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CONTEÚDO CENTRAL: DOSSIÊ MACROECONÔMICO & VETOR REGIONAL (VARIANTE 2) -->
+    <section class="hairline-b bg-[#161B22] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16">
+          <div class="lg:col-span-8">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-4">
+              Inteligência Territorial &middot; Noroeste do Paraná
+            </p>
+            <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] font-['Plus_Jakarta_Sans'] leading-[1.05] text-white">
+              Maringá e o Noroeste em expansão contínua: por que Paiçandu é a escolha estratégica.
+            </h2>
+          </div>
+          <div class="lg:col-span-4 lg:text-right">
+            <div class="card-padded text-left bg-[#0D1117]">
+              <span class="text-[10px] text-[#4EBA7E] font-mono uppercase block mb-1">AUDITORIA DE DADOS</span>
+              <span class="text-xs text-[#C9D1D9] block">Fontes: IBGE 2022/2024, Sebrae PR Noroeste e Sinduscon-PR</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel de Dados Oficiais IBGE / Sebrae / Sinduscon -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+          <div class="lg:col-span-6 border-b lg:border-b-0 lg:border-r border-white/10 pb-8 lg:pb-0 lg:pr-12">
+            <div class="flex items-baseline gap-3">
+              <span class="text-7xl sm:text-9xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tighter">
+                14,72
+              </span>
+              <span class="text-4xl sm:text-5xl font-bold text-[#4EBA7E]">%</span>
+            </div>
+            <p class="text-base sm:text-lg font-medium text-white mt-4 max-w-md">
+              Crescimento da população de Maringá entre o Censo 2010 e o Censo 2022
+            </p>
+            <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+              De 357.077 para 409.657 habitantes (+52.580 pessoas registradas). Estimativa oficial IBGE para 2024 aponta 425.983 habitantes. Essa pressão demográfica consolida Paiçandu como o principal receptor de novas moradias na região metropolitana.
+            </p>
+          </div>
+
+          <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">1,95 M</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Habitantes no Noroeste</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                População consolidada no recorte regional PR-Noroeste (Fonte: Observatório Sebrae Territorial 2025).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">11.823</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Apartamentos em Obra</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                97 edifícios em execução em Maringá e 4.986 unidades em lançamento (Sinduscon-PR/Noroeste).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">21.689</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Força da Construção</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                Trabalhadores da cadeia da construção no Noroeste em 4.698 estabelecimentos (Recorte FIEP).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">15 min</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Conexão Metropolitana</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                Acesso veloz via PR-323 duplicada, permitindo moradia acessível com trabalho e lazer em Maringá.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Díptico Territorial: Maringá Polo vs Paiçandu Conquista -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="card-padded bg-[#0D1117]">
+            <span class="text-xs font-mono uppercase text-[#8B949E] tracking-widest block mb-4">POLO REGIONAL &middot; MARINGÁ</span>
+            <h3 class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-4">
+              Centro Econômico, Universitário e Tecnológico
+            </h3>
+            <ul class="space-y-4 text-xs text-[#C9D1D9]">
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Alta densidade de serviços, centros médicos de referência e grandes universidades.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Custo médio do metro quadrado elevado nos bairros centrais e zonas nobres.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Mercado de trabalho robusto que atrai profissionais de todo o estado.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-padded bg-[#0D1117] border-l-2 border-l-[#3E9B67]">
+            <span class="text-xs font-mono uppercase text-[#4EBA7E] tracking-widest block mb-4">VETOR DE EXPANSÃO &middot; PAIÇANDU</span>
+            <h3 class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-4">
+              Espaço, Casa Própria e Valorização Patrimonial
+            </h3>
+            <ul class="space-y-4 text-xs text-[#C9D1D9]">
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Casas térreas com quintal e garagem pelo mesmo valor de um apartamento compacto no polo.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Enquadramento massivo no Minha Casa Minha Vida com subsídio integral e juros baixos.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Loteamentos abertos e fechados em constante valorização pela duplicação e expansão da malha urbana.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         3. Q&A / FAQ — IDÊNTICO AO DESIGN EDITORIAL DE INDEX.HTML (DM SERIF DISPLAY)
+         Conforme solicitado na imagem de referência do usuário.
+         ========================================================================== -->
+    <section class="hairline-b bg-[#0D1117] pt-24 pb-28 text-white" id="faq-editorial">
+      <div class="wrap">
+        
+        <!-- Header do Q&A -->
+        <header class="flex items-start justify-between border-b border-white/10 pb-6 text-xs uppercase tracking-[0.2em] text-[#8B949E]">
+          <span class="text-[#4EBA7E] font-semibold">(DÚVIDAS FREQUENTES)</span>
+          <span class="text-right text-[#C9D1D9] normal-case tracking-normal text-sm font-light">
+            Escolher um imóvel também é poder perguntar.
+          </span>
+        </header>
+
+        <!-- Título do Q&A -->
+        <div class="mt-14 mb-16">
+          <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-[-0.035em] font-['Plus_Jakarta_Sans'] text-white">
+            Tudo o que você<br class="hidden sm:inline"> precisa saber
+          </h2>
+        </div>
+
+        <!-- LISTA DESKTOP: Grid 12 colunas com Hover Slide e DM Serif Display Italic -->
+        <div class="faq-desktop-list border-t border-white/15" role="list">
+          
+          <!-- Item 01 -->
+          <article class="faq-line grid grid-cols-12 gap-x-6 items-center border-b border-white/15 py-10 lg:py-12" role="listitem" tabindex="0">
+            <span class="faq-number col-span-2 self-start pt-1 text-sm font-mono tracking-widest text-[#8B949E] transition-colors">
+              (01)
+            </span>
+            <p class="faq-answer col-span-4 max-w-sm pr-10 text-sm leading-relaxed text-[#C9D1D9]">
+              O programa oferece subsídios e juros reduzidos. A Negocia Bem faz a simulação gratuita e acompanha a aprovação junto à Caixa.
+            </p>
+            <h3 class="faq-question faq-display col-span-6 text-2xl sm:text-3xl lg:text-4xl italic font-normal leading-tight">
+              Como funciona o financiamento pelo Minha Casa Minha Vida?
+            </h3>
+          </article>
+
+          <!-- Item 02 -->
+          <article class="faq-line grid grid-cols-12 gap-x-6 items-center border-b border-white/15 py-10 lg:py-12" role="listitem" tabindex="0">
+            <span class="faq-number col-span-2 self-start pt-1 text-sm font-mono tracking-widest text-[#8B949E] transition-colors">
+              (02)
+            </span>
+            <p class="faq-answer col-span-4 max-w-sm pr-10 text-sm leading-relaxed text-[#C9D1D9]">
+              Você fica a cerca de 15 minutos de Maringá, com custo de vida acessível, infraestrutura e proximidade para aproveitar os dois.
+            </p>
+            <h3 class="faq-question faq-display col-span-6 text-2xl sm:text-3xl lg:text-4xl italic font-normal leading-tight">
+              Por que morar em Paiçandu?
+            </h3>
+          </article>
+
+          <!-- Item 03 (Item Destaque no Screenshot) -->
+          <article class="faq-line is-active grid grid-cols-12 gap-x-6 items-center border-b border-white/15 py-10 lg:py-12" role="listitem" tabindex="0">
+            <span class="faq-number col-span-2 self-start pt-1 text-sm font-mono tracking-widest text-[#4EBA7E] transition-colors">
+              (03)
+            </span>
+            <p class="faq-answer col-span-4 max-w-sm pr-10 text-sm leading-relaxed text-[#C9D1D9]">
+              Sim. A análise cadastral é rápida e buscamos uma locação que combine com a sua rotina, sem complicar o processo.
+            </p>
+            <h3 class="faq-question faq-display col-span-6 text-2xl sm:text-3xl lg:text-4xl italic font-normal leading-tight text-[#4EBA7E]">
+              Dá para alugar sem fiador?
+            </h3>
+          </article>
+
+          <!-- Item 04 -->
+          <article class="faq-line grid grid-cols-12 gap-x-6 items-center border-b border-white/15 py-10 lg:py-12" role="listitem" tabindex="0">
+            <span class="faq-number col-span-2 self-start pt-1 text-sm font-mono tracking-widest text-[#8B949E] transition-colors">
+              (04)
+            </span>
+            <p class="faq-answer col-span-4 max-w-sm pr-10 text-sm leading-relaxed text-[#C9D1D9]">
+              Sim. Fazemos a avaliação, cuidamos da divulgação e acompanhamos a segurança documental até a escritura.
+            </p>
+            <h3 class="faq-question faq-display col-span-6 text-2xl sm:text-3xl lg:text-4xl italic font-normal leading-tight">
+              Vocês avaliam e vendem imóveis usados?
+            </h3>
+          </article>
+
+        </div>
+
+        <!-- LISTA MOBILE: Accordion Interativo com Indicadores (+) e (—) -->
+        <div class="faq-mobile-list border-t border-white/15 mt-8" role="list">
+          
+          <article class="faq-mobile-item border-b border-white/15" role="listitem">
+            <button class="faq-mobile-trigger w-full py-6 text-left" type="button" aria-expanded="false">
+              <div class="flex justify-between items-center text-xs tracking-widest text-[#4EBA7E]">
+                <span>(01)</span>
+                <span class="text-base"><span class="faq-plus">+</span><span class="faq-minus">—</span></span>
+              </div>
+              <span class="faq-display mt-3 block text-2xl italic leading-tight text-white">
+                Como funciona o financiamento pelo Minha Casa Minha Vida?
+              </span>
+            </button>
+            <div class="faq-mobile-answer">
+              <div>
+                <p class="pb-6 text-sm leading-relaxed text-[#C9D1D9]">
+                  O programa oferece subsídios e juros reduzidos. A Negocia Bem faz a simulação gratuita e acompanha a aprovação junto à Caixa.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-mobile-item border-b border-white/15" role="listitem">
+            <button class="faq-mobile-trigger w-full py-6 text-left" type="button" aria-expanded="false">
+              <div class="flex justify-between items-center text-xs tracking-widest text-[#4EBA7E]">
+                <span>(02)</span>
+                <span class="text-base"><span class="faq-plus">+</span><span class="faq-minus">—</span></span>
+              </div>
+              <span class="faq-display mt-3 block text-2xl italic leading-tight text-white">
+                Por que morar em Paiçandu?
+              </span>
+            </button>
+            <div class="faq-mobile-answer">
+              <div>
+                <p class="pb-6 text-sm leading-relaxed text-[#C9D1D9]">
+                  Você fica a cerca de 15 minutos de Maringá, com custo de vida acessível, infraestrutura e proximidade para aproveitar os dois.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-mobile-item is-active border-b border-white/15" role="listitem">
+            <button class="faq-mobile-trigger w-full py-6 text-left" type="button" aria-expanded="true">
+              <div class="flex justify-between items-center text-xs tracking-widest text-[#4EBA7E]">
+                <span>(03)</span>
+                <span class="text-base"><span class="faq-plus">+</span><span class="faq-minus">—</span></span>
+              </div>
+              <span class="faq-display mt-3 block text-2xl italic leading-tight text-[#4EBA7E]">
+                Dá para alugar sem fiador?
+              </span>
+            </button>
+            <div class="faq-mobile-answer">
+              <div>
+                <p class="pb-6 text-sm leading-relaxed text-[#C9D1D9]">
+                  Sim. A análise cadastral é rápida e buscamos uma locação que combine com a sua rotina, sem complicar o processo.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-mobile-item border-b border-white/15" role="listitem">
+            <button class="faq-mobile-trigger w-full py-6 text-left" type="button" aria-expanded="false">
+              <div class="flex justify-between items-center text-xs tracking-widest text-[#4EBA7E]">
+                <span>(04)</span>
+                <span class="text-base"><span class="faq-plus">+</span><span class="faq-minus">—</span></span>
+              </div>
+              <span class="faq-display mt-3 block text-2xl italic leading-tight text-white">
+                Vocês avaliam e vendem imóveis usados?
+              </span>
+            </button>
+            <div class="faq-mobile-answer">
+              <div>
+                <p class="pb-6 text-sm leading-relaxed text-[#C9D1D9]">
+                  Sim. Fazemos a avaliação, cuidamos da divulgação e acompanhamos a segurança documental até a escritura.
+                </p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         4. CTA FINAL: ATELIER INTERATIVO DOS 3 FUNIS DE ATENDIMENTO (VARIANTE 3)
+         ========================================================================== -->
+    <section class="hairline-b bg-[#161B22] pt-24 pb-28" id="atelier-cta">
+      <div class="wrap">
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-4">
+            Atendimento Consultivo Especializado
+          </p>
+          <h2 class="text-3xl sm:text-5xl font-extrabold tracking-[-0.035em] font-['Plus_Jakarta_Sans'] leading-[1.05] text-white">
+            Soluções imobiliárias desenhadas para o seu objetivo.
+          </h2>
+          <p class="mt-6 text-sm sm:text-base text-[#8B949E] leading-relaxed">
+            Seja para sair do aluguel com subsídios federais, alugar um imóvel sem fiador ou investir no vetor de valorização da Região Metropolitana de Maringá, selecione sua jornada e converse diretamente com nossos consultores.
+          </p>
+        </div>
+
+        <!-- Seletor de Funil em 3 Abas Arquitetônicas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 border border-white/10 bg-[#0D1117] mb-12">
+          
+          <button class="funnel-tab-btn-v4 active p-6 text-left border-b md:border-b-0 md:border-r border-white/10 transition-colors flex items-center justify-between" 
+                  data-funnel-v4="casas" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#4EBA7E] block mb-1">01 &middot; CASA PRÓPRIA</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Casas Novas & MCMV</span>
+            </div>
+            <i data-lucide="home" class="w-5 h-5 text-[#4EBA7E]"></i>
+          </button>
+
+          <button class="funnel-tab-btn-v4 p-6 text-left border-b md:border-b-0 md:border-r border-white/10 transition-colors flex items-center justify-between" 
+                  data-funnel-v4="locacao" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#8B949E] block mb-1">02 &middot; LOCAÇÃO ÁGIL</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Aluguel Sem Fiador</span>
+            </div>
+            <i data-lucide="key" class="w-5 h-5 text-[#8B949E]"></i>
+          </button>
+
+          <button class="funnel-tab-btn-v4 p-6 text-left transition-colors flex items-center justify-between" 
+                  data-funnel-v4="lotes" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#8B949E] block mb-1">03 &middot; INVESTIMENTO</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Terrenos & Expansão</span>
+            </div>
+            <i data-lucide="trending-up" class="w-5 h-5 text-[#8B949E]"></i>
+          </button>
+
+        </div>
+
+        <!-- Painel 1: Casas Novas & MCMV -->
+        <div id="funnel-panel-v4-casas" class="funnel-panel-v4 block">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h3 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Conquiste a Casa Própria com Parcelas Menores que o Aluguel
+              </h3>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Trabalhamos com residências novas prontas para morar e em fase final de acabamento nos bairros mais valorizados de Paiçandu (Jd. América, Jd. Itaipu, Jd. Monte Cristo e Jd. Capital).
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Subsídios de até R$ 55.000</span>
+                  <p class="text-xs text-[#8B949E]">Enquadramento preciso nas faixas do programa Minha Casa Minha Vida.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Utilização do seu FGTS</span>
+                  <p class="text-xs text-[#8B949E]">Use o saldo acumulado como parte da entrada ou amortização da dívida.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Simulação Gratuita em 15 min</span>
+                  <p class="text-xs text-[#8B949E]">Descubra exatamente o valor liberado pela Caixa sem nenhum compromisso financeiro.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Casas com 2 e 3 Dormitórios</span>
+                  <p class="text-xs text-[#8B949E]">Plantas funcionais, quintal privativo, porcelanato e vaga para veículos.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20uma%20simula%C3%A7%C3%A3o%20gratuita%20para%20Casa%20Pr%C3%B3pria%20pelo%20Minha%20Casa%20Minha%20Vida." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  FAZER SIMULAÇÃO CAIXA NO WHATSAPP ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-casas-main.webp" alt="Oportunidades de Casas Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Faixa de Investimento: R$ 235k a R$ 350k</span>
+                  <span class="text-[#4EBA7E] font-semibold">Entradas Facilitadas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel 2: Locação Ágil Sem Fiador -->
+        <div id="funnel-panel-v4-locacao" class="funnel-panel-v4 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h3 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Alugue com Rapidez, Respeito e Sem Burocracia
+              </h3>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Eliminamos a exigência antiquada de fiadores com imóvel quitado no mesmo município. Nosso sistema de locação digital permite análise cadastral em poucas horas e liberação das chaves em até 24h.
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Sem Necessidade de Fiador</span>
+                  <p class="text-xs text-[#8B949E]">Parceria com CredPago e Seguro Fiança descomplicado no cartão de crédito.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Vistoria Fotográfica Cautelar</span>
+                  <p class="text-xs text-[#8B949E]">Laudo detalhado de entrada e saída para assegurar a tranquilidade de ambas as partes.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Garantia para Proprietários</span>
+                  <p class="text-xs text-[#8B949E]">Repasse pontual do aluguel e assessoria na manutenção e conservação do imóvel.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Contrato 100% Digital</span>
+                  <p class="text-xs text-[#8B949E]">Assinatura eletrônica com validade jurídica sem filas em cartório.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Procuro%20um%20im%C3%B3vel%20para%20alugar%20em%20Pai%C3%A7andu/Maring%C3%A1%20sem%20fiador." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  VER OPÇÕES DE LOCAÇÃO DISPONÍVEIS ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-aluguel-main.webp" alt="Locação Ágil Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Residenciais & Comerciais</span>
+                  <span class="text-[#4EBA7E] font-semibold">Aprovação em 24h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel 3: Terrenos & Expansão -->
+        <div id="funnel-panel-v4-lotes" class="funnel-panel-v4 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h3 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Invista na Terra que Mais se Valoriza no Noroeste
+              </h3>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Paiçandu e o eixo da rodovia PR-323 em direção ao Rio Ivaí concentram os loteamentos de maior expansão residencial e de lazer da região. Oferecemos terrenos urbanizados com infraestrutura completa e escritura liberada.
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Parcelamento Direto</span>
+                  <p class="text-xs text-[#8B949E]">Opções de aquisição com pequena entrada e saldo em até 60x a 120x sem comprovação complexa.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Lazer e Moradia (Mandijuba II)</span>
+                  <p class="text-xs text-[#8B949E]">Lotes a partir de 300 m² em condomínios fechados próximos ao rio com alto índice de rentabilidade.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Infraestrutura 100% Concluída</span>
+                  <p class="text-xs text-[#8B949E]">Asfalto, iluminação pública, rede de água e esgoto liberados para início imediato da construção.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Assessoria em Construção</span>
+                  <p class="text-xs text-[#8B949E]">Conectamos você aos melhores projetos de engenharia e crédito terreno + construção da Caixa.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20os%20lotes%20e%20terrenos%20dispon%C3%ADveis%20para%20investimento." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  CONSULTAR CATÁLOGO DE LOTES ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-terrenos-main.webp" alt="Loteamentos e Terrenos Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Lotes a partir de R$ 115.000</span>
+                  <span class="text-[#4EBA7E] font-semibold">Liberados para Construir</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================================================
+       VARIANTE 01: MANIFESTO EDITORIAL & MONÓLITO TERRITORIAL
+       ========================================================================== -->
+  <main id="variant-v1" class="variant-stage">
+    <!-- Cabeçalho do Manifesto -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="max-w-4xl">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-6">
+            Consultoria Imobiliária &middot; Paiçandu e Região Metropolitana de Maringá
+          </p>
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-[-0.035em] font-['Plus_Jakarta_Sans'] leading-[1.02] text-white">
+            Mais do que intermediar metros quadrados, asseguramos o patrimônio de uma vida inteira.
+          </h1>
+          <p class="mt-8 text-base sm:text-lg text-[#C9D1D9] leading-relaxed max-w-2xl font-light">
+            Com sede na Avenida Curitiba e atuação contínua no vetor de expansão mais dinâmico do Norte do Paraná, a Negocia Bem (CRECI 9314-J) une conhecimento técnico cartorário, aprovação bancária desburocratizada e proximidade familiar em cada negócio.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diptych: Fotografia Arquitetônica + 3 Princípios Inegociáveis -->
+    <section class="hairline-b bg-[#161B22] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          <div class="lg:col-span-5 relative">
+            <div class="card-padded bg-[#0D1117]">
+              <img src="./assets/s02-casa-propria.webp" 
+                   alt="Casas Prontas em Paiçandu - Negocia Bem" 
+                   class="w-full h-[460px] object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-700">
+              <div class="p-5 bg-[#161B22] border-t border-white/10 flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-white block font-['Plus_Jakarta_Sans']">Paiçandu / Região de Maringá</span>
+                  <span class="text-[10px] text-[#8B949E] tracking-wider uppercase">Casas Novas & Loteamentos Planejados</span>
+                </div>
+                <span class="text-[10px] font-mono text-[#4EBA7E] px-2.5 py-1 bg-[#3E9B67]/10 border border-[#3E9B67]/30">15 MIN CATEDRAL</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-10">
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">01 &middot; Segurança Jurídica Absoluta</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Auditoria Completa de Matrícula e Certidões
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Nenhum contrato é redigido sem prévia conferência de ônus reais, débitos municipais e integridade registral. Você assina sabendo exatamente onde está investindo, com total proteção patrimonial.
+              </p>
+            </div>
+
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">02 &middot; Correspondência Caixa Habitação</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Do Cálculo de Subsídio à Assinatura na Agência
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Conduzimos todo o processo junto à Caixa Econômica Federal e instituições privadas. Estruturamos o uso do FGTS, simulações na Tabela SAC e enquadramento ideal no programa Minha Casa Minha Vida.
+              </p>
+            </div>
+
+            <div class="hairline-l py-2">
+              <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#4EBA7E] block mb-2">03 &middot; Presença Física e Conhecimento do Bairro</span>
+              <h2 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+                Portas Abertas no Centro de Paiçandu
+              </h2>
+              <p class="text-sm text-[#8B949E] leading-relaxed">
+                Não somos uma plataforma virtual impessoal. Nossa equipe vive a cidade, acompanha cada etapa das obras e recebe você na Av. Curitiba para conversar olho no olho e tirar todas as dúvidas.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Grade de Métricas Reais de Autoridade (Bento 4 Colunas) -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Localização Estratégica</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">15 <span class="text-2xl text-[#4EBA7E]">min</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Do centro comercial de Paiçandu até o eixo central e Catedral de Maringá pela PR-323.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Suporte de Financiamento</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">100<span class="text-2xl text-[#4EBA7E]">%</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Assessoria em Minha Casa Minha Vida, crédito habitacional Caixa e bancos privados do início ao fim.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Regularidade Técnica</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">9314<span class="text-2xl text-[#4EBA7E]">-J</span></div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Registro CRECI formalizado que assegura responsabilidade legal e transparência em todas as operações.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+          <div class="card-padded flex flex-col justify-between">
+            <span class="text-xs uppercase font-semibold text-[#8B949E] tracking-widest">Patrimônio Real</span>
+            <div class="my-6">
+              <div class="text-5xl lg:text-6xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tight">+1.000</div>
+              <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+                Famílias, inquilinos e investidores atendidos em Paiçandu e região metropolitana.
+              </p>
+            </div>
+            <div class="w-8 h-0.5 bg-[#3E9B67]"></div>
+          </div>
+
+        </div>
+
+        <!-- Convite Institucional -->
+        <div class="mt-14 card-padded flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-2">
+              Venha tomar um café conosco na Avenida Curitiba, 140
+            </h3>
+            <p class="text-xs sm:text-sm text-[#8B949E] max-w-xl">
+              Nossa sede no centro de Paiçandu está aberta de segunda a sábado. Tire suas dúvidas sobre subsídio governamental, liberação de FGTS ou agende uma visita sem qualquer compromisso.
+            </p>
+          </div>
+          <div class="flex items-center gap-4 shrink-0 w-full md:w-auto">
+            <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20caf%C3%A9%20na%20Negocia%20Bem%20para%20conversar%20sobre%20im%C3%B3veis." 
+               target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs w-full md:w-auto text-center">
+              FALAR COM UM CONSULTOR ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ==========================================================================
+       VARIANTE 02: DOSSIER MACROECONÔMICO & VETOR REGIONAL
+       ========================================================================== -->
+  <main id="variant-v2" class="variant-stage">
+    <!-- Header Analítico -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div class="lg:col-span-8">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-4">
+              Inteligência Territorial &middot; Noroeste do Paraná
+            </p>
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] font-['Plus_Jakarta_Sans'] leading-[1.05] text-white">
+              Maringá e o Noroeste em expansão contínua: por que Paiçandu é a escolha estratégica.
+            </h1>
+          </div>
+          <div class="lg:col-span-4 lg:text-right">
+            <div class="card-padded text-left">
+              <span class="text-[10px] text-[#4EBA7E] font-mono uppercase block mb-1">AUDITORIA DE DADOS</span>
+              <span class="text-xs text-[#C9D1D9] block">Fontes: IBGE 2022/2024, Sebrae PR Noroeste e Sinduscon-PR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Indicador Macro Principal: Crescimento Populacional de Maringá -->
+    <section class="hairline-b bg-[#161B22] pt-20 pb-24">
+      <div class="wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-6 border-b lg:border-b-0 lg:border-r border-white/10 pb-8 lg:pb-0 lg:pr-12">
+            <div class="flex items-baseline gap-3">
+              <span class="text-7xl sm:text-9xl font-light font-['Plus_Jakarta_Sans'] text-white tracking-tighter">
+                14,72
+              </span>
+              <span class="text-4xl sm:text-5xl font-bold text-[#4EBA7E]">%</span>
+            </div>
+            <p class="text-base sm:text-lg font-medium text-white mt-4 max-w-md">
+              Crescimento da população de Maringá entre o Censo 2010 e o Censo 2022
+            </p>
+            <p class="text-xs text-[#8B949E] mt-3 leading-relaxed">
+              De 357.077 para 409.657 habitantes (+52.580 pessoas registradas). Estimativa oficial IBGE para 2024 aponta 425.983 habitantes. Essa pressão demográfica consolida Paiçandu como o principal receptor de novas moradias na região metropolitana.
+            </p>
+          </div>
+
+          <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">1,95 M</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Habitantes no Noroeste</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                População consolidada no recorte regional PR-Noroeste (Fonte: Observatório Sebrae Territorial 2025).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">11.823</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Apartamentos em Obra</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                97 edifícios em execução em Maringá e 4.986 unidades em lançamento (Sinduscon-PR/Noroeste).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">21.689</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Força da Construção</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                Trabalhadores da cadeia da construção no Noroeste em 4.698 estabelecimentos (Recorte FIEP).
+              </p>
+            </div>
+
+            <div class="hairline-l">
+              <div class="text-4xl sm:text-5xl font-light font-['Plus_Jakarta_Sans'] text-white">15 min</div>
+              <p class="text-xs uppercase tracking-wider text-[#4EBA7E] font-semibold mt-2">Conexão Metropolitana</p>
+              <p class="text-xs text-[#8B949E] mt-2">
+                Acesso veloz via PR-323 duplicada, permitindo moradia acessível com trabalho e lazer em Maringá.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- O Eixo Territorial: O Polo vs A Conquista -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <h2 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+            A Dinâmica Metropolitana em Equilíbrio
+          </h2>
+          <p class="mt-4 text-xs sm:text-sm text-[#8B949E]">
+            Entenda como a relação geográfica entre Maringá e Paiçandu viabiliza a conquista da casa própria com alto ganho de qualidade de vida.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <div class="card-padded">
+            <span class="text-xs font-mono uppercase text-[#8B949E] tracking-widest block mb-4">POLO REGIONAL &middot; MARINGÁ</span>
+            <h3 class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-4">
+              Centro Econômico, Universitário e Tecnológico
+            </h3>
+            <ul class="space-y-4 text-xs text-[#C9D1D9]">
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Alta densidade de serviços, centros médicos de referência e grandes universidades.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Custo médio do metro quadrado elevado nos bairros centrais e zonas nobres.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Mercado de trabalho robusto que atrai profissionais de todo o estado.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-padded border-l-2 border-l-[#3E9B67]">
+            <span class="text-xs font-mono uppercase text-[#4EBA7E] tracking-widest block mb-4">VETOR DE EXPANSÃO &middot; PAIÇANDU</span>
+            <h3 class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-4">
+              Espaço, Casa Própria e Valorização Patrimonial
+            </h3>
+            <ul class="space-y-4 text-xs text-[#C9D1D9]">
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Casas térreas com quintal e garagem pelo mesmo valor de um apartamento compacto no polo.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Enquadramento massivo no Minha Casa Minha Vida com subsídio integral e juros baixos.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-4 h-4 text-[#4EBA7E] shrink-0 mt-0.5"></i>
+                <span>Loteamentos abertos e fechados em constante valorização pela duplicação e expansão da malha urbana.</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="mt-14 card-padded flex flex-col md:flex-row items-center justify-between gap-6">
+          <p class="text-xs text-[#8B949E] max-w-xl leading-relaxed">
+            <strong class="text-white">Critérios das Fontes:</strong> Os recortes territoriais seguem dados publicados por IBGE (Censos 2010/2022 e estimativa 2024), Observatório Sebrae-PR (Noroeste 2025) e levantamentos setoriais Sinduscon-PR/FIEP. A Negocia Bem utiliza esses índices para orientar compradores e investidores com base em fatos e liquidez real.
+          </p>
+          <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Li%20os%20dados%20sobre%20a%20expans%C3%A3o%20de%20Pai%C3%A7andu%20e%20gostaria%20de%20uma%20consultoria%20de%20investimento." 
+             target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs shrink-0">
+            SOLICITAR CONSULTORIA DE INVESTIMENTO ↗
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ==========================================================================
+       VARIANTE 03: ATELIER CONSULTIVO DOS 3 FUNIS DE ATENDIMENTO
+       ========================================================================== -->
+  <main id="variant-v3" class="variant-stage">
+    <!-- Header de Orientação -->
+    <section class="hairline-b bg-[#0D1117] pt-20 pb-24">
+      <div class="wrap text-center max-w-3xl mx-auto">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#4EBA7E] mb-4">
+          Atendimento Consultivo Especializado
+        </p>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.035em] font-['Plus_Jakarta_Sans'] leading-[1.05] text-white">
+          Soluções imobiliárias sob medida para o seu momento de vida.
+        </h1>
+        <p class="mt-6 text-sm sm:text-base text-[#8B949E] leading-relaxed">
+          Seja para sair do aluguel com subsídios federais, alugar um imóvel sem fiador ou investir no vetor de valorização da Região Metropolitana de Maringá, selecionamos os melhores caminhos para você.
+        </p>
+      </div>
+    </section>
+
+    <!-- Seletor de Funil em 3 Abas Arquitetônicas -->
+    <section class="hairline-b bg-[#161B22] pt-16 pb-24">
+      <div class="wrap">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 border border-white/10 bg-[#0D1117] mb-12">
+          
+          <button class="funnel-tab-btn-v3 active p-6 text-left border-b md:border-b-0 md:border-r border-white/10 transition-colors flex items-center justify-between" 
+                  data-funnel-v3="casas" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#4EBA7E] block mb-1">01 &middot; CASA PRÓPRIA</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Casas Novas & MCMV</span>
+            </div>
+            <i data-lucide="home" class="w-5 h-5 text-[#4EBA7E]"></i>
+          </button>
+
+          <button class="funnel-tab-btn-v3 p-6 text-left border-b md:border-b-0 md:border-r border-white/10 transition-colors flex items-center justify-between" 
+                  data-funnel-v3="locacao" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#8B949E] block mb-1">02 &middot; LOCAÇÃO ÁGIL</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Aluguel Sem Fiador</span>
+            </div>
+            <i data-lucide="key" class="w-5 h-5 text-[#8B949E]"></i>
+          </button>
+
+          <button class="funnel-tab-btn-v3 p-6 text-left transition-colors flex items-center justify-between" 
+                  data-funnel-v3="lotes" type="button">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#8B949E] block mb-1">03 &middot; INVESTIMENTO</span>
+              <span class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white block">Terrenos & Expansão</span>
+            </div>
+            <i data-lucide="trending-up" class="w-5 h-5 text-[#8B949E]"></i>
+          </button>
+
+        </div>
+
+        <!-- Painel 1: Casas Novas & MCMV -->
+        <div id="funnel-panel-v3-casas" class="funnel-panel-v3 block">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h2 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Conquiste a Casa Própria com Parcelas Menores que o Aluguel
+              </h2>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Trabalhamos com residências novas prontas para morar e em fase final de acabamento nos bairros mais valorizados de Paiçandu (Jd. América, Jd. Itaipu, Jd. Monte Cristo e Jd. Capital).
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Subsídios de até R$ 55.000</span>
+                  <p class="text-xs text-[#8B949E]">Enquadramento preciso nas faixas do programa Minha Casa Minha Vida.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Utilização do seu FGTS</span>
+                  <p class="text-xs text-[#8B949E]">Use o saldo acumulado como parte da entrada ou amortização da dívida.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Simulação Gratuita em 15 min</span>
+                  <p class="text-xs text-[#8B949E]">Descubra exatamente o valor liberado pela Caixa sem nenhum compromisso financeiro.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Casas com 2 e 3 Dormitórios</span>
+                  <p class="text-xs text-[#8B949E]">Plantas funcionais, quintal privativo, porcelanato e vaga para veículos.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20uma%20simula%C3%A7%C3%A3o%20gratuita%20para%20Casa%20Pr%C3%B3pria%20pelo%20Minha%20Casa%20Minha%20Vida." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  FAZER SIMULAÇÃO CAIXA NO WHATSAPP ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-casas-main.webp" alt="Oportunidades de Casas Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Faixa de Investimento: R$ 235k a R$ 350k</span>
+                  <span class="text-[#4EBA7E] font-semibold">Entradas Facilitadas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel 2: Locação Ágil Sem Fiador -->
+        <div id="funnel-panel-v3-locacao" class="funnel-panel-v3 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h2 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Alugue com Rapidez, Respeito e Sem Burocracia
+              </h2>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Eliminamos a exigência antiquada de fiadores com imóvel quitado no mesmo município. Nosso sistema de locação digital permite análise cadastral em poucas horas e liberação das chaves em até 24h.
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Sem Necessidade de Fiador</span>
+                  <p class="text-xs text-[#8B949E]">Parceria com CredPago e Seguro Fiança descomplicado no cartão de crédito.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Vistoria Fotográfica Cautelar</span>
+                  <p class="text-xs text-[#8B949E]">Laudo detalhado de entrada e saída para assegurar a tranquilidade de ambas as partes.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Garantia para Proprietários</span>
+                  <p class="text-xs text-[#8B949E]">Repasse pontual do aluguel e assessoria na manutenção e conservação do imóvel.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Contrato 100% Digital</span>
+                  <p class="text-xs text-[#8B949E]">Assinatura eletrônica com validade jurídica sem filas em cartório.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Procuro%20um%20im%C3%B3vel%20para%20alugar%20em%20Pai%C3%A7andu/Maring%C3%A1%20sem%20fiador." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  VER OPÇÕES DE LOCAÇÃO DISPONÍVEIS ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-aluguel-main.webp" alt="Locação Ágil Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Residenciais & Comerciais</span>
+                  <span class="text-[#4EBA7E] font-semibold">Aprovação em 24h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel 3: Terrenos & Expansão -->
+        <div id="funnel-panel-v3-lotes" class="funnel-panel-v3 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <h2 class="text-2xl sm:text-4xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
+                Invista na Terra que Mais se Valoriza no Noroeste
+              </h2>
+              <p class="text-sm text-[#C9D1D9] leading-relaxed">
+                Paiçandu e o eixo da rodovia PR-323 em direção ao Rio Ivaí concentram os loteamentos de maior expansão residencial e de lazer da região. Oferecemos terrenos urbanizados com infraestrutura completa e escritura liberada.
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Parcelamento Direto</span>
+                  <p class="text-xs text-[#8B949E]">Opções de aquisição com pequena entrada e saldo em até 60x a 120x sem comprovação complexa.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Lazer e Moradia (Mandijuba II)</span>
+                  <p class="text-xs text-[#8B949E]">Lotes a partir de 300 m² em condomínios fechados próximos ao rio com alto índice de rentabilidade.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Infraestrutura 100% Concluída</span>
+                  <p class="text-xs text-[#8B949E]">Asfalto, iluminação pública, rede de água e esgoto liberados para início imediato da construção.</p>
+                </div>
+                <div class="card-padded bg-[#0D1117]">
+                  <span class="text-xs font-bold text-[#4EBA7E] block mb-1">Assessoria em Construção</span>
+                  <p class="text-xs text-[#8B949E]">Conectamos você aos melhores projetos de engenharia e crédito terreno + construção da Caixa.</p>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <a href="https://wa.me/554438016654?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20os%20lotes%20e%20terrenos%20dispon%C3%ADveis%20para%20investimento." 
+                   target="_blank" rel="noopener" class="btn-vazado px-8 py-4 text-xs">
+                  CONSULTAR CATÁLOGO DE LOTES ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="card-padded bg-[#0D1117]">
+                <img src="./assets/oportunidades-terrenos-main.webp" alt="Loteamentos e Terrenos Negocia Bem" class="w-full h-[400px] object-cover">
+                <div class="p-4 bg-[#161B22] border-t border-white/10 text-xs text-[#8B949E] flex justify-between items-center">
+                  <span>Lotes a partir de R$ 115.000</span>
+                  <span class="text-[#4EBA7E] font-semibold">Liberados para Construir</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ==========================================================================
+       RODAPÉ UNIFICADO INSTITUCIONAL
+       ========================================================================== -->
+  <footer class="bg-[#0B0F14] hairline-t pt-16 pb-16 text-[#8B949E] font-['Inter']">
+    <div class="wrap grid grid-cols-1 md:grid-cols-4 gap-10">
+      
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5 text-white font-['Plus_Jakarta_Sans'] font-extrabold text-xl tracking-wider mb-4">
+          <span class="w-3 h-3 bg-[#3E9B67] inline-block"></span>
+          <span>NEGOCIA BEM</span>
+        </div>
+        <p class="text-xs text-[#8B949E] max-w-md leading-relaxed mb-6">
+          Consultoria Imobiliária com foco em Paiçandu e Região Metropolitana de Maringá/PR. Correspondente Caixa, compra de casas prontas, locação facilitada e loteamentos de valorização contínua.
+        </p>
+        <div class="text-[11px] text-[#8B949E]/70 space-y-1 font-mono">
+          <div>CRECI 9314-J &middot; Paiçandu / Paraná</div>
+          <div>Av. Curitiba, 140 - Centro &middot; CEP 87140-000</div>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-widest text-white mb-4">Navegação das Variantes</h4>
+        <ul class="space-y-2 text-xs">
+          <li>
+            <button onclick="switchVariant('v4')" class="hover:text-[#4EBA7E] text-left transition-colors font-semibold text-white">
+              ★ Variante 04: Síntese Mestra
+            </button>
+          </li>
+          <li>
+            <button onclick="switchVariant('v1')" class="hover:text-[#4EBA7E] text-left transition-colors">
+              Variante 01: Manifesto & Monólito
+            </button>
+          </li>
+          <li>
+            <button onclick="switchVariant('v2')" class="hover:text-[#4EBA7E] text-left transition-colors">
+              Variante 02: Dossier Macroeconômico
+            </button>
+          </li>
+          <li>
+            <button onclick="switchVariant('v3')" class="hover:text-[#4EBA7E] text-left transition-colors">
+              Variante 03: Atelier dos 3 Funis
+            </button>
+          </li>
+          <li class="pt-2">
+            <a href="./apresentacao-imovel.html" class="text-[#4EBA7E] hover:underline">
+              Ver Apresentação do Imóvel ↗
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-widest text-white mb-4">Atendimento</h4>
+        <p class="text-xs text-[#8B949E] mb-2">Telefone Comercial & WhatsApp:</p>
+        <p class="text-sm font-bold text-white mb-4 font-mono">(44) 3801-6654</p>
+        <a href="https://wa.me/554438016654" target="_blank" rel="noopener" class="btn-vazado px-6 py-3 text-xs w-full text-center">
+          FALAR NO WHATSAPP
+        </a>
+      </div>
+
+    </div>
+
+    <div class="wrap mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#8B949E]/60 gap-4">
+      <div>&copy; 2026 Negocia Bem Consultoria Imobiliária (CRECI 9314-J). Todos os direitos reservados.</div>
+      <div class="flex items-center gap-4">
+        <span>Quiet Luxury & Bento 0px</span>
+        <span>&middot;</span>
+        <span>Studio DNA Engine</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================================================
+       SCRIPTS DE CONTROLE DO SWITCHER, Q&A E ABAS
+       ========================================================================== -->
+  <script>
+    // Inicialização de ícones Lucide
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // Gerenciador de Variantes Principais
+    function switchVariant(variantId) {
+      document.querySelectorAll('.variant-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-variant') === variantId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      document.querySelectorAll('.variant-stage').forEach(stage => {
+        if (stage.id === 'variant-' + variantId) {
+          stage.classList.add('active');
+          if (typeof gsap !== 'undefined') {
+            gsap.fromTo(stage, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+          }
+        } else {
+          stage.classList.remove('active');
+        }
+      });
+
+      window.location.hash = variantId;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Event listeners dos botões de variante
+    document.querySelectorAll('.variant-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const v = this.getAttribute('data-variant');
+        switchVariant(v);
+      });
+    });
+
+    // Interatividade da Lista Q&A Desktop (Variante 04)
+    document.querySelectorAll('.faq-line').forEach(line => {
+      line.addEventListener('mouseenter', function() {
+        document.querySelectorAll('.faq-line').forEach(l => l.classList.remove('is-active'));
+        this.classList.add('is-active');
+      });
+      line.addEventListener('focus', function() {
+        document.querySelectorAll('.faq-line').forEach(l => l.classList.remove('is-active'));
+        this.classList.add('is-active');
+      });
+    });
+
+    // Interatividade da Lista Q&A Mobile (Variante 04)
+    document.querySelectorAll('.faq-mobile-trigger').forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const parent = this.closest('.faq-mobile-item');
+        const isActive = parent.classList.contains('is-active');
+        document.querySelectorAll('.faq-mobile-item').forEach(item => {
+          item.classList.remove('is-active');
+          item.querySelector('.faq-mobile-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+        if (!isActive) {
+          parent.classList.add('is-active');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Gerenciador das Abas dos 3 Funis (Variante 04)
+    document.querySelectorAll('.funnel-tab-btn-v4').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const funnel = this.getAttribute('data-funnel-v4');
+        
+        document.querySelectorAll('.funnel-tab-btn-v4').forEach(b => {
+          b.classList.remove('active');
+          b.querySelector('span:first-child').classList.replace('text-[#4EBA7E]', 'text-[#8B949E]');
+          b.querySelector('svg')?.classList.replace('text-[#4EBA7E]', 'text-[#8B949E]');
+        });
+        this.classList.add('active');
+        this.querySelector('span:first-child').classList.replace('text-[#8B949E]', 'text-[#4EBA7E]');
+        this.querySelector('svg')?.classList.replace('text-[#8B949E]', 'text-[#4EBA7E]');
+
+        document.querySelectorAll('.funnel-panel-v4').forEach(p => {
+          p.classList.add('hidden');
+          p.classList.remove('block');
+        });
+        const targetPanel = document.getElementById('funnel-panel-v4-' + funnel);
+        if (targetPanel) {
+          targetPanel.classList.remove('hidden');
+          targetPanel.classList.add('block');
+          if (typeof gsap !== 'undefined') {
+            gsap.fromTo(targetPanel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' });
+          }
+        }
+      });
+    });
+
+    // Gerenciador das Abas dos 3 Funis (Variante 03)
+    document.querySelectorAll('.funnel-tab-btn-v3').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const funnel = this.getAttribute('data-funnel-v3');
+        
+        document.querySelectorAll('.funnel-tab-btn-v3').forEach(b => {
+          b.classList.remove('active');
+          b.querySelector('span:first-child').classList.replace('text-[#4EBA7E]', 'text-[#8B949E]');
+          b.querySelector('svg')?.classList.replace('text-[#4EBA7E]', 'text-[#8B949E]');
+        });
+        this.classList.add('active');
+        this.querySelector('span:first-child').classList.replace('text-[#8B949E]', 'text-[#4EBA7E]');
+        this.querySelector('svg')?.classList.replace('text-[#8B949E]', 'text-[#4EBA7E]');
+
+        document.querySelectorAll('.funnel-panel-v3').forEach(p => {
+          p.classList.add('hidden');
+          p.classList.remove('block');
+        });
+        const targetPanel = document.getElementById('funnel-panel-v3-' + funnel);
+        if (targetPanel) {
+          targetPanel.classList.remove('hidden');
+          targetPanel.classList.add('block');
+          if (typeof gsap !== 'undefined') {
+            gsap.fromTo(targetPanel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' });
+          }
+        }
+      });
+    });
+
+    // Leitura do hash da URL na carga da página
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && ['v1', 'v2', 'v3', 'v4'].includes(hash)) {
+        switchVariant(hash);
+      }
+    });
+  </script>
+</body>
+</html>
