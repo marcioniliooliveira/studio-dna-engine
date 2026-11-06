@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "hub.genui.v1",
+  "archetypeRef": "PromptComposer",
+  "layout": {
+    "type": "shell-stack",
+    "props": {
+      "density": "normal",
+      "dockedBottom": true
+    }
+  },
+  "slots": [
+    {
+      "role": "contextPillsSlot",
+      "optional": false,
+      "permittedWidgets": [
+        "markdown-stream",
+        "tool-call-card",
+        "diff-view",
+        "action-buttons"
+      ]
+    },
+    {
+      "role": "inputEditorSlot",
+      "optional": false,
+      "permittedWidgets": [
+        "markdown-stream",
+        "tool-call-card",
+        "diff-view",
+        "action-buttons"
+      ]
+    },
+    {
+      "role": "actionToolbarSlot",
+      "optional": false,
+      "permittedWidgets": [
+        "markdown-stream",
+        "tool-call-card",
+        "diff-view",
+        "action-buttons"
+      ]
+    }
+  ],
+  "runtimeBinding": {
+    "streamStateTopic": "agent.run.stream",
+    "submitAction": "agent.user.prompt",
+    "approvalTopic": "agent.tool.request_approval"
+  }
+}

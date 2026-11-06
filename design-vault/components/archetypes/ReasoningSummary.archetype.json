@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "ReasoningSummary",
+  "purpose": "Acordeão fluido para exibição de Chain-of-Thought (raciocínio interno do modelo) com contador de tempo em segundos e colapso automático ao concluir.",
+  "confidenceScore": 0.92,
+  "canonicalAnatomy": {
+    "rootRole": "ReasoningBlock",
+    "slots": [
+      { "name": "thinkingHeaderSlot", "description": "Indicador 'Pensando por Xs...' com shimmer sutil", "optional": false },
+      { "name": "thoughtTraceSlot", "description": "Passos intermediários de raciocínio em markdown leve", "optional": true }
+    ]
+  },
+  "stateContract": {
+    "initialState": "thinking_active",
+    "states": ["thinking_active", "thought_collapsed", "thought_expanded"],
+    "transitions": [
+      { "from": "thinking_active", "to": "thought_collapsed", "trigger": "REASONING_DONE" },
+      { "from": "thought_collapsed", "to": "thought_expanded", "trigger": "TOGGLE_THOUGHTS" }
+    ]
+  },
+  "motionPrinciples": {
+    "collapseTransition": {
+      "type": "cubic-bezier",
+      "params": { "x1": 0.16, "y1": 1.0, "x2": 0.3, "y2": 1.0 },
+      "durationMs": 160
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "region",
+    "accessibleName": "Resumo de Raciocínio do Agente",
+    "liveRegion": "off",
+    "focusPolicy": "Toggle acessível via Enter/Space com aria-expanded"
+  },
+  "knownImplementations": [
+    { "provider": "arc", "dnaRef": "arc-agent-run-01", "similarityScore": 0.87 }
+  ]
+}
