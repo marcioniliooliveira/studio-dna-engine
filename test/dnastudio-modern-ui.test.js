@@ -211,4 +211,89 @@ describe('dnastudio Modern UI/UX Component & Contract Verification Suite (M3 / F
     }
   });
 
+  test('Remediation Item 1: runMultifactorAudit targets canonical /api/v2/audit/:slug endpoint', () => {
+    const html = buildDashboardHtml(['mellem-ca'], ['silvio-iwata']);
+    assert.ok(html.includes('/api/v2/audit/\' + encodeURIComponent(slug)'), 'Must call canonical /api/v2/audit/:slug route');
+    assert.equal(html.includes('/api/v2/audit/multifactor/'), false, 'Must NOT contain legacy /multifactor/ prefix in audit call');
+  });
+
+  test('Remediation Item 2: Dynamic radar polygon computation and score updates', () => {
+    const html = buildDashboardHtml(['mellem-ca'], ['silvio-iwata']);
+    assert.ok(html.includes('sAntiSlop'), 'Must dynamically calculate sAntiSlop');
+    assert.ok(html.includes('sContrast'), 'Must dynamically calculate sContrast');
+    assert.ok(html.includes('sMotion'), 'Must dynamically calculate sMotion');
+    assert.ok(html.includes('sVram'), 'Must dynamically calculate sVram');
+    assert.ok(html.includes('sConsole'), 'Must dynamically calculate sConsole');
+    assert.ok(html.includes('sNetwork'), 'Must dynamically calculate sNetwork');
+    assert.ok(html.includes('updateRadarData([sAntiSlop, sContrast, sMotion, sVram, sConsole, sNetwork])'), 'Must pass dynamic scores array to updateRadarData');
+    assert.ok(html.includes('radarTotalScore'), 'Must update radarTotalScore element');
+    assert.ok(html.includes('radarStatusText'), 'Must update radarStatusText element');
+  });
+
+  test('Remediation Item 3: Mutation token attachment and 403 read-only warning toast across actions', () => {
+    const html = buildDashboardHtml(['mellem-ca'], ['silvio-iwata']);
+    assert.ok(html.includes('function getAuthHeaders'), 'Must define getAuthHeaders helper');
+    assert.ok(html.includes('headers[\'Authorization\'] = \'Bearer \' + token'), 'Must attach Authorization Bearer token');
+
+    const warningMsg = 'Modo somente-leitura ativo. Mutações administrativas estão desabilitadas.';
+    const occurrences = (html.match(/Modo somente-leitura ativo\. Mutações administrativas estão desabilitadas\./g) || []).length;
+    assert.ok(occurrences >= 4, `Must handle 403 warning across at least 4 actions (found ${occurrences})`);
+  });
+
+  test('Remediation Item 4: Mobile media query collapses sidebar to 68px and DOMContentLoaded collapses <= 768px', () => {
+    const html = buildDashboardHtml(['mellem-ca'], ['silvio-iwata']);
+    assert.ok(html.includes('@media (max-width: 768px)'), 'Must have 768px media query');
+    assert.ok(html.includes('.app-sidebar { width: 68px !important; }'), 'Must set .app-sidebar width to 68px in mobile media query');
+    assert.ok(html.includes('window.innerWidth <= 768'), 'Must check window.innerWidth <= 768 on load');
+    assert.ok(html.includes('sb.setAttribute(\'data-collapsed\', \'true\')'), 'Must set data-collapsed on mobile load');
+  });
+
+  test('Remediation Item 5: JSON bootstrap in __DNA_BOOTSTRAP__ safely escapes </script> tags', () => {
+    const maliciousHtml = buildDashboardHtml(
+      ['malicious-clone</script><script>alert("xss")</script>'],
+      ['evil-client</script><script>window.pwned=true;</script>']
+    );
+
+    assert.ok(maliciousHtml.includes('<script id="__DNA_BOOTSTRAP__">'), 'Must include __DNA_BOOTSTRAP__ script id');
+    const bootstrapMatch = maliciousHtml.match(/<script id="__DNA_BOOTSTRAP__">([\s\S]*?)<\/script>/);
+    assert.ok(bootstrapMatch, 'Must find valid closing tag for bootstrap script');
+    const scriptBody = bootstrapMatch[1];
+    assert.equal(scriptBody.includes('</script>'), false, 'Script body must NOT contain unescaped </script>');
+    assert.ok(scriptBody.includes('<\\/script>'), 'Must escape script tags to <\\/script>');
+  });
+
+  test('Live Preview Server: POST /api/v2/audit/:slug returns HTTP 200 with dynamic audit data', async () => {
+    const server = startPreviewServer({
+      port: 0,
+      silent: true,
+      enableMutations: true,
+      mutationToken: 'test-m3-secret'
+    });
+
+    await new Promise((resolve) => server.once('listening', resolve));
+    const port = server.address().port;
+
+    try {
+      // 1. Unauthorized attempt returns 403
+      const unauthRes = await fetch(`http://127.0.0.1:${port}/api/v2/audit/silvio-iwata-imobiliaria`, {
+        method: 'POST'
+      });
+      assert.equal(unauthRes.status, 403, 'Unauthorized mutation must return 403');
+
+      // 2. Authorized attempt returns 200 with audit payload
+      const authRes = await fetch(`http://127.0.0.1:${port}/api/v2/audit/silvio-iwata-imobiliaria`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer test-m3-secret' }
+      });
+      assert.equal(authRes.status, 200, 'Authorized audit must return 200');
+      const data = await authRes.json();
+      assert.equal(data.success, true);
+      assert.ok(data.audit, 'Must return audit object');
+      assert.ok(typeof data.audit.score === 'string', 'Must include audit score');
+      assert.ok(typeof data.audit.status === 'string', 'Must include audit status');
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+  });
+
 });

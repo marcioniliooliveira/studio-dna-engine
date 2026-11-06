@@ -305,6 +305,13 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
     }
     @media (max-width: 768px) {
       .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .app-sidebar { width: 68px !important; }
+      .app-sidebar .brand-text,
+      .app-sidebar .nav-label,
+      .app-sidebar .nav-badge,
+      .app-sidebar .cmd-k-trigger-text {
+        display: none !important;
+      }
     }
 
     .bento-item, .card {
@@ -1244,14 +1251,18 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
   <!-- Sonner Toaster (F16) -->
   <div data-sonner-toaster dir="ltr"></div>
 
+  <!-- Server Data Bootstrap (F10-F16) -->
+  <script id="__DNA_BOOTSTRAP__">
+    // Injected Server Data Bootstrap safely escaped to prevent script breakout
+    window.__STUDIO_DATA__ = ${JSON.stringify({
+      copias: safeCopias,
+      clientes: safeClientes,
+      enableMutations: Boolean(options.enableMutations)
+    }).replace(/<\/script/gi, '<\\/script')};
+  </script>
+
   <!-- Client-Side Architecture & Controller Scripts -->
   <script>
-    // Injected Server Data Bootstrap
-    window.__STUDIO_DATA__ = {
-      copias: ${JSON.stringify(safeCopias)},
-      clientes: ${JSON.stringify(safeClientes)},
-      enableMutations: ${Boolean(options.enableMutations)}
-    };
 
     // ─────────────────────────────────────────────────────────────────────────
     // F16: Sonner Non-Blocking Toast Notification Engine
@@ -1318,7 +1329,7 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
       constructor() {
         this.cache = new Map();
         this.inFlight = new Map();
-        this.mutationToken = localStorage.getItem('studio_dna_mutation_token') || '';
+        this.mutationToken = localStorage.getItem('studio_dna_mutation_token') || localStorage.getItem('dna_mutation_token') || '';
       }
 
       async request(endpoint, options = {}, { useCache = false, ttlMs = 10000, forceRefresh = false } = {}) {
@@ -1415,8 +1426,16 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
         this.cache.clear();
         return res;
       }
-    }
     window.dnaApi = new DnaApiClient();
+
+    function getAuthHeaders(extraHeaders = {}) {
+      const token = (window.dnaApi && window.dnaApi.mutationToken) || localStorage.getItem('studio_dna_mutation_token') || localStorage.getItem('dna_mutation_token') || '';
+      const headers = Object.assign({}, extraHeaders);
+      if (token && !headers['Authorization']) {
+        headers['Authorization'] = 'Bearer ' + token;
+      }
+      return headers;
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Navigation & Tab Management
@@ -2059,13 +2078,18 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
 
       const toastId = Sonner.loading('Criando projeto do cliente...');
       try {
+        const headers = getAuthHeaders({ 'Content-Type': 'application/json' });
         const res = await fetch('/api/client/create', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ brandName, refSlug, niche, whatsapp })
         });
-        const data = await res.json();
         Sonner.dismiss(toastId);
+        if (res.status === 403) {
+          Sonner.warning('Modo somente-leitura ativo. Mutações administrativas estão desabilitadas.');
+          return;
+        }
+        const data = await res.json();
         if (data.success) {
           Sonner.success('Projeto do cliente criado com sucesso!');
           setTimeout(() => window.location.reload(), 1500);
@@ -2081,9 +2105,17 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
     async function runAudit(slug) {
       const toastId = Sonner.loading('Iniciando auditoria Playwright para: ' + slug + '...');
       try {
-        const res = await fetch('/api/audit/' + encodeURIComponent(slug), { method: 'POST' });
-        const data = await res.json();
+        const headers = getAuthHeaders();
+        const res = await fetch('/api/audit/' + encodeURIComponent(slug), {
+          method: 'POST',
+          headers
+        });
         Sonner.dismiss(toastId);
+        if (res.status === 403) {
+          Sonner.warning('Modo somente-leitura ativo. Mutações administrativas estão desabilitadas.');
+          return;
+        }
+        const data = await res.json();
         if (data.success && data.audit) {
           const a = data.audit;
           const statusText = a.auditPassed ? 'APROVADO' : 'REPROVADO';
@@ -2107,13 +2139,18 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
 
       const toastId = Sonner.loading('Iniciando extração em segundo plano...');
       try {
+        const headers = getAuthHeaders({ 'Content-Type': 'application/json' });
         const res = await fetch('/api/extract', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ url })
         });
-        const data = await res.json();
         Sonner.dismiss(toastId);
+        if (res.status === 403) {
+          Sonner.warning('Modo somente-leitura ativo. Mutações administrativas estão desabilitadas.');
+          return;
+        }
+        const data = await res.json();
         if (res.ok) {
           Sonner.success('Extração iniciada em segundo plano!', 'A página atualizará em instantes.');
           setTimeout(() => window.location.reload(), 5000);
@@ -2129,13 +2166,82 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
     async function runMultifactorAudit(slug) {
       const toastId = Sonner.loading('Iniciando auditoria multifatorial (38 variáveis) para ' + slug + '...');
       try {
-        const res = await fetch('/api/v2/audit/multifactor/' + encodeURIComponent(slug), { method: 'POST' });
-        const data = await res.json();
+        const headers = getAuthHeaders();
+        const res = await fetch('/api/v2/audit/' + encodeURIComponent(slug), {
+          method: 'POST',
+          headers
+        });
         Sonner.dismiss(toastId);
+        if (res.status === 403) {
+          Sonner.warning('Modo somente-leitura ativo. Mutações administrativas estão desabilitadas.');
+          return;
+        }
+        const data = await res.json();
         if (data.success && data.audit) {
           const a = data.audit;
           Sonner.success('Laudo 38-Variáveis Concluído!', 'Score: ' + (a.score || '38/38') + ' • Duração: ' + (a.durationMs || 0) + 'ms');
-          updateRadarData([1.0, 0.92, 0.99, 0.94, 1.0, 1.0]);
+
+          // Dynamically calculate radar polygon coordinates from actual server response metrics
+          const m = a.metrics || a;
+          const layers = a.layers || {};
+          const f1 = layers.factor1_static || {};
+          const f2 = layers.factor2_runtime_cdp || {};
+          const f3 = layers.factor3_structural || {};
+
+          // Anti-Slop (antiSlop.score or 0.95)
+          const sAntiSlop = (m.antiSlop && m.antiSlop.score !== undefined)
+            ? Number(m.antiSlop.score)
+            : (f1.passed !== undefined ? (f1.passed ? 1.0 : 0.4) : 0.95);
+
+          // APCA Lc (contrast.score or 0.90)
+          const sContrast = (m.contrast && m.contrast.score !== undefined)
+            ? Number(m.contrast.score)
+            : ((m.apca && m.apca.score !== undefined)
+              ? Number(m.apca.score)
+              : (f2.vetores && f2.vetores.fontBarrier && f2.vetores.fontBarrier.passed !== undefined
+                ? (f2.vetores.fontBarrier.passed ? 0.96 : 0.5)
+                : 0.90));
+
+          // Inertial FPS (motion.score or 0.98)
+          const sMotion = (m.motion && m.motion.score !== undefined)
+            ? Number(m.motion.score)
+            : (f2.vetores && f2.vetores.scrollScrubber && f2.vetores.scrollScrubber.passed !== undefined
+              ? (f2.vetores.scrollScrubber.passed ? 0.98 : 0.6)
+              : 0.98);
+
+          // VRAM (vram.score or 0.92)
+          const sVram = (m.vram && m.vram.score !== undefined)
+            ? Number(m.vram.score)
+            : (f2.vetores && f2.vetores.vram && f2.vetores.vram.passed !== undefined
+              ? (f2.vetores.vram.passed ? 0.95 : 0.6)
+              : 0.92);
+
+          // Console 0-Err (console.score or 1.0)
+          const sConsole = (m.console && m.console.score !== undefined)
+            ? Number(m.console.score)
+            : (f3.gates && f3.gates.console && f3.gates.console.passed !== undefined
+              ? (f3.gates.console.passed ? 1.0 : 0.3)
+              : 1.0);
+
+          // Network 0-404 (network.score or 1.0)
+          const sNetwork = (m.network && m.network.score !== undefined)
+            ? Number(m.network.score)
+            : (f3.gates && f3.gates.network && f3.gates.network.passed !== undefined
+              ? (f3.gates.network.passed ? 1.0 : 0.4)
+              : 1.0);
+
+          updateRadarData([sAntiSlop, sContrast, sMotion, sVram, sConsole, sNetwork]);
+
+          const scoreEl = document.getElementById('radarTotalScore');
+          if (scoreEl && a.score) {
+            scoreEl.textContent = a.score;
+            scoreEl.style.color = a.passed ? '#34d399' : '#f87171';
+          }
+          const statusEl = document.getElementById('radarStatusText');
+          if (statusEl && a.status) {
+            statusEl.textContent = a.status;
+            statusEl.style.color = a.passed ? 'var(--accent-cyan)' : '#fbbf24';
+          }
         } else {
           Sonner.error('Erro no laudo', (data && data.error) ? data.error : 'Falha na execução');
         }
@@ -2176,6 +2282,10 @@ function buildDashboardHtml(copias = [], clientes = [], options = {}) {
     // DOM Ready Bootstrap
     // ─────────────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
+      if (window.innerWidth <= 768) {
+        const sb = document.getElementById('appSidebar');
+        if (sb) sb.setAttribute('data-collapsed', 'true');
+      }
       loadKpiRibbon();
       loadRunsTable(1);
       loadFileTree();
