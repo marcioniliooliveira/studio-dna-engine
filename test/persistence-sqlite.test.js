@@ -143,6 +143,39 @@ describe('SqliteEngine Unit & Integration Suite', () => {
     engine.close();
   });
 
+  test('serializes concurrent async transactions on the same instance without interleaving', async () => {
+    const engine = new SqliteEngine({ dbPath: ':memory:' }).init();
+    const now = new Date().toISOString();
+    const executionOrder = [];
+
+    const tx1 = engine.transaction(async () => {
+      executionOrder.push('tx1-start');
+      await new Promise(r => setTimeout(r, 25));
+      engine.run('INSERT INTO sites VALUES (?, ?, ?, ?, ?)', 's-tx1', 'tx1.com', 'Tx 1', 'active', now);
+      executionOrder.push('tx1-end');
+      return 'val1';
+    });
+
+    const tx2 = engine.transaction(async () => {
+      executionOrder.push('tx2-start');
+      await new Promise(r => setTimeout(r, 10));
+      engine.run('INSERT INTO sites VALUES (?, ?, ?, ?, ?)', 's-tx2', 'tx2.com', 'Tx 2', 'active', now);
+      executionOrder.push('tx2-end');
+      return 'val2';
+    });
+
+    const [res1, res2] = await Promise.all([tx1, tx2]);
+    assert.equal(res1, 'val1');
+    assert.equal(res2, 'val2');
+
+    // Verify sequential execution without interleaving
+    assert.deepEqual(executionOrder, ['tx1-start', 'tx1-end', 'tx2-start', 'tx2-end']);
+
+    const sites = engine.all('SELECT id FROM sites').map(s => s.id);
+    assert.deepEqual(sites.sort(), ['s-tx1', 's-tx2']);
+    engine.close();
+  });
+
   test('handles nested transactions via savepoints', () => {
     const engine = new SqliteEngine({ dbPath: ':memory:' }).init();
     const now = new Date().toISOString();

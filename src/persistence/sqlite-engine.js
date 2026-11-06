@@ -31,6 +31,8 @@ class SqliteEngine {
     this.isInitialized = false;
     this._statements = new Map();
     this._txDepth = 0;
+    this._txQueue = Promise.resolve();
+    this._asyncTxActive = false;
   }
 
   /**
@@ -54,11 +56,12 @@ class SqliteEngine {
 
     this.db = new DatabaseSync(this.dbPath);
 
-    // Apply PRAGMAs
+    // Apply PRAGMAs: busy_timeout must be configured immediately so any concurrent access or WAL transitions
+    // wait for up to busyTimeout ms instead of immediately failing with SQLITE_BUSY / database is locked.
+    this.db.exec(`PRAGMA busy_timeout = ${this.busyTimeout};`);
     if (!isMemory) {
       this.db.exec('PRAGMA journal_mode = WAL;');
     }
-    this.db.exec(`PRAGMA busy_timeout = ${this.busyTimeout};`);
     this.db.exec('PRAGMA foreign_keys = ON;');
     this.db.exec('PRAGMA synchronous = NORMAL;');
     this.db.exec('PRAGMA temp_store = MEMORY;');
@@ -111,7 +114,8 @@ class SqliteEngine {
         fileType TEXT NOT NULL,
         sizeBytes INTEGER NOT NULL,
         sha256 TEXT NOT NULL,
-        createdAt TEXT NOT NULL
+        createdAt TEXT NOT NULL,
+        UNIQUE(siteSlug, relativePath)
       );
 
       CREATE INDEX IF NOT EXISTS idx_runs_slug ON analysis_runs(siteSlug);
@@ -121,6 +125,7 @@ class SqliteEngine {
       CREATE INDEX IF NOT EXISTS idx_runs_created ON analysis_runs(createdAt DESC);
       CREATE INDEX IF NOT EXISTS idx_audits_slug ON quality_audits(siteSlug);
       CREATE INDEX IF NOT EXISTS idx_files_path ON file_catalog(relativePath);
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_files_slug_path ON file_catalog(siteSlug, relativePath);
     `);
 
     this.isInitialized = true;
@@ -190,11 +195,45 @@ class SqliteEngine {
   /**
    * Executes fn inside an immediate transaction or nested savepoint.
    * Supports both synchronous functions and async Promise-returning functions.
+   * Serializes concurrent async transactions on the same instance using a promise queue.
    * @param {Function} fn
    * @returns {any} Result of fn
    */
   transaction(fn) {
     this._assertOpen();
+    const isAsync = fn && (fn.constructor?.name === 'AsyncFunction' || typeof fn.then === 'function');
+
+    // If already inside a transaction on this instance (nested savepoint),
+    // execute immediately without waiting on the top-level queue.
+    if (this._txDepth > 0) {
+      return this._executeTransaction(fn);
+    }
+
+    // If an async transaction is currently active or this transaction is async,
+    // serialize execution via the promise queue.
+    if (this._asyncTxActive || isAsync) {
+      const executeInQueue = () => {
+        return this._executeTransaction(fn);
+      };
+      const promise = this._txQueue.then(executeInQueue, executeInQueue);
+      this._txQueue = promise.then(() => {}, () => {});
+      return promise;
+    }
+
+    // Synchronous execution path
+    const res = this._executeTransaction(fn);
+    if (res && typeof res.then === 'function') {
+      this._asyncTxActive = true;
+      this._txQueue = this._txQueue.then(() => res, () => res).then(() => {}, () => {});
+    }
+    return res;
+  }
+
+  /**
+   * Internal transaction execution logic handling BEGIN/SAVEPOINT and COMMIT/ROLLBACK.
+   * @private
+   */
+  _executeTransaction(fn) {
     const currentDepth = this._txDepth;
     this._txDepth++;
     const spName = `sp_${currentDepth}`;
@@ -208,6 +247,7 @@ class SqliteEngine {
     try {
       const res = fn();
       if (res && typeof res.then === 'function') {
+        this._asyncTxActive = true;
         return res.then(
           val => {
             if (currentDepth === 0) this.db.exec('COMMIT');
@@ -221,6 +261,9 @@ class SqliteEngine {
           }
         ).finally(() => {
           this._txDepth--;
+          if (this._txDepth === 0) {
+            this._asyncTxActive = false;
+          }
         });
       }
 
@@ -252,6 +295,9 @@ class SqliteEngine {
       this.db = null;
     }
     this.isInitialized = false;
+    this._txDepth = 0;
+    this._txQueue = Promise.resolve();
+    this._asyncTxActive = false;
   }
 
   get isOpen() {

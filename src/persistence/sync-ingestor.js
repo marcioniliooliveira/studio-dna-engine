@@ -237,18 +237,36 @@ class SyncIngestor {
           const hash = crypto.createHash('sha256').update(content).digest('hex');
           const relPath = path.relative(this.rootDir, full).replace(/\\/g, '/');
 
-          this.hybridRepo.sqliteEngine.run(
-            `INSERT OR IGNORE INTO file_catalog (id, siteSlug, relativePath, fileType, sizeBytes, sha256, createdAt)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            crypto.randomUUID(),
+          const existingFile = this.hybridRepo.sqliteEngine.get(
+            'SELECT id, sha256, sizeBytes FROM file_catalog WHERE siteSlug = ? AND relativePath = ?',
             siteSlug,
-            relPath,
-            path.extname(full).replace('.', ''),
-            stat.size,
-            hash,
-            stat.mtime.toISOString()
+            relPath
           );
-          count++;
+
+          if (!existingFile) {
+            this.hybridRepo.sqliteEngine.run(
+              `INSERT INTO file_catalog (id, siteSlug, relativePath, fileType, sizeBytes, sha256, createdAt)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(siteSlug, relativePath) DO UPDATE SET
+                 sizeBytes = excluded.sizeBytes,
+                 sha256 = excluded.sha256`,
+              crypto.randomUUID(),
+              siteSlug,
+              relPath,
+              path.extname(full).replace('.', ''),
+              stat.size,
+              hash,
+              stat.mtime.toISOString()
+            );
+            count++;
+          } else if (existingFile.sha256 !== hash || existingFile.sizeBytes !== stat.size) {
+            this.hybridRepo.sqliteEngine.run(
+              'UPDATE file_catalog SET sizeBytes = ?, sha256 = ? WHERE id = ?',
+              stat.size,
+              hash,
+              existingFile.id
+            );
+          }
         } catch (_) {}
       }
     }

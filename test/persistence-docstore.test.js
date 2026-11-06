@@ -188,6 +188,30 @@ describe('DocumentStore Unit & Integration Suite', () => {
     assert.equal((await col.deleteById('../../etc/passwd')).deletedCount, 0);
   });
 
+  test('rejects Windows NTFS reserved characters in document IDs', async () => {
+    const store = new DocumentStore({ basePath: tempBaseDir });
+    const col = store.getCollection('ntfs_test');
+
+    const illegalIds = [
+      'run:2026-11-06T15:00:00Z',
+      'doc<bad>',
+      'doc>bad',
+      'doc"bad"',
+      'doc|pipe',
+      'doc?question',
+      'doc*star'
+    ];
+
+    for (const illegalId of illegalIds) {
+      await assert.rejects(async () => {
+        await col.insertOne({ _id: illegalId, val: 1 });
+      }, /Windows NTFS reserved characters/);
+
+      assert.equal(await col.findById(illegalId), null);
+      assert.equal((await col.deleteById(illegalId)).deletedCount, 0);
+    }
+  });
+
   test('handles oversized 15MB payload efficiently without data corruption', async () => {
     const store = new DocumentStore({ basePath: tempBaseDir });
     const col = store.getCollection('heavy_collection');

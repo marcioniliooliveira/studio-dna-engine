@@ -34,8 +34,10 @@ function validateCollectionName(name) {
   return name;
 }
 
+const NTFS_RESERVED_REGEX = /[<>:"/\\|?*\x00-\x1F]/;
+
 /**
- * Validates and sanitizes document ID against directory traversal.
+ * Validates and sanitizes document ID against directory traversal and Windows NTFS reserved characters.
  * @param {string} id
  */
 function validateDocumentId(id) {
@@ -44,6 +46,9 @@ function validateDocumentId(id) {
   }
   if (path.basename(id) !== id || id.includes('..') || id.includes('/') || id.includes('\\')) {
     throw new Error(`Invalid document ID "${id}": path traversal characters not permitted`);
+  }
+  if (NTFS_RESERVED_REGEX.test(id)) {
+    throw new Error(`Invalid document ID "${id}": Windows NTFS reserved characters (<, >, :, ", |, ?, *, control chars) not permitted`);
   }
   return id;
 }
