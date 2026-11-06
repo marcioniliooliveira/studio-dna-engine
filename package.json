@@ -1,6 +1,6 @@
 {
   "name": "studio-dna-engine",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Studio DNA PRO — Awwwards Web Cloner, Design DNA, ICM Pipeline & Client Production Factory",
   "main": "index.js",
@@ -9,6 +9,7 @@
     "studio-dna-orchestrate": "./bin/orchestrator.js"
   },
   "scripts": {
+    "lint": "node scripts/audit-syntax.js",
     "test": "npm run test:all",
     "orchestrate": "node bin/orchestrator.js",
     "test:low-spec": "node scripts/run-low-spec-gate.js",
@@ -61,7 +62,6 @@
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@react-three/drei": "^9.99.0",
     "@react-three/fiber": "^8.15.16",
-    "@types/three": "^0.161.2",
     "acorn": "8.18.0",
     "acorn-walk": "8.3.5",
     "cheerio": "^1.2.0",
@@ -71,11 +71,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.161.0",
-    "vitest": "^5.0.5",
     "xstate": "5.32.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.41.0"
+    "@playwright/test": "^1.41.0",
+    "@types/three": "^0.161.2",
+    "ajv": "^8.17.1",
+    "vite": "^5.0.0",
+    "vitest": "^5.0.5"
   }
 }
