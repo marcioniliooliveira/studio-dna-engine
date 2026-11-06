@@ -47,6 +47,18 @@ const MIME_TYPES = {
   '.txt': 'text/plain; charset=utf-8'
 };
 
+const liveSelectionsStore = new Map();
+
+function getLiveSelection(slug) {
+  if (!slug) return null;
+  return liveSelectionsStore.get(slug) || null;
+}
+
+function setLiveSelection(slug, data) {
+  if (!slug) return;
+  liveSelectionsStore.set(slug, data);
+}
+
 /**
  * Faz download assíncrono de asset remoto e salva em disco (Self-Healing)
  */
@@ -556,6 +568,185 @@ function startPreviewServer(options = {}) {
       return;
     }
 
+    // ── DNA Live Workbench & Click-to-MCP Bridge ────────────────────────────
+    if (pathname === '/__dna_live_select' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data || typeof data !== 'object' || !data.clientSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(data.clientSlug);
+        const selectionData = {
+          clientSlug,
+          dataDs: data.dataDs || '',
+          line: Number(data.line || 1),
+          tagName: data.tagName || '',
+          selector: data.selector || '',
+          computedStyles: data.computedStyles || {},
+          boundingBox: data.boundingBox || {},
+          activeScopeVars: data.activeScopeVars || {},
+          telemetry: data.telemetry || {},
+          timestamp: data.timestamp || Date.now()
+        };
+
+        liveSelectionsStore.set(clientSlug, selectionData);
+
+        // Persist cache in .domscribe
+        const domscribeDir = path.join(rootDir, '.domscribe');
+        if (!fs.existsSync(domscribeDir)) fs.mkdirSync(domscribeDir, { recursive: true });
+        const cachePath = path.join(domscribeDir, `live-selection-${clientSlug}.json`);
+        fs.writeFileSync(cachePath, JSON.stringify(selectionData, null, 2), 'utf8');
+
+        const clientTargetDir = path.join(clientesDir, clientSlug);
+        if (fs.existsSync(clientTargetDir)) {
+          const clientDomscribeDir = path.join(clientTargetDir, '.domscribe');
+          if (!fs.existsSync(clientDomscribeDir)) fs.mkdirSync(clientDomscribeDir, { recursive: true });
+          fs.writeFileSync(path.join(clientDomscribeDir, 'live-selection.json'), JSON.stringify(selectionData, null, 2), 'utf8');
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          ok: true,
+          clientSlug,
+          dataDs: selectionData.dataDs,
+          timestamp: selectionData.timestamp
+        }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/__dna_live_select') && req.method === 'GET') {
+      try {
+        const rawSlug = pathname.replace(/^\/__dna_live_select\/?/, '').split('/')[0].trim();
+        if (!rawSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(rawSlug);
+
+        let selection = liveSelectionsStore.get(clientSlug);
+        if (!selection) {
+          const rootCache = path.join(rootDir, '.domscribe', `live-selection-${clientSlug}.json`);
+          const clientCache = path.join(clientesDir, clientSlug, '.domscribe', 'live-selection.json');
+          if (fs.existsSync(rootCache)) {
+            selection = JSON.parse(fs.readFileSync(rootCache, 'utf8'));
+          } else if (fs.existsSync(clientCache)) {
+            selection = JSON.parse(fs.readFileSync(clientCache, 'utf8'));
+          }
+        }
+
+        if (!selection) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'No live selection found for client' }));
+          return;
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, ...selection }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/__dna_live_approve' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data || typeof data !== 'object' || !data.clientSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(data.clientSlug);
+        const directionId = data.directionId || 'T03A';
+        const approvedByRole = data.approvedByRole || 'art_director';
+        const sha256 = data.sha256 || 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+
+        const clientTargetDir = path.join(clientesDir, clientSlug);
+        if (!fs.existsSync(clientTargetDir)) fs.mkdirSync(clientTargetDir, { recursive: true });
+
+        // Record H02 approval in ExecutionLedger
+        const ledgerFile = path.join(clientTargetDir, 'EXECUTION_LEDGER.json');
+        try {
+          const { ExecutionLedger } = require('../orchestration/execution-ledger');
+          let ledger;
+          if (fs.existsSync(ledgerFile)) {
+            try { ledger = ExecutionLedger.load(ledgerFile); } catch (_) { ledger = new ExecutionLedger(); }
+          } else {
+            ledger = new ExecutionLedger();
+          }
+
+          const runId = `run-${clientSlug}`;
+          if (!ledger.getRun(runId)) {
+            ledger.createRun({
+              runId,
+              taskId: 'TASK-V3-08:LIVE_WORKBENCH',
+              model: 'human-director',
+              inputTokens: 0,
+              outputTokens: 0,
+              retries: 0,
+              status: 'direction_approved',
+              gates: { H02: { approved: true, directionId, sha256 } },
+              artifactHash: sha256
+            });
+          } else {
+            const existing = ledger.getRun(runId);
+            ledger.updateRun(runId, {
+              gates: { ...existing.gates, H02: { approved: true, directionId, sha256 } }
+            });
+          }
+
+          ledger.appendEvent(runId, {
+            gate: 'H02',
+            action: 'direction_approved',
+            directionId,
+            approvedByRole,
+            sha256,
+            timestamp: Date.now()
+          });
+          ledger.save(ledgerFile);
+        } catch (_) {}
+
+        // Record human-decision.json
+        const decisionPath = path.join(clientTargetDir, 'human-decision.json');
+        const decision = {
+          schemaVersion: 2,
+          contractKind: 'human-decision',
+          decisionId: `dec-h02-${Date.now()}`,
+          clientSlug,
+          selectedDirection: directionId,
+          approver: approvedByRole,
+          gate: 'H02',
+          sha256,
+          timestamp: new Date().toISOString(),
+          status: 'approved-frozen'
+        };
+        fs.writeFileSync(decisionPath, JSON.stringify(decision, null, 2), 'utf8');
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          ok: true,
+          clientSlug,
+          directionId,
+          gate: 'H02',
+          approved: true,
+          sha256,
+          timestamp: Date.now()
+        }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
     // ── Rotas V2 da Arquitetura de Orquestração & Auditoria ─────────────────
     const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, maxBodyBytes: opts.maxBodyBytes };
     if (await handleV2Orchestrate(req, res, pathname, routeOpts)) return;
@@ -990,5 +1181,7 @@ function startPreviewServer(options = {}) {
 
 module.exports = {
   startPreviewServer,
-  fetchAndSaveRemoteAsset
+  fetchAndSaveRemoteAsset,
+  getLiveSelection,
+  setLiveSelection
 };

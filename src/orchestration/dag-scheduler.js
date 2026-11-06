@@ -19,19 +19,11 @@ function pathsIntersect(p1, p2) {
   const base1 = n1.endsWith('/**') ? n1.slice(0, -3) : (n1.endsWith('/*') ? n1.slice(0, -2) : n1);
   const base2 = n2.endsWith('/**') ? n2.slice(0, -3) : (n2.endsWith('/*') ? n2.slice(0, -2) : n2);
 
-  if (!isGlob1 && !isGlob2) {
-    return false;
-  }
+  if (base1 === '' || base1 === '.' || base2 === '' || base2 === '.') return true;
 
-  if (isGlob1) {
-    if (base1 === '' || base1 === '.') return true;
-    if (base2 === base1 || base2.startsWith(base1 + '/')) return true;
-  }
-
-  if (isGlob2) {
-    if (base2 === '' || base2 === '.') return true;
-    if (base1 === base2 || base1.startsWith(base2 + '/')) return true;
-  }
+  if (base1 === base2) return true;
+  if (base2.startsWith(base1 + '/')) return true;
+  if (base1.startsWith(base2 + '/')) return true;
 
   return false;
 }
@@ -92,8 +84,18 @@ async function scheduleBlueprint(source, executeTask, options = {}) {
     const batch = [];
     for (const id of ready) {
       const candidateTask = tasks.get(id);
-      const conflictsWithBatch = batch.some(batchedTask => tasksConflict(candidateTask, batchedTask));
-      if (!conflictsWithBatch) {
+      const conflictingTask = batch.find(batchedTask => tasksConflict(candidateTask, batchedTask));
+      if (conflictingTask) {
+        if (options.ledger) {
+          options.ledger.appendEvent(options.runId || blueprint.runId, {
+            type: 'WRITE_LOCK_SERIALIZED',
+            taskId: candidateTask.id,
+            conflictingTaskId: conflictingTask.id,
+            writeLocks: getTaskWriteLocks(candidateTask),
+            conflictingLocks: getTaskWriteLocks(conflictingTask)
+          });
+        }
+      } else {
         batch.push(candidateTask);
       }
     }

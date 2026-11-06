@@ -1,101 +1,157 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "VisualCritique",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studio-dna.local/schemas/visual-critique.schema.json",
+  "title": "VisualCritiqueReport",
+  "description": "Canonical schema for Level 3 Pareto Visual Oracle (ds-audit) reports evaluated on Region Crop Pairs.",
   "type": "object",
   "required": [
     "schemaVersion",
     "timestamp",
-    "overallScore",
-    "dimensions",
-    "approved"
+    "criticActorId",
+    "dimensionScores",
+    "rationale"
   ],
   "properties": {
     "schemaVersion": {
       "type": "string",
-      "enum": ["2.0.0"]
+      "enum": ["2.0.0", "3.0.0"]
     },
     "timestamp": {
       "type": "string"
+    },
+    "criticActorId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "builderActorId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "dimensionScores": {
+      "type": "object",
+      "required": [
+        "hierarchyAndFocus",
+        "layoutAndComposition",
+        "typographyAndReadability",
+        "colorAndContrast",
+        "assetAnd3DCohesion",
+        "contextualOriginality",
+        "motionAndInteractionClarity"
+      ],
+      "properties": {
+        "hierarchyAndFocus": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "layoutAndComposition": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "typographyAndReadability": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "colorAndContrast": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "assetAnd3DCohesion": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "contextualOriginality": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "motionAndInteractionClarity": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "hierarquia": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "composicao": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "tipografia": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "cor": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "assets": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "originalidade_contextual": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "movimento": { "type": "integer", "minimum": 1, "maximum": 5 }
+      },
+      "additionalProperties": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "rationale"],
+        "properties": {
+          "id": { "type": "string" },
+          "dimension": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"]
+          },
+          "rationale": { "type": "string", "minLength": 5 },
+          "dataDs": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "selector": { "type": "string" },
+          "screenshotId": { "type": "string" },
+          "screenshotHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "region": {
+            "type": "object",
+            "required": ["x", "y", "width", "height"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number", "minimum": 1 },
+              "height": { "type": "number", "minimum": 1 }
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "regionCropPairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "dataDs": { "type": "string" },
+          "actualCropPath": { "type": "string" },
+          "expectedCropPath": { "type": "string" },
+          "coordinates": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number" },
+              "height": { "type": "number" }
+            }
+          },
+          "region": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number" },
+              "height": { "type": "number" }
+            }
+          },
+          "differenceDelta": { "type": "number" },
+          "ssimScore": { "type": "number" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 5
     },
     "overallScore": {
       "type": "number",
       "minimum": 1,
       "maximum": 5
     },
+    "averageDimensionScore": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "visualScoreNormalized": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "finalParetoScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
     "approved": {
       "type": "boolean"
     },
     "dimensions": {
-      "type": "object",
-      "required": [
-        "hierarquia",
-        "composicao",
-        "tipografia",
-        "cor",
-        "assets",
-        "originalidade_contextual",
-        "movimento"
-      ],
-      "properties": {
-        "hierarquia": { "$ref": "#/definitions/DimensionCritique" },
-        "composicao": { "$ref": "#/definitions/DimensionCritique" },
-        "tipografia": { "$ref": "#/definitions/DimensionCritique" },
-        "cor": { "$ref": "#/definitions/DimensionCritique" },
-        "assets": { "$ref": "#/definitions/DimensionCritique" },
-        "originalidade_contextual": { "$ref": "#/definitions/DimensionCritique" },
-        "movimento": { "$ref": "#/definitions/DimensionCritique" }
-      },
-      "additionalProperties": false
-    },
-    "criticalFailures": {
-      "type": "array",
-      "items": { "type": "string" }
+      "type": "object"
     }
   },
-  "definitions": {
-    "DimensionCritique": {
-      "type": "object",
-      "required": [
-        "score",
-        "critical",
-        "rationale",
-        "region",
-        "screenshotId",
-        "screenshotHash"
-      ],
-      "properties": {
-        "score": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5
-        },
-        "critical": {
-          "type": "boolean"
-        },
-        "rationale": {
-          "type": "string",
-          "minLength": 5
-        },
-        "region": {
-          "type": "object",
-          "required": ["x", "y", "width", "height"],
-          "properties": {
-            "x": { "type": "number" },
-            "y": { "type": "number" },
-            "width": { "type": "number", "minimum": 1 },
-            "height": { "type": "number", "minimum": 1 }
-          }
-        },
-        "screenshotId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "screenshotHash": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "additionalProperties": false
-    }
-  }
+  "additionalProperties": true
 }

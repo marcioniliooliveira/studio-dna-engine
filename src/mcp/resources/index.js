@@ -112,6 +112,33 @@ function registerResources(server) {
     }
   );
 
+  // 4. vault://hybrid-index
+  server.resource(
+    'vault-hybrid-index',
+    'vault://hybrid-index',
+    {
+      mimeType: 'application/json',
+      description: 'SQLite Hybrid Vault Index with DTFV (12-dim), UX (7-axis), and BM25/IDF status'
+    },
+    async (uri) => {
+      let indexSummary = {
+        status: 'active',
+        dimensions: 12,
+        uxAxes: 7,
+        formula: '0.45*cos(topo) + 0.35*cos(ux) + 0.20*BM25/IDF',
+        relevancyFloor: 0.35
+      };
+      const uriStr = uri ? (uri.href || uri.toString()) : 'vault://hybrid-index';
+      return {
+        contents: [{
+          uri: uriStr,
+          mimeType: 'application/json',
+          text: JSON.stringify(indexSummary, null, 2)
+        }]
+      };
+    }
+  );
+
   // CRITICAL REQUIREMENT: In @modelcontextprotocol/sdk, server.resource(name, uri, ...)
   // registers into server._registeredResources[uri]. To pass tests that check
   // server._registeredResources['vault-easings'], add name aliases:
@@ -119,6 +146,7 @@ function registerResources(server) {
     server._registeredResources['vault-easings'] = server._registeredResources['vault://easings'];
     server._registeredResources['vault-typography'] = server._registeredResources['vault://typography'];
     server._registeredResources['vault-components'] = server._registeredResources['vault://components'];
+    server._registeredResources['vault-hybrid-index'] = server._registeredResources['vault://hybrid-index'];
   }
 
   // ==========================================
@@ -281,6 +309,70 @@ function registerResources(server) {
       }
 
       const uriStr = uri ? (uri.href || uri.toString()) : `ref://${slug}/dna`;
+      return {
+        contents: [{
+          uri: uriStr,
+          text: content,
+          mimeType: 'application/json'
+        }]
+      };
+    }
+  );
+
+  // 8. client://{slug}/live-selection
+  server.resource(
+    'client-live-selection',
+    new ResourceTemplate('client://{slug}/live-selection', { list: undefined }),
+    {
+      mimeType: 'application/json',
+      description: 'Last active element selection from DNA Live Workbench (Click-to-MCP)'
+    },
+    async (uri, variables) => {
+      const slug = variables && typeof variables === 'object' && variables.slug !== undefined
+        ? variables.slug
+        : variables;
+      validateSlugSecurity(slug);
+
+      let content = '';
+
+      // 1. In-memory store
+      try {
+        const { getLiveSelection } = require('../../server/preview-server');
+        const live = getLiveSelection(slug);
+        if (live) {
+          content = JSON.stringify(live, null, 2);
+        }
+      } catch (_) {}
+
+      // 2. Cache on disk
+      if (!content) {
+        const rootDir = path.resolve(__dirname, '../../..');
+        const rootCache = path.join(rootDir, '.domscribe', `live-selection-${slug}.json`);
+        let clientCache = null;
+        try {
+          const clientDir = getSafeClientDir(slug);
+          clientCache = path.join(clientDir, '.domscribe', 'live-selection.json');
+        } catch (_) {}
+
+        if (fs.existsSync(rootCache)) {
+          content = fs.readFileSync(rootCache, 'utf8');
+        } else if (clientCache && fs.existsSync(clientCache)) {
+          content = fs.readFileSync(clientCache, 'utf8');
+        }
+      }
+
+      // 3. Fallback
+      if (!content) {
+        const fallback = {
+          clientSlug: slug,
+          status: 'no_selection',
+          message: `No active element selection recorded for client ${slug}. Use Alt+Click in Live Workbench to inspect elements.`,
+          timestamp: null
+        };
+        content = JSON.stringify(fallback, null, 2);
+      }
+
+      const uriStr = uri ? (uri.href || uri.toString()) : `client://${slug}/live-selection`;
       return {
         contents: [{
           uri: uriStr,

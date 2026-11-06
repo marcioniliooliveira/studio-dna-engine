@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escritório de Contabilidade São Paulo | Manning Elliott Reference Architecture</title>
+  <meta name="description" content="Contabilidade consultiva e inteligência tributária em Maringá - PR. Mais de 57 anos de tradição, governança e atendimento humano.">
+
+  <!-- Google Fonts: Newsreader (Editorial Serif), Inter (Suisse Int'l match), DM Mono (Suisse Mono match) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       MANNING ELLIOTT REFERENCE DESIGN SYSTEM (P0 EXACT TOKENS)
+       ========================================================================== */
+    :root {
+      /* Palette directly from Manning Elliott production audit */
+      --color-navy: #041e42;          /* Primary dark text & brand title */
+      --color-blue: #0084d4;          /* Secondary bar & vibrant blue accents */
+      --color-blue-hover: #0066aa;
+      --color-linen: #f0f0ee;         /* Iconic Manning Elliott linen paper background */
+      --color-white: #ffffff;
+      --color-muted: #6b758c;         /* Subtitles & metadata */
+      --color-border: #e2e4e8;
+      --color-border-light: rgba(4, 30, 66, 0.08);
+      
+      /* Typography System */
+      --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      
+      --header-total-height: 110px;
+      --secondary-height: 32px;
+      --main-header-height: 78px;
+      --max-wrap: 1540px;
+      
+      --transition-editorial: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      font-family: var(--font-sans);
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition-editorial);
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: var(--max-wrap);
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ==========================================================================
+       1. HEADER (MANNING ELLIOTT ANATOMY)
+       Fixed 110px total: 32px secondary blue bar + 78px white main nav
+       ========================================================================== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-total-height);
+      z-index: 1000;
+      background: var(--color-white);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .header.is-scrolled {
+      box-shadow: 0 4px 20px rgba(4, 30, 66, 0.07);
+    }
+
+    /* Secondary Blue Header (Top Bar) */
+    .secondary-header {
+      width: 100%;
+      height: var(--secondary-height);
+      background-color: var(--color-blue);
+      position: relative;
+    }
+
+    .secondary-header .wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .secondary-creds {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .secondary-creds span.bullet {
+      opacity: 0.5;
+    }
+
+    .secondary-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 22px;
+    }
+
+    .secondary-nav li a {
+      color: var(--color-white);
+      text-transform: uppercase;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      transition: opacity 0.2s ease;
+    }
+
+    .secondary-nav li a:hover {
+      opacity: 0.8;
+    }
+
+    /* Inner Main Header */
+    #inner-header {
+      height: var(--main-header-height);
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: relative;
+    }
+
+    #inner-header .wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Logo (Manning Elliott Typographic Form) */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--color-blue);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-brand-name {
+      font-family: var(--font-sans);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-navy);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .logo-brand-tagline {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Main Desktop Navigation */
+    .main-navigation {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-list {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      list-style: none;
+      gap: 6px;
+    }
+
+    .nav-list > li {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      position: static; /* Allows Mega Menu to span full container width */
+    }
+
+    .nav-link {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-navy);
+      padding: 10px 16px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link .arrow-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-right: 1.5px solid var(--color-muted);
+      border-bottom: 1.5px solid var(--color-muted);
+      transform: rotate(45deg);
+      transition: transform 0.25s ease;
+      margin-top: -3px;
+    }
+
+    .nav-list > li:hover .nav-link,
+    .nav-list > li.is-active .nav-link {
+      color: var(--color-blue);
+    }
+
+    .nav-list > li:hover .nav-link .arrow-indicator {
+      transform: rotate(225deg);
+      border-color: var(--color-blue);
+      margin-top: 3px;
+    }
+
+    /* Underline Animation (Manning Elliott signature) */
+    .hover-underline-animation {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hover-underline-animation::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--color-blue);
+      transform-origin: bottom right;
+      transition: transform 0.25s ease-out;
+    }
+
+    .hover-underline-animation:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+
+    /* ==========================================================================
+       MEGA MENU DROPDOWN (FULL-WIDTH 12-COLUMN MANNING ELLIOTT GRID)
+       ========================================================================== */
+    .mega-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 2px solid var(--color-border);
+      box-shadow: 0 25px 40px -10px rgba(4, 30, 66, 0.10);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility 0.24s;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    .nav-list > li:hover .mega-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .mega-dropdown-inner {
+      padding: 50px 40px 60px 40px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 40px;
+    }
+
+    /* Column 1: Context Anchor (4 of 12) */
+    .mega-col-anchor {
+      grid-column: span 4;
+      padding-right: 30px;
+      border-right: 1px solid var(--color-border-light);
+    }
+
+    .mega-title {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 400;
+      color: var(--color-navy);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .mega-subtitle {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--color-muted);
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .mega-view-all {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-blue);
+    }
+
+    /* Columns 2 & 3: Content Columns (4 of 12 each) */
+    .mega-col-content {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .mega-group-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-navy);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .mega-link-item {
+      display: block;
+      transition: var(--transition-editorial);
+    }
+
+    .mega-link-title {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-navy);
+      display: block;
+      line-height: 1.3;
+      transition: color 0.2s ease;
+    }
+
+    .mega-link-item:hover .mega-link-title {
+      color: var(--color-blue);
+    }
+
+    .mega-link-desc {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--color-muted);
+      line-height: 1.5;
+      margin-top: 3px;
+    }
+
+    /* Article Card in 'Thinking' Dropdown */
+    .mega-article-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .mega-article-thumb {
+      width: 72px;
+      height: 72px;
+      background: var(--color-linen);
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+
+    /* Right Search Bar (Manning Elliott Form) */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .search-bar form {
+      position: relative;
+    }
+
+    .search-input {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 9px 18px 9px 36px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background-color: transparent;
+      color: var(--color-navy);
+      width: 130px;
+      transition: width 0.3s ease, border-color 0.3s ease;
+      outline: none;
+    }
+
+    .search-input:focus {
+      width: 190px;
+      border-color: var(--color-blue);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      stroke: var(--color-muted);
+      stroke-width: 2;
+      fill: none;
+      pointer-events: none;
+    }
+
+    /* Mobile Toggle */
+    .mobile-menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-navy);
+    }
+
+    .mobile-menu-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* ==========================================================================
+       2. HERO SECTION (MANNING ELLIOTT EXACT LINEN STACKING HERO)
+       ========================================================================== */
+    .hero-linen {
+      margin-top: var(--header-total-height);
+      background-color: var(--color-linen);
+      min-height: calc(100vh - var(--header-total-height));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 40px 100px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-text-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Eyebrow */
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-blue);
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    /* Giant Headline h1.xl (Manning Elliott 80px - 160px) */
+    h1.xl {
+      font-family: var(--font-serif);
+      font-size: clamp(54px, 8.5vw, 128px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--color-navy);
+      margin-bottom: 32px;
+    }
+
+    h1.xl .line-wrapper {
+      overflow: hidden;
+      display: block;
+    }
+
+    h1.xl .indent {
+      display: inline-block;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-description {
+      font-family: var(--font-sans);
+      font-size: clamp(16px, 1.8vw, 21px);
+      font-weight: 400;
+      line-height: 1.65;
+      color: var(--color-muted);
+      max-width: 780px;
+      margin: 0 auto 42px auto;
+    }
+
+    /* Clean Editorial CTAs */
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-manning-primary {
+      background-color: var(--color-navy);
+      color: var(--color-white);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 16px 32px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition-editorial);
+    }
+
+    .btn-manning-primary:hover {
+      background-color: var(--color-blue);
+      transform: translateY(-2px);
+    }
+
+    .btn-manning-secondary {
+      background-color: transparent;
+      color: var(--color-navy);
+      border: 1px solid var(--color-navy);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 16px 30px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-editorial);
+    }
+
+    .btn-manning-secondary:hover {
+      background-color: var(--color-white);
+      border-color: var(--color-blue);
+      color: var(--color-blue);
+    }
+
+    /* Numbers Strip (Manning Elliott Stats Block) */
+    .hero-stats-bar {
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(4, 30, 66, 0.12);
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      text-align: left;
+    }
+
+    .stat-item {
+      padding: 10px 0;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 400;
+      color: var(--color-navy);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--color-muted);
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-navigation { display: none; }
+      .mobile-menu-btn { display: flex; }
+      .search-bar { display: none; }
+      .secondary-creds { font-size: 10px; }
+      .hero-stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .secondary-header { display: none; }
+      --header-total-height: 78px;
+      .wrap { padding: 0 20px; }
+      .hero-stats-bar { grid-template-columns: 1fr; }
+      h1.xl { font-size: 44px; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .btn-manning-primary, .btn-manning-secondary { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. FIXED HEADER (MANNING ELLIOTT PROPORTIONS & ARCHITECTURE)
+       ========================================================================== -->
+  <header class="header" id="master-header">
+    
+    <!-- Secondary Cerulean Blue Bar -->
+    <div class="secondary-header">
+      <div class="wrap">
+        <div class="secondary-creds">
+          <span>CRC-PR PR-000834/O</span>
+          <span class="bullet">•</span>
+          <span>CNPJ 79.152.401/0001-17</span>
+          <span class="bullet">•</span>
+          <span>Maringá - PR (Zona 07)</span>
+        </div>
+        <ul class="secondary-nav">
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#contato">Contato</a></li>
+          <li><a href="#portal" class="hover-underline-animation">Portal do Cliente</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Inner Main Header -->
+    <div id="inner-header">
+      <div class="wrap">
+        
+        <!-- Logo -->
+        <a href="#" class="logo-container">
+          <div class="logo-mark">SP</div>
+          <div class="logo-text-group">
+            <span class="logo-brand-name">ESCRITÓRIO SÃO PAULO</span>
+            <span class="logo-brand-tagline">Chartered Accounting & Advisory • 1967</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation (Manning Elliott 12-Col Dropdown Pattern) -->
+        <nav class="main-navigation" aria-label="Menu Principal">
+          <ul class="nav-list">
+            
+            <!-- 1. PEOPLE (Equipe & Sócios) -->
+            <li>
+              <a href="#people" class="nav-link">
+                People
+                <span class="arrow-indicator"></span>
+              </a>
+              <div class="mega-dropdown">
+                <div class="wrap">
+                  <div class="mega-dropdown-inner">
+                    <div class="mega-col-anchor">
+                      <h4 class="mega-title">People</h4>
+                      <p class="mega-subtitle">Meet our team of chartered accountants and senior tax advisors based in Maringá.</p>
+                      <a href="#people" class="mega-view-all hover-underline-animation">View All Partners & Principals →</a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Liderança Contábil</div>
+                      <a href="#socios" class="mega-link-item">
+                        <span class="mega-link-title">Sócios Contadores Sênior</span>
+                        <span class="mega-link-desc">Registro ativo no CRC-PR e mais de 30 anos de prática contábil.</span>
+                      </a>
+                      <a href="#tributario" class="mega-link-item">
+                        <span class="mega-link-title">Especialistas Tributários</span>
+                        <span class="mega-link-desc">Planejamento fiscal estratégico para redução de tributos dentro da lei.</span>
+                      </a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Corpo Operacional</div>
+                      <a href="#dp" class="mega-link-item">
+                        <span class="mega-link-title">Departamento Pessoal & RH</span>
+                        <span class="mega-link-desc">eSocial, convenções coletivas e blindagem jurídica trabalhista.</span>
+                      </a>
+                      <a href="#societario" class="mega-link-item">
+                        <span class="mega-link-title">Societário & Legalização</span>
+                        <span class="mega-link-desc">Alvarás de funcionamento perante a Prefeitura de Maringá e Jucepar.</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- 2. SERVICES (Serviços) -->
+            <li>
+              <a href="#services" class="nav-link">
+                Services
+                <span class="arrow-indicator"></span>
+              </a>
+              <div class="mega-dropdown">
+                <div class="wrap">
+                  <div class="mega-dropdown-inner">
+                    <div class="mega-col-anchor">
+                      <h4 class="mega-title">Services</h4>
+                      <p class="mega-subtitle">Tax, audit, accounting & business advisory services tailored for growth.</p>
+                      <a href="#services" class="mega-view-all hover-underline-animation">View All Services →</a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Abertura & Transição</div>
+                      <a href="#abertura" class="mega-link-item">
+                        <span class="mega-link-title">Abertura de Empresas</span>
+                        <span class="mega-link-desc">Constituição societária, enquadramento ótimo e CNPJ ágil.</span>
+                      </a>
+                      <a href="#troca-contador" class="mega-link-item">
+                        <span class="mega-link-title">Troca de Contador Sem Complicação</span>
+                        <span class="mega-link-desc">Assumimos todo o processo de transição com seu antigo escritório.</span>
+                      </a>
+                      <a href="#migracao-mei" class="mega-link-item">
+                        <span class="mega-link-title">Migração do MEI para ME</span>
+                        <span class="mega-link-desc">Desenquadramento seguro para empresas em expansão de faturamento.</span>
+                      </a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Gestão Contínua</div>
+                      <a href="#fiscal" class="mega-link-item">
+                        <span class="mega-link-title">Gestão Fiscal & Tributária</span>
+                        <span class="mega-link-desc">Simples Nacional, Lucro Presumido e Lucro Real com elisão fiscal.</span>
+                      </a>
+                      <a href="#bpo" class="mega-link-item">
+                        <span class="mega-link-title">BPO Financeiro</span>
+                        <span class="mega-link-desc">Conciliação, relatórios gerenciais e gestão de contas sob medida.</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- 3. INDUSTRIES (Setores) -->
+            <li>
+              <a href="#industries" class="nav-link">
+                Industries
+                <span class="arrow-indicator"></span>
+              </a>
+              <div class="mega-dropdown">
+                <div class="wrap">
+                  <div class="mega-dropdown-inner">
+                    <div class="mega-col-anchor">
+                      <h4 class="mega-title">Industries</h4>
+                      <p class="mega-subtitle">Specialized knowledge spanning a range of strategic business sectors.</p>
+                      <a href="#industries" class="mega-view-all hover-underline-animation">View All Industries →</a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Serviços Especializados</div>
+                      <a href="#saude" class="mega-link-item">
+                        <span class="mega-link-title">Médicos & Clínicas de Saúde</span>
+                        <span class="mega-link-desc">Equiparação hospitalar e aproveitamento de alíquotas reduzidas.</span>
+                      </a>
+                      <a href="#tecnologia" class="mega-link-item">
+                        <span class="mega-link-title">Tecnologia, Devs & Startups</span>
+                        <span class="mega-link-desc">Enquadramento no Fator R (6%) e remessas internacionais de divisas.</span>
+                      </a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Comércio & Construção</div>
+                      <a href="#comercio" class="mega-link-item">
+                        <span class="mega-link-title">Comércio & Varejo em Maringá</span>
+                        <span class="mega-link-desc">Planejamento de ICMS, substituição tributária e notas eletrônicas.</span>
+                      </a>
+                      <a href="#construcao" class="mega-link-item">
+                        <span class="mega-link-title">Construção Civil & SPEs</span>
+                        <span class="mega-link-desc">Regime Especial de Tributação (RET) e escrituração de incorporações.</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- 4. THINKING (Inteligência & Artigos) -->
+            <li>
+              <a href="#thinking" class="nav-link">
+                Thinking
+                <span class="arrow-indicator"></span>
+              </a>
+              <div class="mega-dropdown">
+                <div class="wrap">
+                  <div class="mega-dropdown-inner">
+                    <div class="mega-col-anchor">
+                      <h4 class="mega-title">Thinking</h4>
+                      <p class="mega-subtitle">Expertise, fiscal guidance & strategic insights to help your business succeed.</p>
+                      <a href="#thinking" class="mega-view-all hover-underline-animation">View All Thinking & Insights →</a>
+                    </div>
+                    <div class="mega-col-content" style="grid-column: span 8; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                      <a href="#artigo-mei" class="mega-article-item">
+                        <div class="mega-article-thumb">GUIAS</div>
+                        <div>
+                          <span class="mega-link-title">Perdão de Dívidas e Regularização do MEI</span>
+                          <span class="mega-link-desc">Equipe Técnica — Atualizado 2026</span>
+                        </div>
+                      </a>
+                      <a href="#artigo-alvara" class="mega-article-item">
+                        <div class="mega-article-thumb">LEGAL</div>
+                        <div>
+                          <span class="mega-link-title">Alvará de Funcionamento em Maringá: Guia Completo</span>
+                          <span class="mega-link-desc">Consultoria Societária — Atualizado 2026</span>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- 5. CAREERS / SOBRE (57 Anos) -->
+            <li>
+              <a href="#careers" class="nav-link">
+                Careers & About
+                <span class="arrow-indicator"></span>
+              </a>
+              <div class="mega-dropdown">
+                <div class="wrap">
+                  <div class="mega-dropdown-inner">
+                    <div class="mega-col-anchor">
+                      <h4 class="mega-title">About Us</h4>
+                      <p class="mega-subtitle">Building the financial foundations of Maringá since 1967.</p>
+                      <a href="#historia" class="mega-view-all hover-underline-animation">Our 57-Year Journey →</a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Nossa Tradição</div>
+                      <a href="#fundacao" class="mega-link-item">
+                        <span class="mega-link-title">Fundado em 1967</span>
+                        <span class="mega-link-desc">Quase seis décadas de solidez, confiança e integridade ética.</span>
+                      </a>
+                      <a href="#sede" class="mega-link-item">
+                        <span class="mega-link-title">Sede Própria na Zona 07</span>
+                        <span class="mega-link-desc">Rua São João, 515 — estrutura física e acolhimento humano.</span>
+                      </a>
+                    </div>
+                    <div class="mega-col-content">
+                      <div class="mega-group-title">Compromisso</div>
+                      <a href="#reviews" class="mega-link-item">
+                        <span class="mega-link-title">Avaliações 5.0 no Google</span>
+                        <span class="mega-link-desc">Reconhecimento comprovado de empresários e gestores da região.</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </nav>
+
+        <!-- Right Header Elements: Search Bar -->
+        <div class="header-right">
+          <div class="search-bar">
+            <form action="#" method="get">
+              <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" class="search-input" placeholder="SEARCH" autocomplete="off">
+            </form>
+          </div>
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu Mobile">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. HERO SECTION (MANNING ELLIOTT EXACT LINEN STACKED HERO)
+       ========================================================================== -->
+  <main>
+    <section class="hero-linen">
+      <div class="hero-text-wrap">
+        
+        <p class="hero-eyebrow">Escritório de Contabilidade São Paulo llp</p>
+        
+        <h1 class="xl">
+          <span class="line-wrapper"><span class="indent">Muito mais</span></span>
+          <span class="line-wrapper"><span class="indent">que contabilidade.</span></span>
+        </h1>
+
+        <p class="hero-description">
+          Somos parceiros estratégicos dos negócios que constroem a história de Maringá. Da abertura ágil à consultoria tributária de alta precisão, cuidamos dos seus números para que você cuide do seu crescimento.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contato" class="btn-manning-primary">
+            Falar com um Sócio Especialista
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          </a>
+          <a href="#services" class="btn-manning-secondary">
+            Conhecer Nossos Serviços
+          </a>
+        </div>
+
+        <!-- Metric Bar matching Manning Elliott's stats format -->
+        <div class="hero-stats-bar">
+          <div class="stat-item">
+            <div class="stat-number">57+</div>
+            <div class="stat-label">ANOS DE ATUAÇÃO ININTERRUPTA EM MARINGÁ</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">CRC-PR</div>
+            <div class="stat-label">REGISTRO OFICIAL ATIVO PR-000834/O</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">5.0 ★</div>
+            <div class="stat-label">AVALIAÇÃO MÁXIMA GOOGLE REVIEWS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">ATENDIMENTO HUMANO E CONSULTIVO</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Header Scroll Shadow
+    window.addEventListener('scroll', function() {
+      var h = document.getElementById('master-header');
+      if (window.scrollY > 20) {
+        h.classList.add('is-scrolled');
+      } else {
+        h.classList.remove('is-scrolled');
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
