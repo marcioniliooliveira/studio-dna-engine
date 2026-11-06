@@ -1,8 +1,22 @@
 {
-  "timestamp": "2026-08-28T19:02:48.358Z",
+  "timestamp": "2026-08-30T18:40:50.803Z",
   "clientSlug": "piloto-elyse-luxe",
   "passed": true,
-  "status": "verified",
+  "status": "candidate",
+  "assessments": {
+    "visualRegression": {
+      "status": "unverified",
+      "reason": "Nenhuma comparação com runtime baseline foi executada."
+    },
+    "accessibility": {
+      "status": "unverified",
+      "reason": "Nenhuma auditoria de acessibilidade executável foi configurada."
+    },
+    "performance": {
+      "status": "unverified",
+      "reason": "Nenhum budget de performance reproduzível foi configurado."
+    }
+  },
   "gates": {
     "antiSlop": {
       "passed": true,
@@ -34,6 +48,6 @@
   },
   "artifacts": {
     "htmlPath": "clientes/piloto-elyse-luxe/site/index.html",
-    "screenshotPath": "clientes/piloto-elyse-luxe/qa-reports/verified-golden-preview.png"
+    "runtimeBaselinePath": "clientes/piloto-elyse-luxe/qa-reports/runtime-baseline.png"
   }
 }
