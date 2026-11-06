@@ -1,0 +1,665 @@
+{
+  "timestamp": "2026-10-23T16:03:19.969Z",
+  "ci_test_scripts": [
+    {
+      "name": "test",
+      "cmd": "npm run test:all"
+    },
+    {
+      "name": "test:low-spec",
+      "cmd": "node scripts/run-low-spec-gate.js"
+    },
+    {
+      "name": "test:milestones",
+      "cmd": "node --test --test-concurrency=1 test/m1-cdp-decompiler.test.js test/m2-kinetic-trajectory.test.js test/m3-assets3d-pipeline.test.js test/m4-compiler-dualstack.test.js"
+    },
+    {
+      "name": "test:stress",
+      "cmd": "node --test test/stress/adverse-hardware-stress.test.js"
+    },
+    {
+      "name": "test:v2.5",
+      "cmd": "node --test test/m1-impeccable-sanitization.test.js test/m2-fsm-forms.test.js test/m3-spring-dynamics.test.js test/m4-gpu-saliency.test.js test/stress/adverse-hardware-stress.test.js"
+    },
+    {
+      "name": "test:e2e",
+      "cmd": "node --test --test-concurrency=1 test/e2e/*.test.js"
+    },
+    {
+      "name": "test:all",
+      "cmd": "node --test --test-concurrency=1 test/m1-cdp-decompiler.test.js test/m2-kinetic-trajectory.test.js test/m3-assets3d-pipeline.test.js test/m4-compiler-dualstack.test.js test/e2e/*.test.js"
+    },
+    {
+      "name": "test:mcp",
+      "cmd": "node --test test/mcp-server.test.js test/mcp-http-server.test.js"
+    },
+    {
+      "name": "test:falsifiability",
+      "cmd": "node --test test/deep-scrutiny-falsifiability.test.js"
+    },
+    {
+      "name": "test:components",
+      "cmd": "node --test --test-concurrency=1 test/components/*.test.js"
+    },
+    {
+      "name": "test:workstage",
+      "cmd": "vitest run src/components/WorkStage/__tests__/math.spec.ts && playwright test tests/e2e/work-stage.spec.ts tests/e2e/challenger-viewport.spec.ts"
+    }
+  ],
+  "discovered_test_files_count": 108,
+  "discovered_files": [
+    {
+      "file": "test/assets3d/shader-slicer.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/ast-injector-cardinality.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/blueprint.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger-adversarial-m5.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger-adversarial-mcp.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger-v25-2-stress.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger2-adversarial-coverage.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger2-concurrency-stress.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/challenger2-stdio-integrity.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/components/card-hover.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/form-security.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/heading-3d.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/hero-a2-approved.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/hero-motion.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/jumpflex-transmutation.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/language-corpus.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/modal-lifecycle.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/scalex-interactions.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/components/tabs-reactive.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:components"
+      ]
+    },
+    {
+      "file": "test/constraint-engine.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/dag-scheduler.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/deep-scrutiny-falsifiability.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:falsifiability"
+      ]
+    },
+    {
+      "file": "test/dna-ir-schema.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/dual-gradient-sync.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/e2e/chat-orb-pipeline.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/e2e/tier1-feature-coverage.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/e2e/tier2-boundary-corner.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/e2e/tier3-pairwise-combinations.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/e2e/tier4-realworld-scenarios.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/e2e/useplanes-site-functional.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:e2e",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/execution-ledger.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/executor-adapter.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/gemini-adapter.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/gemini-ide-adapter.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/governance-and-sandbox.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/hud-ergonomics-and-export.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/hud-schema-projection.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/icm-context-router.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/importmap-and-resilience-normalizer.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/jesperlandberg-pipeline.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/kinetic/bezier-fitter.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/kinetic-telemetry-extractor.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/m1-cdp-decompiler.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:milestones",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/m1-impeccable-sanitization.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:v2.5"
+      ]
+    },
+    {
+      "file": "test/m2-fsm-forms.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:v2.5"
+      ]
+    },
+    {
+      "file": "test/m2-kinetic-trajectory.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:milestones",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/m3-assets3d-pipeline.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:milestones",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/m3-spring-dynamics.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:v2.5"
+      ]
+    },
+    {
+      "file": "test/m4-compiler-dualstack.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:milestones",
+        "test:all"
+      ]
+    },
+    {
+      "file": "test/m4-gpu-saliency.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:v2.5"
+      ]
+    },
+    {
+      "file": "test/mcp-http-server.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:mcp"
+      ]
+    },
+    {
+      "file": "test/mcp-server.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:mcp"
+      ]
+    },
+    {
+      "file": "test/morph-text-transition.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/negocia-bem-data-region.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/negocia-bem-regression.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/negocia-bem-scroll-integrity.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/negocia-bem-shell-adaptation.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/negocia-bem.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/opxy-presets-e2e.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/opxy-scroll-dynamics-e2e.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/physics/inverse-system-id.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/pipeline-runner.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/preview-server.integration.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/public-api.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/real-estate-demos.browser.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/real-estate-demos.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/remote-asset-security.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/scalex-runtime-artifact.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/scalex-ui-refinement.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/scroll-resilience-runtime.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/server-security.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/silvio-iwata-visual.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/sticky-scroll-integrity.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/stress/adverse-hardware-stress.test.js",
+      "runner": "node:test",
+      "matching_scripts": [
+        "test:stress",
+        "test:v2.5"
+      ]
+    },
+    {
+      "file": "test/stress/challenger-empirical.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/task-contract-v2.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/task-contract.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/transactional-mutation-resolver.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/transmuter-and-anti-slop.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/triangulated-audit-engine.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/ui-library-registry.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/unified-quality-gate.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/universal-container-unwrapper.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2-endpoints.integration.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/apca-contrast.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/challenger-adversarial-v26.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/challenger2-adversarial-stress.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/css-selector-ast.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/ndc-projection.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/png-codec.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/scrollbus-phase.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/slug-font-compiler.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/v2.6/spatial-rtree.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/vault-integrity.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/visual-critic-and-refinement.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "test/workflow-orchestrator.test.js",
+      "runner": "node:test",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-1600x900.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-adversarial-m5.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-diag.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-header-diag.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-probe.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-race-verify.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/challenger-viewport.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": [
+        "test:workstage"
+      ]
+    },
+    {
+      "file": "tests/e2e/inspect-geometry.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/test-hang-isolation.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": []
+    },
+    {
+      "file": "tests/e2e/work-stage.spec.ts",
+      "runner": "playwright",
+      "matching_scripts": [
+        "test:workstage"
+      ]
+    },
+    {
+      "file": "src/components/WorkStage/__tests__/adversarial-math.spec.ts",
+      "runner": "vitest",
+      "matching_scripts": []
+    },
+    {
+      "file": "src/components/WorkStage/__tests__/math.spec.ts",
+      "runner": "vitest",
+      "matching_scripts": [
+        "test:workstage"
+      ]
+    }
+  ]
+}

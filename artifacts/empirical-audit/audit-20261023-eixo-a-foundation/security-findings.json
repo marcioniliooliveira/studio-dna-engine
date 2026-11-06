@@ -1,0 +1,67 @@
+{
+  "timestamp": "2026-10-23T16:14:05.976Z",
+  "findings_count": 5,
+  "findings": [
+    {
+      "finding_id": "SEC-001-DAG-LOCK-DIRECTORY-BYPASS",
+      "severity": "HIGH",
+      "component": "dag-scheduler.js",
+      "description": "pathsIntersect falha em detectar conflito entre pasta base (src/components) e arquivo filho (src/components/button.js) quando não termina explicitamente com /* ou /**.",
+      "evidence": {
+        "scheduled_concurrently": [
+          "task-a",
+          "task-b"
+        ]
+      },
+      "status": "observed"
+    },
+    {
+      "finding_id": "SEC-002-DAG-LOCK-TRAVERSAL-EQUIVALENCE",
+      "severity": "MEDIUM",
+      "component": "dag-scheduler.js",
+      "description": "pathsIntersect não normaliza segmentos relativos (../), permitindo que dois caminhos equivalentes não colidam e sejam executados em paralelo.",
+      "evidence": {
+        "scheduled_concurrently": [
+          "task-x",
+          "task-y"
+        ]
+      },
+      "status": "observed"
+    },
+    {
+      "finding_id": "SEC-003-BLUEPRINT-CONTRACT-DISCONNECT",
+      "severity": "HIGH",
+      "component": "blueprint.js vs task-contract-v2.js",
+      "description": "validateBlueprint aceita tarefas desprovidas das garantias de task-contract-v2 (sem readAllowlist, sem networkPolicy, sem requiredVerifierRole).",
+      "evidence": {
+        "blueprint_accepted": true,
+        "task_contract_v2_accepted": false
+      },
+      "status": "observed"
+    },
+    {
+      "finding_id": "SEC-004-EXECUTOR-NO-RUNTIME-SANDBOX",
+      "severity": "HIGH",
+      "component": "executor-adapter.js",
+      "description": "createExecutor não aplica sandboxing, chroot, isolamento de processo ou proxy de interceptação de chamadas. Toda imposição de permissão é dependente do código do invoke.",
+      "evidence": {
+        "rogue_invoke_executed": true,
+        "enforced_by_adapter": false
+      },
+      "status": "observed"
+    },
+    {
+      "finding_id": "SEC-005-ORCHESTRATOR-CLI-UNAUTHENTICATED-APPROVAL",
+      "severity": "CRITICAL",
+      "component": "bin/orchestrator.js",
+      "description": "bin/orchestrator.js permite aprovação de runs sem autenticação de identidade, sem conferência de commit SHA e sem validação criptográfica dos hashes de artefatos.",
+      "evidence": {
+        "status_before": "planned",
+        "status_after": "approved",
+        "identity_required": false,
+        "artifact_hash_verified": false
+      },
+      "status": "observed"
+    }
+  ]
+}

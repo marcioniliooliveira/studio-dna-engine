@@ -1,0 +1,45 @@
+{
+  "run_id": "audit-20261023-eixo-a-foundation",
+  "repository": "marcioniliooliveira/studio-dna-engine",
+  "branch": "integration/v2-dna-orchestrator",
+  "commit_sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+  "working_tree_clean": false,
+  "lockfile_sha256": "3c5c55e478e25509127ef9cc2320c4e2728784c8947b735530de6239df3f1a5b",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "type": "Windows_NT",
+    "arch": "x64",
+    "cpus": 16,
+    "cpu_model": "Intel(R) Core(TM) 7 240H",
+    "total_memory_gb": "33.97",
+    "free_memory_gb": "4.32"
+  },
+  "test_plan_version": "1.0",
+  "artifacts": [
+    "environment.json",
+    "branches.json",
+    "dependency-audit.json",
+    "baseline-summary.json",
+    "test-inventory.json",
+    "test-discovery.json",
+    "ci-coverage-map.csv",
+    "orphaned-suites.json",
+    "flakiness.csv",
+    "mutation-report.json",
+    "surviving-mutants.json",
+    "policy-decisions.jsonl",
+    "task-ledger.jsonl",
+    "security-findings.json",
+    "approval-audit.jsonl",
+    "race-report.json"
+  ],
+  "certification": "EXPERIMENTAL_FAILURES_DETECTED",
+  "findings_summary": {
+    "orphaned_test_suites": 77,
+    "ci_executed_suites": 10,
+    "mutation_score_percent": 0,
+    "surviving_mutants": 3,
+    "security_vulnerabilities_observed": 5
+  }
+}
