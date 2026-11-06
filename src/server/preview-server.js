@@ -10,6 +10,8 @@ const { handleV2Orchestrate } = require('./routes/v2-orchestrate');
 const { handleV2Vault } = require('./routes/v2-vault');
 const { handleV2Review } = require('./routes/v2-review');
 const { handleV2Audit } = require('./routes/v2-audit');
+const { handleV3Persistence } = require('./routes/v3-persistence');
+const HybridRepository = require('../persistence/hybrid-repository');
 const {
   resolveStaticPath,
   assertSafeExternalUrl,
@@ -528,6 +530,14 @@ function startPreviewServer(options = {}) {
   if (!fs.existsSync(copiasDir)) fs.mkdirSync(copiasDir, { recursive: true });
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
 
+  const hybridRepo = opts.hybridRepo || new HybridRepository({
+    dbPath: opts.dbPath || path.join(rootDir, 'data/studio_dna.db'),
+    docBasePath: opts.docBasePath || path.join(rootDir, 'data/documents')
+  });
+  hybridRepo.init().catch(err => {
+    if (!opts.silent) console.error('Failed to initialize HybridRepository:', err);
+  });
+
   const server = http.createServer(async (req, res) => {
     // CORS preflight
     if (req.method === 'OPTIONS') {
@@ -747,12 +757,13 @@ function startPreviewServer(options = {}) {
       return;
     }
 
-    // ── Rotas V2 da Arquitetura de Orquestração & Auditoria ─────────────────
-    const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, maxBodyBytes: opts.maxBodyBytes };
+    // ── Rotas V2 & V3 da Arquitetura de Orquestração, Persistência & Auditoria ─
+    const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, hybridRepo, urlObj, maxBodyBytes: opts.maxBodyBytes };
     if (await handleV2Orchestrate(req, res, pathname, routeOpts)) return;
     if (await handleV2Vault(req, res, pathname, routeOpts)) return;
     if (await handleV2Review(req, res, pathname, routeOpts)) return;
     if (await handleV2Audit(req, res, pathname, routeOpts)) return;
+    if (await handleV3Persistence(req, res, pathname, routeOpts)) return;
 
     // ── API: Iniciar Extração ──────────────────────────────────────────────
     if (pathname === '/api/extract' && req.method === 'POST') {
@@ -1174,6 +1185,11 @@ function startPreviewServer(options = {}) {
     const activePort = server.address().port;
     console.log('\n👁️  [STUDIO DNA PRO v2.0] Servidor rodando em: \x1b[36mhttp://127.0.0.1:' + activePort + '\x1b[0m e \x1b[36mhttp://localhost:' + activePort + '\x1b[0m');
     console.log('📁  Servindo: ' + copiasDir + ' e ' + clientesDir + '\n');
+  });
+
+  server.hybridRepo = hybridRepo;
+  server.on('close', () => {
+    try { hybridRepo.close(); } catch (_) {}
   });
 
   return server;
