@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silvio Iwata Imobiliária · Seção 06: The Dark Vault (Scroll-Driven Timeline 1978–2026)</title>
+
+  <!-- Fontes Oficiais P0 (Instrument Serif + DM Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       LOCK DNA P0 — SILVIO IWATA IMOBILIÁRIA (MARINGÁ / PR)
+       Variante 02 Consolidada: "The Dark Vault" com Scroll-Driven Timeline (Lerp 60fps)
+       ========================================================================== */
+    :root {
+      /* Tokens P0 Inegociáveis */
+      --bg-sand: #F4F1E8;
+      --bg-sand-elevated: #FAF8F3;
+      --bg-forest: #0B2A1A;
+      --bg-forest-deep: #071D12;
+      --bg-forest-card: #0F3522;
+      --brand-primary: #055227;
+      --brand-deep: #005023;
+      --accent-lime: #A6C83A;
+      --accent-lime-soft: rgba(166, 200, 58, 0.16);
+      --text-ink: #0D0F14;
+      --text-white: #FFFFFF;
+      --text-muted: #6B7A6E;
+      --text-muted-light: #9BA89E;
+
+      /* Bordas Arquitetônicas */
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --border-dark-subtle: rgba(255, 255, 255, 0.07);
+      --border-lime: rgba(166, 200, 58, 0.38);
+
+      /* Tipografia P0 */
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Curvas Cinematográficas */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-forest-deep);
+      color: var(--bg-sand);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button {
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    /* ==========================================================================
+       HUD FLUTUANTE DE TELEMETRIA DE SCROLL (PARA TESTE E NAVEGAÇÃO RÁPIDA)
+       ========================================================================== */
+    .scroll-telemetry-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(7, 29, 18, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .telemetry-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .telemetry-badge-s {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bg-sand);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .telemetry-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg-sand);
+    }
+
+    .telemetry-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--accent-lime-soft);
+      border: 1px solid var(--border-lime);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .telemetry-quick-jumps {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .jump-chip {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-dark);
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted-light);
+      font-variant-numeric: tabular-nums;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .jump-chip:hover,
+    .jump-chip.is-active {
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      border-color: var(--accent-lime);
+    }
+
+    /* ==========================================================================
+       BLOCO DE TRANSIÇÃO SUPERIOR (SIMULANDO SAÍDA DA SEÇÃO 05 PARA TESTAR SCROLL)
+       ========================================================================== */
+    .context-lead-in {
+      min-height: 42vh;
+      background: linear-gradient(180deg, var(--bg-sand) 0%, #E5E0D2 65%, var(--bg-forest) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 84px 24px 48px;
+      color: var(--text-ink);
+      position: relative;
+    }
+
+    .lead-in-card {
+      background: rgba(244, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(5, 82, 39, 0.18);
+      padding: 24px 36px;
+      border-radius: 20px;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 20px 50px rgba(11, 42, 26, 0.12);
+    }
+
+    .lead-in-eyebrow {
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .lead-in-title {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 400;
+      color: var(--text-ink);
+    }
+
+    .lead-in-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .scroll-cue-mouse {
+      margin-top: 8px;
+      width: 22px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1.5px solid var(--brand-primary);
+      display: flex;
+      justify-content: center;
+      padding-top: 6px;
+    }
+
+    .scroll-cue-wheel {
+      width: 3px;
+      height: 7px;
+      border-radius: 2px;
+      background: var(--brand-primary);
+      animation: scrollWheel 1.6s var(--ease-out-expo) infinite;
+    }
+
+    @keyframes scrollWheel {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(11px); opacity: 0; }
+    }
+
+    /* ==========================================================================
+       SEÇÃO 06: THE DARK VAULT — ARQUITETURA STICKY SCROLL-SCRUBBING (380VH)
+       ========================================================================== */
+    .v2-scroll-track {
+      position: relative;
+      /* 380vh cria a pista de rolagem ideal para percorrer os 4 marcos com fluidez */
+      height: 380vh;
+      background-color: var(--bg-forest);
+    }
+
+    .v2-sticky-viewport {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      min-height: 700px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 76px 48px 36px;
+      background: radial-gradient(circle at 82% 22%, rgba(5, 82, 39, 0.28) 0%, rgba(11, 42, 26, 1) 62%);
+    }
+
+    /* Linhas Arquitetônicas Subtis de Fundo */
+    .v2-arch-grid-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 25% 33.33%;
+      z-index: 1;
+    }
+
+    /* Watermark Dinâmico que Interpola o Ano Conforme o Scroll (1978 -> 2026) */
+    .v2-scroll-watermark {
+      position: absolute;
+      right: 3%;
+      top: 50%;
+      transform: translate3d(0, calc(-50% + var(--watermark-y, 0px)), 0);
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(11rem, 23vw, 24rem);
+      line-height: 0.8;
+      color: rgba(255, 255, 255, 0.035);
+      pointer-events: none;
+      user-select: none;
+      z-index: 2;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      will-change: transform;
+    }
+
+    /* Indicador Vertical Lateral de Progresso do Scroll */
+    .v2-side-scroll-rail {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    .side-rail-year {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent-lime);
+      writing-mode: vertical-rl;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .side-rail-bar {
+      width: 2px;
+      height: 110px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .side-rail-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-lime);
+      transform-origin: top center;
+      transform: scaleY(var(--total-progress, 0));
+      will-change: transform;
+    }
+
+    .v2-container {
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Cabeçalho da Seção */
+    .v2-header-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border-dark);
+      flex-wrap: wrap;
+    }
+
+    .v2-title-group {
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .v2-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+    }
+
+    .v2-headline {
+      font-size: clamp(2.1rem, 3.6vw, 3.35rem);
+      font-weight: 400;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text-white);
+    }
+
+    .v2-headline em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--accent-lime);
+    }
+
+    .v2-creci-badge {
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .v2-creci-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      box-shadow: 0 0 0 4px rgba(166, 200, 58, 0.18);
+    }
+
+    .v2-creci-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--bg-sand);
+    }
+
+    /* ==========================================================================
+       TRILHO DE ANOS ATRELADO AO SCROLL (PROGRESSÃO CONTÍNUA 1978 -> 2026)
+       ========================================================================== */
+    .v2-timeline-rail {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .v2-era-node {
+      padding-top: 18px;
+      text-align: left;
+      position: relative;
+      cursor: pointer;
+      transition: opacity 0.35s var(--ease-out-expo);
+    }
+
+    /* Trilha base de cada quarto do scroll */
+    .era-progress-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    /* Preenchimento fluido controlado diretamente pelo progresso do scroll */
+    .era-progress-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-lime);
+      transform-origin: left center;
+      transform: scaleX(var(--seg-progress, 0));
+      will-change: transform;
+    }
+
+    /* Ponto luminoso que acende quando o ano está ativo */
+    .era-node-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .v2-era-year {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(2rem, 2.8vw, 2.65rem);
+      line-height: 1;
+      color: rgba(244, 241, 232, 0.32);
+      display: inline-block;
+      transition: color 0.35s var(--ease-out-expo),
+                  transform 0.35s var(--ease-spring);
+      transform-origin: left bottom;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .v2-era-node.is-passed .v2-era-year {
+      color: rgba(244, 241, 232, 0.70);
+    }
+
+    .v2-era-node.is-active .v2-era-year {
+      color: var(--accent-lime);
+      transform: scale(1.08);
+    }
+
+    .era-step-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 232, 0.35);
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s ease;
+    }
+
+    .v2-era-node.is-active .era-step-badge {
+      color: var(--accent-lime);
+    }
+
+    .v2-era-title {
+      font-size: 0.80rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 232, 0.48);
+      display: block;
+      transition: color 0.3s ease;
+    }
+
+    .v2-era-node.is-active .v2-era-title {
+      color: var(--text-white);
+    }
+
+    /* ==========================================================================
+       PALCO DE EXPOSIÇÃO MULTICAMADA (CROSSFADE + PARALLAX FÍSICO POR SCROLL)
+       ========================================================================== */
+    .v2-era-stage-deck {
+      position: relative;
+      min-height: 310px;
+      border-radius: 22px;
+      background: rgba(15, 53, 34, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-dark);
+      overflow: hidden;
+      box-shadow: 0 28px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    /* Barra fina contínua no topo do card acompanhando 0-100% da linha do tempo */
+    .v2-deck-master-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      z-index: 10;
+    }
+
+    .v2-deck-master-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand-primary), var(--accent-lime));
+      transform-origin: left center;
+      transform: scaleX(var(--total-progress, 0));
+      will-change: transform;
+    }
+
+    /* Cada um dos 4 slides habita o mesmo palco e transiciona com física suave */
+    .v2-era-slide {
+      position: absolute;
+      inset: 0;
+      padding: 40px 46px;
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 48px;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(0, 28px, 0) scale(0.985);
+      filter: blur(6px);
+      transition: opacity 0.6s var(--ease-out-expo),
+                  transform 0.65s var(--ease-spring),
+                  filter 0.55s var(--ease-out-expo);
+      will-change: opacity, transform, filter;
+    }
+
+    .v2-era-slide.is-previous {
+      opacity: 0;
+      transform: translate3d(0, -28px, 0) scale(0.985);
+      filter: blur(6px);
+    }
+
+    .v2-era-slide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0px);
+    }
+
+    /* Coluna Esquerda do Slide: Narrativa com Stagger Interno */
+    .v2-era-narrative {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .v2-era-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .v2-era-tag {
+      font-size: 0.71rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: rgba(166, 200, 58, 0.12);
+      border: 1px solid rgba(166, 200, 58, 0.28);
+    }
+
+    .v2-era-urban-context {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-muted-light);
+      text-transform: uppercase;
+    }
+
+    .v2-era-heading {
+      font-size: clamp(1.55rem, 2.35vw, 2.15rem);
+      font-weight: 400;
+      color: var(--text-white);
+      line-height: 1.16;
+      letter-spacing: -0.01em;
+    }
+
+    .v2-era-heading em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--accent-lime);
+      font-size: 1.08em;
+    }
+
+    .v2-era-desc {
+      font-size: 0.92rem;
+      line-height: 1.62;
+      color: var(--text-muted-light);
+      max-width: 580px;
+    }
+
+    /* Chips de Destaques da Década */
+    .v2-era-pills-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .era-detail-chip {
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--bg-sand);
+    }
+
+    /* Coluna Direita do Slide: Card Monumental do Indicador da Década */
+    .v2-era-highlight-box {
+      padding: 28px 32px;
+      border-radius: 18px;
+      background: rgba(7, 29, 18, 0.72);
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .v2-era-highlight-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent-lime);
+    }
+
+    .v2-era-stat-big {
+      font-size: clamp(2.4rem, 3.4vw, 3.25rem);
+      font-weight: 400;
+      color: var(--accent-lime);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+    }
+
+    .v2-era-stat-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-white);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .v2-era-stat-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted-light);
+      line-height: 1.48;
+    }
+
+    /* Rodapé do Palco Sticky: Dica de Scroll + Progresso Numérico */
+    .v2-stage-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 0.73rem;
+      color: var(--text-muted-light);
+      padding-top: 4px;
+    }
+
+    .scroll-instruction {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .scroll-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      animation: dotPulse 1.8s infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.35; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.25); }
+    }
+
+    /* ==========================================================================
+       BLOCO COMPLEMENTAR PÓS-TIMELINE (MÉTRICAS CONSOLIDADAS + VOZES DE PRESTÍGIO)
+       Aparece naturalmente quando o utilizador conclui os 4 marcos no scroll
+       ========================================================================== */
+    .v2-vault-coda {
+      background-color: var(--bg-forest-deep);
+      border-top: 1px solid var(--border-dark);
+      padding: 88px 48px 110px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .v2-coda-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .v2-mini-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .v2-mini-card {
+      padding: 26px 28px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-dark-subtle);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .v2-mini-card:hover {
+      border-color: var(--border-lime);
+      transform: translateY(-2px);
+    }
+
+    .v2-mini-val {
+      font-size: 2.35rem;
+      font-weight: 400;
+      color: var(--text-white);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+    }
+
+    .v2-mini-val em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--accent-lime);
+      margin-left: 2px;
+    }
+
+    .v2-mini-lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    /* Card de Depoimento Editorial */
+    .v2-testimonial-box {
+      padding: 36px 40px;
+      border-radius: 18px;
+      background: rgba(15, 53, 34, 0.55);
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .v2-quote-text {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.35rem, 1.9vw, 1.65rem);
+      line-height: 1.35;
+      color: var(--bg-sand);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .v2-quote-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-dark-subtle);
+    }
+
+    .v2-author-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .v2-author-name {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .v2-author-role {
+      font-size: 0.74rem;
+      color: var(--accent-lime);
+    }
+
+    .v2-quote-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .v2-quote-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-dark);
+      color: var(--bg-sand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.22s var(--ease-spring);
+    }
+
+    .v2-quote-btn:hover {
+      background: var(--accent-lime);
+      color: var(--bg-forest);
+      border-color: var(--accent-lime);
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .v2-era-slide {
+        grid-template-columns: 1fr;
+        padding: 28px 28px;
+        gap: 20px;
+      }
+      .v2-era-stage-deck {
+        min-height: 410px;
+      }
+      .v2-coda-container {
+        grid-template-columns: 1fr;
+      }
+      .v2-side-scroll-rail {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .v2-sticky-viewport {
+        padding: 70px 20px 24px;
+      }
+      .v2-timeline-rail {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .v2-era-stage-deck {
+        min-height: 460px;
+      }
+      .v2-mini-metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR DE TELEMETRIA E ATALHOS DE SCROLL
+       ======================================================================== -->
+  <nav class="scroll-telemetry-bar" aria-label="Telemetria de Scroll da Seção 06">
+    <div class="telemetry-brand">
+      <div class="telemetry-badge-s">S</div>
+      <span class="telemetry-title">Silvio Iwata · Seção 06 (Variante 02 · Scroll-Driven Timeline)</span>
+    </div>
+
+    <div class="telemetry-quick-jumps" role="navigation" aria-label="Saltar para década no scroll">
+      <button class="jump-chip is-active" data-scroll-to-index="0">1978</button>
+      <button class="jump-chip" data-scroll-to-index="1">1995</button>
+      <button class="jump-chip" data-scroll-to-index="2">2012</button>
+      <button class="jump-chip" data-scroll-to-index="3">2026</button>
+    </div>
+
+    <div class="telemetry-status-pill">
+      <span>Ano no Scroll: <strong id="hud-interpolated-year">1978</strong></span>
+      <span>·</span>
+      <span id="hud-scroll-pct">0%</span>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       BLOCO DE ENTRADA (SIMULA O FINAL DA SEÇÃO 05 PARA TESTAR O GATILHO STICKY)
+       ======================================================================== -->
+  <div class="context-lead-in">
+    <div class="lead-in-card">
+      <span class="lead-in-eyebrow">Transição Seção 05 → Seção 06</span>
+      <h1 class="lead-in-title">Role a página para vivenciar a Linha do Tempo</h1>
+      <p class="lead-in-sub">
+        O palco <em>The Dark Vault</em> trava suavemente no ecrã e percorre os 48 anos da Silvio Iwata (1978 a 2026) sincronizado ao movimento do seu scroll.
+      </p>
+      <div class="scroll-cue-mouse" aria-hidden="true">
+        <div class="scroll-cue-wheel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SEÇÃO 06: THE DARK VAULT — PISTA DE SCROLL-SCRUBBING (380VH)
+       ======================================================================== -->
+  <section class="v2-scroll-track" id="sec6-scroll-track" aria-labelledby="v2-main-title">
+
+    <div class="v2-sticky-viewport" id="sec6-sticky-stage">
+      <!-- Grade Arquitetônica de Fundo -->
+      <div class="v2-arch-grid-lines" aria-hidden="true"></div>
+
+      <!-- Watermark Monumental que Interpola os Anos Continuamente (1978 -> 2026) -->
+      <div class="v2-scroll-watermark" id="v2-watermark-year" aria-hidden="true">1978</div>
+
+      <!-- Indicador Vertical de Progresso na Borda Direita -->
+      <aside class="v2-side-scroll-rail" aria-hidden="true">
+        <span class="side-rail-year">1978</span>
+        <div class="side-rail-bar">
+          <div class="side-rail-fill"></div>
+        </div>
+        <span class="side-rail-year">2026</span>
+      </aside>
+
+      <div class="v2-container">
+
+        <!-- Cabeçalho Institucional -->
+        <header class="v2-header-row">
+          <div class="v2-title-group">
+            <span class="v2-eyebrow">06 · Tradição Regional &amp; Governança</span>
+            <h2 class="v2-headline" id="v2-main-title">
+              Quase meio século a desenhar o mapa de valor de <em>Maringá.</em>
+            </h2>
+          </div>
+
+          <div class="v2-creci-badge">
+            <span class="v2-creci-dot"></span>
+            <span class="v2-creci-text">CRECI J-1033 · Auditoria Patrimonial</span>
+          </div>
+        </header>
+
+        <!-- Trilho Horizontal dos 4 Anos com Barras de Preenchimento por Scroll -->
+        <div class="v2-timeline-rail" role="tablist" aria-label="Linha do Tempo 1978 a 2026">
+          <button class="v2-era-node is-active" data-era-node="0" role="tab" aria-selected="true">
+            <div class="era-progress-track">
+              <div class="era-progress-fill" id="seg-fill-0"></div>
+            </div>
+            <div class="era-node-header">
+              <span class="v2-era-year">1978</span>
+              <span class="era-step-badge">01 / 04</span>
+            </div>
+            <span class="v2-era-title">A Fundação na Zona 01</span>
+          </button>
+
+          <button class="v2-era-node" data-era-node="1" role="tab" aria-selected="false">
+            <div class="era-progress-track">
+              <div class="era-progress-fill" id="seg-fill-1"></div>
+            </div>
+            <div class="era-node-header">
+              <span class="v2-era-year">1995</span>
+              <span class="era-step-badge">02 / 04</span>
+            </div>
+            <span class="v2-era-title">Verticalização &amp; Centros</span>
+          </button>
+
+          <button class="v2-era-node" data-era-node="2" role="tab" aria-selected="false">
+            <div class="era-progress-track">
+              <div class="era-progress-fill" id="seg-fill-2"></div>
+            </div>
+            <div class="era-node-header">
+              <span class="v2-era-year">2012</span>
+              <span class="era-step-badge">03 / 04</span>
+            </div>
+            <span class="v2-era-title">Eixo Gleba Palhano &amp; Luxo</span>
+          </button>
+
+          <button class="v2-era-node" data-era-node="3" role="tab" aria-selected="false">
+            <div class="era-progress-track">
+              <div class="era-progress-fill" id="seg-fill-3"></div>
+            </div>
+            <div class="era-node-header">
+              <span class="v2-era-year">2026</span>
+              <span class="era-step-badge">04 / 04</span>
+            </div>
+            <span class="v2-era-title">Era Digital &amp; Flagships</span>
+          </button>
+        </div>
+
+        <!-- Palco Multicamada dos 4 Marcos (Transição Física Sincronizada ao Scroll) -->
+        <div class="v2-era-stage-deck">
+          <div class="v2-deck-master-bar">
+            <div class="v2-deck-master-fill"></div>
+          </div>
+
+          <!-- SLIDE 01: 1978 -->
+          <article class="v2-era-slide is-active" data-era-slide="0" aria-hidden="false">
+            <div class="v2-era-narrative">
+              <div class="v2-era-tag-row">
+                <span class="v2-era-tag">MARCO 01 · RAÍZES FUNDADORAS (1978)</span>
+                <span class="v2-era-urban-context">Centro Cívico &amp; Zona 01</span>
+              </div>
+              <h3 class="v2-era-heading">
+                O início de uma relação de confiança inabalável com o <em>urbanismo de Maringá.</em>
+              </h3>
+              <p class="v2-era-desc">
+                Fundada sob o compromisso da ética transparente e do conhecimento profundo de cada quadra da Cidade Canção, a Silvio Iwata consolidou-se rapidamente como o porto seguro para famílias e investidores pioneiros.
+              </p>
+              <div class="v2-era-pills-row">
+                <span class="era-detail-chip">Sede Histórica Zona 01</span>
+                <span class="era-detail-chip">Registo Oficial CRECI J-1033</span>
+                <span class="era-detail-chip">Assessoria Familiar &amp; Rural</span>
+              </div>
+            </div>
+
+            <div class="v2-era-highlight-box">
+              <span class="v2-era-stat-big">CRECI J-1033</span>
+              <span class="v2-era-stat-label">Uma das credenciais mais tradicionais do Paraná</span>
+              <p class="v2-era-stat-sub">
+                Estrutura societária sólida e acompanhamento jurídico integral desde o primeiro ano de operação em 1978.
+              </p>
+            </div>
+          </article>
+
+          <!-- SLIDE 02: 1995 -->
+          <article class="v2-era-slide" data-era-slide="1" aria-hidden="true">
+            <div class="v2-era-narrative">
+              <div class="v2-era-tag-row">
+                <span class="v2-era-tag">MARCO 02 · EXPANSÃO &amp; VERTICALIZAÇÃO (1995)</span>
+                <span class="v2-era-urban-context">Entorno Parque do Ingá &amp; Novo Centro</span>
+              </div>
+              <h3 class="v2-era-heading">
+                Protagonismo na consolidação vertical da <em>Zona 01 e Novo Centro.</em>
+              </h3>
+              <p class="v2-era-desc">
+                Acompanhando o ciclo de modernização de Maringá, a imobiliária estruturou divisões especializadas em lançamentos comerciais e edifícios residenciais de alto padrão em redor do Parque do Ingá e da Catedral Basílica.
+              </p>
+              <div class="v2-era-pills-row">
+                <span class="era-detail-chip">Eixo Av. Brasil &amp; Tiradentes</span>
+                <span class="era-detail-chip">Divisão Corporativa Própria</span>
+                <span class="era-detail-chip">Gestão de Condomínios &amp; Locações</span>
+              </div>
+            </div>
+
+            <div class="v2-era-highlight-box">
+              <span class="v2-era-stat-big">+6.000</span>
+              <span class="v2-era-stat-label">Famílias e empresas instaladas no período</span>
+              <p class="v2-era-stat-sub">
+                Liderança regional em intermediação de salas corporativas, lojas de rua e apartamentos nobres nas zonas centrais.
+              </p>
+            </div>
+          </article>
+
+          <!-- SLIDE 03: 2012 -->
+          <article class="v2-era-slide" data-era-slide="2" aria-hidden="true">
+            <div class="v2-era-narrative">
+              <div class="v2-era-tag-row">
+                <span class="v2-era-tag">MARCO 03 · ALTO PADRÃO &amp; GLEBA PALHANO (2012)</span>
+                <span class="v2-era-urban-context">Zona Sul &amp; Condomínios Fechados</span>
+              </div>
+              <h3 class="v2-era-heading">
+                Curadoria dos grandes marcos residenciais da <em>Gleba Palhano.</em>
+              </h3>
+              <p class="v2-era-desc">
+                Com a explosão de valorização da Zona Sul e dos condomínios horizontais de luxo, a Silvio Iwata tornou-se o canal preferencial das maiores incorporadoras do Sul do país para ativos de alta liquidez.
+              </p>
+              <div class="v2-era-pills-row">
+                <span class="era-detail-chip">Vetor Gleba Palhano</span>
+                <span class="era-detail-chip">Permutas &amp; Áreas Estratégicas</span>
+                <span class="era-detail-chip">Private Wealth Real Estate</span>
+              </div>
+            </div>
+
+            <div class="v2-era-highlight-box">
+              <span class="v2-era-stat-big">+21,2% a.a.</span>
+              <span class="v2-era-stat-label">Valorização média nos ativos curados</span>
+              <p class="v2-era-stat-sub">
+                Assessoria dedicada para formação de património familiar com foco em localização irreplicável e arquitetura autoral.
+              </p>
+            </div>
+          </article>
+
+          <!-- SLIDE 04: 2026 -->
+          <article class="v2-era-slide" data-era-slide="3" aria-hidden="true">
+            <div class="v2-era-narrative">
+              <div class="v2-era-tag-row">
+                <span class="v2-era-tag">MARCO 04 · ECOSSISTEMA DIGITAL &amp; FLAGSHIPS (2026)</span>
+                <span class="v2-era-urban-context">Lithos · La Vie · Reserva do Porto</span>
+              </div>
+              <h3 class="v2-era-heading">
+                Experiência digital internacional unida ao <em>atendimento humano.</em>
+              </h3>
+              <p class="v2-era-desc">
+                A tradição de 48 anos ganha uma nova arquitetura digital: cartografia interativa baseada em dados reais, vitrine dedicada aos flagships de Maringá e consultoria Private com inteligência de mercado.
+              </p>
+              <div class="v2-era-pills-row">
+                <span class="era-detail-chip">Cartografia Urbana de Precisão</span>
+                <span class="era-detail-chip">142 Imóveis Curados</span>
+                <span class="era-detail-chip">Atendimento Especialista CRECI</span>
+              </div>
+            </div>
+
+            <div class="v2-era-highlight-box">
+              <span class="v2-era-stat-big">R$ 4,8B+</span>
+              <span class="v2-era-stat-label">Volume histórico transacionado e gerido</span>
+              <p class="v2-era-stat-sub">
+                A síntese entre a sabedoria de quem conhece cada rua de Maringá desde 1978 e a precisão da tecnologia contemporânea.
+              </p>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Barra Inferior de Instrução de Scroll -->
+        <div class="v2-stage-footer-bar">
+          <span class="scroll-instruction">
+            <span class="scroll-pulse-dot"></span>
+            <span>Role para avançar pelas décadas ou clique num ano acima</span>
+          </span>
+          <span id="stage-era-counter" style="font-variant-numeric: tabular-nums; font-weight: 700; color: var(--bg-sand);">
+            ERA ATIVA: 1978 — 1994
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       FECHAMENTO DA SEÇÃO 06 (MÉTRICAS CONSOLIDADAS + VOZES DE INVESTIDORES)
+       ======================================================================== -->
+  <section class="v2-vault-coda" aria-label="Indicadores Consolidados e Depoimentos">
+    <div class="v2-coda-container">
+
+      <!-- Grelha 2x2 de Indicadores -->
+      <div class="v2-mini-metrics-grid">
+        <div class="v2-mini-card">
+          <span class="v2-mini-val"><span data-count-target="48">48</span><em>anos</em></span>
+          <span class="v2-mini-lbl">De História Ininterrupta em Maringá</span>
+        </div>
+        <div class="v2-mini-card">
+          <span class="v2-mini-val">R$ <span data-count-target="4.8" data-decimals="1">4,8</span><em>B+</em></span>
+          <span class="v2-mini-lbl">Volume Patrimonial Intermediado</span>
+        </div>
+        <div class="v2-mini-card">
+          <span class="v2-mini-val"><span data-count-target="45">45</span><em>+</em></span>
+          <span class="v2-mini-lbl">Consultores Especialistas CRECI</span>
+        </div>
+        <div class="v2-mini-card">
+          <span class="v2-mini-val"><span data-count-target="98.4" data-decimals="1">98,4</span><em>%</em></span>
+          <span class="v2-mini-lbl">Índice de Fidelização Patrimonial</span>
+        </div>
+      </div>
+
+      <!-- Carrossel Editorial de Depoimentos -->
+      <div class="v2-testimonial-box">
+        <p class="v2-quote-text" id="v2-quote-text">
+          “A Silvio Iwata não apresenta apenas imóveis; entrega uma leitura patrimonial precisa de Maringá. Toda a nossa carteira na Zona 01 e na Gleba Palhano foi estruturada com a curadoria deles.”
+        </p>
+        <div class="v2-quote-footer">
+          <div class="v2-author-info">
+            <span class="v2-author-name" id="v2-quote-author">Dr. Henrique M. Vasconcelos</span>
+            <span class="v2-author-role" id="v2-quote-role">Investidor Patrimonial · Cliente há 19 anos</span>
+          </div>
+          <div class="v2-quote-nav">
+            <button class="v2-quote-btn" id="v2-prev-quote" aria-label="Depoimento Anterior">←</button>
+            <button class="v2-quote-btn" id="v2-next-quote" aria-label="Próximo Depoimento">→</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MOTOR DE SCROLL-SCRUBBING SUAVE COM AMORTECIMENTO INERCIAL (LERP 60FPS)
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      const scrollTrack = document.getElementById('sec6-scroll-track');
+      const stickyStage = document.getElementById('sec6-sticky-stage');
+      const watermarkYearEl = document.getElementById('v2-watermark-year');
+      const hudYearEl = document.getElementById('hud-interpolated-year');
+      const hudPctEl = document.getElementById('hud-scroll-pct');
+      const stageCounterEl = document.getElementById('stage-era-counter');
+
+      const eraNodes = Array.from(document.querySelectorAll('[data-era-node]'));
+      const eraSlides = Array.from(document.querySelectorAll('[data-era-slide]'));
+      const jumpChips = Array.from(document.querySelectorAll('[data-scroll-to-index]'));
+      const segFills = [
+        document.getElementById('seg-fill-0'),
+        document.getElementById('seg-fill-1'),
+        document.getElementById('seg-fill-2'),
+        document.getElementById('seg-fill-3')
+      ];
+
+      const ERA_RANGES = [
+        'ERA ATIVA: 1978 — 1994 · FUNDAÇÃO ZONA 01',
+        'ERA ATIVA: 1995 — 2011 · VERTICALIZAÇÃO & NOVO CENTRO',
+        'ERA ATIVA: 2012 — 2025 · CONSOLIDAÇÃO GLEBA PALHANO',
+        'ERA ATIVA: 2026+ · PORTAL DIGITAL & FLAGSHIPS'
+      ];
+
+      /* Variáveis de interpolação inercial (Lerp) para eliminar qualquer salto seco */
+      let targetProgress = 0;
+      let smoothProgress = 0;
+      let activeEraIndex = 0;
+
+      function clamp(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+      }
+
+      /* 1. Medir a posição real do scroll dentro da pista de 380vh */
+      function updateScrollTarget() {
+        const rect = scrollTrack.getBoundingClientRect();
+        const scrollableDistance = rect.height - window.innerHeight;
+        if (scrollableDistance <= 0) {
+          targetProgress = 0;
+          return;
+        }
+        const raw = -rect.top / scrollableDistance;
+        targetProgress = clamp(raw, 0, 1);
+      }
+
+      /* 2. Loop de Renderização Contínua a 60fps com Amortecimento (Lerp) */
+      function renderScrollLoop() {
+        updateScrollTarget();
+
+        /* Fator de amortecimento 0.11 garante suavidade amanteigada mesmo em scroll wheel de rato */
+        smoothProgress += (targetProgress - smoothProgress) * 0.11;
+        if (Math.abs(targetProgress - smoothProgress) < 0.0005) {
+          smoothProgress = targetProgress;
+        }
+
+        /* Atualizar variáveis CSS globais do palco */
+        stickyStage.style.setProperty('--total-progress', smoothProgress.toFixed(4));
+        const parallaxY = ((smoothProgress - 0.5) * -90).toFixed(1);
+        stickyStage.style.setProperty('--watermark-y', `${parallaxY}px`);
+
+        /* Interpolar o ano gigante do Watermark continuamente entre 1978 e 2026 */
+        const currentYear = Math.round(1978 + smoothProgress * (2026 - 1978));
+        watermarkYearEl.textContent = String(currentYear);
+        hudYearEl.textContent = String(currentYear);
+        hudPctEl.textContent = `${Math.round(smoothProgress * 100)}%`;
+
+        /* Atualizar o preenchimento individual de cada um dos 4 segmentos da timeline */
+        for (let i = 0; i < 4; i++) {
+          const segStart = i * 0.25;
+          const segLocal = clamp((smoothProgress - segStart) / 0.25, 0, 1);
+          if (segFills[i]) {
+            segFills[i].style.setProperty('--seg-progress', segLocal.toFixed(4));
+          }
+        }
+
+        /* Determinar qual dos 4 marcos está ativo (0, 1, 2 ou 3) */
+        const newIndex = Math.min(3, Math.floor(smoothProgress * 3.999));
+        if (newIndex !== activeEraIndex) {
+          activeEraIndex = newIndex;
+          applyActiveEraState(activeEraIndex);
+        }
+
+        requestAnimationFrame(renderScrollLoop);
+      }
+
+      /* 3. Aplicar Transição Física entre os Slides e Nós da Timeline */
+      function applyActiveEraState(index) {
+        eraNodes.forEach((node, i) => {
+          const isCurrent = i === index;
+          const isPassed = i < index;
+          node.classList.toggle('is-active', isCurrent);
+          node.classList.toggle('is-passed', isPassed);
+          node.setAttribute('aria-selected', String(isCurrent));
+        });
+
+        eraSlides.forEach((slide, i) => {
+          const isCurrent = i === index;
+          const isPrev = i < index;
+          slide.classList.toggle('is-active', isCurrent);
+          slide.classList.toggle('is-previous', isPrev);
+          slide.setAttribute('aria-hidden', String(!isCurrent));
+        });
+
+        jumpChips.forEach((chip, i) => {
+          chip.classList.toggle('is-active', i === index);
+        });
+
+        stageCounterEl.textContent = ERA_RANGES[index] || ERA_RANGES[0];
+      }
+
+      /* 4. Clique nos Anos Desliza o Scroll da Página até o Marco Correspondente */
+      function scrollToEraIndex(index) {
+        const trackTop = scrollTrack.offsetTop;
+        const scrollableDistance = scrollTrack.offsetHeight - window.innerHeight;
+        /* Posicionar ligeiramente dentro do quarto correspondente para ativação limpa */
+        const targetRatio = (index * 0.25) + 0.04;
+        const targetY = trackTop + (scrollableDistance * clamp(targetRatio, 0, 0.98));
+
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        });
+      }
+
+      eraNodes.forEach((node, idx) => {
+        node.addEventListener('click', () => scrollToEraIndex(idx));
+      });
+
+      jumpChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const idx = parseInt(chip.getAttribute('data-scroll-to-index'), 10);
+          scrollToEraIndex(idx);
+        });
+      });
+
+      /* 5. Contadores da Faixa Final (IntersectionObserver quando entram no ecrã) */
+      const codaSection = document.querySelector('.v2-vault-coda');
+      let countersPlayed = false;
+
+      function runCodaCounters() {
+        codaSection.querySelectorAll('[data-count-target]').forEach(el => {
+          const target = parseFloat(el.getAttribute('data-count-target'));
+          const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+          const duration = 1000;
+          const start = performance.now();
+
+          function tick(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const val = target * eased;
+            el.textContent = val.toFixed(decimals).replace('.', ',');
+            if (p < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      if ('IntersectionObserver' in window && codaSection) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !countersPlayed) {
+              countersPlayed = true;
+              runCodaCounters();
+            }
+          });
+        }, { threshold: 0.25 });
+        obs.observe(codaSection);
+      }
+
+      /* 6. Carrossel Editorial de Depoimentos com Fade Suave */
+      const QUOTES = [
+        {
+          text: '“A Silvio Iwata não apresenta apenas imóveis; entrega uma leitura patrimonial precisa de Maringá. Toda a nossa carteira na Zona 01 e na Gleba Palhano foi estruturada com a curadoria deles.”',
+          author: 'Dr. Henrique M. Vasconcelos',
+          role: 'Investidor Patrimonial · Cliente há 19 anos'
+        },
+        {
+          text: '“A segurança jurídica e a agilidade na comercialização dos nossos lançamentos flagship fazem da Silvio Iwata um parceiro insubstituível no mercado de alto padrão do Paraná.”',
+          author: 'Eng. Roberto A. Albuquerque',
+          role: 'Diretor de Incorporação · Parceiro Estratégico'
+        },
+        {
+          text: '“Mudar a nossa família para o entorno do Parque do Ingá exigia uma seleção criteriosa. O atendimento consultivo encontrou exatamente a planta e a vista que procurávamos.”',
+          author: 'Beatriz & Leonardo Fontes',
+          role: 'Proprietários na Zona 01 · Maringá'
+        }
+      ];
+
+      let quoteIdx = 0;
+      const quoteTextEl = document.getElementById('v2-quote-text');
+      const quoteAuthorEl = document.getElementById('v2-quote-author');
+      const quoteRoleEl = document.getElementById('v2-quote-role');
+
+      function changeQuote(newIdx) {
+        quoteTextEl.style.opacity = '0';
+        quoteTextEl.style.transform = 'translateY(6px)';
+        setTimeout(() => {
+          const q = QUOTES[newIdx];
+          quoteTextEl.textContent = q.text;
+          quoteAuthorEl.textContent = q.author;
+          quoteRoleEl.textContent = q.role;
+          quoteTextEl.style.opacity = '1';
+          quoteTextEl.style.transform = 'translateY(0)';
+        }, 200);
+      }
+
+      document.getElementById('v2-prev-quote').addEventListener('click', () => {
+        quoteIdx = (quoteIdx - 1 + QUOTES.length) % QUOTES.length;
+        changeQuote(quoteIdx);
+      });
+
+      document.getElementById('v2-next-quote').addEventListener('click', () => {
+        quoteIdx = (quoteIdx + 1) % QUOTES.length;
+        changeQuote(quoteIdx);
+      });
+
+      /* Iniciar loop inercial de scroll a 60fps */
+      requestAnimationFrame(renderScrollLoop);
+    })();
+  </script>
+</body>
+</html>

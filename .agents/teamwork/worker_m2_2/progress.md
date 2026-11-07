@@ -1,19 +1,18 @@
-# Progress Tracking — worker_m2_2
+# Progress - worker_m2_2
 
-- **Agent**: worker_m2_2
-- **Milestone**: M2 (Zag/XState FSM Form Primitives & Validation)
-- **Status**: COMPLETED
-- **Last visited**: 2026-10-04T20:39:30Z
+Last visited: 2026-11-06T17:07:30Z
 
-## Roadmap
-- [x] Read DISPATCH.md, ORIGINAL_REQUEST.md, PROJECT.md, and survey references
-- [x] Initialize BRIEFING.md and progress.md
-- [x] Step 1: Design and implement pure vanilla JS micro-FSM core (`src/fsm/core/machine.js`)
-- [x] Step 2: Implement Zag-style DOM accessibility connector (`src/fsm/core/connect.js`)
-- [x] Step 3: Implement adaptive input masks & Modulo 11 check digits (`src/forms/masks.js`)
-- [x] Step 4: Implement LocalStorage draft persistence manager (`src/forms/draft-storage.js`)
-- [x] Step 5: Implement JumpPlay B2B Quote state machine (`src/forms/b2b-quote-machine.js`)
-- [x] Step 6: Implement Checkout state machine (`src/forms/checkout-machine.js`)
-- [x] Step 7: Create test suite (`test/m2-fsm-forms.test.js`) and verify all tests pass (26/26 tests passing)
-- [x] Step 8: Verify zero regressions across baseline tests (`npm run test:milestones` 77/77 passing)
-- [ ] Step 9: Complete handoff report (`handoff.md`) and notify parent agent
+## Status: Remediation Complete
+- [x] Read DISPATCH.md and initialized BRIEFING.md
+- [x] Read ORIGINAL_REQUEST.md, PROJECT.md, and Challenger/Reviewer reports
+- [x] Inspect source files (`src/persistence/sqlite-engine.js`, `src/persistence/sync-ingestor.js`, `src/persistence/document-store.js`)
+- [x] Implement PRAGMA busy_timeout reordering & transaction serialization queue in `sqlite-engine.js`
+- [x] Implement unique constraint and ON CONFLICT handling in `sqlite-engine.js` & `sync-ingestor.js`
+- [x] Implement NTFS reserved character validation in `document-store.js`
+- [x] Add/update test coverage for these specific defects
+- [x] Run full test suite & syntax audit (54/54 E2E pass, 79/79 Milestones pass, 59/59 Persistence/Adversarial pass, syntax audit clean)
+- [x] Commit to `integration/staging-consolidated-v3` (`47a434f`)
+- [x] Prepare handoff.md and notify parent
+
+## Commit Hash
+`47a434ff08517c4815ba8453b99a0ffee15c92c5` ("fix(persistence): resolve pragma busy_timeout concurrency race and file_catalog sync idempotency")

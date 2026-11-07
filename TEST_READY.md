@@ -1,86 +1,103 @@
-# TEST READY: Studio DNA PRO v2.6 Comprehensive Test Suite
+# Test Readiness Declaration: Studio DNA Production Consolidation (R1-R5)
 
-**Specification**: `ORIGINAL_REQUEST.md` (2026-10-19T16:33:26Z) & `PROJECT.md`  
-**Execution Commands**:
+**Status**: READY FOR VERIFICATION & CI/CD PIPELINE EXECUTION  
+**Date**: 2026-11-06T12:59:00Z  
+**Runtime**: Node.js v24.15.0 (`node:test`, `node:assert/strict`, `node:sqlite`)  
+**Test Suite Directory**: `test/e2e/r1-r5-*.test.js`  
+**Execution Command**: `node --test test/e2e/r1-r5-*.test.js`  
+**Overall Result**: 54/54 PASS (0 FAIL, 0 CANCELLED, 0 SKIPPED) in 4.04s
+
+---
+
+## 1. Test Suite Tier Breakdown
+
+| Tier | File Path | Total Tests | Suites | Status | Execution Time |
+|---|---|---|---|---|---|
+| **Tier 1** | `test/e2e/r1-r5-tier1-feature-coverage.test.js` | 27 | 5 | **PASS (27/27)** | ~1.7s |
+| **Tier 2** | `test/e2e/r1-r5-tier2-boundary-corner.test.js` | 17 | 5 | **PASS (17/17)** | ~0.5s |
+| **Tier 3** | `test/e2e/r1-r5-tier3-pairwise-combinations.test.js` | 5 | 5 | **PASS (5/5)** | ~2.1s |
+| **Tier 4** | `test/e2e/r1-r5-tier4-realworld-scenarios.test.js` | 5 | 5 | **PASS (5/5)** | ~2.7s |
+| **Total** | `test/e2e/r1-r5-*.test.js` | **54** | **20** | **100% PASS** | **~6.5s** |
+
+---
+
+## 2. Requirement & Feature Checklist
+
+### R1: Auditoria, Resolução de Conflitos e Unificação de Branches
+- [x] **TC-R1-T1-01**: Local & Remote Branch Scanner (`scanGitBranchTopology`)
+- [x] **TC-R1-T1-02**: Commit Divergence & Merge Base (`git rev-list`, `git merge-base`)
+- [x] **TC-R1-T1-03**: Virtual 3-Way Merge Simulation (`git merge-tree`)
+- [x] **TC-R1-T1-04**: Reusable Service Script Harvester (`harvestReusableServiceScripts`)
+- [x] **TC-R1-T1-05**: Integration Branch Gate Verifier (`integration/staging-consolidated-v3`)
+- [x] **TC-R1-T2-01**: Binary Asset Conflict Handling (`.glb` 3D buffer mismatch)
+- [x] **TC-R1-T2-02**: Fast-Forward Merge with Zero Upstream Divergence
+- [x] **TC-R1-T2-03**: Detached HEAD & Dangling Commit Ref Handling
+- [x] **TC-R1-T3-01**: Cross-Branch Asset Integration & Syntax Audit Verification
+- [x] **TC-R1-T4-01**: DevOps Lead Full Branch Consolidation & Promotion Scenario
+
+### R2: Modernização de UI/UX do dnastudio com 21st.dev
+- [x] **TC-R2-T1-01**: 21st.dev Component Catalog & Token Taxonomy Validation
+- [x] **TC-R2-T1-02**: dnastudio Control Panel Route (`GET /` with viewport meta)
+- [x] **TC-R2-T1-03**: Interactive File & Asset Viewer (`GET /api/v3/files/tree`)
+- [x] **TC-R2-T1-04**: Analysis Results Visualizer (Score, APCA, Anti-Slop, FPS)
+- [x] **TC-R2-T1-05**: Dynamic Viewport Switcher Normalization & Bounding
+- [x] **TC-R2-T2-01**: Empty State Handling (0 clones in `copias/` and `clientes/`)
+- [x] **TC-R2-T2-02**: High-Density Project List Search Performance (< 30ms for 1,000 items)
+- [x] **TC-R2-T2-03**: Corrupted Client Directory & Incomplete Artifact Warning Badge
+- [x] **TC-R2-T2-04**: Unauthorized Mutation API Prevention (`POST /api/audit` returns HTTP 403)
+- [x] **TC-R2-T4-01**: UI/UX Designer Interactive Client Transmutation Scenario
+
+### R3: Persistência de Resultados em SQLite e Banco Não Relacional
+- [x] **TC-R3-T1-01**: SQLite Schema Initialization in WAL mode with indexes
+- [x] **TC-R3-T1-02**: SQLite CRUD & Query Engine with parameterized statements
+- [x] **TC-R3-T1-03**: NoSQL Document Engine Directory & Collection Initialization
+- [x] **TC-R3-T1-04**: NoSQL Schemaless Document Write & Read (Atomic JSON)
+- [x] **TC-R3-T1-05**: Hybrid Persistence Coordinator Bridging Relational + Documents
+- [x] **TC-R3-T1-06**: Persistence REST API Endpoints (`/api/v3/runs`, `/api/v3/analytics/kpi`)
+- [x] **TC-R3-T2-01**: SQLite Concurrent Writes Resilience (`busy_timeout = 5000`)
+- [x] **TC-R3-T2-02**: SQL Injection Neutralization via Prepared Statements
+- [x] **TC-R3-T2-03**: Oversized Document Ingestion Resilience (15MB AST Payload)
+- [x] **TC-R3-T2-04**: Primary Key Constraint Invariant Protection
+- [x] **TC-R3-T3-01**: Scraper Ingestion -> Hybrid Persistence -> Control Panel Integration
+- [x] **TC-R3-T3-02**: Control Panel UI -> Persistence API -> Quality Re-Audit Update
+- [x] **TC-R3-T4-01**: Data Engineer High-Volume Sequential Scraping & Retrieval Scenario
+
+### R4: Consolidação Arquitetural, Documentação e Remoção de Legados
+- [x] **TC-R4-T1-01**: Syntax Audit Script Execution (`node --check` across project files)
+- [x] **TC-R4-T1-02**: Legacy Script Deprecation Scanner (Detects throwaway debug files)
+- [x] **TC-R4-T1-03**: Dependency Tree Audit & CommonJS Package Manifest Validation
+- [x] **TC-R4-T1-04**: Documentation Completeness (`README.md`, `PROJECT_STATUS.md`)
+- [x] **TC-R4-T2-01**: Deletion Safety Verification (Throwaway scripts unreferenced in `package.json`)
+- [x] **TC-R4-T2-02**: Circular Dependency Static Analysis across Core Modules
+- [x] **TC-R4-T4-01**: New Contributor Zero-Friction Cold Start Onboarding Scenario
+
+### R5: Pipeline DevOps com Docker e GitHub Actions
+- [x] **TC-R5-T1-01**: Dockerfile Essential Directives Check (`FROM`, `WORKDIR`, `ENTRYPOINT`)
+- [x] **TC-R5-T1-02**: Non-Root User Specification Check (`USER pwuser` / UID 1000)
+- [x] **TC-R5-T1-03**: Docker Persistent Volume Declarations (`/app/copias`, `/app/data`)
+- [x] **TC-R5-T1-04**: GitHub Actions Workflow Schema Validation (`lint`, `test`, `docker-build`)
+- [x] **TC-R5-T1-05**: CI Lint Job Step Execution (`node scripts/audit-syntax.js`)
+- [x] **TC-R5-T1-06**: CI Playwright Browser & OS Dependencies Installation Step
+- [x] **TC-R5-T1-07**: CI Docker Build Job & Container Verification Step
+- [x] **TC-R5-T2-01**: Playwright Container Flags (`--disable-dev-shm-usage`, `--no-sandbox`)
+- [x] **TC-R5-T2-02**: Rootless Container Permissions & Volume Write Access Verification
+- [x] **TC-R5-T2-03**: CI Playwright Browser Cache Miss Automatic Fallback
+- [x] **TC-R5-T2-04**: CI Failure Mode Evidence Upload & Non-Zero Exit Code
+- [x] **TC-R5-T3-01**: Docker Compose Volume Persistence & Port 4000 Server Mapping
+- [x] **TC-R5-T3-02**: GitHub Actions Pipeline Sequential Dependency DAG (`lint -> test -> docker`)
+- [x] **TC-R5-T4-01**: DevOps Release Production Container Lifecycle & Healthcheck Scenario
+
+---
+
+## 3. How to Run the Test Suite
+
 ```bash
-# Run all test files via Node.js native test runner
-node --test test/v2.6/*.test.js
+# Execute full 4-tier E2E test suite via Node.js native runner
+node --test test/e2e/r1-r5-*.test.js
 
-# Or run via aggregated runner
-node test/v2.6/run-all.cjs
+# Or execute specific tiers individually:
+node --test test/e2e/r1-r5-tier1-feature-coverage.test.js
+node --test test/e2e/r1-r5-tier2-boundary-corner.test.js
+node --test test/e2e/r1-r5-tier3-pairwise-combinations.test.js
+node --test test/e2e/r1-r5-tier4-realworld-scenarios.test.js
 ```
-
----
-
-## 1. Test Architecture & Execution Summary
-
-The Studio DNA PRO v2.6 test suite implements an opaque-box, contract-driven 4-tier test architecture across all newly specified v2.6 pillars and zero-dependency micro-engines.
-
-| Suite File | Target Feature | Tests | Pass | Fail | Duration | Status |
-|---|---|:---:|:---:|:---:|:---:|:---:|
-| `test/v2.6/spatial-rtree.test.js` | Pure JS 2D R-Tree & Typographic Energy (R6.1, P6) | 15 | 15 | 0 | ~247ms | **PASSED** |
-| `test/v2.6/css-selector-ast.test.js` | PostCSS Selector AST & Donut Scope Guard (R6.2, P6, L7) | 15 | 15 | 0 | ~266ms | **PASSED** |
-| `test/v2.6/png-codec.test.js` | Native PNG Decoder & Itti-Koch Saliency (R6.3, P8) | 14 | 14 | 0 | ~256ms | **PASSED** |
-| `test/v2.6/slug-font-compiler.test.js` | Binary TrueType Slug Font Compiler (R6.4, P10) | 11 | 11 | 0 | ~284ms | **PASSED** |
-| `test/v2.6/apca-contrast.test.js` | OKLCH Synthesis & APCA 0.0.98G-4g (P9, P10, L3/L4) | 15 | 15 | 0 | ~245ms | **PASSED** |
-| `test/v2.6/ndc-projection.test.js` | Sub-Pixel NDC Projection Pipeline (R2.3, P7, L6) | 13 | 13 | 0 | ~249ms | **PASSED** |
-| `test/v2.6/scrollbus-phase.test.js` | UniversalScrollBus Piecewise Affine Phases (R2.1, P7) | 14 | 14 | 0 | ~243ms | **PASSED** |
-| **TOTAL** | **Studio DNA PRO v2.6 Verification** | **97** | **97** | **0** | **~1.79s** | **100% PASS** |
-
----
-
-## 2. 4-Tier Verification Coverage Breakdown
-
-### Tier 1: Feature Coverage (43 Tests)
-- **R-Tree Indexing**: Insertion, spatial bounding queries, collision detection, bulk load, and leaf traversal.
-- **Typographic Prominence**: Exact implementation of Typographic Energy $E_{\text{typo}}(v)$ (Eq. 24) and Subtree Isomorphism area variance (Eq. 25).
-- **Selector Parsing & Validation**: Compound selector decomposition, combinator separation, boundary self-styling, detection of direct child combinators (`>`), and attribute descendant piercing.
-- **Native PNG Decoding**: Header verification, chunk extraction, `zlib.inflateSync`, and all 5 scanline reconstruction algorithms (None, Sub, Up, Average, Paeth).
-- **Itti-Koch Saliency**: Lateral competition operator $\mathcal{N}(M) = M(M_{\max} - \bar{m})^2$ (Eq. 27).
-- **Binary TTF Parsing**: Direct `DataView` parsing of `head`, `hhea`, `maxp`, `hmtx`, `cmap`, `loca`, and `glyf` tables.
-- **Slug 8-Band Packing**: Quadratic Bezier contour extraction, midpoint synthesis, and $N_B=8$ band packing into contiguous `Float32Array`.
-- **Perceptual Color Space**: Exact forward and inverse $s\text{RGB} \leftrightarrow \text{OKLCH}$ matrices with gamma linearization and roundtrip $\Delta E < 10^{-4}$.
-- **APCA Contrast**: W3C reference test pair validation (`#000000` on `#ffffff` $\to +106.0 \pm 1.0$; `#ffffff` on `#000000` $\to -108.0 \pm 1.0$), monotonic binary search, OLS multi-breakpoint fluid scaling regression, and lexical expansion damping $\kappa_{\text{copy}} = (L_{\text{orig}}/L_{\text{new}})^{0.65}$.
-- **3D-to-2D Projection**: Perspective camera projection $\mathbf{M}_{\text{VP}} = \mathbf{P} \cdot \mathbf{V}$, CPU twin shader deformation evaluation (`sheetQ`, `sheetShape`, `sheetRoll`, `sheetZ`), and sub-pixel accuracy bound $\epsilon \le 0.5\text{px}$.
-- **UniversalScrollBus**: Piecewise affine mapping ($M_{\text{in}}, M_{\text{hold}}, M_{\text{out}}$), normalized progress signals ($p_{\text{portal}}, p_{\text{ribbon}}$), discrete phase state transitions, and EMA velocity damping.
-
-### Tier 2: Boundary & Corner Cases (28 Tests)
-- Empty R-tree index, single-point bounding boxes, boundary edge-to-edge touching, extreme negative/massive coordinates, Guttman quadratic split on $M > 9$, inverted coordinate normalization.
-- Empty/null CSS selectors, deeply nested combinator chains, sibling combinators, CSS comment stripping, variable bracket whitespace, comma-separated selector lists.
-- Corrupted PNG 8-byte signatures, truncated files, Row 0 Paeth defiltering without prior row, 1x1 pixel minimum buffers, uniform solid images, corrupted IDAT zlib streams.
-- Undersized TTF buffers, empty glyphs (space characters) with zero curves but positive advance widths, extreme coordinate bounding box band distribution.
-- Pure black and pure white OKLCH conversions, low-contrast gray-on-gray soft clamp ($L^c = 0.0$), out-of-gamut chroma clipping, 12px accessibility font floor, single viewport clamp.
-- Behind-camera clipping ($w_{\text{clip}} \le 0$), high scroll velocity torsional twist ($u_{\text{sheetV}} > 0.05$), detail flight active centering, ultra-wide 32:9 scaling.
-- Negative scroll ($s < 0$) clamping to `IDLE`, extreme overscroll ($s = 100,000$) to `RESUME`, zero expand duration ($M_{\text{in}} = 0$), velocity decay during idle ticks.
-
-### Tier 3: Cross-Feature Combinations (14 Tests)
-- Spatial collision detection enforcing $0\text{px}^2$ slot overlap between candidate elements.
-- R-Tree spatial indexing of repeating carousel cards verified via Subtree Isomorphism ($\text{CV} \le 0.15$).
-- Full stylesheet AST traversal across `@scope` blocks detecting multiple distinct violations.
-- Scoping fallback generator proving Theorem 2 Donut Scope Boundary Isolation with `:not([data-kinetic-slot] *)`.
-- PNG texture decompressed and fed into 42-map Itti-Koch Dyadic Pyramid, verifying $S_{\text{CTA}} \ge 0.18$ and $R_{\text{distraction}} \le 0.35$.
-- Slug font buffer converted to normalized device coordinate (NDC) bounds ($[-1, 1]$).
-- Relational Palette Projection maintaining semantic lightness hierarchy and APCA compliance ($L^c \ge 80$).
-- Fluid typography scaling paired with APCA spatial frequency compliance.
-- 4-Card 3D Ribbon maintaining monotonic ordering and non-overlapping proxy bounding boxes in browse phase.
-- 2D cursor raycast hit-testing against 3D projected quad bounds.
-- ScrollBus phase arbitrating DOM pointer-events (Law III) and modal scroll prevent.
-- ScrollBus $p_{\text{ribbon}}$ translating 3D ribbon stride proportionally without lockup.
-
-### Tier 4: Real-World Scenarios (12 Tests)
-- Full Section Capsule Slot Extraction with Editorial Headline Prioritization ($E_{\text{typo}} \ge 3.8$).
-- Capsule Slicing Quality Gate auditing 25 reference CSS rules, detecting exactly 2 illegal piercing rules.
-- 3D product card texture audit validating alpha transparency and optical CTA saliency.
-- Multi-character kinetic text typesetting with monotonic pen progression.
-- Dark-mode brand palette transmutation with certified APCA compliance ($L^c \ge 75$ body, $L^c \ge 90$ headline).
-- 60-frame card-to-sheet flight trajectory tracking continuous proxy box expansion without jumps $> 30\text{px}$/frame.
-- Continuous 4-Phase Cinematic Scroll Arc navigating from top ($s=0$) to footer ($s=6000$) without deadlock.
-
----
-
-## 3. Mandatory Integrity Audit Results
-
-1. **Zero Cheating Guarantee**: Every test executes genuine assertions against mathematical formulas, binary decoders, and AST parsers. No trivial `assert.ok(true)` facade tests exist.
-2. **Zero Forbidden External Dependencies**: Confirmed that `opentype.js`, `rbush`, `postcss-selector-parser`, and `pngjs` are not imported or required.
-3. **Syntax Integrity**: All test files and fixtures pass `node --check` with exit code 0.
-4. **Execution Performance**: Full 97-test suite executes in **< 1.8 seconds** on standard hardware.

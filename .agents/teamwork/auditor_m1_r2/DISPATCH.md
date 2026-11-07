@@ -1,30 +1,20 @@
-## 2026-10-17T18:31:42Z
-Você é auditor_m1_r2, Auditor Forense de Integridade (teamwork_preview_auditor).
-Seu diretório exclusivo de trabalho é:
-c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\auditor_m1_r2
+## 2026-11-06T14:57:34Z
+You are teamwork_auditor assigned to perform a Forensic Integrity Audit on Milestone 1 Remediation (Iteration 2).
 
-ATENÇÃO: Você possui poder de VETO BINÁRIO ABSOLUTO. Sua análise deve ser 100% cética, imparcial e baseada em evidências em tempo de execução conforme o Truth Protocol do AGENTS.md.
+Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\auditor_m1_r2\
+Parent conversation ID: 780aafaf-d682-4c48-89cb-4f692b944cff
 
-Você DEVE ler:
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md (com atenção especial à seção ## 2026-10-17T15:18:48Z e Hard Guardrails 1 a 5)
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_6\PROJECT.md
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_remediation_2\handoff.md
-- O relatório de violação anterior em c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\auditor_m1_1\handoff.md
+MANDATORY: Read ORIGINAL_REQUEST.md at:
+c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md
 
-Sua missão forense:
-1. Auditoria Estática Anti-Fraude:
-   - Inspecione minuciosamente todos os arquivos alterados por worker_remediation_2 (`WorkStage.tsx`, `FloorGrid.tsx`, `RibbonCard.tsx`, `initHorizontalScroll.LNLCK81L.js`, `index.html`, `work-stage.spec.ts`, `challenger-viewport.spec.ts`).
-   - Verifique ausência de qualquer hardcoding de resultados de teste, bypass condicional com `process.env.TEST` ou mocks artificiais que simulem sucesso sem a física real.
-   - Verifique a estrita e intocada preservação das 12 equações GLSL em `RibbonCardMaterial.ts` e `math.ts`, e dos 4 projetos canônicos (`evo-money`, `plant-tag`, `swisshaus`, `betahaus`) com seus tokens originais em `referenceData.ts`.
-2. Execução Limpa no Terminal:
-   - `npm run build:workstage` (verificar tamanho do bundle e exit code 0).
-   - `npx vitest run src/components/WorkStage/__tests__/math.spec.ts` (7/7).
-   - `npx playwright test tests/e2e/work-stage.spec.ts` (5/5).
-   - `npx playwright test tests/e2e/challenger-viewport.spec.ts` (6/6).
-3. Auditoria Dinâmica em Runtime:
-   - Validar que o console do browser não registrou novos GPU stalls ou `Maximum call stack size exceeded`.
-   - Validar que as asserções de teste são autênticas e completas.
-4. Emitir um veredito formal, inequívoco e categórico em seu handoff.md:
-   - `CLEAN` ou `INTEGRITY VIOLATION`.
+Inputs:
+- Remediation Report: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m1_2\handoff.md
+- Prior Challenger Finding: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_c2\handoff.md
+- Staging Branch: integration/staging-consolidated-v3
 
-Escreva seu relatório em `report.md` e `handoff.md` e avise o orquestrador via send_message.
+Your Forensic Audit Tasks:
+1. Audit commit 3d22d48: verify that `src/generators/clean-room-compiler.js`, `src/qa/unified-crp-quality-gates.js`, and `design-vault/components/` are genuine files matching `origin/feature/riska-luxury-aura-alaia-pdp`, not stubs, dummy facades, or empty mocks.
+2. Verify that runtime resolution `require('./src/hub/component-catalog')` genuinely functions.
+3. Check for any integrity violations (faked tests, mock short-circuits, suppressed errors).
+4. Deliver your binary verdict (CLEAN or INTEGRITY VIOLATION) with full evidence in c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\auditor_m1_r2\handoff.md.
+5. Notify parent via send_message.

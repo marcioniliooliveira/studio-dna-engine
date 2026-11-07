@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const cheerio = require('cheerio');
+const { computeStableDataDs } = require('../dev/domscribe-manifest');
 
 // Banned AI slop / meta-language keywords in final client UI
 const BANNED_AI_SLOP_KEYWORDS = [
@@ -200,6 +201,24 @@ function transmuteCollectionSlots($, collectionsData, options = { enforceAntiSlo
       }
 
       $item.attr('data-slot-index', String(idx));
+
+      // Assegura data-ds único e determinístico para nós repetidos em coleções
+      const hasDs = $item.attr('data-ds') || $item.find('[data-ds]').length > 0 || (options && options.instrumentDomscribe);
+      if (hasDs) {
+        if (idx > 0 || !$item.attr('data-ds')) {
+          const itemTag = ($item[0].tagName || 'div').toLowerCase();
+          $item.attr('data-ds', computeStableDataDs('collection', itemTag, `${collectionKey}[${idx}]`));
+        }
+        $item.find('[data-ds], [data-slot-bind]').each((cIdx, child) => {
+          const $c = $(child);
+          const childTag = ($c[0].tagName || 'span').toLowerCase();
+          const childKey = $c.attr('data-slot-bind') || $c.attr('data-slot') || `sub-${cIdx}`;
+          if (idx > 0 || !$c.attr('data-ds')) {
+            $c.attr('data-ds', computeStableDataDs('collection', childTag, `${collectionKey}[${idx}].${childKey}`));
+          }
+        });
+      }
+
       targetContainer.append($item);
     });
 
@@ -289,6 +308,10 @@ function transmuteWithAST({
           const needCount = items.length - elements.length;
           for (let i = 0; i < needCount; i++) {
             const $clone = $archetype.clone();
+            const cloneIdx = elements.length + i;
+            if ($clone.attr('data-ds')) {
+              $clone.attr('data-ds', computeStableDataDs('list', ($clone[0].tagName || 'li').toLowerCase(), `${listKey}[${cloneIdx}]`));
+            }
             $parent.append($clone);
           }
           elements = parentSelector ? $(parentSelector).find(itemSelector) : $(itemSelector);
@@ -386,6 +409,16 @@ function transmuteWithAST({
     finalHtml = SeoInjector.injectSeo(finalHtml, brandSpec);
   } catch (seoErr) {
     console.warn('⚠️ [AST Transmuter] Aviso na injeção de SEO:', seoErr.message);
+  }
+
+  // 6.5 Instrumentação opcional Domscribe em tempo de dev/auditoria
+  if (options && options.instrumentDomscribe) {
+    const { instrumentHtmlForDomscribe, writeDomscribeManifest } = require('../dev/domscribe-manifest');
+    const projectRoot = options.projectRoot || path.dirname(path.dirname(outputHtmlPath));
+    const relPath = options.relativeFilePath || path.relative(projectRoot, outputHtmlPath).replace(/\\/g, '/');
+    const { instrumentedHtml, manifestEntries } = instrumentHtmlForDomscribe(finalHtml, relPath);
+    finalHtml = instrumentedHtml;
+    writeDomscribeManifest(projectRoot, manifestEntries);
   }
 
   // 7. Gravação Determinística

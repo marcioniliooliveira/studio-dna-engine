@@ -1,0 +1,840 @@
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { createOrchestrator, main } = require('../bin/orchestrator');
+const { createArtifactRegistry } = require('../src/orchestration/artifact-registry');
+
+const repositoryRoot = path.resolve(__dirname, '..');
+const cliPath = path.join(repositoryRoot, 'bin', 'orchestrator.js');
+
+function runCli(args, rootDir) {
+  return spawnSync(process.execPath, [cliPath, ...args], {
+    cwd: repositoryRoot,
+    encoding: 'utf8',
+    env: { ...process.env, ORCHESTRATOR_ROOT: rootDir }
+  });
+}
+
+test('rejects incomplete or unsafe start arguments before creating state', () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestrator-cli-'));
+  const missing = runCli(['start', '--client', 'client-alpha'], rootDir);
+  const unsafe = runCli(['start', '--client', '../other', '--context', 'manifest.json'], rootDir);
+
+  assert.equal(missing.status, 2);
+  assert.match(missing.stderr, /CLI_ARGUMENT_INVALID/);
+  assert.equal(unsafe.status, 2);
+  assert.match(unsafe.stderr, /CLI_ARGUMENT_INVALID/);
+  assert.deepEqual(fs.readdirSync(rootDir), []);
+});
+
+function fixtureBlueprint() {
+  return {
+    runId: 'run-001',
+    clientId: 'client-alpha',
+    context: [{ id: 'ctx-1', sha256: 'a'.repeat(64), path: 'clientes/client-alpha/DNA.md' }],
+    nodes: [
+      {
+        id: 'n1', kind: 'build', dependencies: [], inputs: ['ctx-1'], outputs: ['first'],
+        paths: ['clientes/client-alpha/site/first.html'], needsInput: false, nonInteractive: false,
+        service: 'standard', humanApprovalEdge: false, toolLabels: ['pipeline.build'],
+        budget: { maxInputTokens: 10, maxOutputTokens: 10, maxUsd: 0.1, maxAttempts: 1 }, gates: ['core-runtime']
+      },
+      {
+        id: 'n2', kind: 'build', dependencies: ['n1'], inputs: ['ctx-1'], outputs: ['second'],
+        paths: ['clientes/client-alpha/site/second.html'], needsInput: false, nonInteractive: false,
+        service: 'standard', humanApprovalEdge: false, toolLabels: ['pipeline.build'],
+        budget: { maxInputTokens: 10, maxOutputTokens: 10, maxUsd: 0.1, maxAttempts: 1 }, gates: ['core-runtime']
+      }
+    ],
+    budget: { maxUsd: 1, maxSolCalls: 1, maxReplans: 0 }
+  };
+}
+
+function successfulResult(taskPackage) {
+  return {
+    v: 1, rid: taskPackage.runId, cid: taskPackage.clientId, nid: taskPackage.node.id,
+    st: 'ok', art: [], chg: [], use: { it: null, ct: null, ot: null }, err: null
+  };
+}
+
+function successfulAdapterResult(taskPackage) {
+  return {
+    v: 1, rid: taskPackage.rid, cid: taskPackage.cid, nid: taskPackage.nid,
+    st: 'ok', art: [], chg: [], use: { it: null, ct: null, ot: null }, err: null
+  };
+}
+
+function nonexistentCandidateArtifact() {
+  return {
+    id: 'b'.repeat(64), sha256: 'b'.repeat(64), runId: 'run-001', clientId: 'client-alpha', type: 'site',
+    relativePath: `client-alpha/run-001/artifacts/site/${'b'.repeat(64)}.json`
+  };
+}
+
+function fixtureQaEvidence() {
+  return fixtureQaEvidenceFor('b'.repeat(64));
+}
+
+function fixtureQaEvidenceFor(artifactSha256) {
+  return {
+    reportId: 'fixture-qa', status: 'candidate', artifactSha256,
+    reportArtifact: {
+      id: 'c'.repeat(64), sha256: 'c'.repeat(64), runId: 'run-001', clientId: 'client-alpha', type: 'qa-report',
+      relativePath: `client-alpha/run-001/artifacts/qa-report/${'c'.repeat(64)}.json`
+    },
+    gates: {
+      antiSlop: { passed: true },
+      console: { passed: true, errorsCount: 0 },
+      network: { passed: true, failedRequestsCount: 0 },
+      structural: { passed: true, brokenImagesCount: 0 },
+      security: { passed: true }, semantic: { passed: true }, dna: { passed: true },
+      visual: { passed: true }, accessibility: { passed: true }, performance: { passed: true }
+    }
+  };
+}
+
+function registeredCandidateArtifact({ runRef, blueprint, artifactRegistry }) {
+  return artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'site',
+    value: { fixture: 'candidate' },
+    sources: ['n2']
+  });
+}
+
+function registeredQaEvidence({ runRef, blueprint, candidateArtifact, artifactRegistry }) {
+  const payload = fixtureQaEvidenceFor(candidateArtifact.sha256);
+  delete payload.reportArtifact;
+  const reportArtifact = artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'qa-report',
+    value: payload,
+    sources: [candidateArtifact]
+  });
+  return { ...payload, reportArtifact };
+}
+
+function registeredFailedQaEvidence({ runRef, blueprint, candidateArtifact, artifactRegistry }) {
+  const payload = fixtureQaEvidenceFor(candidateArtifact.sha256);
+  delete payload.reportArtifact;
+  payload.status = 'failed';
+  payload.message = 'runtime.console failed Authorization: Bearer super-secret-token';
+  payload.log = 'runtime.console: ReferenceError at clientes/client-alpha/site/first.html:42 api_key=super-secret-token';
+  payload.gates.console = { passed: false, errorsCount: 1 };
+  const reportArtifact = artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'qa-report',
+    value: payload,
+    sources: [candidateArtifact]
+  });
+  return { ...payload, reportArtifact };
+}
+
+function oneNodeBlueprint() {
+  const plan = fixtureBlueprint();
+  plan.nodes = [plan.nodes[0]];
+  plan.nodes[0].budget.maxAttempts = 3;
+  return plan;
+}
+
+function registeredOneNodeCandidate({ runRef, blueprint, artifactRegistry }) {
+  return artifactRegistry.putJson({
+    runId: runRef.runId,
+    clientId: blueprint.clientId,
+    type: 'site',
+    value: { fixture: 'candidate' },
+    sources: ['n1']
+  });
+}
+
+function knownCostExecutionAdapters() {
+  return {
+    default: {
+      identity: 'fixture-gemini', model: 'gemini-3.7-flash', service: 'standard',
+      async execute(taskPackage) {
+        return {
+          result: successfulAdapterResult(taskPackage),
+          costEvent: {
+            v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'standard',
+            it: 1, ct: 0, ot: 1, ms: 1, try: 1, usd: 0.01, est: false
+          }
+        };
+      }
+    }
+  };
+}
+
+test('plans once, pauses, resumes only pending work, and remains a candidate', async () => {
+  assert.equal(typeof createOrchestrator, 'function');
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-e2e-'));
+  const sol = { calls: 0, async plan() { this.calls += 1; return fixtureBlueprint(); } };
+  const executorCalls = [];
+  const executor = {
+    identity: 'fixture-script-executor',
+    async execute(taskPackage) {
+      executorCalls.push(taskPackage.node.id);
+      return successfulResult(taskPackage);
+    }
+  };
+  const verifier = {
+    identity: 'fixture-independent-verifier',
+    independent: true,
+    async verify() { return { passed: true, evidence: { fixture: true } }; }
+  };
+  const options = {
+    rootDir,
+    planner: sol,
+    executors: { build: executor },
+    verifier,
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{
+      id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md', sourceContents: 'do-not-persist'
+    }],
+    blueprintPolicy: {
+      allowedTools: new Set(['pipeline.build']),
+      allowedGates: new Set(['core-runtime']),
+      runBudgetUsd: 1
+    },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  const firstProcess = createOrchestrator(options);
+  const paused = await firstProcess.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  assert.equal(sol.calls, 1);
+  assert.deepEqual(executorCalls, ['n1']);
+  assert.equal(paused.state, 'paused');
+  assert.equal(paused.validatedBeforeExecution, true);
+
+  const inspected = await firstProcess.execute(['inspect', '--run', 'run-001']);
+  assert.equal(JSON.stringify(inspected).includes('do-not-persist'), false);
+  assert.equal(JSON.stringify(inspected).includes('Plan only'), false);
+
+  const secondProcess = createOrchestrator(options);
+  const candidate = await secondProcess.execute(['resume', '--run', 'run-001']);
+  assert.equal(sol.calls, 1);
+  assert.deepEqual(executorCalls, ['n1', 'n2']);
+  assert.equal(candidate.state, 'candidate');
+  assert.notEqual(candidate.state, 'verified');
+  assert.equal(candidate.costs.some((entry) => entry.data.usd === null), true);
+});
+
+test('routes the ready node through the service router and persists its actual cost event', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-service-router-'));
+  const routed = [];
+  const packages = [];
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes[0] = {
+    ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch',
+    budget: { ...blueprint.nodes[0].budget, maxAttempts: 2 }
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    serviceRouter: {
+      forNode(node) {
+        routed.push(node);
+        return {
+          identity: `gemini-${node.service}`,
+          model: 'gemini-3.7-flash',
+          service: node.service,
+          async execute(taskPackage) {
+            packages.push(taskPackage);
+            return {
+              result: successfulAdapterResult(taskPackage),
+              costEvent: {
+                v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'batch',
+                it: 12, ct: 4, ot: 8, ms: 37, try: 2, usd: null, est: false
+              }
+            };
+          }
+        };
+      }
+    },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+  const actual = inspected.costs.find((entry) => entry.data.m === 'gemini-3.7-flash');
+
+  assert.deepEqual(routed.map((node) => node.id), ['n1']);
+  assert.deepEqual(packages, [{
+    v: 1, rid: 'run-001', cid: 'client-alpha', nid: 'n1', k: 'extract', ni: true,
+    need: false, svc: 'batch', ha: false,
+    in: [], p: ['clientes/client-alpha/site/first.html'], out: ['first'], tl: ['pipeline.build'], g: ['core-runtime'],
+    b: { it: 10, ot: 10, usd: 0.1, try: 2 }
+  }]);
+  assert.deepEqual(actual.data, {
+    v: 1, rid: 'run-001', nid: 'n1', m: 'gemini-3.7-flash', svc: 'batch',
+    it: 12, ct: 4, ot: 8, ms: 37, try: 2, usd: null, est: false
+  });
+});
+
+test('does not finalize a failed DAG when the run is resumed', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-failed-dag-'));
+  let candidateCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: {
+      build: {
+        identity: 'fixture-script-executor',
+        async execute(taskPackage) {
+          if (taskPackage.node.id === 'n1') throw new Error('build failed');
+          return successfulResult(taskPackage);
+        }
+      }
+    },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: async () => { candidateCalls += 1; return nonexistentCandidateArtifact(); },
+    qaEvidence: fixtureQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  const failed = await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  assert.equal(failed.state, 'failed');
+  await assert.rejects(
+    createOrchestrator(options).execute(['resume', '--run', 'run-001']),
+    (error) => error.code === 'CLI_RESUME_INVALID_STATE'
+  );
+  assert.equal(candidateCalls, 0);
+
+  const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+  assert.deepEqual(inspected.events.filter((event) => event.type === 'TASK_FAILED').map((event) => event.data.code), [
+    'EXECUTOR_EXCEPTION'
+  ]);
+  assert.equal(inspected.events.some((event) => event.type === 'QA_EVIDENCE_RECORDED'), false);
+});
+
+test('rejects a nonexistent candidate artifact before invoking QA', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-missing-candidate-'));
+  let qaCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: nonexistentCandidateArtifact,
+    qaEvidence: () => { qaCalls += 1; return fixtureQaEvidence(); },
+    approver: 'fixture-approver'
+  };
+
+  await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const result = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+
+  assert.equal(result.state, 'failed');
+  assert.equal(qaCalls, 0);
+});
+
+test('rejects QA evidence that differs from its durable registry report', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-forged-qa-'));
+  const registry = createArtifactRegistry({ rootDir });
+  const candidate = registry.putJson({
+    runId: 'run-001', clientId: 'client-alpha', type: 'site', value: { build: 'candidate' }, sources: ['n2']
+  });
+  const durablePayload = { ...fixtureQaEvidenceFor(candidate.sha256) };
+  delete durablePayload.reportArtifact;
+  const reportArtifact = registry.putJson({
+    runId: 'run-001', clientId: 'client-alpha', type: 'qa-report', value: durablePayload, sources: [candidate]
+  });
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: () => candidate,
+    qaEvidence: () => ({ ...durablePayload, reportId: 'forged-report-id', reportArtifact }),
+    approver: 'fixture-approver'
+  };
+
+  await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const result = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+
+  assert.equal(result.state, 'repairing');
+});
+
+test('requires artifact-bound QA before a recorded approver can advance the persisted workflow', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-approval-'));
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    approver: 'fixture-approver',
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence
+  };
+  const firstProcess = createOrchestrator(options);
+  await firstProcess.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const candidate = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+  assert.equal(candidate.state, 'candidate');
+
+  const approvalProcess = createOrchestrator(options);
+  await assert.rejects(
+    approvalProcess.execute(['approve', '--run', 'run-001', '--event', 'final-approved']),
+    (error) => error.code === 'CLI_EVENT_INVALID_STATE'
+  );
+  await approvalProcess.execute(['approve', '--run', 'run-001', '--event', 'final-approval-requested']);
+  const verified = await approvalProcess.execute(['approve', '--run', 'run-001', '--event', 'final-approved']);
+  assert.equal(verified.state, 'verified');
+  const inspected = await approvalProcess.execute(['inspect', '--run', 'run-001']);
+  assert.deepEqual(inspected.events.filter((event) => event.type === 'APPROVAL_RECORDED').map((event) => event.data), [
+    { actor: 'fixture-approver', event: 'FINAL_APPROVAL_REQUESTED' },
+    { actor: 'fixture-approver', event: 'FINAL_APPROVED' }
+  ]);
+  assert.equal(inspected.events.at(-1).type, 'WORKFLOW_SNAPSHOT');
+  await assert.rejects(
+    approvalProcess.execute(['resume', '--run', 'run-001']),
+    (error) => error.code === 'CLI_RESUME_INVALID_STATE'
+  );
+});
+
+test('keeps the end-to-end workflow out of candidate when any full-QA gate is omitted', async () => {
+  const requiredScopes = [
+    'antiSlop', 'console', 'network', 'structural',
+    'security', 'semantic', 'dna', 'visual', 'accessibility', 'performance'
+  ];
+
+  for (const scope of requiredScopes) {
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), `orchestration-qa-omits-${scope}-`));
+    const options = {
+      rootDir,
+      planner: { async plan() { return fixtureBlueprint(); } },
+      executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      approver: 'fixture-approver',
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence(parameters) {
+        const payload = fixtureQaEvidenceFor(parameters.candidateArtifact.sha256);
+        delete payload.reportArtifact;
+        delete payload.gates[scope];
+        const reportArtifact = parameters.artifactRegistry.putJson({
+          runId: parameters.runRef.runId,
+          clientId: parameters.blueprint.clientId,
+          type: 'qa-report',
+          value: payload,
+          sources: [parameters.candidateArtifact]
+        });
+        return { ...payload, reportArtifact };
+      }
+    };
+
+    await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+    const result = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+
+    assert.equal(result.state, 'repairing', `omitted ${scope}`);
+  }
+});
+
+test('composes an injected fixture command without a model key', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-main-'));
+  const output = [];
+  const code = await main(
+    ['start', '--client', 'client-alpha', '--context', 'fixture.json'],
+    { stdout: { write: (line) => output.push(line) }, stderr: { write: () => {} } },
+    {
+      rootDir,
+      planner: { async plan() { return fixtureBlueprint(); } },
+      executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence: registeredQaEvidence,
+      approver: 'fixture-approver'
+    }
+  );
+  assert.equal(code, 0);
+  assert.deepEqual(JSON.parse(output[0]), { runId: 'run-001', state: 'paused', validatedBeforeExecution: true });
+});
+
+test('authorizes one provenance-bound repair and blocks a repeated fingerprint before another model call', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-qa-repair-'));
+  let repairCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async ({ runRef, blueprint, previousArtifact, blockingEvidence, artifactRegistry }) => {
+      repairCalls += 1;
+      return artifactRegistry.putJson({
+        runId: runRef.runId,
+        clientId: blueprint.clientId,
+        type: 'site',
+        value: { fixture: 'repaired-candidate' },
+        sources: [previousArtifact, blockingEvidence.failureArtifact, blockingEvidence.verifierArtifact]
+      });
+    },
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'repairing');
+  assert.equal(repairCalls, 1);
+
+  const blocked = await createOrchestrator(options).execute(['resume', '--run', 'run-001']);
+  assert.equal(blocked.state, 'human_intervention');
+  assert.equal(repairCalls, 1);
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.filter((event) => event.type === 'REPAIR_AUTHORIZED').length, 1);
+  assert.equal(JSON.stringify(persisted.events).includes('super-secret-token'), false);
+});
+
+test('does not call repair code when QA failure lacks verifier artifact provenance', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unproven-repair-'));
+  let repairCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: () => ({ status: 'failed', message: 'unpersisted failure' }),
+    repairCandidate: async () => { repairCalls += 1; },
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  assert.equal(repairCalls, 0);
+});
+
+test('rejects a new repair artifact that is not sourced from its fingerprint and verifier evidence', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unbound-repair-output-'));
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executionAdapters: knownCostExecutionAdapters(),
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async ({ runRef, blueprint, previousArtifact, artifactRegistry }) => artifactRegistry.putJson({
+      runId: runRef.runId,
+      clientId: blueprint.clientId,
+      type: 'site',
+      value: { fixture: 'unbound-repair' },
+      sources: [previousArtifact]
+    }),
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.filter((event) => event.type === 'REPAIR_AUTHORIZED').length, 1);
+});
+
+test('does not call repair code when remaining spend is unknown', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-unknown-repair-budget-'));
+  let repairCalls = 0;
+  const options = {
+    rootDir,
+    planner: { async plan() { return oneNodeBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredOneNodeCandidate,
+    qaEvidence: registeredFailedQaEvidence,
+    repairCandidate: async () => { repairCalls += 1; },
+    approver: 'fixture-approver'
+  };
+
+  const process = createOrchestrator(options);
+  assert.equal((await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+  assert.equal(repairCalls, 0);
+  const persisted = await process.execute(['inspect', '--run', 'run-001']);
+  assert.equal(persisted.events.find((event) => event.type === 'REPAIR_BLOCKED').data.decision, 'budget_blocked');
+});
+
+test('moves a QA-blocked run to human intervention when no repair action is injected', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-no-repair-'));
+  const options = {
+    rootDir,
+    planner: { async plan() { return fixtureBlueprint(); } },
+    executors: { build: { identity: 'fixture-script-executor', async execute(taskPackage) { return successfulResult(taskPackage); } } },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: () => ({ status: 'candidate' }),
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+  await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'repairing');
+  assert.equal((await process.execute(['resume', '--run', 'run-001'])).state, 'human_intervention');
+});
+
+test('rejects missing approver and invalid external adapter configuration before command execution', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-config-'));
+  assert.throws(
+    () => createOrchestrator({ rootDir }),
+    (error) => error.code === 'CLI_CONFIGURATION_INVALID'
+  );
+  const output = [];
+  const originalModule = process.env.ORCHESTRATOR_ADAPTER_MODULE;
+  process.env.ORCHESTRATOR_ADAPTER_MODULE = path.join(rootDir, 'missing-adapters.cjs');
+  try {
+    const code = await main(['inspect', '--run', 'run-001'], {
+      stdout: { write: () => {} }, stderr: { write: (line) => output.push(line) }
+    });
+    assert.equal(code, 1);
+    assert.match(output[0], /^CLI_CONFIGURATION_INVALID:/);
+  } finally {
+    if (originalModule === undefined) delete process.env.ORCHESTRATOR_ADAPTER_MODULE;
+    else process.env.ORCHESTRATOR_ADAPTER_MODULE = originalModule;
+  }
+});
+
+test('rejects ambiguous legacy executors combined with routed execution adapters', () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-ambiguous-execution-'));
+
+  assert.throws(
+    () => createOrchestrator({
+      rootDir,
+      approver: 'fixture-approver',
+      executors: { build: { identity: 'legacy', execute: async () => ({}) } },
+      executionAdapters: { default: { identity: 'routed', execute: async () => ({}) } }
+    }),
+    (error) => error.code === 'CLI_CONFIGURATION_INVALID'
+  );
+});
+
+test('main constructs production execution adapters from explicit configuration', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-production-composition-'));
+  const output = [];
+  const waitingAdapter = {
+    identity: 'gemini-ide', model: 'gemini-ide', service: 'ide',
+    async execute() {
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    },
+    async collectResult() {
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    }
+  };
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  const code = await main(
+    ['start', '--client', 'client-alpha', '--context', 'fixture.json'],
+    { stdout: { write: (line) => output.push(line) }, stderr: { write: (line) => output.push(line) } },
+    {
+      rootDir,
+      planner: { async plan() { return blueprint; } },
+      executionAdapterConfig: {
+        environment: {}, exchangeDir: path.join(rootDir, 'exchange'),
+        createGeminiIdeAdapter: () => waitingAdapter
+      },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence: registeredQaEvidence,
+      approver: 'fixture-approver'
+    }
+  );
+
+  assert.equal(code, 0);
+  assert.deepEqual(JSON.parse(output[0]), {
+    runId: 'run-001', state: 'paused',
+    waiting: { status: 'awaiting_external_result', nodeId: 'n1', packagePath: 'task-package.json', resultPath: 'task-result.json' },
+    validatedBeforeExecution: true
+  });
+});
+
+test('IDE fallback pauses explicitly and resumes through controlled result collection', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-ide-waiting-'));
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  let ready = false;
+  let executeCalls = 0;
+  let collectCalls = 0;
+  const adapter = {
+    identity: 'gemini-ide', model: 'gemini-ide', service: 'ide',
+    async execute() {
+      executeCalls += 1;
+      return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+    },
+    async collectResult(runId, nodeId) {
+      collectCalls += 1;
+      if (!ready) return { status: 'awaiting_external_result', packagePath: 'task-package.json', resultPath: 'task-result.json' };
+      return {
+        result: successfulAdapterResult({ rid: runId, cid: 'client-alpha', nid: nodeId }),
+        costEvent: {
+          v: 1, rid: runId, nid: nodeId, m: 'gemini-ide', svc: 'ide',
+          it: null, ct: null, ot: null, ms: 0, try: 1, usd: null, est: false
+        }
+      };
+    }
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    executionAdapters: { default: adapter },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+  const process = createOrchestrator(options);
+
+  const first = await process.execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const afterFirstWait = await process.execute(['inspect', '--run', 'run-001']);
+  const waitingResumes = [];
+  for (let index = 0; index < 10; index += 1) {
+    waitingResumes.push(await process.execute(['resume', '--run', 'run-001']));
+  }
+  const afterRepeatedWaits = await process.execute(['inspect', '--run', 'run-001']);
+  ready = true;
+  const candidate = await process.execute(['resume', '--run', 'run-001']);
+  const inspected = await process.execute(['inspect', '--run', 'run-001']);
+
+  assert.equal(first.state, 'paused');
+  assert.equal(first.waiting.status, 'awaiting_external_result');
+  assert.equal(waitingResumes.every((resume) => resume.state === 'paused'), true);
+  assert.equal(
+    afterRepeatedWaits.events.filter((event) => event.type === 'TASK_AUTHORIZED').length,
+    afterFirstWait.events.filter((event) => event.type === 'TASK_AUTHORIZED').length
+  );
+  assert.equal(afterRepeatedWaits.costs.length, afterFirstWait.costs.length);
+  assert.equal(candidate.state, 'candidate');
+  assert.equal(executeCalls, 1);
+  assert.equal(collectCalls, 11);
+  assert.equal(inspected.events.some((event) => event.type === 'TASK_FAILED'), false);
+  assert.equal(inspected.costs.filter((entry) => entry.data.m === 'gemini-ide').length, 1);
+});
+
+test('rejects model, service, and attempt cost provenance that differs from the selected adapter', async () => {
+  const mutations = [
+    (cost) => { cost.m = 'other-model'; },
+    (cost) => { cost.svc = 'flex'; },
+    (cost) => { cost.try = 2; }
+  ];
+  for (const [index, mutate] of mutations.entries()) {
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), `orchestration-cost-provenance-${index}-`));
+    const blueprint = fixtureBlueprint();
+    blueprint.nodes = [{
+      ...blueprint.nodes[0], kind: 'extract', nonInteractive: true, service: 'batch', humanApprovalEdge: false
+    }];
+    const adapter = {
+      identity: 'gemini-api', model: 'gemini-3.7-flash', service: 'batch',
+      async execute(taskPackage) {
+        const costEvent = {
+          v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'batch',
+          it: 1, ct: 0, ot: 1, ms: 1, try: 1, usd: null, est: false
+        };
+        mutate(costEvent);
+        return { result: successfulAdapterResult(taskPackage), costEvent };
+      }
+    };
+    const options = {
+      rootDir,
+      planner: { async plan() { return blueprint; } },
+      executionAdapters: { forNode: () => adapter },
+      verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+      runIdFactory: () => 'run-001',
+      readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+      blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+      candidateArtifact: registeredCandidateArtifact,
+      qaEvidence: registeredQaEvidence,
+      approver: 'fixture-approver'
+    };
+
+    const result = await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+    const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+
+    assert.equal(result.state, 'failed');
+    assert.equal(inspected.events.find((event) => event.type === 'TASK_FAILED').data.code, 'EXECUTOR_COST_PROVENANCE_MISMATCH');
+  }
+});
+
+test('persists adapter cost evidence before recording a charged execution failure', async () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestration-charged-failure-'));
+  const blueprint = fixtureBlueprint();
+  blueprint.nodes = [blueprint.nodes[0]];
+  const adapter = {
+    identity: 'gemini-api', model: 'gemini-3.7-flash', service: 'standard',
+    async execute(taskPackage) {
+      const error = new Error('transport failed after request');
+      error.code = 'GEMINI_TRANSPORT_FAILED';
+      error.costEvent = {
+        v: 1, rid: taskPackage.rid, nid: taskPackage.nid, m: 'gemini-3.7-flash', svc: 'standard',
+        it: null, ct: null, ot: null, ms: 9, try: 1, usd: null, est: false
+      };
+      throw error;
+    }
+  };
+  const options = {
+    rootDir,
+    planner: { async plan() { return blueprint; } },
+    executionAdapters: { forNode: () => adapter },
+    verifier: { identity: 'fixture-independent-verifier', independent: true, async verify() { return { passed: true }; } },
+    runIdFactory: () => 'run-001',
+    readManifest: () => [{ id: 'ctx-1', sha: 'a'.repeat(64), p: 'clientes/client-alpha/DNA.md' }],
+    blueprintPolicy: { allowedTools: new Set(['pipeline.build']), allowedGates: new Set(['core-runtime']), runBudgetUsd: 1 },
+    candidateArtifact: registeredCandidateArtifact,
+    qaEvidence: registeredQaEvidence,
+    approver: 'fixture-approver'
+  };
+
+  const result = await createOrchestrator(options).execute(['start', '--client', 'client-alpha', '--context', 'fixture.json']);
+  const inspected = await createOrchestrator(options).execute(['inspect', '--run', 'run-001']);
+
+  assert.equal(result.state, 'failed');
+  assert.equal(inspected.events.find((event) => event.type === 'TASK_FAILED').data.code, 'GEMINI_TRANSPORT_FAILED');
+  assert.deepEqual(inspected.costs.find((entry) => entry.data.m === 'gemini-3.7-flash').data, {
+    v: 1, rid: 'run-001', nid: 'n1', m: 'gemini-3.7-flash', svc: 'standard',
+    it: null, ct: null, ot: null, ms: 9, try: 1, usd: null, est: false
+  });
+});

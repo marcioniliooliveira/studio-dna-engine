@@ -17,7 +17,10 @@ async function testVariantes() {
   const htmlPath = path.resolve('clientes/silvio-iwata-imobiliaria/site/secao-05-radar-maringa-variantes.html').replace(/\\/g, '/');
   await page.goto('file:///' + htmlPath, { waitUntil: 'networkidle' });
 
-  const evidenceDir = 'C:/Users/wd/.gemini/antigravity/brain/f07ae635-850a-468e-a0e9-f8287ffa5082';
+  const evidenceDir = process.env.EVIDENCE_DIR || path.resolve('artifacts/silvio-iwata');
+  if (!fs.existsSync(evidenceDir)) {
+    fs.mkdirSync(evidenceDir, { recursive: true });
+  }
 
   // 1. Capturar Variante 1 (The Masters Editorial)
   await page.waitForTimeout(300);

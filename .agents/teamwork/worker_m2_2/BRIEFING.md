@@ -1,82 +1,64 @@
-# BRIEFING — 2026-10-04T20:39:40Z
+# BRIEFING — 2026-11-06T17:07:00Z
 
 ## Mission
-Implement pure vanilla JS micro-FSM engine, Zag-style DOM a11y connector, B2B quote & checkout state machines, adaptive input masks with Modulo 11 validation, and localStorage draft storage with 24h TTL.
+Remediate Milestone 2 (Iteration 2): Fix PRAGMA ordering race & async transaction serialization queue in sqlite-engine.js, fix file_catalog unique constraint & sync-ingestor idempotency, and harden document-store.js against NTFS reserved characters.
 
 ## 🔒 My Identity
-- Archetype: worker
-- Roles: implementer, qa
-- Working directory: C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2
-- Original parent: 55b2bb35-9b46-4caf-b378-9d5228026764
-- Milestone: M2 (Zag/XState FSM Form Primitives & Validation)
+- Archetype: teamwork_worker
+- Roles: implementer, qa, specialist
+- Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2\
+- Original parent: 780aafaf-d682-4c48-89cb-4f692b944cff
+- Milestone: Milestone 2 (Iteration 2)
 
 ## 🔒 Key Constraints
-- Mandatory Integrity Mandate: genuine implementation, zero cheating/hardcoding/facades/dummies.
-- Pure vanilla JS without external dependencies (no xstate, no @zag-js/core, no external mask libs).
-- Exclusive Write Ownership:
-  - src/fsm/core/machine.js
-  - src/fsm/core/connect.js
-  - src/forms/b2b-quote-machine.js
-  - src/forms/checkout-machine.js
-  - src/forms/masks.js
-  - src/forms/draft-storage.js
-  - test/m2-fsm-forms.test.js
-- CommonJS module format consistent with repository.
+- Branch: integration/staging-consolidated-v3
+- Genuine implementation only, no cheating or facades
+- Fix PRAGMA busy_timeout ordering before journal_mode WAL in SqliteEngine.init()
+- Add async transaction serialization queue in SqliteEngine
+- Fix file_catalog unique constraint on (siteSlug, relativePath) & sync-ingestor ON CONFLICT idempotency
+- Harden DocumentStore against NTFS reserved chars in doc ID
+- Pass all tests: 54/54 r1-r5, 79/79 milestones, persistence & adversarial tests, syntax audit
+- Commit with exact message format: "fix(persistence): resolve pragma busy_timeout concurrency race and file_catalog sync idempotency"
 
 ## Current Parent
-- Conversation ID: 55b2bb35-9b46-4caf-b378-9d5228026764
-- Updated: 2026-10-04T20:39:40Z
+- Conversation ID: 780aafaf-d682-4c48-89cb-4f692b944cff
+- Updated: 2026-11-06T17:07:00Z
 
 ## Task Summary
-- **What to build**:
-  1. `src/fsm/core/machine.js`: Micro-statechart FSM engine (states, context, events, guards, actions, subscriptions).
-  2. `src/fsm/core/connect.js`: Zag-style DOM accessibility connector (aria-invalid, aria-busy, disabled, data-state, alert roles, input event handlers).
-  3. `src/forms/b2b-quote-machine.js` & `src/forms/checkout-machine.js`: JumpPlay form statecharts (idle, validating, submitting, error, success; latency feedback).
-  4. `src/forms/masks.js`: Adaptive masks (CNPJ/CPF modulo 11 check digits, phone, CEP, BRL currency, caret tracking).
-  5. `src/forms/draft-storage.js`: LocalStorage draft persistence manager (24h TTL, versioning, auto-cleanup on success).
-  6. `test/m2-fsm-forms.test.js`: Comprehensive unit tests.
-- **Success criteria**:
-  - 100% test pass via `node --test test/m2-fsm-forms.test.js`.
-  - Zero impossible transitions, deterministic inline validation, correct modulo 11 check digit verification, caret preservation.
-  - Full WCAG 2.2 AA accessibility attribute bindings.
-- **Interface contracts**: PROJECT.md § M2 (FSM Forms) Contract
-- **Code layout**: PROJECT.md § Code Layout
-
-## Key Decisions Made
-- Implemented pure vanilla JS micro-statechart in `src/fsm/core/machine.js` with hierarchical and guarded transition tables, entry/exit actions, and subscriber callbacks.
-- Implemented Zag-style prop getters in `src/fsm/core/connect.js` including `getRootProps`, `getInputProps`, `getSubmitButtonProps`, `getErrorMessageProps`, and `bindToDOM`.
-- Implemented strict Modulo 11 check digit verification for CPF and CNPJ in `src/forms/masks.js`, along with dynamic document/phone/CEP masks and caret position preservation algorithm `applyMaskWithCaret`.
-- Implemented 24h TTL draft storage in `src/forms/draft-storage.js` with FNV-1a checksums and in-memory SSR fallback.
-- Implemented `createB2BQuoteMachine` and `createCheckoutMachine` with states `idle`, `validating`, `submitting`, `error`, `success`, watchdog latency tracking (>1000ms), and draft auto-clearing.
-
-## Artifact Index
-- `C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2\BRIEFING.md` — Agent working memory
-- `C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2\progress.md` — Liveness & progress tracker
-- `C:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m2_2\handoff.md` — Final handoff report
-- `src/fsm/core/machine.js` — Core micro-FSM engine
-- `src/fsm/core/connect.js` — Zag-style DOM accessibility connector
-- `src/forms/masks.js` — Adaptive masks & Modulo 11 validator
-- `src/forms/draft-storage.js` — 24h TTL draft storage manager
-- `src/forms/b2b-quote-machine.js` — JumpPlay B2B quote state machine
-- `src/forms/checkout-machine.js` — E-commerce checkout state machine
-- `test/m2-fsm-forms.test.js` — M2 unit test suite (26 tests)
+- **What to build**: Concurrency and idempotency fixes in sqlite-engine.js, sync-ingestor.js, and document-store.js
+- **Success criteria**: All existing and new tests pass, syntax audit clean, git commit clean
+- **Interface contracts**: PROJECT.md
+- **Code layout**: src/persistence/
 
 ## Change Tracker
 - **Files modified**:
-  - `src/fsm/core/machine.js`: created micro-FSM statechart engine
-  - `src/fsm/core/connect.js`: created Zag-style DOM a11y connector
-  - `src/forms/masks.js`: created adaptive masks and Modulo 11 validator
-  - `src/forms/draft-storage.js`: created 24h TTL draft manager with auto-cleanup
-  - `src/forms/b2b-quote-machine.js`: created JumpPlay B2B quote state machine
-  - `src/forms/checkout-machine.js`: created checkout flow state machine
-  - `test/m2-fsm-forms.test.js`: created comprehensive test suite (26 passing tests)
-- **Build status**: PASS (26/26 M2 tests passing, 77/77 baseline milestone tests passing)
-- **Pending issues**: None
+  - `src/persistence/sqlite-engine.js`: Reordered PRAGMA busy_timeout before WAL; added UNIQUE(siteSlug, relativePath) and index; implemented promise-queue async transaction serialization.
+  - `src/persistence/sync-ingestor.js`: Updated _catalogFiles() with pre-check and ON CONFLICT DO UPDATE to ensure 100% idempotency without duplicate records.
+  - `src/persistence/document-store.js`: Added NTFS_RESERVED_REGEX validation to reject Windows NTFS reserved characters in document IDs.
+  - `test/challenger-m2-2.test.js`: Updated test 2.1b to assert verified idempotency (0 duplicates on rerun).
+  - `test/persistence-sqlite.test.js`: Added unit test verifying sequential async transaction serialization.
+  - `test/persistence-docstore.test.js`: Added unit test verifying rejection of Windows NTFS reserved characters.
+- **Build status**: All tests pass (54/54 E2E, 79/79 milestones, 59/59 persistence/adversarial).
+- **Pending issues**: None.
 
 ## Quality Status
-- **Build/test result**: PASS (100% test pass rate)
-- **Lint status**: 0 violations
-- **Tests added/modified**: 26 unit tests in `test/m2-fsm-forms.test.js`
+- **Build/test result**: PASS (54/54 E2E, 79/79 Milestones, 59/59 Persistence/Adversarial/Challenger).
+- **Lint status**: PASS (446 passed in audit-syntax, 0 errors in project code).
+- **Tests added/modified**: 2 new unit tests added, 1 challenger regression test verified.
+- **Git commit**: `47a434f` on `integration/staging-consolidated-v3`.
 
 ## Loaded Skills
-- None specified
+- None
+
+## Key Decisions Made
+- Reordered `PRAGMA busy_timeout` to execute immediately after `new DatabaseSync(...)` before `PRAGMA journal_mode = WAL;`.
+- Implemented microtask promise-chain queue `this._txQueue` to serialize concurrent async transactions on the same `SqliteEngine` instance without blocking nested savepoints.
+- Added table constraint `UNIQUE(siteSlug, relativePath)` and index `idx_files_slug_path` in SQLite schema.
+- Added pre-existence check and `ON CONFLICT(siteSlug, relativePath) DO UPDATE` in `SyncIngestor.prototype._catalogFiles`.
+- Added regex `/[<>:"/\\|?*\x00-\x1F]/` validation in `DocumentStore` `validateDocumentId`.
+
+## Artifact Index
+- DISPATCH.md
+- BRIEFING.md
+- progress.md
+- handoff.md

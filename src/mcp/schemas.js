@@ -149,6 +149,16 @@ const QueryVaultSchema = {
   category: z.enum(['all', 'easings', 'typography', 'components']).default('all').describe('Categoria do Design Vault a consultar')
 };
 
+const PruneContextSchema = {
+  clientSlug: z.string().optional().describe('Slug do cliente em clientes/ (opcional se fornecido html direto)'),
+  targetSectionSelector: z.string().default('section:first-of-type').describe('Seletor da seção alvo (ex: #hero, section.hero-stage)'),
+  taskIntent: z.string().default('UI Refinement').describe('Intenção da tarefa para priorização de tokens')
+};
+
+const PrimitiveContractSchema = {
+  primitiveName: z.string().describe('Nome da primitiva cinética (HeroCinematicStage, HorizontalPinRail, InteractiveBento, ThreeJsCanvasStage, StickyStoryChapters)')
+};
+
 module.exports = {
   validateSlugSecurity,
   validateScrapeUrlSecurity,
@@ -167,5 +177,7 @@ module.exports = {
   ImpeccableGateSchema,
   BoxDiffLinterSchema,
   VisualSaliencySchema,
-  QueryVaultSchema
+  QueryVaultSchema,
+  PruneContextSchema,
+  PrimitiveContractSchema
 };

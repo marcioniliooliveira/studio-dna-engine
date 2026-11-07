@@ -1,12 +1,19 @@
 version: '3.8'
 
 services:
-  cloner:
-    build: .
-    container_name: site-cloner
+  dnastudio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: studio-dna
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
     volumes:
       - ./copias:/app/copias
+      - ./data:/app/data
     environment:
       - NODE_ENV=production
-    # Para rodar interativo ou com argumentos específicos:
-    # docker compose run --rm cloner https://exemplo.com
+      - PORT=4000
+      - HOST=0.0.0.0
+    shm_size: '2gb'

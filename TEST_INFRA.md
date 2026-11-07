@@ -1,70 +1,92 @@
-# E2E Test Infrastructure: Studio DNA PRO v2.6 (`studio-dna-engine`)
+# E2E Test Infrastructure: Studio DNA Production Consolidation (v3.0)
 
 ## 1. Test Philosophy & Architecture
-- **Opaque-box & Requirement-Driven**: Derived strictly from `ORIGINAL_REQUEST.md` (2026-10-19T16:33:26Z), `PROJECT.md`, and architectural specifications (`spec_pillars_6_7_8.md`, `spec_pillars_9_10_11_microengines.md`).
-- **Zero-Dependency Guarantee**: Native Node.js 24+ test runner (`node:test`, `node:assert/strict`) with built-in runtime modules (`node:zlib`, `node:crypto`, `node:sqlite`). Zero uninstalled or forbidden packages (`opentype.js`, `rbush`, `postcss-selector-parser`, `pngjs`).
-- **Progressive Testability & Zero Cheating**: All tests execute real, non-facade assertions against mathematical algorithms and formal invariants.
-- **Verification Commands**:
-  ```bash
-  # Execute full test suite via Node.js native test runner
-  node --test test/v2.6/*.test.js
 
-  # Execute orchestrated test runner with summary table
-  node test/v2.6/run-all.cjs
-  ```
+- **Opaque-Box & Requirement-Driven**: Derived strictly from `ORIGINAL_REQUEST.md` (2026-11-06T12:28:27Z), `PROJECT.md`, and technical specifications (`spec_miner_survey_r3_1/handoff.md`). Tests treat the system as black-box modules verifying observable inputs, outputs, error conditions, and interface contracts.
+- **Zero-External-Dependency Guarantee**: Native Node.js 24+ test runner (`node:test`, `node:assert/strict`) with built-in runtime modules (`node:sqlite` `DatabaseSync`, `node:fs`, `node:http`, `node:crypto`, `node:child_process`, `node:os`). Zero uninstalled or external runtime test dependencies.
+- **Progressive Testability & Dynamic Resolver**: Conforming to milestone progressive testability, the test harness (`test/e2e/r1-r5-harness.js`) dynamically resolves candidate modules in `src/persistence/` or `src/server/`, falling back to strict interface contract reference implementations during parallel track execution.
+- **Real-Behavior Execution & Non-Facade Integrity**: Every test exercises concrete logic — real SQLite relational databases in WAL mode, real file-backed atomic NoSQL document writes up to 15MB, real git topology analysis, dry-run 3-way merge tree simulations, and real HTTP servers on ephemeral ports. Facade tests that always pass without assertions are strictly forbidden.
 
 ---
 
-## 2. 4-Tier Test Architecture Matrix
+## 2. Feature Inventory Matrix (R1 to R5)
 
-The test suite is structured across 4 rigorous tiers of verification:
-
-| Feature / Domain | Tier 1: Feature Coverage | Tier 2: Boundary & Corner Cases | Tier 3: Cross-Feature Combinations | Tier 4: Real-World Scenarios |
+| Requirement | ID | Feature | Description | Primary Verification Target |
 |---|---|---|---|---|
-| **F1: Pure JS 2D R-Tree** (`spatial-rtree.test.js`) | Insert, search, collides, load, all, Typographic Energy $E_{\text{typo}}$ (Eq. 24), Subtree Isomorphism CV (Eq. 25) | Empty index, single-point AABB, boundary touch (Eq. 22), large/negative coords, Guttman quadratic split, coordinate normalization | Spatial collision checking for 0px² slot overlap, Subtree Isomorphism matching repeating cards | Section Capsule Slot Extraction: partitioning editorial headlines ($E_{\text{typo}} \ge 3.8$) from body copy |
-| **F2: PostCSS Selector AST** (`css-selector-ast.test.js`) | Compound selector tokenization, combinator separation (`>`, ` `, `+`, `~`), boundary self-styling, direct child violation (`>`), attribute value violation, pseudo-classes | Empty/null inputs, deeply nested combinator chains, sibling combinator non-piercing, CSS comment stripping, variable bracket whitespace, comma lists | Full `@scope` stylesheet traversal, Scoping fallback generator proving Theorem 2 Donut Scope Boundary Isolation | Capsule Slicing Quality Gate: auditing 25 reference CSS rules, detecting exactly 2 illegal piercing rules |
-| **F3: Native PNG Codec** (`png-codec.test.js`) | 1x1 RGBA decode, Filter 0 (None), Filter 1 (Sub), Filter 2 (Up), Filter 3 (Average), Filter 4 (Paeth), Lateral Competition $\mathcal{N}(M)$ (Eq. 27) | Invalid signature rejection, truncated buffer rejection, Row 0 Paeth defiltering without prior row, 1x1 buffer boundary, solid uniform image, corrupted IDAT zlib stream | Decompressed PNG texture fed into 42-map Itti-Koch dyadic pyramid, calculating CTA prominence $S_{\text{CTA}} \ge 0.18$ and distraction $R_{\text{distraction}} \le 0.35$ | Product card texture audit: decoding multi-scanline RGBA texture, validating channel checksums, verifying optical CTA saliency |
-| **F4: TrueType Slug Font Compiler** (`slug-font-compiler.test.js`) | SFNT table directory parsing (`head`, `hhea`, `maxp`, `hmtx`, `cmap`, `loca`, `glyf`), `unitsPerEm`, `cmap` format 4, bounding box, $N_B=8$ band packing | Undersized font buffer rejection, empty glyph (space) with 0 curves and positive advance width, De Casteljau midpoint synthesis, extreme coordinate band distribution | Slug font buffer converted to normalized device coordinate (NDC) bounds ($[-1, 1]$) | Multi-character kinetic typography typesetting: calculating monotonic pen progression across characters |
-| **F5: OKLCH & APCA Contrast** (`apca-contrast.test.js`) | $s\text{RGB} \to \text{OKLCH}$ forward, $\text{OKLCH} \to s\text{RGB}$ roundtrip ($\Delta E < 10^{-4}$), normal polarity ($L^c \approx +106$), reverse polarity ($L^c \approx -108$), Monotonic Binary Search, OLS fluid scale, Lexical damping | Pure black/white convergence, low contrast gray soft clamp ($L^c = 0.0$), out-of-gamut chroma clipping, 12px accessibility font floor, single viewport clamp | Relational Palette Projection with lightness hierarchy and APCA compliance, Fluid typography scaling paired with spatial frequency limits | Dark-Mode Brand Transmutation: client brand `#0077b6` generates full theme with verified $L^c \ge 75$ body and $L^c \ge 90$ headline |
-| **F6: Sub-Pixel NDC Projection** (`ndc-projection.test.js`) | $\mathbf{M}_{\text{VP}}$ perspective transformation, CPU twin deformation (`sheetQ`, `sheetShape`, `sheetRoll`, `sheetZ`), 2D AABB calculation, sub-pixel bound $\epsilon \le 0.5\text{px}$ (Theorem 3) | Behind-camera clipping ($w_{\text{clip}} \le 0$), extreme torsional velocity ($u_{\text{sheetV}} > 0.05$), detail flight centering, ultra-wide 32:9 scaling | 4-Card Ribbon monotonic ordering and non-overlapping proxy bounding boxes, 2D cursor raycast hit-testing | 60-Frame Card-to-Sheet Flight Trajectory: tracking continuous AABB expansion with zero jumps $> 30\text{px}$/frame |
-| **F7: UniversalScrollBus** (`scrollbus-phase.test.js`) | Piecewise affine mapping ($t_1, t_2, t_3, t_4$), $p_{\text{portal}}$ ramp up/down, $p_{\text{ribbon}}$ ramp, phase transitions (`IDLE`, `PORTAL_EXPAND`, `RIBBON_BROWSE`, `PORTAL_EXIT`, `RESUME`), EMA velocity | Negative scroll clamp ($s < 0$), overscroll ($s = 100,000$), zero expand allocation ($M_{\text{in}} = 0$), idle velocity decay | ScrollBus phase driving DOM clip-path and pointer-events (Law III), $p_{\text{ribbon}}$ translating 3D ribbon stride | Continuous 4-Phase Cinematic Scroll Arc: navigating from top ($s=0$) to footer ($s=6000$) without deadlock |
+| **R1: Branches & Git** | F01 | Git Branch Topology & Audit | Discovers all local and remote branches and computes commit divergence relative to `main` | `scanGitBranchTopology`, `git rev-list` |
+| **R1: Branches & Git** | F02 | Virtual 3-Way Merge Simulation | Dry-run conflict checking via `git merge-tree` verifying conflict-free trees | `simulate3WayMerge` |
+| **R1: Branches & Git** | F03 | Clean Branch Integration Trunk | Validates integration branch `integration/staging-consolidated-v3` integrity | `git rev-list --left-right --count` |
+| **R1: Branches & Git** | F04 | Reusable Script Harvester | Catalogs and extracts reusable service scripts from feature branches | `harvestReusableServiceScripts` |
+| **R2: dnastudio UI/UX** | F05 | 21st.dev Component Catalog | Validates Bento grid, floating dock, and status pill token structures | `validate21stDevTokens` |
+| **R2: dnastudio UI/UX** | F06 | dnastudio Control Panel Route | Verifies preview server `GET /` responds with valid HTML shell and viewport meta | Ephemeral HTTP Server on port 4000/dynamic |
+| **R2: dnastudio UI/UX** | F07 | Interactive File & Asset Viewer | REST endpoint `/api/v3/files/tree` returning file catalog with MIME types | `GET /api/v3/files/tree` |
+| **R2: dnastudio UI/UX** | F08 | Analysis Results Visualizer | Formats 38-variable quality audit metrics, APCA contrast, and radar scores | Metric bounding & display validation |
+| **R2: dnastudio UI/UX** | F09 | Dynamic Viewport Switcher | Clamps and normalizes preview dimensions across Desktop, Tablet, and Mobile | `clampViewportDimensions` |
+| **R3: Persistence** | F10 | Native SQLite Relational Engine | Initializes WAL-mode SQLite database using Node 24 native `node:sqlite` (`DatabaseSync`) | `SqliteEngine`, schemas, indexes, foreign keys |
+| **R3: Persistence** | F11 | Embedded NoSQL Document Store | Schemaless collection store with atomic writes for deep ASTs, DNA payloads, and reports | `DocumentStore`, `Collection` |
+| **R3: Persistence** | F12 | Hybrid Repository Coordinator | Unified repository bridging relational SQLite records with document payload retrieval | `HybridRepository` |
+| **R3: Persistence** | F13 | Historical Filesystem Sync Ingestor | Scans `copias/` and `clientes/` to index existing historical runs | `syncExistingFilesystem` |
+| **R3: Persistence** | F14 | Persistence REST API Layer | Serves `/api/v3/runs`, `/api/v3/runs/:id`, and `/api/v3/analytics/kpi` | REST API endpoints |
+| **R4: Cleanup & Arch** | F15 | Syntax Audit Enforcement | Executes syntax verification (`node --check`) across all core project JavaScript files | `scripts/audit-syntax.js` |
+| **R4: Cleanup & Arch** | F16 | Legacy Script Deprecation Scanner | Scans `scripts/` directory to detect throwaway debug scripts for pruning | Orphan detection heuristic |
+| **R4: Cleanup & Arch** | F17 | Dependency Tree Auditor | Verifies `package.json` CommonJS specification and essential test/build scripts | Package manifest inspection |
+| **R4: Cleanup & Arch** | F18 | Documentation Modernization | Validates presence and completeness of `README.md` and `PROJECT_STATUS.md` | File integrity checks |
+| **R5: DevOps CI/CD** | F19 | Multi-Stage Production Dockerfile | Verifies multi-stage build (`node:20` -> `mcr.microsoft.com/playwright`), unprivileged `pwuser`, port 4000 | `parseAndValidateDockerfile` |
+| **R5: DevOps CI/CD** | F20 | Container Configuration Hardening | Validates `.dockerignore` pruning and `docker-compose.yml` port 4000/volume mounts | Compose and ignore validators |
+| **R5: DevOps CI/CD** | F21 | GitHub Actions CI/CD Pipeline | 3-job workflow (`.github/workflows/ci.yml`: `lint` -> `test` -> `docker-build`) | Workflow YAML schema validator |
 
 ---
 
-## 3. Test Inventory & File Layout
+## 3. 4-Tier Test Architecture Matrix
+
+The test framework organizes all 54 test cases into 4 requirement-driven tiers:
+
+| Tier | File Path | Focus Area | Test Count | Key Invariants Tested |
+|---|---|---|---|---|
+| **Tier 1: Feature Coverage** | `test/e2e/r1-r5-tier1-feature-coverage.test.js` | Happy-path direct contract verification for R1, R2, R3, R4, R5 | 27 tests | All 21 features verified individually against primary input/output contracts. |
+| **Tier 2: Boundary & Corner Cases** | `test/e2e/r1-r5-tier2-boundary-corner.test.js` | Edge cases, stress, fault injection, injection attacks, resource constraints | 17 tests | Binary `.glb` conflict detection, SQL injection neutralization, 15MB AST payload handling, 0-clone empty states, non-root permissions, CI cache miss fallbacks. |
+| **Tier 3: Pairwise Combinations** | `test/e2e/r1-r5-tier3-pairwise-combinations.test.js` | Cross-subsystem multi-module integration | 5 suites | Scraper -> Persistence -> Control Panel, Control Panel UI -> Re-audit, Git Unification -> Syntax Audit, Docker -> Volumes -> Server, CI Pipeline sequential gating. |
+| **Tier 4: Real-World Scenarios** | `test/e2e/r1-r5-tier4-realworld-scenarios.test.js` | Realistic end-to-end user workflows and persona journeys | 5 scenarios | DevOps Lead Branch Consolidation, UI/UX Designer Transmutation, Data Engineer High-Volume Ingestion, New Contributor Cold-Start, DevOps Release Container Lifecycle. |
+
+---
+
+## 4. Test Suite Inventory & File Layout
 
 ```
-test/v2.6/
-├── run-all.cjs                     # Master CLI runner aggregating all 7 suites
-├── spatial-rtree.test.js           # 15 tests: R-Tree spatial indexing & Typographic Energy
-├── css-selector-ast.test.js        # 15 tests: PostCSS selector AST & Donut Scope guard
-├── png-codec.test.js               # 14 tests: PNG RGBA decoder & Itti-Koch Saliency oracle
-├── slug-font-compiler.test.js      # 11 tests: SFNT TrueType binary parser & Slug 8-band compiler
-├── apca-contrast.test.js           # 15 tests: OKLCH conversions, APCA 0.0.98G-4g & Fluid scaling
-├── ndc-projection.test.js          # 13 tests: 3D-to-2D CPU twin projection & sub-pixel bounds
-├── scrollbus-phase.test.js         # 14 tests: UniversalScrollBus piecewise affine phase mapping
-└── fixtures/
-    ├── harness.js                  # Engine resolver with candidate and reference fallbacks
-    ├── reference-engines.js        # Verified reference implementations of all micro-engines
-    ├── sample-png.js               # PNG generator fixture (1x1, 5 filter types, invalid buffers)
-    └── sample-ttf.js               # TrueType binary generator fixture (head, cmap, glyf, loca)
+test/e2e/
+├── r1-r5-harness.js                             # Common test harness, candidate resolver & reference engines (42KB)
+├── r1-r5-tier1-feature-coverage.test.js         # Tier 1: 27 Feature Coverage tests (22KB)
+├── r1-r5-tier2-boundary-corner.test.js          # Tier 2: 17 Boundary & Corner Case tests (15KB)
+├── r1-r5-tier3-pairwise-combinations.test.js   # Tier 3: 5 Cross-Subsystem Integration tests (9KB)
+└── r1-r5-tier4-realworld-scenarios.test.js     # Tier 4: 5 Real-World Persona Scenarios (12KB)
 ```
 
 ---
 
-## 4. Execution & Validation Commands
+## 5. Execution & Validation Commands
 
-All test files pass syntax verification and native execution:
+All test files pass syntax audit and execute cleanly using native Node.js:
 
-```powershell
-# 1. Syntax verification
-node --check test/v2.6/fixtures/*.js
-node --check test/v2.6/*.test.js
-node --check test/v2.6/run-all.cjs
+```bash
+# 1. Syntax verification across test harness and all test suites
+node --check test/e2e/r1-r5-harness.js
+node --check test/e2e/r1-r5-tier1-feature-coverage.test.js
+node --check test/e2e/r1-r5-tier2-boundary-corner.test.js
+node --check test/e2e/r1-r5-tier3-pairwise-combinations.test.js
+node --check test/e2e/r1-r5-tier4-realworld-scenarios.test.js
 
-# 2. Native node:test execution
-node --test test/v2.6/*.test.js
+# 2. Run Tier 1 Feature Coverage Suite
+node --test test/e2e/r1-r5-tier1-feature-coverage.test.js
 
-# 3. Master runner execution
-node test/v2.6/run-all.cjs
+# 3. Run Tier 2 Boundary & Corner Cases Suite
+node --test test/e2e/r1-r5-tier2-boundary-corner.test.js
+
+# 4. Run Tier 3 Pairwise Combinations Suite
+node --test test/e2e/r1-r5-tier3-pairwise-combinations.test.js
+
+# 5. Run Tier 4 Real-World Scenarios Suite
+node --test test/e2e/r1-r5-tier4-realworld-scenarios.test.js
+
+# 6. Run Complete 4-Tier Test Suite (54 Tests, 20 Suites)
+node --test test/e2e/r1-r5-*.test.js
 ```

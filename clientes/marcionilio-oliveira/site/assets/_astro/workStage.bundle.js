@@ -29523,7 +29523,7 @@ var TS = /* @__PURE__ */ o(((e) => {
 				ease: "expo.out"
 			});
 			else {
-				let t = (typeof window < "u" ? window : null)?.__WORK_STAGE__?.ribbonOffset ?? 0, r = vS((e.index - 1.5) * 32 + t);
+				let t = (typeof window < "u" ? window : null)?.__WORK_STAGE__?.ribbonOffset ?? 0, r = vS(e.index * 32 + t);
 				rS.to(c.current.position, {
 					x: r,
 					y: n,
@@ -29559,7 +29559,7 @@ var TS = /* @__PURE__ */ o(((e) => {
 	}, [e.index]), lg(() => {
 		if (!c.current || !l.current) return;
 		if (!a) {
-			let t = (typeof window < "u" ? window : null)?.__WORK_STAGE__, r = t?.ribbonOffset ?? 0, a = t?.scrollVelocity ?? i, o = (e.index - 1.5) * 32 + r;
+			let t = (typeof window < "u" ? window : null)?.__WORK_STAGE__, r = t?.ribbonOffset ?? 0, a = t?.scrollVelocity ?? i, o = e.index * 32 + r;
 			c.current.position.x = vS(o), c.current.position.y = n, l.current.u_sheetV = a, l.current.u_sheetW = 34, l.current.u_sheetD = uS(12, a);
 		}
 		d ? l.current.u_texture = d : u && (l.current.u_texture = u), l.current.u_res.set(r[0], r[1]), l.current.u_size.set(e.aspectRatio[0], e.aspectRatio[1]);
@@ -29673,7 +29673,7 @@ var AS = ({ alpha: e = 1, uSheetP: t = 1 }) => {
 	(0, _.useEffect)(() => {
 		let e = window, t = {};
 		oS.forEach((e) => {
-			let n = (e.index - 1.5) * 32;
+			let n = vS(e.index * 32);
 			t[e.index] = {
 				index: e.index,
 				slug: e.slug,
@@ -29769,8 +29769,8 @@ var AS = ({ alpha: e = 1, uSheetP: t = 1 }) => {
 				oS.forEach((n) => {
 					let i = g.current[n.index];
 					if (!i) return;
-					let a = yS(vS((n.index - 1.5) * 32 + M.current.offset), e, t, aS[0], aS[1], r), o = a.left;
-					o > e - 50 ? o = e - 50 : o < -a.width + 50 && (o = -a.width + 50), i.style.left = `${o}px`, i.style.top = `${a.top}px`, i.style.width = `${a.width}px`, i.style.height = `${a.height}px`, i.style.pointerEvents = "auto", i.style.visibility = "visible";
+					let a = yS(vS(n.index * 32 + M.current.offset), e, t, aS[0], aS[1], r);
+					i.style.left = `${a.left}px`, i.style.top = `${a.top}px`, i.style.width = `${a.width}px`, i.style.height = `${a.height}px`, i.style.pointerEvents = a.isVisible ? "auto" : "none", i.style.visibility = a.isVisible ? "visible" : "hidden";
 				});
 			}
 			let o = window;
@@ -29946,7 +29946,7 @@ var AS = ({ alpha: e = 1, uSheetP: t = 1 }) => {
 				children: /* @__PURE__ */ (0, ES.jsxs)(_.Suspense, {
 					fallback: null,
 					children: [/* @__PURE__ */ (0, ES.jsx)(AS, { uSheetP: +(c === null) }), oS.map((e) => {
-						let t = (e.index - 1.5) * 32, n = c === e.index, r = c !== null && c !== e.index;
+						let t = vS(e.index * 32), n = c === e.index, r = c !== null && c !== e.index;
 						return /* @__PURE__ */ (0, ES.jsx)(DS, {
 							project: e,
 							worldX: t,

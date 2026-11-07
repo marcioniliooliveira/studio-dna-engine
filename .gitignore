@@ -73,18 +73,31 @@ projetos/**/site/assets/
 *.webm
 *.mov
 
+# Artefatos mínimos e reproduzíveis do template piloto Elyse
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.avif
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.jpg
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.mp4
+!design-vault/elyse-residence-dev-webflow-io/assets/**/*.webm
+
 # Approved and rejected visual baselines are source evidence, not disposable screenshots
 !clientes/**/design/goldens/*.png
 !clientes/silvio-iwata-imobiliaria/mockups/**
+!clientes/silvio-iwata-imobiliaria/site/assets/
+!clientes/silvio-iwata-imobiliaria/site/assets/**
+!clientes/negocia-bem/site/assets/
+clientes/negocia-bem/site/assets/*
+!clientes/negocia-bem/site/assets/vendor/
+!clientes/negocia-bem/site/assets/vendor/**
 !clientes/jumpflex-home-evolution/*.jpg
 !copias/azimuteresidencial-com-br/**
 !copias/masters-residence-dviga/**
 !copias/jesperlandberg-com/**
 
-
 # SCALEX runtime tests require these three immutable local review-card fixtures
 !clientes/flashtech-caso-04-growth/site/assets/
 clientes/flashtech-caso-04-growth/site/assets/*
+!clientes/flashtech-caso-04-growth/site/assets/vendor/
+!clientes/flashtech-caso-04-growth/site/assets/vendor/**
 !clientes/flashtech-caso-04-growth/site/assets/69d88c4d1e28dbd62b778bc2_review_20card_20image_204.avif
 !clientes/flashtech-caso-04-growth/site/assets/69d88c4d8f905c724ee05c1e_review_20card_20image_203.avif
 !clientes/flashtech-caso-04-growth/site/assets/69d88c4d9ea5b9163355470b_review_20card_20image_205.avif

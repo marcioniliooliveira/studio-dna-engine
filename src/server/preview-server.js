@@ -10,6 +10,9 @@ const { handleV2Orchestrate } = require('./routes/v2-orchestrate');
 const { handleV2Vault } = require('./routes/v2-vault');
 const { handleV2Review } = require('./routes/v2-review');
 const { handleV2Audit } = require('./routes/v2-audit');
+const { handleV3Persistence } = require('./routes/v3-persistence');
+const HybridRepository = require('../persistence/hybrid-repository');
+const { buildDashboardHtml } = require('./views/dnastudio-dashboard');
 const {
   resolveStaticPath,
   assertSafeExternalUrl,
@@ -46,6 +49,18 @@ const MIME_TYPES = {
   '.md': 'text/markdown; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8'
 };
+
+const liveSelectionsStore = new Map();
+
+function getLiveSelection(slug) {
+  if (!slug) return null;
+  return liveSelectionsStore.get(slug) || null;
+}
+
+function setLiveSelection(slug, data) {
+  if (!slug) return;
+  liveSelectionsStore.set(slug, data);
+}
 
 /**
  * Faz download assíncrono de asset remoto e salva em disco (Self-Healing)
@@ -188,317 +203,7 @@ function streamFileWithRange(req, res, filePath, contentType) {
   }
 }
 
-function buildDashboardHtml(copias, clientes) {
-  const copiasCards = copias.map(function(c) {
-    return '<div class="card">' +
-      '<div>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
-          '<span class="badge">Esqueleto Base</span>' +
-          '<span style="font-size:0.78rem;color:var(--text-muted)">Stage 01/02</span>' +
-        '</div>' +
-        '<h3>' + c + '</h3>' +
-        '<p>DNA estrutural, classes de layout e assets descaracterizados prontos para uso em novos clientes.</p>' +
-      '</div>' +
-      '<div style="display:flex;gap:8px;margin-top:16px">' +
-        '<a href="/' + c + '/site/index.html" target="_blank" class="btn btn-primary" style="flex:1">&#128065;&#65039; Ver Clone</a>' +
-        '<button onclick="runAudit(\'' + c + '\')" class="btn btn-secondary">&#128737;&#65039; Quality Gate</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  const clientesCards = clientes.map(function(cl) {
-    return '<div class="card">' +
-      '<div>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
-          '<span class="badge">&#9679; Experimental</span>' +
-          '<span style="font-size:0.78rem;color:var(--text-muted)">Gates pendentes</span>' +
-        '</div>' +
-        '<h3>' + cl + '</h3>' +
-        '<p>Artefato de cliente em validação. Consulte o relatório de qualidade antes de promover para produção.</p>' +
-      '</div>' +
-      '<div style="display:flex;gap:8px;margin-top:16px">' +
-        '<a href="/clientes/' + cl + '/site/index.html" target="_blank" class="btn btn-primary" style="flex:1">&#128065;&#65039; Abrir Site</a>' +
-        '<button onclick="runAudit(\'' + cl + '\')" class="btn btn-secondary">&#128737;&#65039; Auditar</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  const clientesOptions = copias.map(function(c) {
-    return '<option value="' + c + '">' + c + '</option>';
-  }).join('');
-
-  const activeClientsOptions = clientes.map(function(cl) {
-    return '<option value="' + cl + '">' + cl + '</option>';
-  }).join('');
-
-  return '<!DOCTYPE html>\n' +
-'<html lang="pt-BR" class="dark">\n' +
-'<head>\n' +
-'  <meta charset="UTF-8">\n' +
-'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-'  <title>Studio DNA &mdash; Awwwards Engine &amp; Client Production Hub</title>\n' +
-'  <link rel="preconnect" href="https://fonts.googleapis.com">\n' +
-'  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
-'  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">\n' +
-'  <style>\n' +
-'    :root {\n' +
-'      --bg: #030508;\n' +
-'      --bg-card: rgba(255,255,255,0.02);\n' +
-'      --bg-card-hover: rgba(255,255,255,0.04);\n' +
-'      --border: rgba(255,255,255,0.07);\n' +
-'      --border-focus: rgba(56,189,248,0.4);\n' +
-'      --text: #fafaf9;\n' +
-'      --text-muted: #71717a;\n' +
-'      --accent: #38bdf8;\n' +
-'      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);\n' +
-'      --success: #10b981;\n' +
-'    }\n' +
-'    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n' +
-'    html, body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; min-height: 100vh; }\n' +
-'    header { border-bottom: 1px solid var(--border); padding: 0 32px; position: sticky; top: 0; background: rgba(3,5,8,0.9); backdrop-filter: blur(12px); z-index: 100; }\n' +
-'    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1400px; margin: 0 auto; }\n' +
-'    .logo { font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }\n' +
-'    .nav-tabs { display: flex; gap: 4px; }\n' +
-'    .nav-btn { background: none; border: none; color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 500; transition: all 0.15s; }\n' +
-'    .nav-btn:hover, .nav-btn.active { background: rgba(255,255,255,0.06); color: var(--text); }\n' +
-'    .container { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }\n' +
-'    .view-section { display: none; }\n' +
-'    .view-section.active { display: block; }\n' +
-'    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-top: 20px; }\n' +
-'    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; }\n' +
-'    .card:hover { border-color: rgba(56,189,248,0.4); background: var(--bg-card-hover); transform: translateY(-2px); }\n' +
-'    .card h3 { font-size: 1.2rem; margin-bottom: 6px; }\n' +
-'    .card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }\n' +
-'    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(56,189,248,0.1); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }\n' +
-'    .badge-success { background: rgba(16,185,129,0.1); color: var(--success); border-color: rgba(16,185,129,0.2); }\n' +
-'    .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; transition: all 0.2s; font-family: inherit; }\n' +
-'    .btn-primary { background: var(--accent-gradient); color: #000; font-weight: 700; }\n' +
-'    .btn-secondary { background: #182235; color: #fff; border: 1px solid var(--border); }\n' +
-'    .btn-secondary:hover { background: #223049; }\n' +
-'    .form-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 32px; }\n' +
-'    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px; }\n' +
-'    .input-field { display: flex; flex-direction: column; gap: 6px; }\n' +
-'    .input-field label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }\n' +
-'    .input-field input, .input-field select { background: #07090e; border: 1px solid var(--border); color: #fff; padding: 12px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }\n' +
-'    .input-field input:focus, .input-field select:focus { outline: none; border-color: var(--border-focus); }\n' +
-'    pre { background: #05070a; padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: "JetBrains Mono", monospace; font-size: 0.85rem; overflow-x: auto; color: #38bdf8; }\n' +
-'  </style>\n' +
-'</head>\n' +
-'<body>\n' +
-'  <header>\n' +
-'    <div class="header-inner">\n' +
-'      <div class="logo"><span>&#127760;</span> Studio DNA PRO <span style="font-size:0.75rem;color:var(--text-muted);font-weight:500">v2.0 &bull; Awwwards Engine</span></div>\n' +
-'      <div class="nav-tabs">\n' +
-'        <button class="nav-btn active" onclick="showTab(\'tab-clients\')">&#127970; Projetos de Clientes</button>\n' +
-'        <button class="nav-btn" onclick="showTab(\'tab-vault\')">&#129516; Design Vault</button>\n' +
-'        <button class="nav-btn" onclick="showTab(\'tab-clones\')">&#128230; Esqueletos &amp; Copias</button>\n' +
-'        <button class="nav-btn" onclick="showTab(\'tab-extractor\')">&#9889; Deep Scraper</button>\n' +
-'        <button class="nav-btn" onclick="showTab(\'tab-review\')">&#127915; Review Console (V2)</button>\n' +
-'      </div>\n' +
-'    </div>\n' +
-'  </header>\n' +
-'\n' +
-'  <main class="container">\n' +
-'    <section id="tab-clients" class="view-section active">\n' +
-'      <div class="form-panel">\n' +
-'        <h2 style="margin-bottom:8px;font-size:1.4rem">&#127981; Pipeline de Transmutacao de Clientes</h2>\n' +
-'        <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:24px">Gere um artefato experimental a partir de uma referencia; validacao e promocao sao etapas separadas.</p>\n' +
-'        <div class="form-grid">\n' +
-'          <div class="input-field"><label>Nome da Marca / Cliente</label><input type="text" id="clientBrandName" placeholder="Ex: Negocia Bem Imobiliaria"></div>\n' +
-'          <div class="input-field"><label>Esqueleto de Referencia</label><select id="clientRefSelect">' + clientesOptions + '</select></div>\n' +
-'          <div class="input-field"><label>Nicho de Atuacao</label><input type="text" id="clientNiche" placeholder="Ex: Imobiliaria &amp; Financiamento Caixa"></div>\n' +
-'          <div class="input-field"><label>WhatsApp de Conversao</label><input type="text" id="clientWhatsapp" placeholder="Ex: 5544999999999"></div>\n' +
-'        </div>\n' +
-'        <button class="btn btn-primary" onclick="generateClientProject()">&#10024; Gerar Projeto do Cliente One-Shot</button>\n' +
-'      </div>\n' +
-'      <h3 style="font-size:1.2rem;margin-bottom:12px">&#128193; Projetos de Clientes Ativos (' + clientes.length + ')</h3>\n' +
-'      <div class="grid-cards">' + clientesCards + '</div>\n' +
-'    </section>\n' +
-'\n' +
-'    <section id="tab-vault" class="view-section">\n' +
-'      <div style="margin-bottom:24px"><h2 style="font-size:1.4rem;margin-bottom:6px">&#129516; Awwwards Design DNA Vault</h2><p style="color:var(--text-muted)">Banco de inteligencia permanente com fisica de movimento, 3D e tipografia cinematografica.</p></div>\n' +
-'      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">\n' +
-'        <div class="form-panel"><h3 style="margin-bottom:12px">&#127905; Fisica 3D &amp; Curvas de Easing</h3>' +
-'<pre><code>--ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);\n--ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);\n--ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);\n\nperspective: 132vw;\ntransform: rotateY(i*45deg) translateZ(44vw);</code></pre></div>\n' +
-'        <div class="form-panel"><h3 style="margin-bottom:12px">&#128208; Pares Tipograficos de Elite</h3>' +
-'<pre><code>Heading: "New Grotesk", clamp(2.5rem, 6vw, 6.5rem)\nTracking: -0.035em | Line-Height: 0.95\nBody: "New Grotesk", 400 | Line-Height: 1.5\nAccent: "New Grotesk Mono", uppercase</code></pre></div>\n' +
-'      </div>\n' +
-'    </section>\n' +
-'\n' +
-'    <section id="tab-clones" class="view-section">\n' +
-'      <h2 style="font-size:1.4rem;margin-bottom:6px">&#128230; Esqueletos &amp; Referencias Clonadas (' + copias.length + ')</h2>\n' +
-'      <p style="color:var(--text-muted);margin-bottom:20px">Sites de referencia raspados com assets normalizados e esqueleto estrutural extraido.</p>\n' +
-'      <div class="grid-cards">' + copiasCards + '</div>\n' +
-'    </section>\n' +
-'\n' +
-'    <section id="tab-extractor" class="view-section">\n' +
-'      <div class="form-panel">\n' +
-'        <h2 style="font-size:1.4rem;margin-bottom:8px">&#9889; Novo Scraping Profundo de Referencia</h2>\n' +
-'        <p style="color:var(--text-muted);margin-bottom:20px">Insira a URL de um site do Awwwards/Godly para dissecar o DOM, WebGL, shaders e GSAP.</p>\n' +
-'        <div style="display:flex;gap:12px">\n' +
-'          <input type="url" id="extractUrl" placeholder="https://exemplo-site-awwwards.com" style="flex:1;background:#07090e;border:1px solid var(--border);color:#fff;padding:14px;border-radius:8px;font-family:inherit">\n' +
-'          <button class="btn btn-primary" onclick="startDeepExtract()">&#128640; Iniciar Extracao</button>\n' +
-'        </div>\n' +
-'      </div>\n' +
-'    </section>\n' +
-'\n' +
-'    <section id="tab-review" class="view-section">\n' +
-'      <div class="form-panel">\n' +
-'        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">\n' +
-'          <div>\n' +
-'            <h2 style="font-size:1.4rem;margin-bottom:4px">&#127915; Review Console &amp; Direcoes Visuais V2</h2>\n' +
-'            <p style="color:var(--text-muted);font-size:0.92rem">Controle de divergencia A/B/C, dials de intencao e auditoria multifatorial (38 variaveis).</p>\n' +
-'          </div>\n' +
-'          <div style="display:flex;gap:8px">\n' +
-'            <select id="reviewClientSelect" style="background:#07090e;border:1px solid var(--border);color:#fff;padding:8px 12px;border-radius:8px">\n' +
-activeClientsOptions + '\n' +
-'            </select>\n' +
-'            <button class="btn btn-primary" onclick="loadDirections()">Carregar 3 Direcoes</button>\n' +
-'            <button class="btn btn-secondary" onclick="runTriangulatedAudit()">Auditoria 38 Variaveis</button>\n' +
-'          </div>\n' +
-'        </div>\n' +
-'        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:24px;background:#05070a;padding:16px;border-radius:8px;border:1px solid var(--border)">\n' +
-'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">DENSIDADE: <span id="val-density">3</span></label><input type="range" id="dial-density" min="1" max="5" value="3" style="width:100%" oninput="document.getElementById(\'val-density\').innerText=this.value"></div>\n' +
-'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">ESTETICA: <span id="val-aesthetic">2</span></label><input type="range" id="dial-aesthetic" min="1" max="5" value="2" style="width:100%" oninput="document.getElementById(\'val-aesthetic\').innerText=this.value"></div>\n' +
-'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">MOVIMENTO: <span id="val-motion">5</span></label><input type="range" id="dial-motion" min="1" max="5" value="5" style="width:100%" oninput="document.getElementById(\'val-motion\').innerText=this.value"></div>\n' +
-'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">CONTRASTE: <span id="val-contrast">2</span></label><input type="range" id="dial-contrast" min="1" max="5" value="2" style="width:100%" oninput="document.getElementById(\'val-contrast\').innerText=this.value"></div>\n' +
-'          <div><label style="font-size:0.75rem;color:var(--text-muted);font-weight:700">SUPERFICIE: <span id="val-surface">3</span></label><input type="range" id="dial-surface" min="1" max="5" value="3" style="width:100%" oninput="document.getElementById(\'val-surface\').innerText=this.value"></div>\n' +
-'        </div>\n' +
-'        <div id="directionsGrid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:24px">\n' +
-'          <div class="card" style="border-top:3px solid #38bdf8">\n' +
-'            <h3>Direcao A</h3>\n' +
-'            <p style="color:var(--accent);font-weight:600">Technical Precision (Swiss Grid)</p>\n' +
-'            <p>Grid de 12 colunas, tipografia mono, dark mode profundo #030508, Lenis snappy easing.</p>\n' +
-'            <button class="btn btn-primary" onclick="selectGolden(\'A\')" style="margin-top:12px">&#9989; Aprovar Golden A</button>\n' +
-'          </div>\n' +
-'          <div class="card" style="border-top:3px solid #f5f5f5">\n' +
-'            <h3>Direcao B</h3>\n' +
-'            <p style="color:#fff;font-weight:600">Editorial Brutalist</p>\n' +
-'            <p>Tipografia display com tracking negativo, alto contraste P&amp;B, zero border-radius.</p>\n' +
-'            <button class="btn btn-secondary" onclick="selectGolden(\'B\')" style="margin-top:12px">&#9989; Aprovar Golden B</button>\n' +
-'          </div>\n' +
-'          <div class="card" style="border-top:3px solid #d4af37">\n' +
-'            <h3>Direcao C</h3>\n' +
-'            <p style="color:#d4af37;font-weight:600">Kinetic Luxury</p>\n' +
-'            <p>Midia full-bleed com color grading cinematografico, serifas finas, transicoes lentas de 1200ms.</p>\n' +
-'            <button class="btn btn-secondary" onclick="selectGolden(\'C\')" style="margin-top:12px">&#9989; Aprovar Golden C</button>\n' +
-'          </div>\n' +
-'        </div>\n' +
-'        <div style="margin-top:24px">\n' +
-'          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">\n' +
-'            <h3 style="font-size:1.1rem">&#128269; Viewport Sandbox &amp; Diff Interativo</h3>\n' +
-'            <div style="display:flex;gap:8px">\n' +
-'              <button class="btn btn-secondary" onclick="setPreviewViewport(1440, 900)">&#128187; Desktop (1440px)</button>\n' +
-'              <button class="btn btn-secondary" onclick="setPreviewViewport(768, 1024)">&#128241; Tablet (768px)</button>\n' +
-'              <button class="btn btn-secondary" onclick="setPreviewViewport(375, 812)">&#128242; Mobile (375px)</button>\n' +
-'            </div>\n' +
-'          </div>\n' +
-'          <div style="background:#000;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;justify-content:center;padding:16px">\n' +
-'            <iframe id="previewIframe" src="/clientes/piloto-elyse-luxe/site/index.html" style="width:1440px;height:700px;border:none;border-radius:8px;background:#05070a;transition:width 0.3s ease"></iframe>\n' +
-'          </div>\n' +
-'        </div>\n' +
-'      </div>\n' +
-'    </section>\n' +
-'  </main>\n' +
-'\n' +
-'  <script>\n' +
-'    function showTab(tabId) {\n' +
-'      document.querySelectorAll(".view-section").forEach(function(s) { s.classList.remove("active"); });\n' +
-'      document.querySelectorAll(".nav-btn").forEach(function(b) { b.classList.remove("active"); });\n' +
-'      document.getElementById(tabId).classList.add("active");\n' +
-'      event.target.classList.add("active");\n' +
-'    }\n' +
-'    async function generateClientProject() {\n' +
-'      var brandName = document.getElementById("clientBrandName").value.trim();\n' +
-'      var refSlug = document.getElementById("clientRefSelect").value;\n' +
-'      var niche = document.getElementById("clientNiche").value.trim();\n' +
-'      var whatsapp = document.getElementById("clientWhatsapp").value.trim();\n' +
-'      if (!brandName) return alert("Por favor, digite o nome da marca do cliente.");\n' +
-'      try {\n' +
-'        var res = await fetch("/api/client/create", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ brandName: brandName, refSlug: refSlug, niche: niche, whatsapp: whatsapp }) });\n' +
-'        var data = await res.json();\n' +
-'        if (data.success) { alert("Projeto do cliente criado com sucesso!"); window.location.reload(); }\n' +
-'        else { alert("Erro: " + data.error); }\n' +
-'      } catch (err) { alert("Falha na comunicacao: " + err.message); }\n' +
-'    }\n' +
-'    async function runAudit(slug) {\n' +
-'      alert("Iniciando auditoria Playwright para: " + slug + "... Aguarde alguns segundos.");\n' +
-'      try {\n' +
-'        var res = await fetch("/api/audit/" + slug, { method: "POST" });\n' +
-'        var data = await res.json();\n' +
-'        if (data.success && data.audit) {\n' +
-'          var a = data.audit;\n' +
-'          alert("RESULTADO DO QUALITY GATE:\\nStatus: " + (a.auditPassed ? "APROVADO" : "REPROVADO") + "\\nJS Errors: " + a.jsErrors.length + "\\nImagens Quebradas: " + a.imagesSummary.broken.length + "\\nImagens Validas: " + a.imagesSummary.valid);\n' +
-'        }\n' +
-'      } catch (e) { alert("Erro ao rodar auditoria: " + e.message); }\n' +
-'    }\n' +
-'    async function startDeepExtract() {\n' +
-'      var url = document.getElementById("extractUrl").value.trim();\n' +
-'      if (!url) return alert("Digite a URL");\n' +
-'      try {\n' +
-'        await fetch("/api/extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: url }) });\n' +
-'        alert("Extracao iniciada em segundo plano! A pagina atualizara em instantes.");\n' +
-'        setTimeout(function() { window.location.reload(); }, 10000);\n' +
-'      } catch (e) { alert("Erro: " + e.message); }\n' +
-'    }\n' +
-'    async function loadDirections() {\n' +
-'      var sel = document.getElementById("reviewClientSelect");\n' +
-'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
-'      try {\n' +
-'        var res = await fetch("/api/v2/directions/" + slug);\n' +
-'        var data = await res.json();\n' +
-'        if (data.success) {\n' +
-'          var iframe = document.getElementById("previewIframe");\n' +
-'          if (iframe) iframe.src = "/clientes/" + slug + "/site/index.html";\n' +
-'          alert("3 Direcoes carregadas com sucesso para: " + slug);\n' +
-'        } else {\n' +
-'          alert("Erro ao carregar direcoes: " + data.error);\n' +
-'        }\n' +
-'      } catch (e) { alert("Falha: " + e.message); }\n' +
-'    }\n' +
-'    async function selectGolden(dirId) {\n' +
-'      var sel = document.getElementById("reviewClientSelect");\n' +
-'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
-'      try {\n' +
-'        var res = await fetch("/api/v2/decisions", {\n' +
-'          method: "POST",\n' +
-'          headers: { "Content-Type": "application/json" },\n' +
-'          body: JSON.stringify({ clientSlug: slug, selectedDirection: dirId, approver: "human-architect" })\n' +
-'        });\n' +
-'        var data = await res.json();\n' +
-'        if (data.success) {\n' +
-'          alert("Golden " + dirId + " aprovado com sucesso para " + slug + "! Contrato selado.");\n' +
-'        } else {\n' +
-'          alert("Erro: " + data.error);\n' +
-'        }\n' +
-'      } catch (e) { alert("Falha: " + e.message); }\n' +
-'    }\n' +
-'    async function runTriangulatedAudit() {\n' +
-'      var sel = document.getElementById("reviewClientSelect");\n' +
-'      var slug = sel ? sel.value : "piloto-elyse-luxe";\n' +
-'      alert("Iniciando auditoria multifatorial (38 variaveis) para " + slug + "... Aguarde.");\n' +
-'      try {\n' +
-'        var res = await fetch("/api/v2/audit/" + slug, { method: "POST" });\n' +
-'        var data = await res.json();\n' +
-'        if (data.success && data.audit) {\n' +
-'          var a = data.audit;\n' +
-'          alert("LAUDO DE AUDITORIA MULTIFATORIAL:\\nStatus: " + a.status + "\\nScore: " + a.score + "\\nDivergencia Detectada: " + (a.divergenceDetected ? "SIM" : "NAO") + "\\nDuracao: " + a.durationMs + "ms");\n' +
-'        } else {\n' +
-'          alert("Erro: " + (data.error || "falha desconhecida"));\n' +
-'        }\n' +
-'      } catch (e) { alert("Falha: " + e.message); }\n' +
-'    }\n' +
-'    function setPreviewViewport(w, h) {\n' +
-'      var iframe = document.getElementById("previewIframe");\n' +
-'      if (iframe) {\n' +
-'        iframe.style.width = w + "px";\n' +
-'        iframe.style.height = h + "px";\n' +
-'      }\n' +
-'    }\n' +
-'  </script>\n' +
-'</body>\n' +
-'</html>';
-}
+// NOTE: Dashboard HTML generation extracted to ./views/dnastudio-dashboard.js (Milestone 3 / Features F10–F16)
 
 function startPreviewServer(options = {}) {
   const opts = typeof options === 'number' ? { port: options } : (options || {});
@@ -515,6 +220,14 @@ function startPreviewServer(options = {}) {
 
   if (!fs.existsSync(copiasDir)) fs.mkdirSync(copiasDir, { recursive: true });
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
+
+  const hybridRepo = opts.hybridRepo || new HybridRepository({
+    dbPath: opts.dbPath || path.join(rootDir, 'data/studio_dna.db'),
+    docBasePath: opts.docBasePath || path.join(rootDir, 'data/documents')
+  });
+  hybridRepo.init().catch(err => {
+    if (!opts.silent) console.error('Failed to initialize HybridRepository:', err);
+  });
 
   const server = http.createServer(async (req, res) => {
     // CORS preflight
@@ -556,12 +269,192 @@ function startPreviewServer(options = {}) {
       return;
     }
 
-    // ── Rotas V2 da Arquitetura de Orquestração & Auditoria ─────────────────
-    const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, maxBodyBytes: opts.maxBodyBytes };
+    // ── DNA Live Workbench & Click-to-MCP Bridge ────────────────────────────
+    if (pathname === '/__dna_live_select' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data || typeof data !== 'object' || !data.clientSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(data.clientSlug);
+        const selectionData = {
+          clientSlug,
+          dataDs: data.dataDs || '',
+          line: Number(data.line || 1),
+          tagName: data.tagName || '',
+          selector: data.selector || '',
+          computedStyles: data.computedStyles || {},
+          boundingBox: data.boundingBox || {},
+          activeScopeVars: data.activeScopeVars || {},
+          telemetry: data.telemetry || {},
+          timestamp: data.timestamp || Date.now()
+        };
+
+        liveSelectionsStore.set(clientSlug, selectionData);
+
+        // Persist cache in .domscribe
+        const domscribeDir = path.join(rootDir, '.domscribe');
+        if (!fs.existsSync(domscribeDir)) fs.mkdirSync(domscribeDir, { recursive: true });
+        const cachePath = path.join(domscribeDir, `live-selection-${clientSlug}.json`);
+        fs.writeFileSync(cachePath, JSON.stringify(selectionData, null, 2), 'utf8');
+
+        const clientTargetDir = path.join(clientesDir, clientSlug);
+        if (fs.existsSync(clientTargetDir)) {
+          const clientDomscribeDir = path.join(clientTargetDir, '.domscribe');
+          if (!fs.existsSync(clientDomscribeDir)) fs.mkdirSync(clientDomscribeDir, { recursive: true });
+          fs.writeFileSync(path.join(clientDomscribeDir, 'live-selection.json'), JSON.stringify(selectionData, null, 2), 'utf8');
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          ok: true,
+          clientSlug,
+          dataDs: selectionData.dataDs,
+          timestamp: selectionData.timestamp
+        }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/__dna_live_select') && req.method === 'GET') {
+      try {
+        const rawSlug = pathname.replace(/^\/__dna_live_select\/?/, '').split('/')[0].trim();
+        if (!rawSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(rawSlug);
+
+        let selection = liveSelectionsStore.get(clientSlug);
+        if (!selection) {
+          const rootCache = path.join(rootDir, '.domscribe', `live-selection-${clientSlug}.json`);
+          const clientCache = path.join(clientesDir, clientSlug, '.domscribe', 'live-selection.json');
+          if (fs.existsSync(rootCache)) {
+            selection = JSON.parse(fs.readFileSync(rootCache, 'utf8'));
+          } else if (fs.existsSync(clientCache)) {
+            selection = JSON.parse(fs.readFileSync(clientCache, 'utf8'));
+          }
+        }
+
+        if (!selection) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'No live selection found for client' }));
+          return;
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, ...selection }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/__dna_live_approve' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data || typeof data !== 'object' || !data.clientSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(data.clientSlug);
+        const directionId = data.directionId || 'T03A';
+        const approvedByRole = data.approvedByRole || 'art_director';
+        const sha256 = data.sha256 || 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+
+        const clientTargetDir = path.join(clientesDir, clientSlug);
+        if (!fs.existsSync(clientTargetDir)) fs.mkdirSync(clientTargetDir, { recursive: true });
+
+        // Record H02 approval in ExecutionLedger
+        const ledgerFile = path.join(clientTargetDir, 'EXECUTION_LEDGER.json');
+        try {
+          const { ExecutionLedger } = require('../orchestration/execution-ledger');
+          let ledger;
+          if (fs.existsSync(ledgerFile)) {
+            try { ledger = ExecutionLedger.load(ledgerFile); } catch (_) { ledger = new ExecutionLedger(); }
+          } else {
+            ledger = new ExecutionLedger();
+          }
+
+          const runId = `run-${clientSlug}`;
+          if (!ledger.getRun(runId)) {
+            ledger.createRun({
+              runId,
+              taskId: 'TASK-V3-08:LIVE_WORKBENCH',
+              model: 'human-director',
+              inputTokens: 0,
+              outputTokens: 0,
+              retries: 0,
+              status: 'direction_approved',
+              gates: { H02: { approved: true, directionId, sha256 } },
+              artifactHash: sha256
+            });
+          } else {
+            const existing = ledger.getRun(runId);
+            ledger.updateRun(runId, {
+              gates: { ...existing.gates, H02: { approved: true, directionId, sha256 } }
+            });
+          }
+
+          ledger.appendEvent(runId, {
+            gate: 'H02',
+            action: 'direction_approved',
+            directionId,
+            approvedByRole,
+            sha256,
+            timestamp: Date.now()
+          });
+          ledger.save(ledgerFile);
+        } catch (_) {}
+
+        // Record human-decision.json
+        const decisionPath = path.join(clientTargetDir, 'human-decision.json');
+        const decision = {
+          schemaVersion: 2,
+          contractKind: 'human-decision',
+          decisionId: `dec-h02-${Date.now()}`,
+          clientSlug,
+          selectedDirection: directionId,
+          approver: approvedByRole,
+          gate: 'H02',
+          sha256,
+          timestamp: new Date().toISOString(),
+          status: 'approved-frozen'
+        };
+        fs.writeFileSync(decisionPath, JSON.stringify(decision, null, 2), 'utf8');
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          ok: true,
+          clientSlug,
+          directionId,
+          gate: 'H02',
+          approved: true,
+          sha256,
+          timestamp: Date.now()
+        }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ── Rotas V2 & V3 da Arquitetura de Orquestração, Persistência & Auditoria ─
+    const routeOpts = { rootDir, copiasDir, clientesDir, vaultDir, hybridRepo, urlObj, maxBodyBytes: opts.maxBodyBytes };
     if (await handleV2Orchestrate(req, res, pathname, routeOpts)) return;
     if (await handleV2Vault(req, res, pathname, routeOpts)) return;
     if (await handleV2Review(req, res, pathname, routeOpts)) return;
     if (await handleV2Audit(req, res, pathname, routeOpts)) return;
+    if (await handleV3Persistence(req, res, pathname, routeOpts)) return;
 
     // ── API: Iniciar Extração ──────────────────────────────────────────────
     if (pathname === '/api/extract' && req.method === 'POST') {
@@ -676,7 +569,7 @@ function startPreviewServer(options = {}) {
       const clientes = fs.existsSync(clientesDir)
         ? fs.readdirSync(clientesDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name)
         : [];
-      const html = buildDashboardHtml(copias, clientes);
+      const html = buildDashboardHtml(copias, clientes, { copiasDir, clientesDir, rootDir, enableMutations: mutationOptions.enabled });
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(html);
       return;
@@ -985,10 +878,18 @@ function startPreviewServer(options = {}) {
     console.log('📁  Servindo: ' + copiasDir + ' e ' + clientesDir + '\n');
   });
 
+  server.hybridRepo = hybridRepo;
+  server.on('close', () => {
+    try { hybridRepo.close(); } catch (_) {}
+  });
+
   return server;
 }
 
 module.exports = {
   startPreviewServer,
-  fetchAndSaveRemoteAsset
+  buildDashboardHtml,
+  fetchAndSaveRemoteAsset,
+  getLiveSelection,
+  setLiveSelection
 };

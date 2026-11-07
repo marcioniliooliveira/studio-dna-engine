@@ -1,0 +1,41 @@
+{
+  "experiment_id": "R00-BASELINE-001",
+  "timestamp": "2026-10-23T16:02:42.413Z",
+  "commit_sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+  "branch": "integration/v2-dna-orchestrator",
+  "environment": {
+    "timestamp": "2026-10-23T16:02:38.560Z",
+    "os": {
+      "platform": "win32",
+      "release": "10.0.26200",
+      "type": "Windows_NT",
+      "arch": "x64",
+      "cpus": 16,
+      "cpu_model": "Intel(R) Core(TM) 7 240H",
+      "total_memory_gb": "33.97",
+      "free_memory_gb": "4.32"
+    },
+    "runtime": {
+      "node_version": "v22.23.3",
+      "npm_version": "10.9.9",
+      "v8_version": "12.4.254.21-node.57",
+      "sqlite_available": true
+    },
+    "git": {
+      "commit_sha": "3c4aabf5b470ed275a95ff8a731fce9d6ea37b19",
+      "branch": "integration/v2-dna-orchestrator",
+      "is_clean": false,
+      "lockfile_sha256": "3c5c55e478e25509127ef9cc2320c4e2728784c8947b735530de6239df3f1a5b"
+    }
+  },
+  "install_status": "success",
+  "lockfile_sha256": "3c5c55e478e25509127ef9cc2320c4e2728784c8947b735530de6239df3f1a5b",
+  "dependency_audit_sha256": "26ad79f6cc6a9483b1ffc42d3ee7dee264c96e834f452dcacd221ff2ec0a2bf0",
+  "branches_sha256": "bad33373a56681f5c3e8294127a567c3133d7c4a99249697a7a9c4fee777d141",
+  "environment_sha256": "64352137784657d030d0fee9c89a6d41a84c5fb5459d3f49b9c1d5186e8fbe51",
+  "conclusions": {
+    "is_clean_install_reproducible": true,
+    "sqlite_node_support": true,
+    "branch_divergence_noted": true
+  }
+}

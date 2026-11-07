@@ -221,3 +221,123 @@ test('rejects network policies outside the deny or hostname allowlist forms', ()
     assert.throws(() => validateTaskContractV2({ ...valid(), networkPolicy: { mode: 'allowlist', hosts: [host] } }, workspaceRoot), /networkPolicy|host/i, host);
   }
 });
+
+
+function validV3() {
+  return {
+    id: 'TASK-V3-01',
+    schemaVersion: 2,
+    role: 'implementation_agent',
+    actorId: 'agent-core-governance-v3',
+    clientScope: 'global',
+    surfaceMode: 'Operate',
+    readAllowlist: [
+      'src/orchestration/blueprint.js',
+      'src/orchestration/dag-scheduler.js'
+    ],
+    writeAllowlist: [
+      'schemas/task-contract-v2.schema.json',
+      'src/orchestration/task-contract-v2.js'
+    ],
+    allowedTools: ['fs.read', 'fs.write', 'node.test'],
+    allowedGates: ['unit_test_gate'],
+    verificationCommand: 'node --test test/task-contract-v2.test.js',
+    maxRefinementAttempts: 3
+  };
+}
+
+test('accepts valid V3 delegation contracts and deep freezes result', () => {
+  const source = validV3();
+  const result = validateTaskContractV2(source, workspaceRoot);
+
+  assert.deepEqual(result, source);
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(Object.isFrozen(result.readAllowlist), true);
+  assert.throws(() => { result.surfaceMode = 'Persuade'; }, TypeError);
+});
+
+test('validates surfaceMode and artisticWaivers in V3 contracts', () => {
+  const contract = validV3();
+  contract.surfaceMode = 'Experience';
+  contract.artisticWaivers = [
+    {
+      dataDs: 'a1b2c3d4',
+      ruleId: 'typography-oversized',
+      reason: 'Artistic brutalist intent verified by lead director',
+      approvedByRole: 'composition_agent'
+    }
+  ];
+
+  const result = validateTaskContractV2(contract, workspaceRoot);
+  assert.equal(result.surfaceMode, 'Experience');
+  assert.equal(result.artisticWaivers.length, 1);
+  assert.equal(Object.isFrozen(result.artisticWaivers[0]), true);
+
+  assert.throws(() => {
+    validateTaskContractV2({ ...contract, surfaceMode: 'InvalidMode' }, workspaceRoot);
+  }, /surfaceMode/);
+
+  assert.throws(() => {
+    validateTaskContractV2({
+      ...contract,
+      artisticWaivers: [{ dataDs: 'bad', ruleId: 'rule', reason: 'short', approvedByRole: 'hacker' }]
+    }, workspaceRoot);
+  }, /dataDs|artisticWaivers/);
+});
+
+test('enforces POLICY_CROSS_CLIENT_PATH and POLICY_READONLY_COPIAS on V3 client contracts', () => {
+  const clientContract = {
+    ...validV3(),
+    clientScope: 'silvio-iwata',
+    readAllowlist: ['clientes/silvio-iwata/**', 'clientes/other-client/**'],
+    writeAllowlist: ['clientes/silvio-iwata/site/**']
+  };
+
+  assert.throws(() => {
+    validateTaskContractV2(clientContract, workspaceRoot);
+  }, (err) => {
+    assert.equal(err.code, 'POLICY_CROSS_CLIENT_PATH');
+    return true;
+  });
+
+  const writeCopiasContract = {
+    ...validV3(),
+    clientScope: 'silvio-iwata',
+    readAllowlist: ['clientes/silvio-iwata/**'],
+    writeAllowlist: ['clientes/silvio-iwata/site/**', 'copias/**']
+  };
+
+  assert.throws(() => {
+    validateTaskContractV2(writeCopiasContract, workspaceRoot);
+  }, (err) => {
+    assert.equal(err.code, 'POLICY_READONLY_COPIAS');
+    return true;
+  });
+});
+
+test('enforces independent verifier segregation on V3 verifier contracts', () => {
+  const verifierContract = {
+    ...validV3(),
+    role: 'technical_verifier_agent',
+    actorId: 'agent-verifier',
+    builderActorId: 'agent-verifier'
+  };
+
+  assert.throws(() => {
+    validateTaskContractV2(verifierContract, workspaceRoot);
+  }, (err) => {
+    assert.match(err.code, /POLICY_VERIFIER_SEGREGATION|DAG_VERIFIER_SEGREGATION_VIOLATION/);
+    return true;
+  });
+
+  const validVerifier = {
+    ...validV3(),
+    role: 'technical_verifier_agent',
+    actorId: 'agent-verifier',
+    builderActorId: 'agent-builder'
+  };
+
+  assert.doesNotThrow(() => {
+    validateTaskContractV2(validVerifier, workspaceRoot);
+  });
+});

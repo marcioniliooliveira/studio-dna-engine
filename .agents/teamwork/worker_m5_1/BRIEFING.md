@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-20T15:55:00Z
+# BRIEFING — 2026-11-06T20:00:00Z
 
 ## Mission
-Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displacement departure, inverted optical exit timeline (`scale: W -> 0`), and staggered card-to-sheet choreography ($Kp$) for Marcionilio Oliveira's "THE WORK" WebGL stage, maintaining 100% green pass on all automated verification gates (Gates 1-6 & Challenger Viewport suite).
+Implement Milestone 5 (Requirement R5: DevOps Pipeline with Docker & GitHub Actions): production multi-stage Dockerfile, hardened docker-compose.yml, clean .dockerignore, 3-job GitHub Actions workflow ci.yml, and ESM fixture isolation package.json.
 
 ## 🔒 My Identity
 - Archetype: Lead Full-Stack WebGL & Motion Engineer
@@ -9,6 +9,10 @@ Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displa
 - Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_1
 - Original parent: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
 - Milestone: M5 Implementation & Gate Verification
+- Archetype (Current): Milestone 5 Implementation Worker (worker_m5_1)
+- Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m5_1\
+- Current parent: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Milestone (Current): Milestone 5 (DevOps Pipeline with Docker & GitHub Actions - F21-F23)
 
 ## 🔒 Key Constraints
 - Exclusive write ownership:
@@ -21,46 +25,70 @@ Implement infinite ribbon wrap ($L=128.0$), cinematic HUD with cumulative displa
 - Preserve canonical GLSL shader mathematics and tokens in referenceData.ts.
 - Build production bundle with `npm run build:workstage` before testing.
 - Must verify all gates: Vitest math.spec.ts (8/8 pass), Playwright work-stage.spec.ts (Gates 2 to 6 pass), and challenger-viewport.spec.ts (all desktop resolutions pass).
+- Scope & Owned Files (Milestone 5):
+  1. `Dockerfile` (Root)
+  2. `docker-compose.yml` (Root)
+  3. `.dockerignore` (Root)
+  4. `.github/workflows/ci.yml` (Root)
+  5. `test/fixtures/context-index/package.json`
+- CRITICAL INVARIANTS:
+  - NEVER touch or modify anything in `copias/` or `clientes/`!
+  - Do not modify production application logic in `src/`.
+  - Integrity mandate: DO NOT CHEAT. All implementations must be genuine. No dummy/facade implementations.
 
 ## Current Parent
-- Conversation ID: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Updated: not yet
+- Conversation ID: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Updated: 2026-11-06T20:00:00Z
 
 ## Task Summary
 - **What to build**:
-  - WP-1: Infinite ribbon wrap in `math.ts`, `RibbonCard.tsx`, and `WorkStage.tsx` with analytical DOM proxy perspective projection.
-  - WP-2: Cinematic HUD with cumulative scroll accumulator ($\ge 1200\text{px}$) and departure pill button advancing to Chapter III.
-  - WP-3: Inverted optical exit timeline (`scale: W -> 0`, texts `Y -> C`, `j -> H`) and symmetric clip polygon in `initHorizontalScroll.LNLCK81L.js`.
-  - WP-4: Staggered card-to-sheet choreography ($Kp$) with GSAP timeline replacing `setTimeout(900ms)`.
-  - WP-5: Production bundle build and automated verification of all 7 test gates.
-- **Success criteria**: All automated tests pass (Vitest 8/8, Playwright Gates 2-6, Challenger 6/6), bundle built and synced, 5-component handoff report delivered.
-- **Interface contracts**: `PROJECT_STATUS.md`, `referenceData.ts`, `math.ts`.
+  - `Dockerfile`: Multi-stage build (`node:20-bookworm-slim` builder -> `mcr.microsoft.com/playwright:v1.49.0-noble` runner), unprivileged `pwuser`, port 4000, volumes `/app/copias` and `/app/data`, healthcheck probe.
+  - `docker-compose.yml`: Service `dnastudio` (container_name: `studio-dna`), ports `4000:4000`, volumes `./copias:/app/copias` and `./data:/app/data`, `NODE_ENV=production`, `shm_size: '2gb'`.
+  - `.dockerignore`: Comprehensive exclusion of `node_modules`, `copias`, `.git`, `data`, `.agents`, `.agents/teamwork/`, `scratch`, `test/screenshots/`, `.domscribe`, logs, images.
+  - `.github/workflows/ci.yml`: 3-job workflow (`lint` -> `test` -> `docker-build`) with Node setup, Playwright browser install/cache, syntax audit, test run, docker build & smoke test.
+  - `test/fixtures/context-index/package.json`: `{"type": "module"}` for clean 100% syntax audit.
+- **Success criteria**:
+  - `node scripts/audit-syntax.js` returns 0 errors (428/428 passed, 100%).
+  - `r1-r5-harness.js` Dockerfile, Compose, DockerIgnore, and CI validators all return true.
+  - All test commands pass: `npm run test:milestones` (79/79) and tiers 1-4 of `test/e2e/r1-r5-*.test.js` (54/54).
+  - Working tree clean with pristine `copias/` and `clientes/`.
+  - Clean commit `421f6d9` on `integration/staging-consolidated-v3`.
+- **Interface contracts**: `PROJECT.md`, `test/e2e/r1-r5-harness.js`.
+- **Code layout**: Root files + `test/fixtures/context-index/package.json`.
 
 ## Key Decisions Made
-- Use modular wrapping $X_{\text{wrapped}} = ((X_{\text{raw}} + 64.0) \pmod{128.0} + 128.0) \pmod{128.0} - 64.0$ with $L = 128.0$.
-- Imperatively synchronize DOM proxy coordinates via direct element style modification in `updateLoop` to maintain 60fps without triggering React re-renders.
-- Mirror GSAP entrance timeline symmetrically in `mwExit` with `scale: W -> 0` and uncurled clip-path.
-- Use GSAP timeline for detail modal entrance at $t=0.25\text{s}, 0.35\text{s}, 0.50\text{s}$ settling to `DETAIL_ACTIVE` at $t=0.85\text{s}$.
+- Added `test/fixtures/context-index/package.json` with `{"type": "module"}` to resolve ESM test fixture parsing in `node --check`.
+- Selected multi-stage Docker build separating dependency resolution (`node:20-bookworm-slim`) from runtime environment (`mcr.microsoft.com/playwright:v1.49.0-noble`).
+- Ensured unprivileged `pwuser` (UID 1000) owns `/app/copias` and `/app/data` to prevent permission errors when running non-root Playwright.
+- Placed Dockerfile HEALTHCHECK on a single line to maintain deterministic regex parsing in `test/e2e/r1-r5-harness.js`.
 
 ## Artifact Index
-- `src/components/WorkStage/math.ts` — math functions for wrap and proxy projection
-- `src/components/WorkStage/RibbonCard.tsx` — wrapped card mesh positioning and smooth detail return
-- `src/components/WorkStage/WorkStage.tsx` — unbounded scrolling, HUD elements, proxy synchronization, staggered detail
-- `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js` — inverted optical exit timeline
-- `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js` — compiled production bundle
+- `Dockerfile` — Multi-stage production container definition
+- `docker-compose.yml` — Production service compose specification
+- `.dockerignore` — Docker build context exclusion rules
+- `.github/workflows/ci.yml` — 3-job CI/CD GitHub Actions workflow
+- `test/fixtures/context-index/package.json` — ESM module declaration for context-index test fixtures
 
 ## Change Tracker
-- **Files modified**: none yet
-- **Build status**: pending
+- **Files modified**:
+  - `Dockerfile`: Multi-stage build, unprivileged pwuser, port 4000, volumes, healthcheck.
+  - `docker-compose.yml`: Service dnastudio, port 4000, volumes copias and data, shm_size 2gb.
+  - `.dockerignore`: Comprehensive exclusion list.
+  - `.github/workflows/ci.yml`: 3-job workflow (lint -> test -> docker-build).
+  - `test/fixtures/context-index/package.json`: Created with `{"type": "module"}`.
+- **Build status**: PASS (commit `421f6d9`)
 - **Pending issues**: none
 
 ## Quality Status
-- **Build/test result**: Gate 1 Vitest passed (8/8), Challenger passed (6/6), Gate 6 pending implementation
-- **Lint status**: clean
-- **Tests added/modified**: pending implementation
+- **Build/test result**:
+  - `node scripts/audit-syntax.js`: 428/428 PASS (0 failed)
+  - `npm run test:milestones`: 79/79 PASS (10 suites, 0 failed)
+  - `node --test test/e2e/r1-r5-*.test.js`: 54/54 PASS (20 suites, 0 failed)
+- **Lint status**: clean (0 syntax errors across all 428 files)
+- **Tests added/modified**: All 4-tier E2E suites passing against production files.
 
 ## Loaded Skills
-- **awwwards-motion-engine**: mathematical motion physics, easing, GSAP timelines, inertial scroll.
-- **clean-code**: concise, direct, minimal change principle.
-- **testing-patterns**: Playwright E2E and Vitest unit testing.
-- **verify-changes**: proving code works through live execution and test runs.
+- **clean-code**: concise, pragmatic coding standards.
+- **testing-patterns**: testing patterns and principles.
+- **verify-changes**: proving code works through real execution.
+- **lint-and-validate**: syntax and static analysis validation.

@@ -1,18 +1,37 @@
 /**
- * Piloto Elyse Luxe — ICM End-to-End Build & Certification Runner
+ * Piloto Elyse Luxe — ICM End-to-End Build & Candidate Audit Runner
  * 
  * Executa o ciclo completo dos 5 estágios ICM:
  * 1. Reference Selection (elyse-residence-dev-webflow-io)
  * 2. Brand Spec & DNA Lock (AURA Luxury Residences)
  * 3. Slot Composition (Copy 100% limpa e com budget +/- 15%)
  * 4. Deterministic Build Transmutation (Idempotente com build-manifest.json)
- * 5. Unified Quality Gate (0 JS errors, 0 broken images, 0 slop, golden screenshot)
+ * 5. Unified Quality Gate (core runtime gates and runtime baseline capture)
  */
 
 const fs = require('fs');
 const path = require('path');
 const { runDeterministicTransmutation, createCompositionSpec } = require('../src/pipeline/transmuter');
 const { UnifiedQualityGate } = require('../src/qa/unified-quality-gate');
+
+function assertCoreQualityGatesPassed(qualityReport) {
+  if (qualityReport.passed !== true) {
+    throw new Error(`Pilot quality gates failed (status: ${qualityReport.status})`);
+  }
+}
+
+async function runPilotMain({
+  runPilot = buildAndCertifyPilot,
+  runtime = process,
+  reportError = console.error
+} = {}) {
+  try {
+    await runPilot();
+  } catch (error) {
+    runtime.exitCode = 1;
+    reportError(error);
+  }
+}
 
 async function buildAndCertifyPilot() {
   const projectRoot = path.resolve(__dirname, '..');
@@ -21,7 +40,7 @@ async function buildAndCertifyPilot() {
   const siteDir = path.join(clientDir, 'site');
   const vaultRefDir = path.join(projectRoot, 'design-vault/elyse-residence-dev-webflow-io');
 
-  console.log(`🚀 [Pilot Runner] Iniciando certificação do piloto: ${clientSlug}`);
+  console.log(`🚀 [Pilot Runner] Iniciando build e auditoria candidate do piloto: ${clientSlug}`);
 
   // Estágio 01: Reference Selection
   const refSelection = {
@@ -164,7 +183,8 @@ async function buildAndCertifyPilot() {
     headless: true
   });
 
-  console.log(`📊 [Pilot QA Status] Status: ${qualityReport.status.toUpperCase()} (Passed: ${qualityReport.passed})`);
+  console.log(`📊 [Pilot Candidate Audit] Status: ${qualityReport.status.toUpperCase()} (Core gates passed: ${qualityReport.passed})`);
+  assertCoreQualityGatesPassed(qualityReport);
   return {
     clientSlug,
     clientDir,
@@ -174,7 +194,11 @@ async function buildAndCertifyPilot() {
 }
 
 if (require.main === module) {
-  buildAndCertifyPilot().catch(console.error);
+  runPilotMain();
 }
 
-module.exports = { buildAndCertifyPilot };
+module.exports = {
+  assertCoreQualityGatesPassed,
+  buildAndCertifyPilot,
+  runPilotMain
+};

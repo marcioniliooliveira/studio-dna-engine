@@ -2,6 +2,351 @@ const fs = require('fs');
 const path = require('path');
 const postcss = require('postcss');
 
+/**
+ * 13 Official W3C DTCG 2025.10 Types
+ */
+const W3C_DTCG_TYPES = Object.freeze([
+  'color',
+  'dimension',
+  'fontFamily',
+  'fontWeight',
+  'duration',
+  'cubicBezier',
+  'number',
+  'shadow',
+  'border',
+  'transition',
+  'gradient',
+  'typography',
+  'strokeStyle'
+]);
+
+/**
+ * Validates a W3C DTCG 2025.10 Design Tokens Tree.
+ *
+ * @param {object} tree
+ * @returns {{ valid: boolean, errors: string[] }}
+ */
+function validateDtcgTokenTree(tree) {
+  const errors = [];
+
+  function walk(node, currentPath = '', inheritedType = null) {
+    if (!node || typeof node !== 'object') return;
+
+    // Check if group-level $type is declared
+    const groupType = node.$type || inheritedType;
+
+    // Reject legacy Style Dictionary v3 property 'value'
+    if (Object.prototype.hasOwnProperty.call(node, 'value')) {
+      errors.push(`Legacy property 'value' detected at '${currentPath}'. Must use '$value'.`);
+    }
+
+    // Reject legacy Style Dictionary v3 property 'type'
+    if (Object.prototype.hasOwnProperty.call(node, 'type')) {
+      errors.push(`Legacy property 'type' detected at '${currentPath}'. Must use '$type'.`);
+    }
+
+    // Check if this node is a Token (declares $value)
+    if (Object.prototype.hasOwnProperty.call(node, '$value')) {
+      const tokenType = node.$type || groupType;
+      if (!tokenType) {
+        errors.push(`Token at '${currentPath}' is missing required $type.`);
+      } else if (!W3C_DTCG_TYPES.includes(tokenType)) {
+        errors.push(`Invalid $type '${tokenType}' at '${currentPath}'. Must be one of: ${W3C_DTCG_TYPES.join(', ')}`);
+      }
+
+      if (node.$extensions?.studioDna?.invariance) {
+        const inv = node.$extensions.studioDna.invariance;
+        if (inv !== 'P0' && inv !== 'P1') {
+          errors.push(`Invalid invariance '${inv}' at '${currentPath}'. Must be 'P0' or 'P1'.`);
+        }
+      }
+      return;
+    }
+
+    // Otherwise, treat as group and traverse children
+    for (const [key, val] of Object.entries(node)) {
+      if (key.startsWith('$')) continue; // Group metadata ($description, $type, etc.)
+      const nextPath = currentPath ? `${currentPath}.${key}` : key;
+      if (val && typeof val === 'object') {
+        walk(val, nextPath, groupType);
+      }
+    }
+  }
+
+  walk(tree);
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+/**
+ * Resolves token aliases with {group.token} syntax and cycle detection.
+ *
+ * @param {object} tokenTree
+ * @returns {object} New resolved token tree
+ */
+function resolveDtcgAliases(tokenTree) {
+  const cloned = JSON.parse(JSON.stringify(tokenTree));
+
+  function getNodeByPath(root, pathStr) {
+    const parts = pathStr.split('.');
+    let curr = root;
+    for (const part of parts) {
+      if (!curr || typeof curr !== 'object' || !(part in curr)) {
+        return undefined;
+      }
+      curr = curr[part];
+    }
+    return curr;
+  }
+
+  function resolveValue(val, chain = []) {
+    if (typeof val !== 'string') return val;
+
+    const aliasRegex = /^\{([^}]+)\}$/;
+    const match = val.match(aliasRegex);
+    if (!match) return val;
+
+    const targetPath = match[1].trim();
+
+    if (chain.includes(targetPath)) {
+      throw new Error(`Circular alias reference detected: ${[...chain, targetPath].join(' -> ')}`);
+    }
+
+    const targetNode = getNodeByPath(cloned, targetPath);
+    if (!targetNode) {
+      throw new Error(`Unresolved token alias '{${targetPath}}'`);
+    }
+
+    const rawTargetVal = Object.prototype.hasOwnProperty.call(targetNode, '$value')
+      ? targetNode.$value
+      : targetNode;
+
+    return resolveValue(rawTargetVal, [...chain, targetPath]);
+  }
+
+  function walkAndResolve(node) {
+    if (!node || typeof node !== 'object') return;
+
+    if (Object.prototype.hasOwnProperty.call(node, '$value')) {
+      node.$value = resolveValue(node.$value);
+      return;
+    }
+
+    for (const [key, val] of Object.entries(node)) {
+      if (key.startsWith('$')) continue;
+      if (val && typeof val === 'object') {
+        walkAndResolve(val);
+      }
+    }
+  }
+
+  walkAndResolve(cloned);
+  return cloned;
+}
+
+/**
+ * Converts extracted raw PostCSS tokens into a W3C DTCG 2025.10 token tree
+ * with P0/P1 invariance tagging.
+ */
+function convertCssTokensToDtcg(rawTokens, options = {}) {
+  const brandSpec = options.brandSpec || {};
+  const p0Colors = new Set();
+  if (brandSpec.colors) {
+    Object.values(brandSpec.colors).forEach(c => {
+      if (typeof c === 'string') p0Colors.add(c.toLowerCase());
+    });
+  }
+  const p0Fonts = new Set();
+  if (brandSpec.typography) {
+    Object.values(brandSpec.typography).forEach(f => {
+      if (typeof f === 'string') p0Fonts.add(f.toLowerCase());
+    });
+  }
+
+  const dtcg = {
+    color: {
+      brand: {}
+    },
+    dimension: {
+      spacing: {},
+      fontSize: {}
+    },
+    fontFamily: {},
+    fontWeight: {},
+    duration: {},
+    cubicBezier: {}
+  };
+
+  // Convert custom properties
+  if (rawTokens.customProperties) {
+    for (const [prop, val] of Object.entries(rawTokens.customProperties)) {
+      const cleanName = prop.replace(/^--/, '');
+      const isColor = /^#([0-9a-f]{3,8})$/i.test(val) || val.startsWith('rgb') || val.startsWith('hsl');
+      const isDuration = /^\d+(\.\d+)?(ms|s)$/.test(val);
+      const isDimension = /^\d+(\.\d+)?(px|rem|em|vh|vw|%)$/.test(val);
+
+      if (isColor) {
+        const isP0 = p0Colors.has(val.toLowerCase()) || cleanName.includes('primary') || cleanName.includes('accent');
+        dtcg.color.brand[cleanName] = {
+          $value: val,
+          $type: 'color',
+          $description: `Custom property ${prop}`,
+          $extensions: {
+            studioDna: {
+              invariance: isP0 ? 'P0' : 'P1'
+            }
+          }
+        };
+      } else if (isDuration) {
+        dtcg.duration[cleanName] = {
+          $value: val,
+          $type: 'duration',
+          $description: `Motion duration ${prop}`,
+          $extensions: {
+            studioDna: {
+              invariance: 'P1'
+            }
+          }
+        };
+      } else if (isDimension) {
+        dtcg.dimension.spacing[cleanName] = {
+          $value: val,
+          $type: 'dimension',
+          $description: `Dimension spacing ${prop}`,
+          $extensions: {
+            studioDna: {
+              invariance: 'P1'
+            }
+          }
+        };
+      }
+    }
+  }
+
+  // Convert raw colors if not already in brand
+  if (Array.isArray(rawTokens.colors)) {
+    rawTokens.colors.forEach((c, idx) => {
+      const key = `color_${idx + 1}`;
+      if (!dtcg.color.brand[key]) {
+        const isP0 = p0Colors.has(c.toLowerCase());
+        dtcg.color.brand[key] = {
+          $value: c,
+          $type: 'color',
+          $description: `Extracted color palette ${c}`,
+          $extensions: {
+            studioDna: {
+              invariance: isP0 ? 'P0' : 'P1'
+            }
+          }
+        };
+      }
+    });
+  }
+
+  // Ensure brand primary and accent exist if declared in brandSpec
+  if (brandSpec.colors?.primary) {
+    dtcg.color.brand.primary = {
+      $value: brandSpec.colors.primary,
+      $type: 'color',
+      $description: 'Brand primary color',
+      $extensions: {
+        studioDna: {
+          invariance: 'P0'
+        }
+      }
+    };
+  }
+
+  if (brandSpec.colors?.accent) {
+    dtcg.color.brand.accent = {
+      $value: brandSpec.colors.accent,
+      $type: 'color',
+      $description: 'Brand accent CTA color',
+      $extensions: {
+        studioDna: {
+          invariance: 'P0'
+        }
+      }
+    };
+  }
+
+  // Convert typography
+  if (rawTokens.typography) {
+    if (Array.isArray(rawTokens.typography.fontFamilies)) {
+      rawTokens.typography.fontFamilies.forEach((f, idx) => {
+        const isP0 = p0Fonts.has(f.toLowerCase());
+        const key = `font_${idx + 1}`;
+        dtcg.fontFamily[key] = {
+          $value: f,
+          $type: 'fontFamily',
+          $description: `Font family ${f}`,
+          $extensions: {
+            studioDna: {
+              invariance: isP0 ? 'P0' : 'P1'
+            }
+          }
+        };
+      });
+    }
+
+    if (Array.isArray(rawTokens.typography.fontSizes)) {
+      rawTokens.typography.fontSizes.forEach((sz, idx) => {
+        dtcg.dimension.fontSize[`size_${idx + 1}`] = {
+          $value: sz,
+          $type: 'dimension',
+          $description: `Font size ${sz}`,
+          $extensions: {
+            studioDna: {
+              invariance: 'P1'
+            }
+          }
+        };
+      });
+    }
+
+    if (Array.isArray(rawTokens.typography.fontWeights)) {
+      rawTokens.typography.fontWeights.forEach((w, idx) => {
+        dtcg.fontWeight[`weight_${idx + 1}`] = {
+          $value: String(w),
+          $type: 'fontWeight',
+          $description: `Font weight ${w}`,
+          $extensions: {
+            studioDna: {
+              invariance: 'P1'
+            }
+          }
+        };
+      });
+    }
+  }
+
+  // Convert motion easings
+  if (rawTokens.motion && Array.isArray(rawTokens.motion.easings)) {
+    rawTokens.motion.easings.forEach((e, idx) => {
+      const match = e.match(/cubic-bezier\(([^)]+)\)/i);
+      const val = match
+        ? match[1].split(',').map(n => parseFloat(n.trim()))
+        : [0.16, 1, 0.3, 1];
+
+      dtcg.cubicBezier[`ease_${idx + 1}`] = {
+        $value: val,
+        $type: 'cubicBezier',
+        $description: `Motion curve ${e}`,
+        $extensions: {
+          studioDna: {
+            invariance: 'P1'
+          }
+        }
+      };
+    });
+  }
+
+  return dtcg;
+}
+
 class TokenCompiler {
   constructor(options = {}) {
     this.siteDir = options.siteDir || '';
@@ -91,7 +436,7 @@ class TokenCompiler {
   /**
    * Compila o CSS através da AST do PostCSS e extrai o Design DNA
    */
-  async compileTokens() {
+  async compileTokens(options = {}) {
     const rawCss = await this.collectAllCss();
     if (!rawCss.trim()) {
       console.warn(`⚠️ [TokenCompiler] Nenhum CSS encontrado em: ${this.siteDir}`);
@@ -170,7 +515,7 @@ class TokenCompiler {
       meta: {
         slug: this.slug,
         extractedAt: new Date().toISOString(),
-        engine: 'PostCSS AST Token Compiler v2.0'
+        engine: 'PostCSS AST Token Compiler v2.0 (W3C DTCG 2025.10 Ready)'
       },
       customProperties,
       colors: Array.from(colors).sort(),
@@ -195,6 +540,9 @@ class TokenCompiler {
       }
     };
 
+    // Also compile to W3C DTCG 2025.10
+    tokens.dtcg = convertCssTokensToDtcg(tokens, options);
+
     this.saveOutputs(tokens);
     return tokens;
   }
@@ -207,7 +555,7 @@ class TokenCompiler {
       fs.mkdirSync(this.outputDir, { recursive: true });
     }
 
-    // 1. tokens.json (Padrão W3C Design Tokens)
+    // 1. tokens.json (Padrão W3C Design Tokens DTCG 2025.10)
     const tokensJsonPath = path.join(this.outputDir, 'tokens.json');
     fs.writeFileSync(tokensJsonPath, JSON.stringify(tokens, null, 2));
 
@@ -308,4 +656,10 @@ if (require.main === module) {
   compiler.compileTokens().catch(console.error);
 }
 
-module.exports = { TokenCompiler };
+module.exports = {
+  TokenCompiler,
+  W3C_DTCG_TYPES,
+  validateDtcgTokenTree,
+  resolveDtcgAliases,
+  convertCssTokensToDtcg
+};

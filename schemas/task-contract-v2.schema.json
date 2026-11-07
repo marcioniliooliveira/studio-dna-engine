@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studio-dna.local/schemas/task-contract-v2.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "schemaVersion",
+    "role",
+    "actorId",
+    "clientScope",
+    "surfaceMode",
+    "readAllowlist",
+    "writeAllowlist",
+    "allowedTools",
+    "allowedGates",
+    "verificationCommand",
+    "maxRefinementAttempts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^TASK-V3-[0-9]{2}(-[A-Z0-9]+)?$" },
+    "schemaVersion": { "const": 2 },
+    "role": {
+      "type": "string",
+      "enum": [
+        "reference_curator",
+        "brand_analyst",
+        "content_analyst",
+        "composition_agent",
+        "implementation_agent",
+        "technical_verifier_agent",
+        "visual_critic_agent",
+        "release_gatekeeper"
+      ]
+    },
+    "actorId": { "type": "string", "minLength": 3 },
+    "builderActorId": { "type": "string" },
+    "clientScope": { "type": "string", "pattern": "^(global|[a-z0-9-]+)$" },
+    "surfaceMode": {
+      "type": "string",
+      "enum": ["Persuade", "Operate", "Read", "Experience"]
+    },
+    "readAllowlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "writeAllowlist": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowedTools": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowedGates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verificationCommand": { "type": "string", "minLength": 5 },
+    "maxRefinementAttempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+    "artisticWaivers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dataDs", "ruleId", "reason", "approvedByRole"],
+        "properties": {
+          "dataDs": { "type": "string", "pattern": "^[a-f0-9]{8}$" },
+          "ruleId": { "type": "string" },
+          "reason": { "type": "string", "minLength": 10 },
+          "approvedByRole": { "enum": ["composition_agent", "human_art_director"] }
+        }
+      }
+    }
+  }
+}

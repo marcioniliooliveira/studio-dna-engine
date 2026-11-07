@@ -277,6 +277,50 @@ test.describe('Gate 3: Fita 3D com os 4 Projetos, Velocidade e Hover', () => {
     const hoverVal = await page.evaluate(() => (window as any).__WORK_STAGE__?.cards[0]?.uniforms?.u_hover);
     expect(hoverVal).toBeGreaterThan(0.95);
   });
+
+  test('Voluntary departure HUD button triggers smooth transition to Chapter III', async ({
+    page,
+  }) => {
+    test.setTimeout(60000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return typeof (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__ === 'function' && ws && ws.webglReady === true;
+    }, null, { timeout: 20000 });
+
+    await page.evaluate(() => {
+      (window as any).__TEST_SCROLL_TO_PORTAL_PROGRESS__(1.0);
+    });
+
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return ws && ws.phase === 'RIBBON_BROWSE';
+    });
+
+    const soldBtn = page.locator('[data-testid="hud-sold-btn"]');
+    await page.mouse.move(720, 450);
+    for (let i = 0; i < 5; i++) {
+      await page.mouse.wheel(0, 300);
+      await page.waitForTimeout(50);
+    }
+
+    await page.waitForFunction(() => {
+      const ws = (window as any).__WORK_STAGE__;
+      return ws && ws.isAlreadySoldVisible === true && ws.cumulativeScroll >= 1200;
+    }, null, { timeout: 10000 });
+
+    await expect(soldBtn).toBeVisible();
+    await soldBtn.click();
+
+    await page.waitForFunction(() => {
+      const servicesEl = document.querySelector('[data-services-section]');
+      if (!servicesEl) return false;
+      const rect = servicesEl.getBoundingClientRect();
+      return rect.left < window.innerWidth && rect.right > 0;
+    }, null, { timeout: 15000 });
+  });
 });
 
 test.describe('Gate 4: Voo Espacial Card-to-Sheet e Visão Detalhada', () => {

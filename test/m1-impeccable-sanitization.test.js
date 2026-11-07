@@ -263,3 +263,260 @@ test('UnifiedQualityGate: cleanly exports and incorporates Tier 4 Impeccable Gat
   assert.equal(typeof runImpeccableGate, 'function');
   assert.deepEqual(ZERO_TOLERANCE_RULES, ['dark-glow', 'nested-cards', 'overused-font', 'bounce-easing']);
 });
+
+// ─── SUITE 6: Craft-Floor Anti-Patterns & Artistic Waivers (TASK-V3-04) ──────
+
+test('ImpeccableGate Craft-Floor: detects untinted-gray-black', async () => {
+  const badHtml = `
+    <html>
+      <body style="background-color: #000000; color: #ffffff;">
+        <div style="background: rgb(0, 0, 0);">Untinted black surface</div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['untinted-gray-black'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('untinted-gray-black')));
+});
+
+test('ImpeccableGate Craft-Floor: detects muddy-opacity-gradient (fading to transparent)', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <div style="background: linear-gradient(180deg, #1e293b, transparent);">Muddy gradient</div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['muddy-opacity-gradient'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('muddy-opacity-gradient')));
+});
+
+test('ImpeccableGate Craft-Floor: detects side-tab-accent-stripe on rounded cards', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <div class="card rounded-xl" style="border-left: 4px solid #3b82f6; border-radius: 12px;">
+          Card with accent stripe
+        </div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['side-tab-accent-stripe'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('side-tab-accent-stripe')));
+});
+
+test('ImpeccableGate Craft-Floor: detects thick-card-border (>= 2px on rounded card)', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <div class="card rounded-2xl" style="border-width: 3px; border-radius: 16px;">
+          Thick bordered card
+        </div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['thick-card-border'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('thick-card-border')));
+});
+
+test('ImpeccableGate Craft-Floor: detects icon-tile-stack in >= 3 columns', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <div class="grid grid-cols-3">
+          <div class="col">
+            <div class="icon-box rounded-lg bg-blue-500 p-3"><svg></svg></div>
+            <h3>Feature 1</h3>
+            <p>Description</p>
+          </div>
+          <div class="col">
+            <div class="icon-box rounded-lg bg-green-500 p-3"><svg></svg></div>
+            <h3>Feature 2</h3>
+            <p>Description</p>
+          </div>
+          <div class="col">
+            <div class="icon-box rounded-lg bg-red-500 p-3"><svg></svg></div>
+            <h3>Feature 3</h3>
+            <p>Description</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['icon-tile-stack'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('icon-tile-stack')));
+});
+
+test('ImpeccableGate Craft-Floor: detects numbered-section-kicker (01 /, 02 —)', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <span class="kicker">01 / OVERVIEW</span>
+        <h2>Section Headline</h2>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['numbered-section-kicker'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('numbered-section-kicker')));
+});
+
+test('ImpeccableGate Craft-Floor: detects em-dash-overuse (> 2 em-dashes in single copy block)', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <p>This is revolutionary — not just fast — but unprecedented — for every user.</p>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['em-dash-overuse'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('em-dash-overuse')));
+});
+
+test('ImpeccableGate Craft-Floor: detects aphoristic-cadence (PT & EN)', async () => {
+  const badPtHtml = `
+    <html>
+      <body>
+        <p>Não é apenas um software, é uma revolução completa.</p>
+      </body>
+    </html>
+  `;
+  const reportPt = await runImpeccableGate(badPtHtml, { staticOnly: true, zeroToleranceRules: ['aphoristic-cadence'] });
+  assert.equal(reportPt.passed, false);
+  assert.ok(reportPt.violations.some(v => v.includes('aphoristic-cadence')));
+
+  const badEnHtml = `
+    <html>
+      <body>
+        <p>It's not just a tool, it's the future of engineering.</p>
+      </body>
+    </html>
+  `;
+  const reportEn = await runImpeccableGate(badEnHtml, { staticOnly: true, zeroToleranceRules: ['aphoristic-cadence'] });
+  assert.equal(reportEn.passed, false);
+  assert.ok(reportEn.violations.some(v => v.includes('aphoristic-cadence')));
+});
+
+test('ImpeccableGate Craft-Floor: detects fabricated-stat-tile without source', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <div class="stat-tile">
+          <span class="value text-4xl">+247%</span>
+          <span class="label">Conversion increase</span>
+        </div>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['fabricated-stat-tile'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('fabricated-stat-tile')));
+});
+
+test('ImpeccableGate Craft-Floor: detects excessive-line-length (p without max-width <= 75ch)', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <p>
+          Este é um parágrafo longo com muito texto explicativo que se estende por mais de oitenta caracteres consecutivos sem nenhuma restrição de largura máxima definida por classe ou estilo inline na página.
+        </p>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['excessive-line-length'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('excessive-line-length')));
+});
+
+test('ImpeccableGate Craft-Floor: detects missing-tabular-nums on prices', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <span class="price font-bold text-2xl">R$ 1.499,00</span>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['missing-tabular-nums'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('missing-tabular-nums')));
+});
+
+test('ImpeccableGate Craft-Floor: detects sub-44px-touch-target', async () => {
+  const badHtml = `
+    <html>
+      <body>
+        <button style="width: 32px; height: 32px;">X</button>
+      </body>
+    </html>
+  `;
+  const report = await runImpeccableGate(badHtml, { staticOnly: true, zeroToleranceRules: ['sub-44px-touch-target'] });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some(v => v.includes('sub-44px-touch-target')));
+});
+
+test('ImpeccableGate Waivers: artisticWaiver suppresses rule on matching data-ds element', async () => {
+  const html = `
+    <html>
+      <body>
+        <div data-ds="8f3a19c2" class="card rounded-2xl" style="border-width: 3px; border-radius: 16px;">
+          Brutalist card intentional in kinetic stage
+        </div>
+      </body>
+    </html>
+  `;
+  const waivers = [
+    {
+      dataDs: '8f3a19c2',
+      ruleId: 'thick-card-border',
+      reason: 'Brutalist accent card intentional in kinetic stage',
+      approvedByRole: 'composition_agent'
+    }
+  ];
+
+  const report = await runImpeccableGate(html, {
+    staticOnly: true,
+    surfaceMode: 'Persuade',
+    artisticWaivers: waivers,
+    zeroToleranceRules: ['thick-card-border']
+  });
+
+  assert.equal(report.passed, true, 'Gate should pass because thick-card-border has approved waiver');
+  assert.equal(report.violations.length, 0);
+  assert.equal(report.appliedWaivers?.length, 1);
+  assert.equal(report.appliedWaivers[0].ruleId, 'thick-card-border');
+});
+
+test('ImpeccableGate Waivers: rejects waiver with unauthorized role', async () => {
+  const html = `
+    <html>
+      <body>
+        <div data-ds="8f3a19c2" class="card rounded-2xl" style="border-width: 3px; border-radius: 16px;">
+          Unauthorized waived card
+        </div>
+      </body>
+    </html>
+  `;
+  const invalidWaivers = [
+    {
+      dataDs: '8f3a19c2',
+      ruleId: 'thick-card-border',
+      reason: 'Trying to bypass rule without authority',
+      approvedByRole: 'implementation_agent' // NOT composition_agent or human_art_director!
+    }
+  ];
+
+  const report = await runImpeccableGate(html, {
+    staticOnly: true,
+    surfaceMode: 'Persuade',
+    artisticWaivers: invalidWaivers,
+    zeroToleranceRules: ['thick-card-border']
+  });
+
+  assert.equal(report.passed, false, 'Gate must reject waiver signed by unauthorized role');
+  assert.ok(report.violations.some(v => v.includes('thick-card-border')));
+});

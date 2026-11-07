@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write|Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/ide-pre-tool-hook.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/ide-post-edit-hook.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

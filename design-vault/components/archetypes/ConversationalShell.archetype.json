@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "ConversationalShell",
+  "purpose": "Interface primária para interação conversacional com agentes, suportando streaming contínuo, viewport com scroll-lock adaptativo e composer ancorado.",
+  "confidenceScore": 0.94,
+  "canonicalAnatomy": {
+    "rootRole": "ShellContainer",
+    "slots": [
+      { "name": "headerSlot", "description": "Barra superior com metadados do agente e status de conexão", "optional": true },
+      { "name": "streamSlot", "description": "Área de renderização da timeline de mensagens e execuções", "optional": false },
+      { "name": "composerSlot", "description": "Entrada de texto expansível com controles de disparo e anexo", "optional": false },
+      { "name": "floatingActionsSlot", "description": "Gatilhos flutuantes como botão 'Rolar para o fim' ou 'Interromper'", "optional": true }
+    ],
+    "hierarchyConstraints": [
+      { "parent": "ShellContainer", "child": "streamSlot", "relationship": "flex-grow-1" },
+      { "parent": "ShellContainer", "child": "composerSlot", "relationship": "pinned-bottom" }
+    ]
+  },
+  "stateContract": {
+    "initialState": "idle_empty",
+    "states": [
+      "idle_empty",
+      "typing_active",
+      "dispatching",
+      "streaming_token",
+      "awaiting_approval",
+      "stream_paused",
+      "generation_error"
+    ],
+    "transitions": [
+      { "from": "idle_empty", "to": "typing_active", "trigger": "USER_INPUT_MUTATION" },
+      { "from": "typing_active", "to": "dispatching", "trigger": "SUBMIT_INVOKED" },
+      { "from": "dispatching", "to": "streaming_token", "trigger": "AGENT_STREAM_INIT" },
+      { "from": "streaming_token", "to": "awaiting_approval", "trigger": "TOOL_APPROVAL_REQUIRED" },
+      { "from": "awaiting_approval", "to": "streaming_token", "trigger": "TOOL_APPROVED" },
+      { "from": "streaming_token", "to": "idle_empty", "trigger": "AGENT_STREAM_END" },
+      { "from": "streaming_token", "to": "generation_error", "trigger": "STREAM_CONNECTION_FAULT" }
+    ]
+  },
+  "motionPrinciples": {
+    "composerExpansion": {
+      "type": "spring",
+      "stiffness": 220,
+      "damping": 18,
+      "mass": 1.0,
+      "description": "Expansão suave do textarea acompanhando quebras de linha"
+    },
+    "messageEntrance": {
+      "type": "cubic-bezier",
+      "params": { "x1": 0.16, "y1": 1.0, "x2": 0.3, "y2": 1.0 },
+      "durationMs": 180,
+      "description": "Transição suave de entrada com opacidade e leve deslocamento vertical"
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "region",
+    "accessibleName": "Conversa com Agente",
+    "liveRegion": "polite",
+    "focusPolicy": "Retém foco no composer após disparo; restaura foco após fechamento de modais"
+  },
+  "knownImplementations": [
+    { "provider": "useplanes", "dnaRef": "planes-ai-chat-01", "similarityScore": 0.88 },
+    { "provider": "arc", "dnaRef": "arc-agent-run-01", "similarityScore": 0.82 },
+    { "provider": "beautiful-ui", "dnaRef": "bui-chat-01", "similarityScore": 0.85 }
+  ]
+}

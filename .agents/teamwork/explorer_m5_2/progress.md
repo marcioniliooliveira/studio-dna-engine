@@ -1,16 +1,18 @@
-# Progress — Explorer m5_2
+# Progress — explorer_m5_2
 
-Last visited: 2026-10-20T15:37:30Z
+Last visited: 2026-11-06T19:50:30Z
+Status: In progress (writing final handoff report)
 
-## Status: COMPLETE (Hard Handoff)
-- [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Inspect `src/components/WorkStage/WorkStage.tsx` and related components
-- [x] Inspect `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`
-- [x] Inspect HTML markup in `clientes/marcionilio-oliveira/site/index.html`
-- [x] Trace entrance animation for "THE WORK" (`scale: 0 -> W`, text separation, `syncViewportClip`, `[data-more-work-rect]`)
-- [x] Formulate symmetric inverted optical exit timeline on `mwExit`
-- [x] Formulate Cinematic HUD (microcopy, cumulativeScroll accumulator, pill button, click handler)
-- [x] Formulate integration details & verification steps
-- [x] Verify test suite baseline (`math.spec.ts` 8/8 passing)
-- [x] Write `handoff.md` with complete 5 components, exact code diffs and verification methods
-- [x] Notify caller via `send_message`
+## Completed Steps
+- [x] Received dispatch and recorded DISPATCH.md
+- [x] Initialized BRIEFING.md and progress.md
+- [x] Audited `.github/workflows/ci.yml` and detected deficiencies against R5 specification
+- [x] Inspected `test/e2e/r1-r5-harness.js` (`validateCiWorkflow` regex contract)
+- [x] Inspected `test/e2e/r1-r5-tier1-feature-coverage.test.js` (TC-R5-T1-04..07)
+- [x] Inspected `test/e2e/r1-r5-tier3-pairwise-combinations.test.js` (TC-R5-T3-02 sequential DAG requirement)
+- [x] Audited `package.json` scripts (`lint`, `test`, `setup`) and `scripts/audit-syntax.js`
+- [x] Designed and validated production blueprint in `proposed_ci.yml` against test harness and DAG simulation
+- [x] Updated BRIEFING.md with key discoveries
+
+## Active Step
+- Writing comprehensive 5-component `handoff.md` report

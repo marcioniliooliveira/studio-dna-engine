@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "ToolCallDisclosure",
+  "purpose": "Card compacto expansível para inspeção de chamadas de ferramentas executadas pelo agente, exibindo argumentos JSON, latência e status de saída.",
+  "confidenceScore": 0.94,
+  "canonicalAnatomy": {
+    "rootRole": "ToolCallCard",
+    "slots": [
+      { "name": "summaryBarSlot", "description": "Nome da ferramenta, ícone de status e duração em ms", "optional": false },
+      { "name": "payloadInspectorSlot", "description": "Bloco colapsável com argumentos de entrada e resposta", "optional": true }
+    ]
+  },
+  "stateContract": {
+    "initialState": "running_collapsed",
+    "states": ["running_collapsed", "completed_collapsed", "expanded_inspecting", "failed_expanded"],
+    "transitions": [
+      { "from": "running_collapsed", "to": "completed_collapsed", "trigger": "TOOL_EXEC_SUCCESS" },
+      { "from": "completed_collapsed", "to": "expanded_inspecting", "trigger": "TOGGLE_INSPECTOR" },
+      { "from": "running_collapsed", "to": "failed_expanded", "trigger": "TOOL_EXEC_ERROR" }
+    ]
+  },
+  "motionPrinciples": {
+    "accordionHeight": {
+      "type": "spring",
+      "stiffness": 260,
+      "damping": 24,
+      "mass": 0.9
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "region",
+    "accessibleName": "Detalhes da Execução de Ferramenta",
+    "liveRegion": "polite",
+    "focusPolicy": "Botão de cabeçalho controla aria-expanded sobre o painel de payload"
+  },
+  "knownImplementations": [
+    { "provider": "arc", "dnaRef": "arc-agent-run-01", "similarityScore": 0.90 }
+  ]
+}

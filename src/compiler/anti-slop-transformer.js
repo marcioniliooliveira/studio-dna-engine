@@ -31,7 +31,9 @@ const BANNED_SLOP_PATTERNS = [
   /\bplaceholder\s+text\b/i,
   /\bas\s+an\s+ai\b/i,
   /\bchatgpt\b/i,
-  /\bseja\s+bem-vindo\s+ao\s+nosso\s+site\b/i
+  /\bseja\s+bem-vindo\s+ao\s+nosso\s+site\b/i,
+  /\b(?:não\s+é\s+(?:apenas|só)|não\s+se\s+trata\s+de)\s+[^.,;!?]+,\s*(?:mas\s+sim|é)\b/i,
+  /\b(?:it'?s\s+not\s+(?:just|only)|not\s+just)\s+[^.,;!?]+,\s*it'?s\b/i
 ];
 
 const UNFILLED_SLOT_REGEX = /\{SLOT_[A-Z0-9_\-]+\}/g;

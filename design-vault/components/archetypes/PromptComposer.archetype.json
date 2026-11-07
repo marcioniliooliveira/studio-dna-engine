@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/component_archetype.v1.schema.json",
+  "archetypeId": "PromptComposer",
+  "purpose": "Compositor multimodal de prompts com suporte a menções de agentes (@agent), comandos slash (/command), upload de anexos e seleção de modelo.",
+  "confidenceScore": 0.93,
+  "canonicalAnatomy": {
+    "rootRole": "ComposerContainer",
+    "slots": [
+      { "name": "contextPillsSlot", "description": "Pílulas de arquivos anexados e agentes mencionados", "optional": true },
+      { "name": "inputEditorSlot", "description": "Área de texto auto-expansível com autocomplete", "optional": false },
+      { "name": "actionToolbarSlot", "description": "Seletor de modelo, botão de anexo e botão de envio/interrupção", "optional": false }
+    ]
+  },
+  "stateContract": {
+    "initialState": "empty",
+    "states": ["empty", "composing", "autocomplete_open", "uploading_attachment", "submitting"],
+    "transitions": [
+      { "from": "empty", "to": "composing", "trigger": "TEXT_ENTERED" },
+      { "from": "composing", "to": "autocomplete_open", "trigger": "TRIGGER_CHAR_TYPED" },
+      { "from": "composing", "to": "submitting", "trigger": "SUBMIT_PROMPT" }
+    ]
+  },
+  "motionPrinciples": {
+    "popoverAppear": {
+      "type": "spring",
+      "stiffness": 280,
+      "damping": 22,
+      "mass": 0.8
+    }
+  },
+  "accessibilityStandard": {
+    "ariaRole": "form",
+    "accessibleName": "Compositor de Instruções do Agente",
+    "liveRegion": "polite",
+    "focusPolicy": "Mantém foco no editor ao navegar sugestões com setas verticais"
+  },
+  "knownImplementations": [
+    { "provider": "useplanes", "dnaRef": "planes-ai-chat-01", "similarityScore": 0.91 }
+  ]
+}

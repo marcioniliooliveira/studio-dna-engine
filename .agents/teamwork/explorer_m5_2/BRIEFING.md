@@ -1,48 +1,50 @@
-# BRIEFING — 2026-10-20T15:36:10Z
+# BRIEFING — 2026-11-06T19:50:00Z
 
 ## Mission
-Investigate GSAP motion choreography and UI interaction for "THE WORK" section: formulate the symmetric inverted optical exit timeline (`scale: W -> 0`, texts rejoining, `syncViewportClip`, advance to Chapter III) and the Cinematic HUD (scroll accumulator, microcopy "CAPÍTULO II — FIQUE O TEMPO QUE QUISER", pill button "EU JÁ ESTOU CONVENCIDO" with direct optical close trigger).
+Investigate and design the production-grade GitHub Actions CI/CD workflow specification (.github/workflows/ci.yml) for Milestone 5 (R5: DevOps Pipeline).
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: GSAP Motion Choreographer & UI Interaction Specialist
-- Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_2
-- Original parent: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Milestone: M5 (Infinite Ribbon, Cinematic HUD & Inverted Optical Exit)
+- Roles: GitHub Actions CI/CD Pipeline Explorer
+- Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_2\
+- Original parent: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Milestone: Milestone 5 (R5: DevOps Pipeline with Docker & GitHub Actions)
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT modify project source code directly
-- Only write reports and metadata inside `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_2`
-- Truth protocol: label material conclusions as observed, inferred, documented, or unverified
-- Complete evidence chains: cite exact file paths and line numbers
-- Follow 5-component handoff report (Observation, Logic Chain, Caveats, Conclusion, Verification Method)
+- Read-only investigation — do NOT implement
+- Investigate and blueprint .github/workflows/ci.yml specifications
+- Write reports, handoffs, and analyses strictly inside working directory
 
 ## Current Parent
-- Conversation ID: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Updated: 2026-10-20T15:24:46Z
+- Conversation ID: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Updated: 2026-11-06T19:42:05Z
 
 ## Investigation State
 - **Explored paths**:
-  - `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`
-  - `src/components/WorkStage/WorkStage.tsx`
-  - `clientes/marcionilio-oliveira/site/index.html`
-  - `tests/e2e/work-stage.spec.ts`
-  - `tests/e2e/challenger-viewport.spec.ts`
-  - `src/components/WorkStage/__tests__/math.spec.ts`
+  - `c:\Users\wd\Documents\playwright-scraper\.github\workflows\ci.yml` (audited existing minimal 28-line workflow)
+  - `test\e2e\r1-r5-harness.js` (inspected `validateCiWorkflow` regex contract)
+  - `test\e2e\r1-r5-tier1-feature-coverage.test.js` (inspected TC-R5-T1-04..07)
+  - `test\e2e\r1-r5-tier3-pairwise-combinations.test.js` (inspected TC-R5-T3-02 sequential DAG dependency check)
+  - `package.json` (inspected scripts: `lint`, `test`, `setup`, dependencies, engine requirements)
+  - `scripts\audit-syntax.js` (inspected execution behavior)
+  - `bin\cli.js` (verified `--help` and `--version` zero-exit code for smoke test)
 - **Key findings**:
-  - `initHorizontalScroll.LNLCK81L.js`: `mwExit` currently maintains `scale: W` as a dummy `to(i, { scale: W })` tween, and `syncViewportClip` falls back to `clipPath: none` + fading `opacity` during `isExitPhase` (`cur > tHoldEnd`).
-  - Symmetrizing `mwExit`: animate `i` from `scale: W -> 0`, `u` from `Y -> C`, `a` from `j -> H` over `M_out`. Remove `!isExitPhase` guard in `syncViewportClip` so `rectEl.getBoundingClientRect()` drives the shrinking polygon during exit.
-  - Cinematic HUD: Add `cumulativeScrollRef` accumulator in `WorkStage.tsx` summing `Math.abs(rawDelta)`. At $\ge 1200\text{px}$, reveal pill button `"EU JÁ ESTOU CONVENCIDO"`.
-  - Seamless navigation: Clicking the pill button jumps scroll instantly to `t3` (zero visual jump since `t3` visual state is identical to `mwHold`) and triggers a smooth scroll to `t4 + servicesOffset` via Lenis/GSAP.
-- **Unexplored areas**: None within m5_2 scope. All requirements fully traced and formulated.
+  - Existing `.github/workflows/ci.yml` only contains a single job `build-and-test`, missing `lint`, Playwright install with OS dependencies, `docker-build`, and `integration/**` branch triggers.
+  - Test harness `validateCiWorkflow` checks for `lint:`, `audit-syntax`, `test:` / `npm test`, `docker`, `playwright install`, and `push:` + `pull_request:`.
+  - Pairwise test `simulateCiGraph` requires strict sequential order: `test` requires `lint`, and `docker-build` requires `test`.
+  - Proposed blueprint in `proposed_ci.yml` successfully passes all assertions in both `validateCiWorkflow` and `simulateCiGraph`.
+- **Unexplored areas**: None. All Milestone 5 CI/CD investigation tasks completed.
 
 ## Key Decisions Made
-- Use exact mathematical inverse coordinates (`scale: W -> 0`, `Y -> C`, `j -> H`) for Desktop and (`scale: h -> 0`, `y: -k -> 0`, `y: k -> 0`) for Mobile.
-- Wire button click via `window.__TRIGGER_PORTAL_EXIT__` and `window.dispatchEvent(new CustomEvent('work-portal-exit-request'))` for decoupled cross-script communication.
-- Provide full 5-component handoff report with exact patch / drop-in code snippets for implementer.
+- Established production 3-stage DAG: `lint` -> `test` -> `docker-build` with `needs: [lint, test]`.
+- Configured triggers for `push` to `main`, `push` to `'integration/**'`, and `pull_request` targeting `main`.
+- In `test` job, specified Node matrix `[20.x, 24.x]` with `fail-fast: false` and `npx playwright install --with-deps chromium`.
+- In `docker-build` job, utilized Buildx and `docker/build-push-action@v5` with local image load (`load: true`) and verification smoke tests (`docker run --rm studio-dna --help`).
+- Created replacement blueprint artifact `proposed_ci.yml` in working directory for builder handoff.
 
 ## Artifact Index
-- `DISPATCH.md` — Agent incoming instructions
-- `BRIEFING.md` — Persistent working memory
-- `progress.md` — Liveness heartbeat and status
-- `handoff.md` — Comprehensive 5-component handoff report
+- DISPATCH.md — Initial dispatch instructions
+- BRIEFING.md — Situational awareness
+- progress.md — Liveness heartbeat
+- proposed_ci.yml — Production-grade replacement candidate for .github/workflows/ci.yml
+- handoff.md — Complete 5-component handoff report
