@@ -1,40 +1,48 @@
-# BRIEFING — 2026-10-20T15:53:00Z
+# BRIEFING — 2026-11-06T19:49:15Z
 
 ## Mission
-Investigate Card-to-Sheet transition, build pipeline, and all automated test suites/gates (Gate 1 through 6 + Challenger Viewport) to provide precise implementation specifications.
+Exhaustive read-only investigation of DevOps Verification & E2E Invariants for Milestone 5 (R5: Docker & GitHub Actions) across the 4-tier E2E test suites and test harness.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: QA Playwright Invariant Verifier & Build Integration Explorer
+- Roles: DevOps Verification & E2E Invariants Explorer for Milestone 5 (R5: DevOps Pipeline with Docker & GitHub Actions)
 - Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3
-- Original parent: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Milestone: M5.3
+- Original parent: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Milestone: Milestone 5 (R5: DevOps Pipeline with Docker & GitHub Actions)
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Verify exact assertions, selectors, and timing expectations across all gates
-- Ground all findings with line numbers and file paths
-- Ground verification methods with executable commands and clear expectations
+- Label material conclusions as `observed`, `inferred`, `documented` or `unverified`
+- Extract every assertion and helper function related to R5 across the 4-tier E2E suites
+- Formulate exact verification criteria for worker_m5
 
 ## Current Parent
-- Conversation ID: 3776eb80-d5f5-48b2-9fb9-3223b1c4dbf5
-- Updated: 2026-10-20T15:24:47Z
+- Conversation ID: 3681faee-2d26-45c9-bfac-1d2032fe9756
+- Updated: 2026-11-06T19:42:16Z
 
 ## Investigation State
-- **Explored paths**: `src/components/WorkStage/WorkStage.tsx`, `RibbonCard.tsx`, `mount.tsx`, `package.json`, `vite.bundle.config.mjs`, `clientes/marcionilio-oliveira/site/index.html`, `clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js`, `src/components/WorkStage/__tests__/math.spec.ts`, `tests/e2e/work-stage.spec.ts`, `tests/e2e/challenger-viewport.spec.ts`.
+- **Explored paths**:
+  - `test/e2e/r1-r5-harness.js` (R5 validators lines 612-703)
+  - `test/e2e/r1-r5-tier1-feature-coverage.test.js` (TC-R5-T1-01 to 07)
+  - `test/e2e/r1-r5-tier2-boundary-corner.test.js` (TC-R5-T2-01 to 04)
+  - `test/e2e/r1-r5-tier3-pairwise-combinations.test.js` (TC-R5-T3-01 to 02)
+  - `test/e2e/r1-r5-tier4-realworld-scenarios.test.js` (TC-R5-T4-01)
+  - `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.github/workflows/ci.yml`
+  - `scripts/audit-syntax.js` & `test/fixtures/context-index/`
 - **Key findings**:
-  1. Identified `setTimeout(900ms)` at WorkStage.tsx:418 and `setTimeout(800ms)` at line 482, causing monolithic jump instead of fluid staggered cascade.
-  2. Formulated complete GSAP staggered entrance choreography ($Kp$): Mesh $t=0$s ($0.85$s expo.out), Title $t=0.25$s ($0.65$s expo.out), Description $t=0.35$s ($0.65$s expo.out), Tags/Close $t=0.50$s ($0.55$s expo.out), Phase settle at $t=0.85$s.
-  3. Build pipeline verified: `npm run build:workstage` successfully outputs `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js` (1.3MB) in 4.57s.
-  4. Test suite status: Gate 1 (8/8 math tests) PASSED; Challenger suite (6/6 multi-viewport tests) PASSED; Gates 2-5 PASSED; Gate 6 times out at step 2 (`scrollY=2592.0`) before boundary opening.
-- **Unexplored areas**: None. Complete investigation finished.
+  - Root `Dockerfile` currently lacks multi-stage, `USER pwuser`, `EXPOSE 4000`, `/app/data` volume, and healthcheck.
+  - Root `docker-compose.yml` lacks `ports: 4000:4000` and volume `./data:/app/data`.
+  - Root `ci.yml` lacks `lint` job, Playwright browser install/cache, and `docker-build` job with smoke test.
+  - Test suites currently pass (54/54) due to progressive testability / synthetic fallback strings. Stricter live validation requires updating the root DevOps files.
+  - `scripts/audit-syntax.js` flags 3 ESM test fixtures in `test/fixtures/context-index/` because root is CommonJS without local fixture package.json.
+- **Unexplored areas**: None. All R5 tasks and cross-tier test suites analyzed.
 
 ## Key Decisions Made
-- Formulated exact GSAP choreography matching Jesper Landberg Llama engine and Gate 4 expectations.
-- Documented contract matrix of selectors, values, and timing across all 7 gates.
+- Fully documented all regexes, directive parsers, workflow validators, boundary constraints, pairwise matrices, and lifecycle scenarios.
+- Formulated authoritative checklist and verification commands for `worker_m5`.
 
 ## Artifact Index
-- DISPATCH.md — Task assignment and requirements
-- BRIEFING.md — Persistent context & memory
-- progress.md — Liveness heartbeat
-- handoff.md — Comprehensive 5-component investigation report
+- `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\DISPATCH.md`
+- `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\BRIEFING.md`
+- `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\progress.md`
+- `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\handoff.md`

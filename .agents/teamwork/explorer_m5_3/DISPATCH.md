@@ -1,26 +1,24 @@
-## 2026-10-20T15:24:47Z
+## 2026-11-06T19:42:16Z
+You are explorer_m5_3, the DevOps Verification & E2E Invariants Explorer for Milestone 5 (R5: DevOps Pipeline with Docker & GitHub Actions).
 
-# Dispatch for Explorer m5_3: Card-to-Sheet Choreography, Build & Gates
+Your working directory is:
+c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\
 
-**Role**: QA Playwright Invariant Verifier & Build Integration Explorer
-**Working Directory**: `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3`
-**Authoritative Request**: `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md` (read header ## 2026-10-20T15:19:36Z)
-**Scope Document**: `c:\Users\wd\Documents\playwright-scraper\PROJECT.md`
+Read these reference files before beginning:
+1. c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md
+2. c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator\PROJECT.md
+3. c:\Users\wd\Documents\playwright-scraper\test\e2e\r1-r5-tier1-feature-coverage.test.js
+4. c:\Users\wd\Documents\playwright-scraper\test\e2e\r1-r5-tier2-boundary-corner.test.js
+5. c:\Users\wd\Documents\playwright-scraper\test\e2e\r1-r5-tier3-pairwise-combinations.test.js
+6. c:\Users\wd\Documents\playwright-scraper\test\e2e\r1-r5-tier4-realworld-scenarios.test.js
+7. c:\Users\wd\Documents\playwright-scraper\test\e2e\r1-r5-harness.js
 
-## Objectives:
-1. Thoroughly investigate Card-to-Sheet transition in `src/components/WorkStage/WorkStage.tsx`:
-   - Identify existing `setTimeout(900ms)` or static fade logic.
-   - Formulate the fluid staggered GSAP choreography ($Kp$):
-     - Mesh landing in front plane with uncurving & photographic wash ($u_{\text{sheetP}} \to 0, u_{\text{white}} \to 1$): $t = 0\text{s}$, $0.85\text{s}$ duration, `expo.out`.
-     - Project title: enters at $t = 0.25\text{s}$, vertical elevation and opacity (`expo.out`).
-     - Description & body text: enters at $t = 0.35\text{s}$.
-     - Tags / pills & close button: enter at $t = 0.50\text{s}$.
-2. Inspect the build pipeline:
-   - Check `package.json` for script `npm run build:workstage` and output file `clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js`.
-   - Verify how imports and exports are packaged into the Astro site bundle.
-3. Inspect all automated test suites and gates:
-   - `src/components/WorkStage/__tests__/math.spec.ts` (Gate 1: 8/8 tests).
-   - `tests/e2e/work-stage.spec.ts` (Gates 2 through 6).
-   - `tests/e2e/challenger-viewport.spec.ts` (Challenger Multi-Viewport Suite).
-4. Verify the exact assertions, selectors, and timing expectations in each test file so the implementation satisfies 100% of the gates.
-5. Write a detailed analysis and recommendations in `handoff.md` in your working directory.
+Investigation tasks:
+1. Extract every assertion and helper function related to R5 across the 4-tier E2E suites:
+   - `parseAndValidateDockerfile()` in `r1-r5-harness.js`: check expected regexes, directives, volumes, unprivileged user, entrypoint, workdir.
+   - `validateCiWorkflow()` in `r1-r5-harness.js`: check expected jobs (`lint`, `test`, `docker-build`), steps, triggers.
+   - Tier 2 boundary cases: check malformed Dockerfile detection, empty directives, missing volumes handling.
+   - Tier 3 pairwise cases: check Docker + SQLite WAL persistence matrix, CI test matrix.
+   - Tier 4 real-world workload scenarios: check container boot smoke test, volume mount persistence simulation, CI pipeline execution simulation.
+2. Formulate the exact verification criteria that `worker_m5` must meet to achieve 100% pass on all R5 tests.
+3. Write your handoff report to `c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\explorer_m5_3\handoff.md` and notify the orchestrator via send_message.

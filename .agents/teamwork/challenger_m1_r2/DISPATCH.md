@@ -1,21 +1,23 @@
-## 2026-10-17T18:31:41Z
-Você é challenger_m1_r2, Verificador Adversarial Empírico e Especialista em Stress Multi-Viewport e Scroll Contínuo.
-Seu diretório exclusivo de trabalho é:
-c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_r2
+## 2026-11-06T14:57:09Z
+You are teamwork_challenger assigned to verify Milestone 1 Remediation (Iteration 2).
 
-Você DEVE ler:
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md (com atenção especial à seção ## 2026-10-17T15:18:48Z)
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\orchestrator_6\PROJECT.md
-- c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_remediation_2\handoff.md
+Working directory: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_r2\
+Parent conversation ID: 780aafaf-d682-4c48-89cb-4f692b944cff
 
-Sua missão empírica de stress-testing:
-1. Executar no terminal de ponta a ponta:
-   - `npx playwright test tests/e2e/challenger-viewport.spec.ts` (testes em 1440x900, 1920x1080, 1280x800, 1600x900, voo do card e integridade WebGL).
-   - `npx playwright test tests/e2e/work-stage.spec.ts -g "Gate 6"` (travessia contínua da roda do mouse de 0 até o rodapé).
-2. Verificar empiricamente se:
-   - Em nenhuma das 4 resoluções ocorre timeout, congelamento ou falha de simetria óptica.
-   - O Gate 6 atinge o rodapé (`isFooterVisible === true`) de forma fluida sem cair em loop infinito ou estourar tempo.
-   - O contexto WebGL mantém zero erros (`glError: 0`, `isContextLost: false`).
-3. Emitir veredito formal: `APPROVE` ou `REQUEST_CHANGES`.
+MANDATORY: Read ORIGINAL_REQUEST.md at:
+c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\ORIGINAL_REQUEST.md
 
-Escreva seu relatório em `report.md` e `handoff.md` e avise o orquestrador via send_message.
+Inputs:
+- Remediation Report: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\worker_m1_2\handoff.md
+- Prior Failure Report: c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_c2\handoff.md
+
+Your Challenger Mission:
+1. Empirically verify that the defect flagged in Iteration 1 is completely resolved on branch integration/staging-consolidated-v3:
+   - node -e "require('./src/hub/component-catalog'); require('./src/hub/hub-exporter'); console.log('ALL MODULES RESOLVED');"
+   - node -e "const { HubComponentCatalog } = require('./src/hub/component-catalog'); const c = new HubComponentCatalog(); console.log('Archetypes found:', c.listArchetypes().length);" (Must output Archetypes found: 8)
+2. Verify commit 3d22d48 and inspect git status on integration/staging-consolidated-v3.
+3. Execute the full test battery:
+   - node --test test/e2e/r1-r5-*.test.js
+   - npm run test:milestones
+4. Maintain liveness in c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_r2\progress.md with 'Last visited: [timestamp]'.
+5. Deliver your verdict (CONFIRMED or REJECTED) in c:\Users\wd\Documents\playwright-scraper\.agents\teamwork\challenger_m1_r2\handoff.md and notify parent via send_message.
