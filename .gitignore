@@ -42,24 +42,14 @@ out/
 .astro/
 .svelte-kit/
 
-# ── Copias (Awwwards scrapes brutos e pesados) ─────────────────────────────────
+# ── Copias (Awwwards scrapes brutos e pesados - local evidence only) ──────────
 copias/*
 !copias/README.md
-!copias/azimuteresidencial-com-br/
-!copias/azimuteresidencial-com-br/**
-!copias/masters-residence-dviga/
-!copias/masters-residence-dviga/**
-!copias/jesperlandberg-com/
-!copias/jesperlandberg-com/**
 
-
-# ── Clientes de Produção & Projetos Customizados ──────────────────────────────
-# Manter arquivos estruturais e DNA, ignorar dumps de assets pesados e screenshots
-clientes/**/site/assets/
-clientes/**/qa-reports/*.png
-clientes/**/qa-reports/*.jpg
-projetos/**/site/assets/
+# ── Clientes de Produção (Local workspaces isolados - untracked from Git) ─────
+clientes/*
 !clientes/README.md
+projetos/**/site/assets/
 !projetos/README.md
 
 # ── Imagens e Mídias Binárias (Design Vault, Clientes, Scrapes e QA) ─────────
@@ -160,6 +150,11 @@ copias/*.html
 .env.*.local
 *.pem
 *.key
+
+# ── Agent Teamwork Logs, Domscribe & Runtime Data Store ─────────────────────
+.agents/teamwork/
+.domscribe/
+data/
 
 # ── Sistema Operacional & IDEs ────────────────────────────────────────────────
 .DS_Store
