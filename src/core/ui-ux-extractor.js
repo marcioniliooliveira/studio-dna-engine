@@ -4,6 +4,7 @@ const path = require('path');
 const { loadConfig } = require('../config');
 const { autoScroll } = require('../utils/auto-scroll');
 const { waitForHydrationSettled } = require('../utils/hydration-barrier');
+const { classifyKineticContract } = require('../motion/jev-classifier');
 
 // Módulos PRO carregados de forma segura
 let AdvancedAssetInterceptor = null;
@@ -25,6 +26,48 @@ try {
   const proCdp = require('../pro/cdp-listener-mapper');
   mapEventListenersWithCDP = proCdp.mapEventListenersWithCDP || mapEventListenersWithCDP;
 } catch (e) {}
+
+/**
+ * Enriches extracted UI/UX feature telemetry with a formal JEV 2.0 motionContract.
+ *
+ * @param {object} uiFeatures Extracted DOM/GSAP/CSS telemetry
+ * @param {object} [options] Optional context (`capsuleSlug`)
+ * @returns {object} Enriched uiFeatures object containing `motionContract`
+ */
+function enrichUiFeaturesWithMotionContract(uiFeatures = {}, options = {}) {
+  const capsuleSlug = options.capsuleSlug || 'extracted-ui';
+  const timelines = Array.isArray(uiFeatures.gsap?.timelines) ? uiFeatures.gsap.timelines : [];
+  const keyframes = Array.isArray(uiFeatures.cssEffects?.keyframes) ? uiFeatures.cssEffects.keyframes : [];
+
+  const styleParts = [];
+  for (const tl of timelines.slice(0, 5)) {
+    if (tl && tl.ease) styleParts.push(String(tl.ease));
+    if (tl && typeof tl.duration === 'number' && Number.isFinite(tl.duration)) {
+      styleParts.push(`${tl.duration}s`);
+    }
+  }
+  for (const kf of keyframes.slice(0, 5)) {
+    if (kf && kf.rule) styleParts.push(String(kf.rule));
+    else if (kf && kf.name) styleParts.push(String(kf.name));
+  }
+
+  const domTokens = [];
+  if (uiFeatures.gsap?.hasScrollTrigger) domTokens.push('data-scroll-trigger');
+  if (uiFeatures.lenis?.detected) domTokens.push('lenis');
+  if ((uiFeatures.webglCanvas?.canvasCount || 0) > 0) domTokens.push('<canvas>');
+  if ((uiFeatures.microInteractions?.magneticButtons?.length || 0) > 0) domTokens.push('data-magnetic');
+
+  const classification = classifyKineticContract({
+    styles: styleParts.join(' '),
+    domHtml: domTokens.join(' '),
+    capsuleSlug
+  });
+
+  return {
+    ...uiFeatures,
+    motionContract: classification.motionContract
+  };
+}
 
 /**
  * Extrai particularidades de UI/UX, animações GSAP, Shaders, Canvas Sequences e micro-interações
@@ -228,6 +271,14 @@ async function extractUiUx(targetUrl, targetDir = null, customConfig = {}) {
       }
     } catch (e) {}
 
+    const baseSlug = path.basename(outputDir) === 'ui-ux-analysis'
+      ? path.basename(path.dirname(outputDir))
+      : path.basename(outputDir);
+    const enriched = enrichUiFeaturesWithMotionContract(uiFeatures, {
+      capsuleSlug: baseSlug || 'extracted-ui'
+    });
+    uiFeatures.motionContract = enriched.motionContract;
+
     // Salva JSON com particularidades
     fs.writeFileSync(path.join(outputDir, 'ui_ux_features.json'), JSON.stringify(uiFeatures, null, 2));
 
@@ -304,5 +355,6 @@ export function initMagneticEffect(selector = '.magnetic-btn') {
 }
 
 module.exports = {
-  extractUiUx
+  extractUiUx,
+  enrichUiFeaturesWithMotionContract
 };

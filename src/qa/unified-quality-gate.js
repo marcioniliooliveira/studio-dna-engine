@@ -15,6 +15,7 @@ const fs = require('fs');
 const http = require('http');
 const { AntiSlopGate } = require('./anti-slop-gate');
 const { runImpeccableGate, ZERO_TOLERANCE_RULES } = require('./impeccable-gate');
+const { auditLayoutCollisions } = require('../constraints/geometry');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -213,12 +214,25 @@ class UnifiedQualityGate {
         const sections = Array.from(document.querySelectorAll('section, header, footer, main'));
         const boxes = sections.map((sec, idx) => {
           const rect = sec.getBoundingClientRect();
+          const cs = window.getComputedStyle(sec);
+          const ancestorIndices = [];
+          for (let otherIdx = 0; otherIdx < sections.length; otherIdx++) {
+            if (otherIdx !== idx && sections[otherIdx].contains(sec)) {
+              ancestorIndices.push(otherIdx);
+            }
+          }
           return {
             index: idx,
             tag: sec.tagName.toLowerCase(),
             id: sec.id || null,
+            left: Math.round(rect.left + window.scrollX),
+            top: Math.round(rect.top + window.scrollY),
+            right: Math.round(rect.right + window.scrollX),
+            bottom: Math.round(rect.bottom + window.scrollY),
             width: Math.round(rect.width),
-            height: Math.round(rect.height)
+            height: Math.round(rect.height),
+            position: cs.position || 'static',
+            ancestorIndices
           };
         });
 
@@ -311,6 +325,8 @@ class UnifiedQualityGate {
                      scrollAudit.passed &&
                      impeccableReport.passed;
 
+      const spatialLayout = auditLayoutCollisions(domAudit.boxes);
+
       const report = {
         timestamp: new Date().toISOString(),
         clientSlug: clientSlug || path.basename(parentDir),
@@ -358,6 +374,16 @@ class UnifiedQualityGate {
             passed: scrollAudit.passed,
             overlapsCount: scrollAudit.overlapsCount,
             overlaps: scrollAudit.overlaps
+          },
+          spatialLayout: {
+            diagnosticOnly: true,
+            passed: spatialLayout.collisionsCount === 0,
+            analyzedCount: spatialLayout.analyzedCount,
+            skippedFixedOrStickyCount: spatialLayout.skippedFixedOrStickyCount,
+            collisionsCount: spatialLayout.collisionsCount,
+            collisions: spatialLayout.collisions,
+            gapsCount: spatialLayout.gapsCount,
+            gapsSample: spatialLayout.gapsSample
           }
         },
         artifacts: {

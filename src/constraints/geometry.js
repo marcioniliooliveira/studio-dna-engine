@@ -1,3 +1,5 @@
+const { SpatialRTree } = require('../spatial/spatial-rtree');
+
 /**
  * C3 Constraint: Viewport ↔ Camera Rig / Geometry Adaptation
  * Dynamically recalculates 3D camera FOV, orbital distance and safe area offsets across portrait and landscape viewports.
@@ -89,7 +91,109 @@ function resolveCollectionGeometry(cardinality, archetypeMax = 3) {
   };
 }
 
+/**
+ * Audits sibling DOM layout boxes for unintended AABB overlaps and spacing gaps via SpatialRTree.
+ * Excludes fixed/sticky overlays and DOM ancestor-descendant containment pairs to prevent false positives.
+ *
+ * @param {Array<object>} boxes Measured bounding boxes from DOM evaluation
+ * @param {object} [options] Optional thresholds (`minIoU`)
+ * @returns {object} Diagnostic collision and gap report
+ */
+function auditLayoutCollisions(boxes = [], options = {}) {
+  const minIoU = typeof options.minIoU === 'number' ? options.minIoU : 0.01;
+  if (!Array.isArray(boxes) || boxes.length === 0) {
+    return {
+      analyzedCount: 0,
+      skippedFixedOrStickyCount: 0,
+      collisionsCount: 0,
+      collisions: [],
+      gapsCount: 0,
+      gapsSample: []
+    };
+  }
+
+  const indexToId = new Map();
+  const ancestorsById = new Map();
+  const tree = new SpatialRTree();
+  let analyzedCount = 0;
+  let skippedFixedOrStickyCount = 0;
+
+  const normalized = boxes.map((box, pos) => {
+    const idx = box.index !== undefined ? box.index : pos;
+    const tag = box.tag || 'node';
+    const nodeId = String(box.id || `${tag}-${idx}`);
+    indexToId.set(idx, nodeId);
+    return { box, idx, nodeId, tag };
+  });
+
+  for (const entry of normalized) {
+    const { box, nodeId, tag } = entry;
+    const position = String(box.position || '').toLowerCase();
+    if (position === 'fixed' || position === 'sticky') {
+      skippedFixedOrStickyCount += 1;
+      continue;
+    }
+
+    const left = Number(box.left ?? box.minX ?? 0);
+    const top = Number(box.top ?? box.minY ?? 0);
+    const width = Number(box.width ?? ((box.right ?? box.maxX ?? left) - left));
+    const height = Number(box.height ?? ((box.bottom ?? box.maxY ?? top) - top));
+    const right = Number(box.right ?? box.maxX ?? (left + width));
+    const bottom = Number(box.bottom ?? box.maxY ?? (top + height));
+
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+      continue;
+    }
+
+    const ancestorSet = new Set();
+    if (Array.isArray(box.ancestorIndices)) {
+      for (const ancIdx of box.ancestorIndices) {
+        const ancId = indexToId.get(ancIdx);
+        if (ancId) ancestorSet.add(ancId);
+      }
+    }
+    if (Array.isArray(box.ancestorIds)) {
+      for (const ancId of box.ancestorIds) {
+        ancestorSet.add(String(ancId));
+      }
+    }
+    ancestorsById.set(nodeId, ancestorSet);
+
+    tree.insert({
+      id: nodeId,
+      tag,
+      minX: left,
+      minY: top,
+      maxX: right,
+      maxY: bottom
+    });
+    analyzedCount += 1;
+  }
+
+  const rawCollisions = tree.findCollisions();
+  const collisions = rawCollisions.filter((pair) => {
+    if (pair.iou < minIoU) return false;
+    const ancA = ancestorsById.get(pair.a);
+    const ancB = ancestorsById.get(pair.b);
+    if (ancA && ancA.has(pair.b)) return false;
+    if (ancB && ancB.has(pair.a)) return false;
+    return true;
+  });
+
+  const gaps = analyzedCount >= 2 ? tree.computeDimensionalGaps() : [];
+
+  return {
+    analyzedCount,
+    skippedFixedOrStickyCount,
+    collisionsCount: collisions.length,
+    collisions,
+    gapsCount: gaps.length,
+    gapsSample: gaps.slice(0, 12)
+  };
+}
+
 module.exports = {
   resolveViewportCameraRig,
-  resolveCollectionGeometry
+  resolveCollectionGeometry,
+  auditLayoutCollisions
 };
