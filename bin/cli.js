@@ -3,9 +3,62 @@
 const readline = require('readline');
 const path = require('path');
 const { runPipeline, startPreviewServer } = require('../index');
+const { resolveWorkspacePaths, ensureWorkspaceStructure } = require('../src/config/workspace');
 const packageJson = require('../package.json');
 
-const args = process.argv.slice(2);
+function parseCliArgs(argv = process.argv.slice(2)) {
+  const result = {
+    rawUrl: null,
+    mode: 'all',
+    outDir: null,
+    workspaceDir: null,
+    initWorkspace: false,
+    preview: false,
+    port: 4000,
+    headless: true,
+    timeout: null,
+    proxy: null,
+    help: false,
+    version: false
+  };
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--help' || arg === '-h') {
+      result.help = true;
+    } else if (arg === '--version' || arg === '-v') {
+      result.version = true;
+    } else if (arg === '--preview' || arg === '-p') {
+      result.preview = true;
+    } else if (arg === '--headed') {
+      result.headless = false;
+    } else if (arg === '--init-workspace') {
+      result.initWorkspace = true;
+      const next = argv[i + 1];
+      if (next && !next.startsWith('-')) {
+        result.workspaceDir = path.resolve(process.cwd(), next);
+        i++;
+      }
+    } else if ((arg === '--workspace' || arg === '-w') && argv[i + 1]) {
+      result.workspaceDir = path.resolve(process.cwd(), argv[++i]);
+    } else if (arg === '--mode' && argv[i + 1]) {
+      result.mode = argv[++i];
+    } else if (arg === '--out' && argv[i + 1]) {
+      result.outDir = path.resolve(process.cwd(), argv[++i]);
+    } else if (arg === '--port' && argv[i + 1]) {
+      result.port = parseInt(argv[++i], 10) || 4000;
+    } else if (arg === '--timeout' && argv[i + 1]) {
+      const parsedTimeout = parseInt(argv[++i], 10);
+      if (Number.isFinite(parsedTimeout)) result.timeout = parsedTimeout;
+    } else if (arg === '--proxy' && argv[i + 1]) {
+      result.proxy = { server: argv[++i] };
+    } else if (!arg.startsWith('-') && !result.rawUrl) {
+      result.rawUrl = arg;
+    }
+  }
+
+  return result;
+}
 
 function printBanner() {
   console.log(`
@@ -25,23 +78,24 @@ function printHelp() {
   node bin/cli.js --preview [opções]
 
 \x1b[1mOpções Principais:\x1b[0m
-  --mode <modo>       Modo: 'all' (padrão), 'clone', 'dna', 'ui'
-  --out <pasta>       Diretório customizado de saída (padrão: ./copias)
-  --preview, -p       Inicia servidor local de visualização dos sites clonados
-  --port <porta>      Porta do servidor de preview (padrão: 4000)
+  --workspace, -w <dir>  Workspace externo para copias/, clientes/ e data/ (evita poluir o repo)
+  --init-workspace <dir> Inicializa estrutura limpa de workspace externo e encerra
+  --mode <modo>          Modo: 'all' (padrão), 'clone', 'dna', 'ui'
+  --out <pasta>          Diretório customizado de saída para copias/
+  --preview, -p          Inicia servidor local de visualização dos sites clonados
+  --port <porta>         Porta do servidor de preview (padrão: 4000)
 
 \x1b[1mOpções de Depuração & Navegador:\x1b[0m
-  --headed            Executa exibindo a janela do navegador (visual)
-  --timeout <ms>      Tempo limite em milissegundos (padrão: 45000)
-  --proxy <url>       Servidor proxy HTTP/SOCKS
-  --help, -h          Mostra este menu de ajuda
-  --version, -v       Mostra a versão instalada
+  --headed               Executa exibindo a janela do navegador (visual)
+  --timeout <ms>         Tempo limite em milissegundos (padrão: 45000)
+  --proxy <url>          Servidor proxy HTTP/SOCKS
+  --help, -h             Mostra este menu de ajuda
+  --version, -v          Mostra a versão instalada
 
 \x1b[1mExemplos:\x1b[0m
-  npx site-cloner https://exemplo.com
-  npx site-cloner https://exemplo.com --headed
-  npx site-cloner https://exemplo.com --mode ui
-  npx site-cloner --preview
+  node bin/cli.js --init-workspace ../studio-dna-projects
+  node bin/cli.js https://exemplo.com --workspace ../studio-dna-projects
+  node bin/cli.js --preview --workspace ../studio-dna-projects
 `);
 }
 
@@ -99,70 +153,79 @@ async function promptInteractive() {
   }
 }
 
+function logWorkspaceBanner(workspacePaths) {
+  if (workspacePaths.isExternalWorkspace) {
+    console.log(`\x1b[32m📁 Workspace isolado:\x1b[0m ${workspacePaths.workspaceRoot}`);
+  } else {
+    console.log(`\x1b[33m⚠️ Workspace apontando para o diretório da ferramenta:\x1b[0m ${workspacePaths.workspaceRoot}`);
+    console.log('   Dica: use --workspace <dir> ou STUDIO_DNA_WORKSPACE=<dir> para evitar gravar artefatos de clientes neste repositório.');
+  }
+}
+
 async function main() {
-  if (args.includes('--help') || args.includes('-h')) {
+  const parsed = parseCliArgs(process.argv.slice(2));
+
+  if (parsed.help) {
     printHelp();
     process.exit(0);
   }
 
-  if (args.includes('--version') || args.includes('-v')) {
+  if (parsed.version) {
     console.log(`v${packageJson.version}`);
     process.exit(0);
   }
 
-  // Modo Servidor Preview
-  if (args.includes('--preview') || args.includes('-p')) {
+  if (parsed.workspaceDir) {
+    process.env.STUDIO_DNA_WORKSPACE = parsed.workspaceDir;
+  }
+
+  const workspacePaths = resolveWorkspacePaths({
+    workspaceDir: parsed.workspaceDir || undefined
+  });
+
+  if (parsed.initWorkspace) {
     printBanner();
-    let port = 4000;
-    const portIndex = args.indexOf('--port');
-    if (portIndex !== -1 && args[portIndex + 1]) {
-      port = parseInt(args[portIndex + 1], 10) || 4000;
-    }
-    startPreviewServer({ port });
+    const targetDir = parsed.workspaceDir || path.resolve(process.cwd(), '../studio-dna-projects');
+    const created = ensureWorkspaceStructure(targetDir);
+    console.log(`\x1b[32m✅ Workspace inicializado em:\x1b[0m ${created.workspaceRoot}`);
+    console.log(`   copias/:     ${created.copiasDir}`);
+    console.log(`   clientes/:   ${created.clientesDir}`);
+    console.log(`   data/:       ${created.dataDir}`);
+    console.log(`   qa-reports/: ${created.qaReportsDir}`);
     return;
   }
 
-  const rawUrl = args.find(a => !a.startsWith('--'));
+  // Modo Servidor Preview
+  if (parsed.preview) {
+    printBanner();
+    logWorkspaceBanner(workspacePaths);
+    startPreviewServer({
+      port: parsed.port,
+      workspaceDir: workspacePaths.workspaceRoot
+    });
+    return;
+  }
 
-  if (!rawUrl) {
+  if (!parsed.rawUrl) {
     await promptInteractive();
   } else {
     printBanner();
-    let mode = 'all';
-    const modeIndex = args.indexOf('--mode');
-    if (modeIndex !== -1 && args[modeIndex + 1]) {
-      mode = args[modeIndex + 1];
-    }
-
-    let outDir = null;
-    const outIndex = args.indexOf('--out');
-    if (outIndex !== -1 && args[outIndex + 1]) {
-      outDir = path.resolve(process.cwd(), args[outIndex + 1]);
-    }
-
-    const headless = !args.includes('--headed');
-
-    let timeout = null;
-    const timeoutIndex = args.indexOf('--timeout');
-    if (timeoutIndex !== -1 && args[timeoutIndex + 1]) {
-      timeout = parseInt(args[timeoutIndex + 1], 10);
-    }
-
-    let proxy = null;
-    const proxyIndex = args.indexOf('--proxy');
-    if (proxyIndex !== -1 && args[proxyIndex + 1]) {
-      proxy = { server: args[proxyIndex + 1] };
-    }
+    logWorkspaceBanner(workspacePaths);
 
     await runPipeline({
-      url: rawUrl,
-      mode,
-      outputDir: outDir || undefined,
-      headless,
-      timeout: timeout || undefined,
-      proxy: proxy || undefined
+      url: parsed.rawUrl,
+      mode: parsed.mode,
+      workspaceDir: workspacePaths.workspaceRoot,
+      outputDir: parsed.outDir || undefined,
+      headless: parsed.headless,
+      timeout: parsed.timeout || undefined,
+      proxy: parsed.proxy || undefined
     });
   }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { parseCliArgs, main };

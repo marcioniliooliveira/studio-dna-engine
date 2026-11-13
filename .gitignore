@@ -8,24 +8,7 @@ node_modules/
 .pnp.js
 .worktrees/
 
-# Local design-tool workspace and generated canvas exports
-.kombai/
-!.kombai/
-.kombai/*
-!.kombai/canvas/
-.kombai/canvas/*
-!.kombai/canvas/ACON24 home — faithful canvas clone.html
-!.kombai/canvas/jumpflex-home-journey.canvas
-!.kombai/canvas/jumpflex-com-home.canvas
-clientes/**/kombai-canvas/
-
-# Canonical SCALEX component canvases are executable test fixtures
-!clientes/flashtech-caso-04-growth/kombai-canvas/
-clientes/flashtech-caso-04-growth/kombai-canvas/*
-!clientes/flashtech-caso-04-growth/kombai-canvas/Scalex — Sessao 01_ Hero e Navbar.html
-!clientes/flashtech-caso-04-growth/kombai-canvas/Scalex — Sessao 02_ Sobre e Metricas.html
-
-# Standalone design-canvas exports belong inside client artifacts, not the repo root
+# Standalone design/HTML exports belong inside external workspace client folders, not the repo root
 /*.html
 
 # ── Build / Framework Caches ──────────────────────────────────────────────────
@@ -42,15 +25,14 @@ out/
 .astro/
 .svelte-kit/
 
-# ── Copias (Awwwards scrapes brutos e pesados - local evidence only) ──────────
+# ── Workspaces Locais (Copias & Clientes - untracked; prefira --workspace externo) ─
 copias/*
 !copias/README.md
-
-# ── Clientes de Produção (Local workspaces isolados - untracked from Git) ─────
 clientes/*
 !clientes/README.md
-projetos/**/site/assets/
+projetos/*
 !projetos/README.md
+design-vault/**/site/assets/
 
 # ── Imagens e Mídias Binárias (Design Vault, Clientes, Scrapes e QA) ─────────
 *.avif
@@ -69,42 +51,6 @@ projetos/**/site/assets/
 !design-vault/elyse-residence-dev-webflow-io/assets/**/*.mp4
 !design-vault/elyse-residence-dev-webflow-io/assets/**/*.webm
 
-# Approved and rejected visual baselines are source evidence, not disposable screenshots
-!clientes/**/design/goldens/*.png
-!clientes/silvio-iwata-imobiliaria/mockups/**
-!clientes/silvio-iwata-imobiliaria/site/assets/
-!clientes/silvio-iwata-imobiliaria/site/assets/**
-!clientes/negocia-bem/site/assets/
-clientes/negocia-bem/site/assets/*
-!clientes/negocia-bem/site/assets/vendor/
-!clientes/negocia-bem/site/assets/vendor/**
-!clientes/jumpflex-home-evolution/*.jpg
-!copias/azimuteresidencial-com-br/**
-!copias/masters-residence-dviga/**
-!copias/jesperlandberg-com/**
-
-# SCALEX runtime tests require these three immutable local review-card fixtures
-!clientes/flashtech-caso-04-growth/site/assets/
-clientes/flashtech-caso-04-growth/site/assets/*
-!clientes/flashtech-caso-04-growth/site/assets/vendor/
-!clientes/flashtech-caso-04-growth/site/assets/vendor/**
-!clientes/flashtech-caso-04-growth/site/assets/69d88c4d1e28dbd62b778bc2_review_20card_20image_204.avif
-!clientes/flashtech-caso-04-growth/site/assets/69d88c4d8f905c724ee05c1e_review_20card_20image_203.avif
-!clientes/flashtech-caso-04-growth/site/assets/69d88c4d9ea5b9163355470b_review_20card_20image_205.avif
-
-# Marcionilio Oliveira work-stage runtime scripts and isolated Jesper assets
-!clientes/marcionilio-oliveira/site/assets/
-clientes/marcionilio-oliveira/site/assets/*
-!clientes/marcionilio-oliveira/site/assets/jesper/
-!clientes/marcionilio-oliveira/site/assets/jesper/*
-!clientes/marcionilio-oliveira/site/assets/_astro/
-clientes/marcionilio-oliveira/site/assets/_astro/*
-!clientes/marcionilio-oliveira/site/assets/_astro/workStage.bundle.js
-!clientes/marcionilio-oliveira/site/assets/_astro/initHorizontalScroll.LNLCK81L.js
-!clientes/marcionilio-oliveira/site/assets/_astro/Loading.astro_astro_type_script_index_0_lang.zYvD-WGL.js
-
-design-vault/**/site/assets/
-
 # ── QA Reports & Screenshots de Auditoria ────────────────────────────────────
 qa-reports/
 playwright-report/
@@ -115,6 +61,8 @@ coverage/
 .nyc_output/
 
 # ── Temporários & Logs ────────────────────────────────────────────────────────
+.staging/
+.impeccable/
 *.log
 npm-debug.log*
 yarn-debug.log*

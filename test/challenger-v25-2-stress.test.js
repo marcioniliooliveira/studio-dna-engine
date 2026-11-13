@@ -65,7 +65,7 @@ const {
 
 const CLI_PATH = path.resolve(__dirname, '../scripts/detect-antipatterns.mjs');
 const CLIENT_JUMPPLAY_PATH = path.resolve(__dirname, '../clientes/jumpflex-home-evolution/JumpPlay — Family Reveal & Kinetic Range.html');
-const ROOT_JUMPPLAY_PATH = path.resolve(__dirname, '../JumpPlay — Family Reveal & Kinetic Range.html');
+const ROOT_JUMPPLAY_PATH = path.resolve(__dirname, './fixtures/sanitized-jumpplay.html');
 
 // ============================================================================
 // PILLAR 1: ANTI-PATTERN FALSIFICATION BATTERY (R1)

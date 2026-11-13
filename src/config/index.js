@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { resolveWorkspacePaths } = require('./workspace');
 
 const DEFAULT_CONFIG = {
   outputDir: path.join(process.cwd(), 'copias'),
@@ -15,8 +16,15 @@ const DEFAULT_CONFIG = {
 };
 
 function loadConfig(customOverrides = {}) {
+  const workspace = resolveWorkspacePaths({
+    workspaceDir: customOverrides.workspaceDir || customOverrides.rootDir,
+    outputDir: customOverrides.outputDir
+  });
+
   let fileConfig = {};
-  const configPath = path.join(process.cwd(), 'cloner.config.json');
+  const workspaceConfigPath = path.join(workspace.workspaceRoot, 'cloner.config.json');
+  const cwdConfigPath = path.join(process.cwd(), 'cloner.config.json');
+  const configPath = fs.existsSync(workspaceConfigPath) ? workspaceConfigPath : cwdConfigPath;
 
   if (fs.existsSync(configPath)) {
     try {
@@ -30,10 +38,19 @@ function loadConfig(customOverrides = {}) {
     Object.entries(customOverrides).filter(([_, v]) => v !== undefined)
   );
 
+  const resolvedOutputDir = cleanOverrides.outputDir
+    || fileConfig.outputDir
+    || workspace.copiasDir;
+
   return {
     ...DEFAULT_CONFIG,
     ...fileConfig,
     ...cleanOverrides,
+    outputDir: path.resolve(resolvedOutputDir),
+    workspaceRoot: workspace.workspaceRoot,
+    clientesDir: workspace.clientesDir,
+    dataDir: workspace.dataDir,
+    designVaultDir: workspace.designVaultDir,
     viewport: {
       ...DEFAULT_CONFIG.viewport,
       ...(fileConfig.viewport || {}),

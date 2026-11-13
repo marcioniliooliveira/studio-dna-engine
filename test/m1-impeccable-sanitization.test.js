@@ -11,7 +11,7 @@ const { runImpeccableGate, ImpeccableGate, ZERO_TOLERANCE_RULES } = require('../
 const { UnifiedQualityGate } = require('../src/qa/unified-quality-gate');
 
 const CLIENT_JUMPPLAY_PATH = path.resolve(__dirname, '../clientes/jumpflex-home-evolution/JumpPlay — Family Reveal & Kinetic Range.html');
-const ROOT_JUMPPLAY_PATH = path.resolve(__dirname, '../JumpPlay — Family Reveal & Kinetic Range.html');
+const ROOT_JUMPPLAY_PATH = path.resolve(__dirname, './fixtures/sanitized-jumpplay.html');
 const CLI_PATH = path.resolve(__dirname, '../scripts/detect-antipatterns.mjs');
 
 // ─── SUITE 1: Falsifiability & Adversarial Fixture Detections ─────────────────

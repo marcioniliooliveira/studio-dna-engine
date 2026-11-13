@@ -1,16 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 const { injectContentSlots } = require('./slot-injector');
+const { resolveWorkspacePaths } = require('../config/workspace');
 
 /**
  * Client Project Factory (Fábrica de Clientes One-Shot)
  * Cria uma pasta de cliente isolada, desacoplada do scraper, aplicando a metodologia ICM.
  */
-function createClientProject({ brandName, refSlug = 'storeyarchitecture-co-uk', brandSpec = {} }) {
+function createClientProject({
+  brandName,
+  refSlug = 'storeyarchitecture-co-uk',
+  brandSpec = {},
+  workspaceDir,
+  clientesDir,
+  copiasDir
+}) {
   const clientSlug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-  const clientDir = path.resolve(__dirname, `../../clientes/${clientSlug}`);
+  const workspace = resolveWorkspacePaths({ workspaceDir, clientesDir, copiasDir });
+  const clientDir = path.join(workspace.clientesDir, clientSlug);
   const siteDir = path.join(clientDir, 'site');
-  const refDir = path.resolve(__dirname, `../../copias/${refSlug}`);
+  const refDir = path.join(workspace.copiasDir, refSlug);
 
   console.log(`\n🚀 [Client Factory] Inicializando projeto para: "${brandName}"...`);
   console.log(`📁 Diretório de Destino: ${clientDir}`);
@@ -76,10 +85,12 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const brandArg = args.find((_, i) => args[i - 1] === '--brand') || 'Nova Marca';
   const refArg = args.find((_, i) => args[i - 1] === '--ref') || 'storeyarchitecture-co-uk';
+  const wsArg = args.find((_, i) => args[i - 1] === '--workspace') || undefined;
 
   createClientProject({
     brandName: brandArg,
-    refSlug: refArg
+    refSlug: refArg,
+    workspaceDir: wsArg
   });
 }
 

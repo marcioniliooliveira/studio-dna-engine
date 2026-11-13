@@ -3,6 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const { loadConfig } = require('../config');
+const { resolveWorkspacePaths } = require('../config/workspace');
 const { generateTailwindConfig } = require('../generators/tailwind-generator');
 const { createClientProject } = require('../generators/client-factory');
 const { runBoxDiffLinter } = require('../../scripts/box-diff-linter');
@@ -245,11 +246,18 @@ function streamFileWithRange(req, res, filePath, contentType) {
 
 function startPreviewServer(options = {}) {
   const opts = typeof options === 'number' ? { port: options } : (options || {});
-  const config = loadConfig(opts);
-  const rootDir = path.resolve(opts.rootDir || process.cwd());
-  const copiasDir = path.resolve(opts.outputDir || (opts.rootDir ? path.join(rootDir, 'copias') : config.outputDir) || path.join(rootDir, 'copias'));
-  const clientesDir = path.resolve(opts.clientesDir || path.join(rootDir, 'clientes'));
-  const vaultDir = path.resolve(path.join(rootDir, 'design-vault'));
+  const workspace = resolveWorkspacePaths({
+    rootDir: opts.rootDir,
+    workspaceDir: opts.workspaceDir,
+    outputDir: opts.outputDir,
+    clientesDir: opts.clientesDir,
+    vaultDir: opts.vaultDir
+  });
+  const config = loadConfig({ ...opts, workspaceDir: workspace.workspaceRoot });
+  const rootDir = workspace.workspaceRoot;
+  const copiasDir = path.resolve(opts.outputDir || (opts.workspaceDir || opts.rootDir ? workspace.copiasDir : config.outputDir) || workspace.copiasDir);
+  const clientesDir = workspace.clientesDir;
+  const vaultDir = workspace.designVaultDir;
   const port = opts.port ?? config.previewPort ?? 4000;
   const mutationOptions = {
     enabled: opts.enableMutations === true,
@@ -260,8 +268,8 @@ function startPreviewServer(options = {}) {
   if (!fs.existsSync(clientesDir)) fs.mkdirSync(clientesDir, { recursive: true });
 
   const hybridRepo = opts.hybridRepo || new HybridRepository({
-    dbPath: opts.dbPath || path.join(rootDir, 'data/studio_dna.db'),
-    docBasePath: opts.docBasePath || path.join(rootDir, 'data/documents')
+    dbPath: opts.dbPath || path.join(workspace.dataDir, 'studio_dna.db'),
+    docBasePath: opts.docBasePath || path.join(workspace.dataDir, 'documents')
   });
   hybridRepo.init().catch(err => {
     if (!opts.silent) console.error('Failed to initialize HybridRepository:', err);

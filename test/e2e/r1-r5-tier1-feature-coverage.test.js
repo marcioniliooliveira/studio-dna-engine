@@ -433,19 +433,24 @@ describe('R4: Architecture Consolidation, Dependency Pruning & Cleanup', () => {
     }
   });
 
-  test('TC-R4-T1-02: Legacy script auditor detects candidates for deprecation', () => {
+  test('TC-R4-T1-02: Legacy script auditor detects candidates for deprecation and confirms clean scripts dir', () => {
     const scriptsDir = path.join(PROJECT_ROOT, 'scripts');
     assert.ok(fs.existsSync(scriptsDir), 'scripts directory must exist');
 
     const allScripts = fs.readdirSync(scriptsDir).filter(f => f.endsWith('.js') || f.endsWith('.cjs'));
     const throwawayPrefixes = ['check-', 'find-', 'isolate-', 'test-'];
-    const candidates = allScripts.filter(name => throwawayPrefixes.some(p => name.startsWith(p)));
+    const liveCandidates = allScripts.filter(name => throwawayPrefixes.some(p => name.startsWith(p)));
+    assert.equal(liveCandidates.length, 0, 'Clean engine scripts/ dir should retain zero throwaway debug scripts');
 
-    assert.ok(candidates.length > 0, 'Should find existing throwaway debug script candidates');
+    const syntheticSample = [...allScripts, 'check-sample.js', 'test-sample.js'];
+    const detected = syntheticSample.filter(name => throwawayPrefixes.some(p => name.startsWith(p)));
+    assert.deepEqual(detected, ['check-sample.js', 'test-sample.js']);
+
     // Ensure critical runtime scripts are preserved and not flagged
     const protectedScripts = ['audit-syntax.js', 'box-diff-linter.js', 'run-low-spec-gate.js'];
     for (const prot of protectedScripts) {
-      assert.ok(!candidates.includes(prot), `${prot} must be protected from deletion`);
+      assert.ok(allScripts.includes(prot), `${prot} must be preserved in scripts/`);
+      assert.ok(!detected.includes(prot), `${prot} must be protected from deletion`);
     }
   });
 

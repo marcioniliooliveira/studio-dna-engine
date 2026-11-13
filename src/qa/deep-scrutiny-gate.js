@@ -1,7 +1,7 @@
 /**
  * src/qa/deep-scrutiny-gate.js
  * 
- * Suíte Independente de Escrutínio e Auditoria Visual/Funcional (Inspirada no Kombai)
+ * Suíte Independente de Escrutínio e Auditoria Visual/Funcional
  * Implementa 7 Vetores de Averiguação Implacável no Chromium Headless via CDP:
  * 1. Matriz Geométrica AABB Multi-Viewport (Detecção de colisão/sobreposição de texto).
  * 2. Detecção de Leaks de Estado Interativo (Hover travado em repouso).
