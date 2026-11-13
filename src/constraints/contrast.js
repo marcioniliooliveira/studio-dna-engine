@@ -288,37 +288,68 @@ function fontLookupAPCA(lc, weight = 400) {
  * Computes the optimal opacity alpha in [0, 1] of a scrim overlay over a background
  * to guarantee target APCA contrast without over-darkening or over-lightening the composition.
  * 
- * @param {string|object} textColor Foreground text color
- * @param {string|object} bgColor Background / image underlying tone
- * @param {object} [options={}]
- * @param {number} [options.targetLc=60] Desired minimum absolute APCA contrast
- * @param {string} [options.scrimColor] Explicit scrim color ('#000000' or '#ffffff')
- * @returns {{ solved: boolean, opacity: number, scrimColor: string, compositeColor: string, achievedLc: number, cssScrim: string }}
+ * Supports dual invocation signatures:
+ * - 4 arguments: solveOptimalScrimOpacity(textRgb, backdropWorstCaseRgb, scrimRgb, targetLc = 60)
+ * - 3 arguments: solveOptimalScrimOpacity(textColor, bgColor, options = { targetLc, scrimColor })
+ * 
+ * @param {string|Array<number>|object} textColor Foreground text color
+ * @param {string|Array<number>|object} bgColor Background / image underlying tone
+ * @param {object|string|Array<number>} [arg3={}] Options object or explicit scrim color
+ * @param {number} [arg4=60] Target APCA contrast if called with 4 arguments
+ * @returns {{ achievable: boolean, solved: boolean, alpha: number, opacity: number, scrimColor: string, compositeColor: string, resultingLc: number, achievedLc: number, cssScrim: string }}
  */
-function solveOptimalScrimOpacity(textColor, bgColor, options = {}) {
-  const targetLc = options.targetLc !== undefined ? options.targetLc : 60;
+function solveOptimalScrimOpacity(textColor, bgColor, arg3 = {}, arg4) {
+  let targetLc = 60;
+  let scrimColorCandidate = null;
+
+  const isOptionsObject = arg3 && typeof arg3 === 'object' && !Array.isArray(arg3) &&
+    ('targetLc' in arg3 || 'scrimColor' in arg3 || (!('r' in arg3) && !('g' in arg3) && !('b' in arg3)));
+
+  if (isOptionsObject) {
+    targetLc = arg3.targetLc !== undefined ? Number(arg3.targetLc) : 60;
+    scrimColorCandidate = arg3.scrimColor || null;
+  } else {
+    scrimColorCandidate = arg3;
+    if (typeof arg4 === 'number') {
+      targetLc = arg4;
+    }
+  }
+
   const txtRgb = parseColorToRgb(textColor);
   const bgRgb = parseColorToRgb(bgColor);
 
   const initialLc = Math.abs(calcAPCA(txtRgb, bgRgb));
   if (initialLc >= targetLc) {
+    const defaultScrimHex = scrimColorCandidate
+      ? (typeof scrimColorCandidate === 'string'
+        ? scrimColorCandidate
+        : rgbToHex(parseColorToRgb(scrimColorCandidate).r, parseColorToRgb(scrimColorCandidate).g, parseColorToRgb(scrimColorCandidate).b))
+      : '#000000';
+    const bgHex = typeof bgColor === 'string' ? bgColor : rgbToHex(bgRgb.r, bgRgb.g, bgRgb.b);
     return {
+      achievable: true,
       solved: true,
+      alpha: 0.0,
       opacity: 0.0,
-      scrimColor: options.scrimColor || '#000000',
-      compositeColor: typeof bgColor === 'string' ? bgColor : rgbToHex(bgRgb.r, bgRgb.g, bgRgb.b),
+      scrimColor: defaultScrimHex,
+      compositeColor: bgHex,
+      resultingLc: Number(initialLc.toFixed(1)),
       achievedLc: Number(initialLc.toFixed(1)),
       cssScrim: 'transparent'
     };
   }
 
-  let scrimColor = options.scrimColor;
-  if (!scrimColor) {
+  let scrimRgb;
+  let scrimColorStr;
+  if (scrimColorCandidate) {
+    scrimRgb = parseColorToRgb(scrimColorCandidate);
+    scrimColorStr = typeof scrimColorCandidate === 'string' ? scrimColorCandidate : rgbToHex(scrimRgb.r, scrimRgb.g, scrimRgb.b);
+  } else {
     // If text is light, dark scrim creates contrast; if text is dark, light scrim creates contrast.
     const txtLum = (0.2126 * txtRgb.r + 0.7152 * txtRgb.g + 0.0722 * txtRgb.b) / 255;
-    scrimColor = txtLum > 0.4 ? '#000000' : '#ffffff';
+    scrimColorStr = txtLum > 0.4 ? '#000000' : '#ffffff';
+    scrimRgb = parseColorToRgb(scrimColorStr);
   }
-  const scrimRgb = parseColorToRgb(scrimColor);
 
   let low = 0.0;
   let high = 1.0;
@@ -352,10 +383,13 @@ function solveOptimalScrimOpacity(textColor, bgColor, options = {}) {
   const roundedOpacity = Number(bestAlpha.toFixed(3));
 
   return {
+    achievable: solved,
     solved,
+    alpha: roundedOpacity,
     opacity: roundedOpacity,
-    scrimColor,
+    scrimColor: scrimColorStr,
     compositeColor: finalHex,
+    resultingLc: Number(achievedScore.toFixed(1)),
     achievedLc: Number(achievedScore.toFixed(1)),
     cssScrim: `rgba(${scrimRgb.r}, ${scrimRgb.g}, ${scrimRgb.b}, ${roundedOpacity})`
   };
@@ -426,6 +460,56 @@ function resolveBackgroundProductContrast(bgHex, baseToneMultiplier = 1.0, minCo
   };
 }
 
+/**
+ * Responsive Fluid Typography Scaling via Ordinary Least Squares (OLS) per Equations 17–20.
+ * 
+ * @param {Array<number>} viewports Breakpoint viewports in pixels (e.g. [390, 768, 1440])
+ * @param {Array<number>} sizes Desired font sizes at breakpoints in pixels (e.g. [24, 32, 48])
+ * @returns {string} CSS clamp string: clamp(S_min px, beta vw + gamma px, S_max px)
+ */
+function calculateFluidScale(viewports, sizes) {
+  const n = viewports.length;
+  if (n < 2) return `clamp(${sizes[0]}px, ${sizes[0]}px, ${sizes[0]}px)`;
+
+  const xMean = viewports.reduce((s, v) => s + v, 0) / n;
+  const yMean = sizes.reduce((s, v) => s + v, 0) / n;
+
+  let num = 0;
+  let den = 0;
+  for (let i = 0; i < n; i++) {
+    num += (viewports[i] - xMean) * (sizes[i] - yMean);
+    den += Math.pow(viewports[i] - xMean, 2);
+  }
+
+  const slope = den === 0 ? 0 : num / den;
+  const intercept = yMean - slope * xMean;
+
+  const vwVal = (slope * 100).toFixed(3);
+  const pxVal = intercept.toFixed(2);
+  const minSize = Math.min(...sizes);
+  const maxSize = Math.max(...sizes);
+
+  return `clamp(${minSize}px, ${vwVal}vw + ${pxVal}px, ${maxSize}px)`;
+}
+
+/**
+ * Lexical Expansion Damping per Equation 21:
+ * kappa_copy = (L_orig / L_new)^0.65
+ * Dampens typographic scale when copy text expands (e.g. translation to German),
+ * strictly maintaining a 12px minimum accessibility floor.
+ * 
+ * @param {number} baseSize Base font size in pixels
+ * @param {number} originalLen Character length of reference copy
+ * @param {number} newLen Character length of translated / client copy
+ * @returns {number} Damped font size in pixels (floored at 12px)
+ */
+function applyLexicalDamping(baseSize, originalLen, newLen) {
+  if (!originalLen || !newLen || newLen <= originalLen) return baseSize;
+  const kappa = Math.pow(originalLen / newLen, 0.65);
+  const damped = baseSize * kappa;
+  return Math.max(12.0, damped);
+}
+
 module.exports = {
   parseColorToRgb,
   hexToRgb,
@@ -437,5 +521,7 @@ module.exports = {
   searchMonotonicContrast,
   fontLookupAPCA,
   solveOptimalScrimOpacity,
-  resolveBackgroundProductContrast
+  resolveBackgroundProductContrast,
+  calculateFluidScale,
+  applyLexicalDamping
 };

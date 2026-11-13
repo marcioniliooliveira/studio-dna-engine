@@ -159,6 +159,13 @@ const PrimitiveContractSchema = {
   primitiveName: z.string().describe('Nome da primitiva cinética (HeroCinematicStage, HorizontalPinRail, InteractiveBento, ThreeJsCanvasStage, StickyStoryChapters)')
 };
 
+const UpdateSelectedElementSchema = {
+  slug: z.string().min(1).describe('Slug do cliente em clientes/ (ex: negocia-bem)'),
+  dsId: z.string().min(1).describe('Identificador determinístico data-ds do elemento a ser atualizado'),
+  updatedHtml: z.string().optional().describe('Novo fragmento HTML para substituir no elemento [data-ds]'),
+  updatedScopedCss: z.string().optional().describe('Novo bloco CSS escopado (@scope) para o elemento ou cápsula')
+};
+
 module.exports = {
   validateSlugSecurity,
   validateScrapeUrlSecurity,
@@ -179,5 +186,6 @@ module.exports = {
   VisualSaliencySchema,
   QueryVaultSchema,
   PruneContextSchema,
-  PrimitiveContractSchema
+  PrimitiveContractSchema,
+  UpdateSelectedElementSchema
 };

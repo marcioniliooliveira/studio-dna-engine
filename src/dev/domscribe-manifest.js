@@ -47,12 +47,13 @@ function instrumentHtmlForDomscribe(htmlSource, relativeFilePath = 'site/index.h
   const manifestEntries = [];
   let structuralIndex = 0;
 
-  const STRUCTURAL_SELECTOR = 'section, header, footer, main, article, form, [data-kinetic-slot], [data-slot], [data-slot-bind], h1, h2, h3, button, a';
+  const STRUCTURAL_SELECTOR = 'dna-capsule, [data-capsule-id], section, header, footer, main, article, form, [data-kinetic-slot], [data-slot], [data-slot-bind], h1, h2, h3, button, a';
 
   $(STRUCTURAL_SELECTOR).each((_, el) => {
     structuralIndex++;
     const startLine = el.sourceCodeLocation?.startLine || 1;
     const endLine = el.sourceCodeLocation?.endLine || startLine;
+    const lineRange = startLine === endLine ? String(startLine) : `${startLine}-${endLine}`;
 
     const slotId =
       $(el).attr('data-kinetic-slot') ||
@@ -65,7 +66,26 @@ function instrumentHtmlForDomscribe(htmlSource, relativeFilePath = 'site/index.h
     const dataDs = existingDs || computeStableDataDs(relativeFilePath, el.tagName, `${slotId}@${startLine}`);
     
     $(el).attr('data-ds', dataDs);
-    $(el).attr('data-dna-line', String(startLine));
+    $(el).attr('data-dna-line', lineRange);
+
+    // Derive capsule ID from closest capsule ancestor or section container
+    const capsuleRoot = $(el).closest('dna-capsule, [data-capsule-id], section, header, footer');
+    let capsuleId = null;
+    if (capsuleRoot.length > 0) {
+      capsuleId =
+        capsuleRoot.attr('data-capsule-id') ||
+        capsuleRoot.attr('data-dna-capsule') ||
+        capsuleRoot.attr('id') ||
+        capsuleRoot.attr('data-kinetic-slot') ||
+        capsuleRoot.attr('data-slot') ||
+        `${capsuleRoot[0].tagName.toLowerCase()}-${structuralIndex}`;
+
+      // Ensure capsule root itself carries data-capsule-id
+      if (!capsuleRoot.attr('data-capsule-id')) {
+        capsuleRoot.attr('data-capsule-id', capsuleId);
+      }
+      $(el).attr('data-capsule-id', capsuleId);
+    }
 
     const selector = $(el).attr('id')
       ? `${el.tagName.toLowerCase()}#${$(el).attr('id')}`
@@ -76,6 +96,7 @@ function instrumentHtmlForDomscribe(htmlSource, relativeFilePath = 'site/index.h
       file: relativeFilePath.replace(/\\/g, '/'),
       tagName: el.tagName.toLowerCase(),
       slotId,
+      capsuleId: capsuleId || null,
       selector,
       startLine,
       endLine
@@ -165,9 +186,10 @@ function stripDomscribeAttributesForProduction(htmlSource) {
   const isFragment = !/<html/i.test(htmlSource) && !/<body/i.test(htmlSource) && !/<!doctype/i.test(htmlSource);
   const $ = cheerio.load(htmlSource, { decodeEntities: false });
 
-  $('[data-ds], [data-dna-line]').each((_, el) => {
+  $('[data-ds], [data-dna-line], [data-capsule-id]').each((_, el) => {
     $(el).removeAttr('data-ds');
     $(el).removeAttr('data-dna-line');
+    $(el).removeAttr('data-capsule-id');
   });
 
   return isFragment ? ($('body').html() || $.html()) : $.html();

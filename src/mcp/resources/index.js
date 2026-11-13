@@ -335,16 +335,27 @@ function registerResources(server) {
 
       let content = '';
 
-      // 1. In-memory store
+      // 1. Primary v3.0 destination on disk: clientes/<slug>/.dna/live-selection.json
       try {
-        const { getLiveSelection } = require('../../server/preview-server');
-        const live = getLiveSelection(slug);
-        if (live) {
-          content = JSON.stringify(live, null, 2);
+        const clientDir = getSafeClientDir(slug);
+        const primaryDnaPath = path.join(clientDir, '.dna', 'live-selection.json');
+        if (fs.existsSync(primaryDnaPath)) {
+          content = fs.readFileSync(primaryDnaPath, 'utf8');
         }
       } catch (_) {}
 
-      // 2. Cache on disk
+      // 2. In-memory store
+      if (!content) {
+        try {
+          const { getLiveSelection } = require('../../server/preview-server');
+          const live = getLiveSelection(slug);
+          if (live) {
+            content = JSON.stringify(live, null, 2);
+          }
+        } catch (_) {}
+      }
+
+      // 3. Legacy caches on disk
       if (!content) {
         const rootDir = path.resolve(__dirname, '../../..');
         const rootCache = path.join(rootDir, '.domscribe', `live-selection-${slug}.json`);
@@ -361,7 +372,7 @@ function registerResources(server) {
         }
       }
 
-      // 3. Fallback
+      // 4. Fallback
       if (!content) {
         const fallback = {
           clientSlug: slug,

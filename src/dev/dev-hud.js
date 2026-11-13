@@ -65,37 +65,38 @@ const IMPECCABLE_VERBS = [
 ];
 
 /**
- * Extracts payload for Click-to-MCP selection from a DOM element
+ * Captures live selection payload for Live-MCP bidirectional bridge (Click-to-MCP)
+ * @param {HTMLElement|object} targetEl
+ * @param {Window|object} [win=globalThis]
+ * @returns {object|null}
  */
-function extractSelectionPayload(element, win = globalThis) {
-  if (!element) return null;
-
-  const target = (typeof element.closest === 'function')
-    ? (element.closest('[data-ds]') || element)
-    : element;
+function captureLiveSelectionPayload(targetEl, win = globalThis) {
+  if (!targetEl) return null;
 
   const getAttr = (el, attr) => {
+    if (!el) return null;
     if (typeof el.getAttribute === 'function') return el.getAttribute(attr);
     return el[attr] || null;
   };
 
-  const dataDs = getAttr(target, 'data-ds') || '';
-  const lineRaw = getAttr(target, 'data-dna-line');
-  const line = lineRaw ? parseInt(lineRaw, 10) : 1;
-  const rawTag = target.tagName || 'div';
-  const tagName = String(rawTag).toLowerCase();
+  const trackedNode = (typeof targetEl.closest === 'function')
+    ? (targetEl.closest('[data-ds]') || targetEl)
+    : targetEl;
 
-  const id = target.id || getAttr(target, 'id');
-  let selector = tagName;
-  if (id) {
-    selector = `${tagName}#${id}`;
-  } else if (dataDs) {
-    selector = `[data-ds="${dataDs}"]`;
-  }
+  const capsuleRoot = (typeof trackedNode.closest === 'function')
+    ? (trackedNode.closest('dna-capsule, [data-capsule-id]') || trackedNode.closest('section, header, footer'))
+    : null;
 
-  // Extract client slug from window pathname or query
-  let clientSlug = 'default';
-  if (win && win.location) {
+  const rect = (typeof trackedNode.getBoundingClientRect === 'function')
+    ? (trackedNode.getBoundingClientRect() || {})
+    : { top: 0, left: 0, width: 0, height: 0, x: 0, y: 0 };
+
+  const cs = (win && typeof win.getComputedStyle === 'function')
+    ? (win.getComputedStyle(trackedNode) || {})
+    : {};
+
+  let clientSlug = (win && win.__DNA_CLIENT_SLUG__) || 'default';
+  if ((!win || !win.__DNA_CLIENT_SLUG__) && win && win.location) {
     const pathname = win.location.pathname || '';
     const parts = pathname.split('/').filter(Boolean);
     if ((parts[0] === 'clientes' || parts[0] === 'projetos') && parts[1]) {
@@ -111,68 +112,83 @@ function extractSelectionPayload(element, win = globalThis) {
     }
   }
 
-  // Computed styles
-  let computedStyles = {};
-  if (win && typeof win.getComputedStyle === 'function') {
-    try {
-      const cs = win.getComputedStyle(target);
-      computedStyles = {
-        color: cs.color,
-        backgroundColor: cs.backgroundColor,
-        fontSize: cs.fontSize,
-        fontWeight: cs.fontWeight,
-        lineHeight: cs.lineHeight,
-        display: cs.display,
-        position: cs.position,
-        padding: cs.padding,
-        margin: cs.margin,
-        opacity: cs.opacity
-      };
-    } catch (_) {}
+  const dataDs = getAttr(trackedNode, 'data-ds') || '';
+  const lineRaw = getAttr(trackedNode, 'data-dna-line');
+  const line = lineRaw ? parseInt(String(lineRaw).split('-')[0], 10) || 1 : 1;
+  const rawTag = trackedNode.tagName || 'div';
+  const tagName = String(rawTag).toLowerCase();
+  const id = trackedNode.id || getAttr(trackedNode, 'id');
+  let selector = tagName;
+  if (id) {
+    selector = `${tagName}#${id}`;
+  } else if (dataDs) {
+    selector = `[data-ds="${dataDs}"]`;
   }
 
-  // Bounding rect
-  let boundingBox = { top: 0, left: 0, width: 0, height: 0, x: 0, y: 0 };
-  if (typeof target.getBoundingClientRect === 'function') {
-    try {
-      boundingBox = target.getBoundingClientRect();
-    } catch (_) {}
-  }
+  const capsuleId = capsuleRoot
+    ? (getAttr(capsuleRoot, 'data-capsule-id') || getAttr(capsuleRoot, 'id') || null)
+    : null;
 
-  // Active scope custom vars
   const activeScopeVars = {};
-  if (win && typeof win.getComputedStyle === 'function') {
-    try {
-      const cs = win.getComputedStyle(target);
-      ['--primary', '--accent', '--bg-base', '--text-primary'].forEach(varName => {
-        const val = cs.getPropertyValue ? cs.getPropertyValue(varName) : null;
-        if (val) activeScopeVars[varName] = val.trim();
-      });
-    } catch (_) {}
+  if (cs && cs.getPropertyValue) {
+    ['--primary', '--accent', '--bg-base', '--text-primary'].forEach(varName => {
+      const val = cs.getPropertyValue(varName);
+      if (val) activeScopeVars[varName] = val.trim();
+    });
   }
 
-  // Telemetry
   const telemetry = (win && (win.__DNA_TELEMETRY__ || win.__WORK_STAGE__)) || {};
+  const kineticTelemetry = (win && win.__DNA_TELEMETRY__ && typeof win.__DNA_TELEMETRY__.getSnapshotFor === 'function')
+    ? win.__DNA_TELEMETRY__.getSnapshotFor(trackedNode)
+    : telemetry;
 
   return {
     clientSlug,
+    dsId: dataDs,
     dataDs,
+    sourceLineRange: lineRaw || null,
     line,
+    capsuleId,
     tagName,
     selector,
-    computedStyles,
+    outerHTML: trackedNode.outerHTML || '',
     boundingBox: {
-      top: boundingBox.top || 0,
-      left: boundingBox.left || 0,
-      width: boundingBox.width || 0,
-      height: boundingBox.height || 0,
-      x: boundingBox.x ?? boundingBox.left ?? 0,
-      y: boundingBox.y ?? boundingBox.top ?? 0
+      x: Math.round(rect.x ?? rect.left ?? 0),
+      y: Math.round(rect.y ?? rect.top ?? 0),
+      top: Math.round(rect.top ?? 0),
+      left: Math.round(rect.left ?? 0),
+      width: Math.round(rect.width ?? 0),
+      height: Math.round(rect.height ?? 0),
+      viewportWidth: (win && win.innerWidth) || 1440,
+      viewportHeight: (win && win.innerHeight) || 900
+    },
+    computedStyles: {
+      display: cs.display || '',
+      position: cs.position || '',
+      fontFamily: cs.fontFamily || '',
+      fontSize: cs.fontSize || '',
+      lineHeight: cs.lineHeight || '',
+      letterSpacing: cs.letterSpacing || '',
+      color: cs.color || '',
+      backgroundColor: cs.backgroundColor || '',
+      padding: cs.padding || '',
+      gap: cs.gap || '',
+      fontWeight: cs.fontWeight,
+      margin: cs.margin,
+      opacity: cs.opacity
     },
     activeScopeVars,
+    kineticTelemetry,
     telemetry,
     timestamp: Date.now()
   };
+}
+
+/**
+ * Backwards compatibility wrapper for Click-to-MCP selection
+ */
+function extractSelectionPayload(element, win = globalThis) {
+  return captureLiveSelectionPayload(element, win);
 }
 
 /**
@@ -489,59 +505,100 @@ const HUD_HTML = `
   }
 
   // ── 5. Ponte Bidirecional Click-to-MCP (Alt + Click) ─────────────────
+  function captureLiveSelectionPayload(targetEl) {
+    if (!targetEl) return null;
+    const trackedNode = (typeof targetEl.closest === 'function')
+      ? (targetEl.closest('[data-ds]') || targetEl)
+      : targetEl;
+    const capsuleRoot = (typeof trackedNode.closest === 'function')
+      ? (trackedNode.closest('dna-capsule, [data-capsule-id]') || trackedNode.closest('section, header, footer'))
+      : null;
+    const rect = (typeof trackedNode.getBoundingClientRect === 'function')
+      ? trackedNode.getBoundingClientRect()
+      : { top: 0, left: 0, width: 0, height: 0, x: 0, y: 0 };
+    const cs = window.getComputedStyle ? (window.getComputedStyle(trackedNode) || {}) : {};
+
+    const dataDs = trackedNode.getAttribute ? (trackedNode.getAttribute('data-ds') || '') : (trackedNode['data-ds'] || '');
+    const lineRaw = trackedNode.getAttribute ? trackedNode.getAttribute('data-dna-line') : null;
+    const line = lineRaw ? parseInt(String(lineRaw).split('-')[0], 10) || 1 : 1;
+    const tagName = (trackedNode.tagName || 'div').toLowerCase();
+    const id = trackedNode.id || (trackedNode.getAttribute && trackedNode.getAttribute('id'));
+    let selector = tagName;
+    if (id) {
+      selector = tagName + '#' + id;
+    } else if (dataDs) {
+      selector = '[data-ds="' + dataDs + '"]';
+    }
+
+    const capsuleId = capsuleRoot
+      ? (capsuleRoot.getAttribute('data-capsule-id') || capsuleRoot.id || null)
+      : null;
+
+    const activeScopeVars = {};
+    if (cs.getPropertyValue) {
+      ['--primary', '--accent', '--bg-base', '--text-primary'].forEach(function(v) {
+        const val = cs.getPropertyValue(v);
+        if (val) activeScopeVars[v] = val.trim();
+      });
+    }
+
+    const telemetry = window.__DNA_TELEMETRY__ || window.__WORK_STAGE__ || {};
+    const kineticTelemetry = (window.__DNA_TELEMETRY__ && typeof window.__DNA_TELEMETRY__.getSnapshotFor === 'function')
+      ? window.__DNA_TELEMETRY__.getSnapshotFor(trackedNode)
+      : telemetry;
+
+    return {
+      clientSlug: getClientSlug(),
+      dsId: dataDs,
+      dataDs: dataDs,
+      sourceLineRange: lineRaw || null,
+      line: line,
+      capsuleId: capsuleId,
+      tagName: tagName,
+      selector: selector,
+      outerHTML: trackedNode.outerHTML || '',
+      boundingBox: {
+        x: Math.round(rect.x || rect.left || 0),
+        y: Math.round(rect.y || rect.top || 0),
+        top: Math.round(rect.top || 0),
+        left: Math.round(rect.left || 0),
+        width: Math.round(rect.width || 0),
+        height: Math.round(rect.height || 0),
+        viewportWidth: window.innerWidth || 1440,
+        viewportHeight: window.innerHeight || 900
+      },
+      computedStyles: {
+        display: cs.display || '',
+        position: cs.position || '',
+        fontFamily: cs.fontFamily || '',
+        fontSize: cs.fontSize || '',
+        lineHeight: cs.lineHeight || '',
+        letterSpacing: cs.letterSpacing || '',
+        color: cs.color || '',
+        backgroundColor: cs.backgroundColor || '',
+        padding: cs.padding || '',
+        gap: cs.gap || '',
+        fontWeight: cs.fontWeight,
+        margin: cs.margin,
+        opacity: cs.opacity
+      },
+      activeScopeVars: activeScopeVars,
+      kineticTelemetry: kineticTelemetry,
+      telemetry: telemetry,
+      timestamp: Date.now()
+    };
+  }
+
   function setupClickToMcp() {
     window.addEventListener('click', function(e) {
       if (!e.altKey) return;
       e.preventDefault();
       e.stopPropagation();
 
-      const target = e.target.closest('[data-ds]') || e.target;
-      const dataDs = target.getAttribute('data-ds') || '';
-      const line = parseInt(target.getAttribute('data-dna-line') || '1', 10);
-      const tagName = (target.tagName || 'div').toLowerCase();
-      const selector = target.id ? (tagName + '#' + target.id) : (dataDs ? ('[data-ds="' + dataDs + '"]') : tagName);
-      
-      const cs = window.getComputedStyle ? window.getComputedStyle(target) : {};
-      const rect = target.getBoundingClientRect ? target.getBoundingClientRect() : { top: 0, left: 0, width: 0, height: 0 };
+      const payload = captureLiveSelectionPayload(e.target);
+      if (!payload) return;
 
-      const activeScopeVars = {};
-      ['--primary', '--accent', '--bg-base', '--text-primary'].forEach(function(v) {
-        if (cs.getPropertyValue) {
-          const val = cs.getPropertyValue(v);
-          if (val) activeScopeVars[v] = val.trim();
-        }
-      });
-
-      const payload = {
-        clientSlug: getClientSlug(),
-        dataDs: dataDs,
-        line: line,
-        tagName: tagName,
-        selector: selector,
-        computedStyles: {
-          color: cs.color,
-          backgroundColor: cs.backgroundColor,
-          fontSize: cs.fontSize,
-          fontWeight: cs.fontWeight,
-          lineHeight: cs.lineHeight,
-          display: cs.display,
-          position: cs.position,
-          padding: cs.padding,
-          margin: cs.margin,
-          opacity: cs.opacity
-        },
-        boundingBox: {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-          x: rect.x || rect.left,
-          y: rect.y || rect.top
-        },
-        activeScopeVars: activeScopeVars,
-        telemetry: window.__DNA_TELEMETRY__ || window.__WORK_STAGE__ || {},
-        timestamp: Date.now()
-      };
+      const target = (typeof e.target.closest === 'function') ? (e.target.closest('[data-ds]') || e.target) : e.target;
 
       // Visual flash highlight
       const prevOutline = target.style.outline;
@@ -590,6 +647,7 @@ module.exports = {
   DIRECTIONS,
   IMPECCABLE_VERBS,
   extractSelectionPayload,
+  captureLiveSelectionPayload,
   applyDirectionHotSwap,
   applyImpeccableVerb,
   calculateParetoScore,

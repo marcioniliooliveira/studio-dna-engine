@@ -11,7 +11,7 @@ const { handleV2Vault } = require('./routes/v2-vault');
 const { handleV2Review } = require('./routes/v2-review');
 const { handleV2Audit } = require('./routes/v2-audit');
 const { handleV3Persistence } = require('./routes/v3-persistence');
-const HybridRepository = require('../persistence/hybrid-repository');
+const { HybridRepository, writeJsonAtomicSync } = require('../persistence/hybrid-repository');
 const { buildDashboardHtml } = require('./views/dnastudio-dashboard');
 const {
   resolveStaticPath,
@@ -51,10 +51,48 @@ const MIME_TYPES = {
 };
 
 const liveSelectionsStore = new Map();
+const liveSseClients = new Map(); // slug -> Set(res)
 
-function getLiveSelection(slug) {
+function notifyHotSwap(slug, eventData) {
+  const message = `event: hotswap\ndata: ${JSON.stringify(eventData)}\n\n`;
+  const targets = [slug, 'all'];
+  for (const t of targets) {
+    const set = liveSseClients.get(t);
+    if (set && set.size > 0) {
+      for (const clientRes of Array.from(set)) {
+        try {
+          clientRes.write(message);
+        } catch (_) {
+          set.delete(clientRes);
+        }
+      }
+    }
+  }
+}
+
+function getLiveSelection(slug, options = {}) {
   if (!slug) return null;
-  return liveSelectionsStore.get(slug) || null;
+  const inMemory = liveSelectionsStore.get(slug);
+  if (inMemory) return inMemory;
+
+  if (options.fallbackToDisk === true) {
+    const rootDir = options.rootDir || process.cwd();
+    const clientesDir = options.clientesDir || path.join(rootDir, 'clientes');
+    const primaryPath = path.join(clientesDir, slug, '.dna', 'live-selection.json');
+    const rootLegacy = path.join(rootDir, '.domscribe', `live-selection-${slug}.json`);
+    const clientLegacy = path.join(clientesDir, slug, '.domscribe', 'live-selection.json');
+
+    for (const p of [primaryPath, rootLegacy, clientLegacy]) {
+      if (fs.existsSync(p)) {
+        try {
+          const parsed = JSON.parse(fs.readFileSync(p, 'utf8'));
+          liveSelectionsStore.set(slug, parsed);
+          return parsed;
+        } catch (_) {}
+      }
+    }
+  }
+  return null;
 }
 
 function setLiveSelection(slug, data) {
@@ -279,38 +317,69 @@ function startPreviewServer(options = {}) {
           return;
         }
         const clientSlug = assertSafeSlug(data.clientSlug);
+        const dsId = data.dsId || data.dataDs || '';
+        const dataDs = data.dataDs || data.dsId || '';
+        const lineRaw = data.sourceLineRange || (data.line !== undefined ? String(data.line) : '1');
+        const line = typeof lineRaw === 'string' ? parseInt(lineRaw.split('-')[0], 10) || 1 : Number(lineRaw || 1);
+        const sourceLineRange = data.sourceLineRange || (data.line !== undefined ? String(data.line) : '1');
+        const capsuleId = data.capsuleId || null;
+        const outerHTML = data.outerHTML || '';
+        const kineticTelemetry = data.kineticTelemetry || data.telemetry || {};
+        const telemetry = data.telemetry || data.kineticTelemetry || {};
+
         const selectionData = {
           clientSlug,
-          dataDs: data.dataDs || '',
-          line: Number(data.line || 1),
+          dsId,
+          dataDs,
+          line,
+          sourceLineRange,
+          capsuleId,
           tagName: data.tagName || '',
-          selector: data.selector || '',
+          selector: data.selector || (dsId ? `[data-ds="${dsId}"]` : (data.tagName || '')),
+          outerHTML,
           computedStyles: data.computedStyles || {},
           boundingBox: data.boundingBox || {},
           activeScopeVars: data.activeScopeVars || {},
-          telemetry: data.telemetry || {},
+          telemetry,
+          kineticTelemetry,
           timestamp: data.timestamp || Date.now()
         };
 
         liveSelectionsStore.set(clientSlug, selectionData);
-
-        // Persist cache in .domscribe
-        const domscribeDir = path.join(rootDir, '.domscribe');
-        if (!fs.existsSync(domscribeDir)) fs.mkdirSync(domscribeDir, { recursive: true });
-        const cachePath = path.join(domscribeDir, `live-selection-${clientSlug}.json`);
-        fs.writeFileSync(cachePath, JSON.stringify(selectionData, null, 2), 'utf8');
-
-        const clientTargetDir = path.join(clientesDir, clientSlug);
-        if (fs.existsSync(clientTargetDir)) {
-          const clientDomscribeDir = path.join(clientTargetDir, '.domscribe');
-          if (!fs.existsSync(clientDomscribeDir)) fs.mkdirSync(clientDomscribeDir, { recursive: true });
-          fs.writeFileSync(path.join(clientDomscribeDir, 'live-selection.json'), JSON.stringify(selectionData, null, 2), 'utf8');
+        if (hybridRepo && typeof hybridRepo.setLiveSelection === 'function') {
+          hybridRepo.setLiveSelection(clientSlug, selectionData);
         }
+
+        // 1. Primary v3.0 destination: clientes/<slug>/.dna/live-selection.json
+        const clientTargetDir = path.join(clientesDir, clientSlug);
+        const clientDnaDir = path.join(clientTargetDir, '.dna');
+        const primaryPath = path.join(clientDnaDir, 'live-selection.json');
+        writeJsonAtomicSync(primaryPath, selectionData);
+
+        // 2. Mirrored client compatibility: clientes/<slug>/.domscribe/live-selection.json
+        const clientDomscribeDir = path.join(clientTargetDir, '.domscribe');
+        const clientDomscribePath = path.join(clientDomscribeDir, 'live-selection.json');
+        writeJsonAtomicSync(clientDomscribePath, selectionData);
+
+        // 3. Mirrored workspace fallback: .domscribe/live-selection-<slug>.json
+        const rootDomscribeDir = path.join(rootDir, '.domscribe');
+        const rootCachePath = path.join(rootDomscribeDir, `live-selection-${clientSlug}.json`);
+        writeJsonAtomicSync(rootCachePath, selectionData);
+
+        // Notify active SSE listeners if any
+        notifyHotSwap(clientSlug, {
+          type: 'selection_updated',
+          clientSlug,
+          dsId,
+          dataDs,
+          timestamp: selectionData.timestamp
+        });
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           ok: true,
           clientSlug,
+          dsId: selectionData.dsId,
           dataDs: selectionData.dataDs,
           timestamp: selectionData.timestamp
         }));
@@ -332,13 +401,19 @@ function startPreviewServer(options = {}) {
         const clientSlug = assertSafeSlug(rawSlug);
 
         let selection = liveSelectionsStore.get(clientSlug);
+        if (!selection && hybridRepo && typeof hybridRepo.getLiveSelection === 'function') {
+          selection = hybridRepo.getLiveSelection(clientSlug);
+        }
         if (!selection) {
-          const rootCache = path.join(rootDir, '.domscribe', `live-selection-${clientSlug}.json`);
-          const clientCache = path.join(clientesDir, clientSlug, '.domscribe', 'live-selection.json');
-          if (fs.existsSync(rootCache)) {
-            selection = JSON.parse(fs.readFileSync(rootCache, 'utf8'));
-          } else if (fs.existsSync(clientCache)) {
-            selection = JSON.parse(fs.readFileSync(clientCache, 'utf8'));
+          const primaryPath = path.join(clientesDir, clientSlug, '.dna', 'live-selection.json');
+          const clientLegacy = path.join(clientesDir, clientSlug, '.domscribe', 'live-selection.json');
+          const rootLegacy = path.join(rootDir, '.domscribe', `live-selection-${clientSlug}.json`);
+          if (fs.existsSync(primaryPath)) {
+            try { selection = JSON.parse(fs.readFileSync(primaryPath, 'utf8')); } catch (_) {}
+          } else if (fs.existsSync(rootLegacy)) {
+            try { selection = JSON.parse(fs.readFileSync(rootLegacy, 'utf8')); } catch (_) {}
+          } else if (fs.existsSync(clientLegacy)) {
+            try { selection = JSON.parse(fs.readFileSync(clientLegacy, 'utf8')); } catch (_) {}
           }
         }
 
@@ -350,6 +425,47 @@ function startPreviewServer(options = {}) {
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, ...selection }));
+      } catch (err) {
+        res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/__dna_live_events' && req.method === 'GET') {
+      const clientSlug = (urlObj && urlObj.searchParams.get('client')) || 'all';
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.write(': connected\n\n');
+
+      if (!liveSseClients.has(clientSlug)) {
+        liveSseClients.set(clientSlug, new Set());
+      }
+      const clientSet = liveSseClients.get(clientSlug);
+      clientSet.add(res);
+
+      req.on('close', () => {
+        clientSet.delete(res);
+      });
+      return;
+    }
+
+    if (pathname === '/__dna_live_notify' && req.method === 'POST') {
+      try {
+        const data = await readJsonBody(req, { limitBytes: opts.maxBodyBytes });
+        if (!data || typeof data !== 'object' || !data.clientSlug) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'clientSlug is required' }));
+          return;
+        }
+        const clientSlug = assertSafeSlug(data.clientSlug);
+        notifyHotSwap(clientSlug, data);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, clientSlug, notified: true }));
       } catch (err) {
         res.writeHead(err.statusCode || 400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: false, error: err.message }));
@@ -891,5 +1007,7 @@ module.exports = {
   buildDashboardHtml,
   fetchAndSaveRemoteAsset,
   getLiveSelection,
-  setLiveSelection
+  setLiveSelection,
+  writeJsonAtomicSync,
+  notifyHotSwap
 };

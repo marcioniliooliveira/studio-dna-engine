@@ -86,7 +86,7 @@ test('instrumentHtmlForDomscribe: instruments structural elements and extracts m
   const $ = cheerio.load(instrumentedHtml);
   const header = $('header#main-header');
   assert.ok(header.attr('data-ds'), 'Header must have data-ds');
-  assert.equal(header.attr('data-dna-line'), '5', 'Header should be at line 5');
+  assert.match(header.attr('data-dna-line'), /^5(-8)?$/, 'Header should be at line 5 or 5-8');
 
   const h1 = $('h1[data-slot="hero-title"]');
   assert.ok(h1.attr('data-ds'), 'h1 must have data-ds');
@@ -94,7 +94,7 @@ test('instrumentHtmlForDomscribe: instruments structural elements and extracts m
 
   const section = $('section#feat-sec');
   assert.ok(section.attr('data-ds'));
-  assert.equal(section.attr('data-dna-line'), '10');
+  assert.match(section.attr('data-dna-line'), /^10(-13)?$/, 'Section should be at line 10 or 10-13');
 
   // Manifest structure check
   const headerEntry = manifestEntries.find(e => e.tagName === 'header');
@@ -145,9 +145,9 @@ test('writeDomscribeManifest & resolveElementFromManifest: write and resolve in 
   assert.equal(notFound, null);
 });
 
-test('stripDomscribeAttributesForProduction: cleanly removes data-ds and data-dna-line', () => {
+test('stripDomscribeAttributesForProduction: cleanly removes data-ds, data-dna-line, and data-capsule-id', () => {
   const devHtml = `
-    <section data-ds="a1b2c3d4" data-dna-line="10" class="hero-section" id="hero">
+    <section data-ds="a1b2c3d4" data-dna-line="10" data-capsule-id="hero-capsule" class="hero-section" id="hero">
       <h1 data-ds="b2c3d4e5" data-dna-line="12" class="title">Luxury Estates</h1>
       <button data-ds="c3d4e5f6" data-dna-line="15" class="cta-btn" data-slot="primary-action">Discover</button>
     </section>
@@ -157,6 +157,7 @@ test('stripDomscribeAttributesForProduction: cleanly removes data-ds and data-dn
 
   assert.equal(prodHtml.includes('data-ds'), false, 'data-ds must be completely stripped');
   assert.equal(prodHtml.includes('data-dna-line'), false, 'data-dna-line must be completely stripped');
+  assert.equal(prodHtml.includes('data-capsule-id'), false, 'data-capsule-id must be completely stripped');
   assert.ok(prodHtml.includes('class="hero-section"'), 'Other attributes must be preserved');
   assert.ok(prodHtml.includes('id="hero"'));
   assert.ok(prodHtml.includes('data-slot="primary-action"'));

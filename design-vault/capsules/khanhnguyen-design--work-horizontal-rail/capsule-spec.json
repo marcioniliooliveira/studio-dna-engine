@@ -1,0 +1,387 @@
+{
+  "schemaVersion": "3.0.0",
+  "slug": "khanhnguyen-design--work-horizontal-rail",
+  "title": "Selected work",
+  "selector": "section[data-section=\"home-work\"]",
+  "tokens": {
+    "customProperties": {
+      "--spacing": "calc(.4 * var(--scale))",
+      "--scale": "calc(100vw / 144)",
+      "--font-serif": "\"PP Editorial Old\", serif",
+      "--text-lg": "calc(1.8 * var(--scale))",
+      "--text-lg--line-height": "calc(1.75 / 1.125)",
+      "--font-weight-medium": "500",
+      "--font-weight-normal": "400",
+      "--default-transition-timing-function": "cubic-bezier(.4, 0, .2, 1)",
+      "--default-transition-duration": ".15s",
+      "--ease-out": "cubic-bezier(0, 0, .2, 1)",
+      "--vg": "calc(4.8 * var(--scale))",
+      "--text-2xl": "calc(2.4 * var(--scale))",
+      "--text-2xl--line-height": "calc(2 / 1.5)",
+      "--cta-fs": "calc(2.3 * var(--scale))",
+      "--list-fs": "calc(6.4 * var(--scale))"
+    }
+  },
+  "slots": [],
+  "webgl": null,
+  "metrics": {
+    "nodeCount": 64,
+    "ruleCount": 98,
+    "closureVarCount": 15
+  },
+  "closure": {
+    "used": [
+      "--spacing",
+      "--scale",
+      "--tw-translate-x",
+      "--tw-translate-y",
+      "--tw-translate-z",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--font-serif",
+      "--text-lg",
+      "--tw-leading",
+      "--text-lg--line-height",
+      "--font-weight-medium",
+      "--font-weight-normal",
+      "--tw-ease",
+      "--default-transition-timing-function",
+      "--tw-duration",
+      "--default-transition-duration",
+      "--ease-out",
+      "--tw-outline-style",
+      "--vg",
+      "--text-2xl",
+      "--text-2xl--line-height",
+      "--cta-fs",
+      "--list-fs"
+    ],
+    "defined": [
+      "--tw-translate-x",
+      "--tw-translate-y",
+      "--tw-translate-z",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--tw-scale-z",
+      "--tw-rotate-x",
+      "--tw-rotate-y",
+      "--tw-rotate-z",
+      "--tw-skew-x",
+      "--tw-skew-y",
+      "--tw-space-y-reverse",
+      "--tw-border-style",
+      "--tw-leading",
+      "--tw-font-weight",
+      "--tw-tracking",
+      "--tw-ordinal",
+      "--tw-slashed-zero",
+      "--tw-numeric-figure",
+      "--tw-numeric-spacing",
+      "--tw-numeric-fraction",
+      "--tw-blur",
+      "--tw-brightness",
+      "--tw-contrast",
+      "--tw-grayscale",
+      "--tw-hue-rotate",
+      "--tw-invert",
+      "--tw-opacity",
+      "--tw-saturate",
+      "--tw-sepia",
+      "--tw-drop-shadow",
+      "--tw-drop-shadow-color",
+      "--tw-drop-shadow-alpha",
+      "--tw-drop-shadow-size",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-outline-style"
+    ],
+    "free": [
+      "--spacing",
+      "--scale",
+      "--font-serif",
+      "--text-lg",
+      "--text-lg--line-height",
+      "--font-weight-medium",
+      "--font-weight-normal",
+      "--default-transition-timing-function",
+      "--default-transition-duration",
+      "--ease-out",
+      "--vg",
+      "--text-2xl",
+      "--text-2xl--line-height",
+      "--cta-fs",
+      "--list-fs"
+    ],
+    "resolvedValues": {
+      "--spacing": "calc(.4 * var(--scale))",
+      "--scale": "calc(100vw / 144)",
+      "--font-serif": "\"PP Editorial Old\", serif",
+      "--text-lg": "calc(1.8 * var(--scale))",
+      "--text-lg--line-height": "calc(1.75 / 1.125)",
+      "--font-weight-medium": "500",
+      "--font-weight-normal": "400",
+      "--default-transition-timing-function": "cubic-bezier(.4, 0, .2, 1)",
+      "--default-transition-duration": ".15s",
+      "--ease-out": "cubic-bezier(0, 0, .2, 1)",
+      "--vg": "calc(4.8 * var(--scale))",
+      "--text-2xl": "calc(2.4 * var(--scale))",
+      "--text-2xl--line-height": "calc(2 / 1.5)",
+      "--cta-fs": "calc(2.3 * var(--scale))",
+      "--list-fs": "calc(6.4 * var(--scale))"
+    }
+  },
+  "scopedCss": "@scope ([data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"]) to ([data-capsule-slot]) {\n  :scope {\n    --spacing: calc(.4 * var(--scale));\n    --scale: calc(100vw / 144);\n    --font-serif: \"PP Editorial Old\", serif;\n    --text-lg: calc(1.8 * var(--scale));\n    --text-lg--line-height: calc(1.75 / 1.125);\n    --font-weight-medium: 500;\n    --font-weight-normal: 400;\n    --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);\n    --default-transition-duration: .15s;\n    --ease-out: cubic-bezier(0, 0, .2, 1);\n    --vg: calc(4.8 * var(--scale));\n    --text-2xl: calc(2.4 * var(--scale));\n    --text-2xl--line-height: calc(2 / 1.5);\n    --cta-fs: calc(2.3 * var(--scale));\n    --list-fs: calc(6.4 * var(--scale));\n  }\n  :scope * {\n    --tw-translate-x: 0;\n    --tw-translate-y: 0;\n    --tw-translate-z: 0;\n    --tw-scale-x: 1;\n    --tw-scale-y: 1;\n    --tw-scale-z: 1;\n    --tw-rotate-x: initial;\n    --tw-rotate-y: initial;\n    --tw-rotate-z: initial;\n    --tw-skew-x: initial;\n    --tw-skew-y: initial;\n    --tw-space-y-reverse: 0;\n    --tw-border-style: solid;\n    --tw-leading: initial;\n    --tw-font-weight: initial;\n    --tw-tracking: initial;\n    --tw-ordinal: initial;\n    --tw-slashed-zero: initial;\n    --tw-numeric-figure: initial;\n    --tw-numeric-spacing: initial;\n    --tw-numeric-fraction: initial;\n    --tw-blur: initial;\n    --tw-brightness: initial;\n    --tw-contrast: initial;\n    --tw-grayscale: initial;\n    --tw-hue-rotate: initial;\n    --tw-invert: initial;\n    --tw-opacity: initial;\n    --tw-saturate: initial;\n    --tw-sepia: initial;\n    --tw-drop-shadow: initial;\n    --tw-drop-shadow-color: initial;\n    --tw-drop-shadow-alpha: 100%;\n    --tw-drop-shadow-size: initial;\n    --tw-duration: initial;\n    --tw-ease: initial;\n    --tw-outline-style: solid;\n  }\n  :scope * {\n    box-sizing: border-box;\n    border: 0 solid;\n    margin: 0;\n    padding: 0;\n  }\n  a {\n    color: inherit;\n    -webkit-text-decoration: inherit;\n    text-decoration: inherit;\n  }\n  ul {\n    list-style: none;\n  }\n  img, svg {\n    vertical-align: middle;\n    display: block;\n  }\n  img {\n    max-width: 100%;\n    height: auto;\n  }\n  .to-link-underline {\n    display: inline-block;\n    position: relative;\n  }\n  .pointer-events-none {\n    pointer-events: none;\n  }\n  .absolute {\n    position: absolute;\n  }\n  :scope {\n    position: relative;\n  }\n  .inset-0 {\n    inset: calc(var(--spacing) * 0);\n  }\n  .inset-x-0 {\n    inset-inline: calc(var(--spacing) * 0);\n  }\n  .bottom-0 {\n    bottom: calc(var(--spacing) * 0);\n  }\n  .isolate {\n    isolation: isolate;\n  }\n  .z-0 {\n    z-index: 0;\n  }\n  .block {\n    display: block;\n  }\n  :scope {\n    display: flex;\n  }\n  .hidden {\n    display: none;\n  }\n  .inline-flex {\n    display: inline-flex;\n  }\n  .size-5 {\n    width: calc(var(--spacing) * 5);\n    height: calc(var(--spacing) * 5);\n  }\n  .size-8 {\n    width: calc(var(--spacing) * 8);\n    height: calc(var(--spacing) * 8);\n  }\n  .h-auto {\n    height: auto;\n  }\n  .h-full {\n    height: 100%;\n  }\n  .h-px {\n    height: 1px;\n  }\n  .min-h-0 {\n    min-height: calc(var(--spacing) * 0);\n  }\n  :scope {\n    width: 100%;\n  }\n  .max-w-\\[calc\\(40\\.1_\\*_var\\(--scale\\)\\)\\] {\n    max-width: calc(40.1 * var(--scale));\n  }\n  .min-w-0 {\n    min-width: calc(var(--spacing) * 0);\n  }\n  .flex-1 {\n    flex: 1;\n  }\n  :scope {\n    flex-shrink: 0;\n  }\n  .origin-center {\n    transform-origin: 50%;\n  }\n  .origin-left {\n    transform-origin: 0;\n  }\n  .translate-z-0 {\n    --tw-translate-z: calc(var(--spacing) * 0);\n    translate: var(--tw-translate-x) var(--tw-translate-y) var(--tw-translate-z);\n  }\n  .scale-x-0 {\n    --tw-scale-x: 0%;\n    scale: var(--tw-scale-x) var(--tw-scale-y);\n  }\n  .cursor-pointer {\n    cursor: pointer;\n  }\n  :scope {\n    flex-direction: column;\n  }\n  .items-center {\n    align-items: center;\n  }\n  .justify-between {\n    justify-content: space-between;\n  }\n  .gap-2 {\n    gap: calc(var(--spacing) * 2);\n  }\n  .gap-2\\.5 {\n    gap: calc(var(--spacing) * 2.5);\n  }\n  .gap-4 {\n    gap: calc(var(--spacing) * 4);\n  }\n  .gap-12 {\n    gap: calc(var(--spacing) * 12);\n  }\n  :scope {\n    overflow: hidden;\n  }\n  .bg-\\[\\#2e2b28\\] {\n    background-color: #2e2b28;\n  }\n  .bg-\\[\\#b8b3ac\\] {\n    background-color: #b8b3ac;\n  }\n  :scope {\n    background-color: #edeae6;\n  }\n  .object-cover {\n    object-fit: cover;\n  }\n  .px-5 {\n    padding-inline: calc(var(--spacing) * 5);\n  }\n  .py-2\\.5 {\n    padding-block: calc(var(--spacing) * 2.5);\n  }\n  .py-14 {\n    padding-block: calc(var(--spacing) * 14);\n  }\n  .font-serif {\n    font-family: var(--font-serif);\n  }\n  .text-lg {\n    font-size: var(--text-lg);\n    line-height: var(--tw-leading,var(--text-lg--line-height));\n  }\n  .text-\\[calc\\(1\\.1_\\*_var\\(--scale\\)\\)\\] {\n    font-size: calc(1.1 * var(--scale));\n  }\n  .text-\\[calc\\(4\\.1_\\*_var\\(--scale\\)\\)\\] {\n    font-size: calc(4.1 * var(--scale));\n  }\n  .leading-\\[1\\.2\\] {\n    --tw-leading: 1.2;\n    line-height: 1.2;\n  }\n  .leading-\\[1\\.3\\] {\n    --tw-leading: 1.3;\n    line-height: 1.3;\n  }\n  .leading-\\[1\\.4\\] {\n    --tw-leading: 1.4;\n    line-height: 1.4;\n  }\n  .leading-none {\n    --tw-leading: 1;\n    line-height: 1;\n  }\n  .font-medium {\n    --tw-font-weight: var(--font-weight-medium);\n    font-weight: var(--font-weight-medium);\n  }\n  .font-normal {\n    --tw-font-weight: var(--font-weight-normal);\n    font-weight: var(--font-weight-normal);\n  }\n  .text-\\[\\#1a1a1a\\] {\n    color: #1a1a1a;\n  }\n  :scope {\n    color: #2e2b28;\n  }\n  .uppercase {\n    text-transform: uppercase;\n  }\n  .opacity-0 {\n    opacity: 0;\n  }\n  .transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease,var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration,var(--default-transition-duration));\n  }\n  .duration-300 {\n    --tw-duration: .3s;\n    transition-duration: .3s;\n  }\n  .duration-500 {\n    --tw-duration: .5s;\n    transition-duration: .5s;\n  }\n  .ease-out {\n    --tw-ease: var(--ease-out);\n    transition-timing-function: var(--ease-out);\n  }\n  .focus-visible\\:outline:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 1px;\n  }\n  .focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .focus-visible\\:outline-offset-2:focus-visible {\n    outline-offset: 2px;\n  }\n  .focus-visible\\:outline-\\[\\#2e2b28\\]:focus-visible {\n    outline-color: #2e2b28;\n  }\n  li {\n    pointer-events: none;\n  }\n  li {\n    cursor: default;\n  }\n  li {\n    cursor: pointer;\n  }\n  @media (min-width:48rem) {\n    .md\\:absolute {\n    position: absolute;\n  }\n    .md\\:top-\\(--vg\\) {\n    top: var(--vg);\n  }\n    .md\\:right-16 {\n    right: calc(var(--spacing) * 16);\n  }\n    .md\\:bottom-\\(--vg\\) {\n    bottom: var(--vg);\n  }\n    .md\\:left-32 {\n    left: calc(var(--spacing) * 32);\n  }\n    .md\\:left-\\[calc\\(100\\%_-_calc\\(6\\.4_\\*_var\\(--scale\\)\\)_-_calc\\(61\\.2_\\*_var\\(--scale\\)\\)\\)\\] {\n    left: calc(100% - calc(6.4 * var(--scale)) - calc(61.2 * var(--scale)));\n  }\n    .md\\:block {\n    display: block;\n  }\n    .md\\:size-6 {\n    width: calc(var(--spacing) * 6);\n    height: calc(var(--spacing) * 6);\n  }\n    .md\\:size-14 {\n    width: calc(var(--spacing) * 14);\n    height: calc(var(--spacing) * 14);\n  }\n    :scope:h-dvh {\n    height: 100dvh;\n  }\n    .md\\:w-full {\n    width: 100%;\n  }\n    .md\\:max-w-\\[calc\\(29\\.4_\\*_var\\(--scale\\)\\)\\] {\n    max-width: calc(29.4 * var(--scale));\n  }\n    .md\\:max-w-\\[calc\\(61\\.2_\\*_var\\(--scale\\)\\)\\] {\n    max-width: calc(61.2 * var(--scale));\n  }\n    .md\\:max-w-\\[min\\(calc\\(40\\.1_\\*_var\\(--scale\\)\\)\\,calc\\(100\\%_-_calc\\(8_\\*_var\\(--scale\\)\\)\\)\\)\\] {\n    max-width: min(calc(40.1 * var(--scale)),calc(100% - calc(8 * var(--scale))));\n  }\n    .md\\:gap-0 {\n    gap: calc(var(--spacing) * 0);\n  }\n    .md\\:px-0 {\n    padding-inline: calc(var(--spacing) * 0);\n  }\n    .md\\:py-0 {\n    padding-block: calc(var(--spacing) * 0);\n  }\n    .md\\:text-2xl {\n    font-size: var(--text-2xl);\n    line-height: var(--tw-leading,var(--text-2xl--line-height));\n  }\n    .md\\:text-\\(length\\:--cta-fs\\) {\n    font-size: var(--cta-fs);\n  }\n    .md\\:text-\\(length\\:--list-fs\\) {\n    font-size: var(--list-fs);\n  }\n  }\n  @media (min-width:768px) {\n    [data-astro-cid-p35cuy7o][data-work-image] {\n    will-change: transform,opacity;\n  }\n    [data-astro-cid-p35cuy7o][data-work-item-arrow] {\n    transform: translate(calc(-1 * var(--scale)),calc(1 * var(--scale))) scale(.6);\n    transform-origin: left bottom;\n    transition: opacity .3s ease-out,transform .45s cubic-bezier(.22,1,.36,1);\n    will-change: transform,opacity;\n  }\n    [data-astro-cid-p35cuy7o][data-work-item-arrow] {\n    opacity: 1;\n    transform: translate(0) scale(1);\n  }\n  }\n}\n\n@supports not (scope: default) {\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    --spacing: calc(.4 * var(--scale));\n    --scale: calc(100vw / 144);\n    --font-serif: \"PP Editorial Old\", serif;\n    --text-lg: calc(1.8 * var(--scale));\n    --text-lg--line-height: calc(1.75 / 1.125);\n    --font-weight-medium: 500;\n    --font-weight-normal: 400;\n    --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);\n    --default-transition-duration: .15s;\n    --ease-out: cubic-bezier(0, 0, .2, 1);\n    --vg: calc(4.8 * var(--scale));\n    --text-2xl: calc(2.4 * var(--scale));\n    --text-2xl--line-height: calc(2 / 1.5);\n    --cta-fs: calc(2.3 * var(--scale));\n    --list-fs: calc(6.4 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] *:not([data-capsule-slot] *) {\n    --tw-translate-x: 0;\n    --tw-translate-y: 0;\n    --tw-translate-z: 0;\n    --tw-scale-x: 1;\n    --tw-scale-y: 1;\n    --tw-scale-z: 1;\n    --tw-rotate-x: initial;\n    --tw-rotate-y: initial;\n    --tw-rotate-z: initial;\n    --tw-skew-x: initial;\n    --tw-skew-y: initial;\n    --tw-space-y-reverse: 0;\n    --tw-border-style: solid;\n    --tw-leading: initial;\n    --tw-font-weight: initial;\n    --tw-tracking: initial;\n    --tw-ordinal: initial;\n    --tw-slashed-zero: initial;\n    --tw-numeric-figure: initial;\n    --tw-numeric-spacing: initial;\n    --tw-numeric-fraction: initial;\n    --tw-blur: initial;\n    --tw-brightness: initial;\n    --tw-contrast: initial;\n    --tw-grayscale: initial;\n    --tw-hue-rotate: initial;\n    --tw-invert: initial;\n    --tw-opacity: initial;\n    --tw-saturate: initial;\n    --tw-sepia: initial;\n    --tw-drop-shadow: initial;\n    --tw-drop-shadow-color: initial;\n    --tw-drop-shadow-alpha: 100%;\n    --tw-drop-shadow-size: initial;\n    --tw-duration: initial;\n    --tw-ease: initial;\n    --tw-outline-style: solid;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] *:not([data-capsule-slot] *) {\n    box-sizing: border-box;\n    border: 0 solid;\n    margin: 0;\n    padding: 0;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] a:not([data-capsule-slot] *) {\n    color: inherit;\n    -webkit-text-decoration: inherit;\n    text-decoration: inherit;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] ul:not([data-capsule-slot] *) {\n    list-style: none;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] img, svg:not([data-capsule-slot] *) {\n    vertical-align: middle;\n    display: block;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] img:not([data-capsule-slot] *) {\n    max-width: 100%;\n    height: auto;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .to-link-underline:not([data-capsule-slot] *) {\n    display: inline-block;\n    position: relative;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .pointer-events-none:not([data-capsule-slot] *) {\n    pointer-events: none;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .absolute:not([data-capsule-slot] *) {\n    position: absolute;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    position: relative;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .inset-0:not([data-capsule-slot] *) {\n    inset: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .inset-x-0:not([data-capsule-slot] *) {\n    inset-inline: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .bottom-0:not([data-capsule-slot] *) {\n    bottom: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .isolate:not([data-capsule-slot] *) {\n    isolation: isolate;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .z-0:not([data-capsule-slot] *) {\n    z-index: 0;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .block:not([data-capsule-slot] *) {\n    display: block;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    display: flex;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .hidden:not([data-capsule-slot] *) {\n    display: none;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .inline-flex:not([data-capsule-slot] *) {\n    display: inline-flex;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .size-5:not([data-capsule-slot] *) {\n    width: calc(var(--spacing) * 5);\n    height: calc(var(--spacing) * 5);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .size-8:not([data-capsule-slot] *) {\n    width: calc(var(--spacing) * 8);\n    height: calc(var(--spacing) * 8);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .h-auto:not([data-capsule-slot] *) {\n    height: auto;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .h-full:not([data-capsule-slot] *) {\n    height: 100%;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .h-px:not([data-capsule-slot] *) {\n    height: 1px;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .min-h-0:not([data-capsule-slot] *) {\n    min-height: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    width: 100%;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .max-w-\\[calc\\(40\\.1_\\*_var\\(--scale\\)\\)\\]:not([data-capsule-slot] *) {\n    max-width: calc(40.1 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .min-w-0:not([data-capsule-slot] *) {\n    min-width: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .flex-1:not([data-capsule-slot] *) {\n    flex: 1;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    flex-shrink: 0;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .origin-center:not([data-capsule-slot] *) {\n    transform-origin: 50%;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .origin-left:not([data-capsule-slot] *) {\n    transform-origin: 0;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .translate-z-0:not([data-capsule-slot] *) {\n    --tw-translate-z: calc(var(--spacing) * 0);\n    translate: var(--tw-translate-x) var(--tw-translate-y) var(--tw-translate-z);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .scale-x-0:not([data-capsule-slot] *) {\n    --tw-scale-x: 0%;\n    scale: var(--tw-scale-x) var(--tw-scale-y);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .cursor-pointer:not([data-capsule-slot] *) {\n    cursor: pointer;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    flex-direction: column;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .items-center:not([data-capsule-slot] *) {\n    align-items: center;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .justify-between:not([data-capsule-slot] *) {\n    justify-content: space-between;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .gap-2:not([data-capsule-slot] *) {\n    gap: calc(var(--spacing) * 2);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .gap-2\\.5:not([data-capsule-slot] *) {\n    gap: calc(var(--spacing) * 2.5);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .gap-4:not([data-capsule-slot] *) {\n    gap: calc(var(--spacing) * 4);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .gap-12:not([data-capsule-slot] *) {\n    gap: calc(var(--spacing) * 12);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    overflow: hidden;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .bg-\\[\\#2e2b28\\]:not([data-capsule-slot] *) {\n    background-color: #2e2b28;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .bg-\\[\\#b8b3ac\\]:not([data-capsule-slot] *) {\n    background-color: #b8b3ac;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    background-color: #edeae6;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .object-cover:not([data-capsule-slot] *) {\n    object-fit: cover;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .px-5:not([data-capsule-slot] *) {\n    padding-inline: calc(var(--spacing) * 5);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .py-2\\.5:not([data-capsule-slot] *) {\n    padding-block: calc(var(--spacing) * 2.5);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .py-14:not([data-capsule-slot] *) {\n    padding-block: calc(var(--spacing) * 14);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .font-serif:not([data-capsule-slot] *) {\n    font-family: var(--font-serif);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .text-lg:not([data-capsule-slot] *) {\n    font-size: var(--text-lg);\n    line-height: var(--tw-leading,var(--text-lg--line-height));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .text-\\[calc\\(1\\.1_\\*_var\\(--scale\\)\\)\\]:not([data-capsule-slot] *) {\n    font-size: calc(1.1 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .text-\\[calc\\(4\\.1_\\*_var\\(--scale\\)\\)\\]:not([data-capsule-slot] *) {\n    font-size: calc(4.1 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .leading-\\[1\\.2\\]:not([data-capsule-slot] *) {\n    --tw-leading: 1.2;\n    line-height: 1.2;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .leading-\\[1\\.3\\]:not([data-capsule-slot] *) {\n    --tw-leading: 1.3;\n    line-height: 1.3;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .leading-\\[1\\.4\\]:not([data-capsule-slot] *) {\n    --tw-leading: 1.4;\n    line-height: 1.4;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .leading-none:not([data-capsule-slot] *) {\n    --tw-leading: 1;\n    line-height: 1;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .font-medium:not([data-capsule-slot] *) {\n    --tw-font-weight: var(--font-weight-medium);\n    font-weight: var(--font-weight-medium);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .font-normal:not([data-capsule-slot] *) {\n    --tw-font-weight: var(--font-weight-normal);\n    font-weight: var(--font-weight-normal);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .text-\\[\\#1a1a1a\\]:not([data-capsule-slot] *) {\n    color: #1a1a1a;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] {\n    color: #2e2b28;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .uppercase:not([data-capsule-slot] *) {\n    text-transform: uppercase;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .opacity-0:not([data-capsule-slot] *) {\n    opacity: 0;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .transition-opacity:not([data-capsule-slot] *) {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease,var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration,var(--default-transition-duration));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .duration-300:not([data-capsule-slot] *) {\n    --tw-duration: .3s;\n    transition-duration: .3s;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .duration-500:not([data-capsule-slot] *) {\n    --tw-duration: .5s;\n    transition-duration: .5s;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .ease-out:not([data-capsule-slot] *) {\n    --tw-ease: var(--ease-out);\n    transition-timing-function: var(--ease-out);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .focus-visible\\:outline:focus-visible:not([data-capsule-slot] *) {\n    outline-style: var(--tw-outline-style);\n    outline-width: 1px;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .focus-visible\\:outline-2:focus-visible:not([data-capsule-slot] *) {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .focus-visible\\:outline-offset-2:focus-visible:not([data-capsule-slot] *) {\n    outline-offset: 2px;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .focus-visible\\:outline-\\[\\#2e2b28\\]:focus-visible:not([data-capsule-slot] *) {\n    outline-color: #2e2b28;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] li:not([data-capsule-slot] *) {\n    pointer-events: none;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] li:not([data-capsule-slot] *) {\n    cursor: default;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] li:not([data-capsule-slot] *) {\n    cursor: pointer;\n  }\n@media (min-width:48rem) {\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:absolute:not([data-capsule-slot] *) {\n    position: absolute;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:top-\\(--vg\\):not([data-capsule-slot] *) {\n    top: var(--vg);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:right-16:not([data-capsule-slot] *) {\n    right: calc(var(--spacing) * 16);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:bottom-\\(--vg\\):not([data-capsule-slot] *) {\n    bottom: var(--vg);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:left-32:not([data-capsule-slot] *) {\n    left: calc(var(--spacing) * 32);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:left-\\[calc\\(100\\%_-_calc\\(6\\.4_\\*_var\\(--scale\\)\\)_-_calc\\(61\\.2_\\*_var\\(--scale\\)\\)\\)\\]:not([data-capsule-slot] *) {\n    left: calc(100% - calc(6.4 * var(--scale)) - calc(61.2 * var(--scale)));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:block:not([data-capsule-slot] *) {\n    display: block;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:size-6:not([data-capsule-slot] *) {\n    width: calc(var(--spacing) * 6);\n    height: calc(var(--spacing) * 6);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:size-14:not([data-capsule-slot] *) {\n    width: calc(var(--spacing) * 14);\n    height: calc(var(--spacing) * 14);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] :h-dvh:not([data-capsule-slot] *) {\n    height: 100dvh;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:w-full:not([data-capsule-slot] *) {\n    width: 100%;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:max-w-\\[calc\\(29\\.4_\\*_var\\(--scale\\)\\)\\]:not([data-capsule-slot] *) {\n    max-width: calc(29.4 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:max-w-\\[calc\\(61\\.2_\\*_var\\(--scale\\)\\)\\]:not([data-capsule-slot] *) {\n    max-width: calc(61.2 * var(--scale));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:max-w-\\[min\\(calc\\(40\\.1_\\*_var\\(--scale\\)\\)\\,calc\\(100\\%_-_calc\\(8_\\*_var\\(--scale\\)\\)\\)\\)\\]:not([data-capsule-slot] *) {\n    max-width: min(calc(40.1 * var(--scale)),calc(100% - calc(8 * var(--scale))));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:gap-0:not([data-capsule-slot] *) {\n    gap: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:px-0:not([data-capsule-slot] *) {\n    padding-inline: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:py-0:not([data-capsule-slot] *) {\n    padding-block: calc(var(--spacing) * 0);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:text-2xl:not([data-capsule-slot] *) {\n    font-size: var(--text-2xl);\n    line-height: var(--tw-leading,var(--text-2xl--line-height));\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:text-\\(length\\:--cta-fs\\):not([data-capsule-slot] *) {\n    font-size: var(--cta-fs);\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] .md\\:text-\\(length\\:--list-fs\\):not([data-capsule-slot] *) {\n    font-size: var(--list-fs);\n  }\n}\n@media (min-width:768px) {\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] [data-astro-cid-p35cuy7o][data-work-image]:not([data-capsule-slot] *) {\n    will-change: transform,opacity;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] [data-astro-cid-p35cuy7o][data-work-item-arrow]:not([data-capsule-slot] *) {\n    transform: translate(calc(-1 * var(--scale)),calc(1 * var(--scale))) scale(.6);\n    transform-origin: left bottom;\n    transition: opacity .3s ease-out,transform .45s cubic-bezier(.22,1,.36,1);\n    will-change: transform,opacity;\n  }\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] [data-astro-cid-p35cuy7o][data-work-item-arrow]:not([data-capsule-slot] *) {\n    opacity: 1;\n    transform: translate(0) scale(1);\n  }\n}\n}",
+  "motionContract": {
+    "schemaVersion": "3.0.0",
+    "capsuleSlug": "khanhnguyen-design--work-horizontal-rail",
+    "generatedAt": "2026-11-13T06:23:34.261Z",
+    "taxonomy": {
+      "archetype": "magnetic-rail",
+      "trigger": "scroll-linked",
+      "criticality": "primary",
+      "physicalRegime": "underdamped-spring",
+      "confidence": 0.33,
+      "indicators": [
+        "pin-spacer|horizontal-rail|track-container|scroll-rail"
+      ]
+    },
+    "fsmContract": {
+      "id": "khanhnguyen-design--work-horizontal-rail-magnetic-rail-fsm",
+      "initial": "idle",
+      "context": {
+        "scrollProgress": 0,
+        "currentTranslateX": 0,
+        "scaleVar": "--scale",
+        "activeTween": null
+      },
+      "states": {
+        "idle": {
+          "on": {
+            "SCROLL_DELTA": "tracking",
+            "TOUCH_START": "tracking",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "tracking": {
+          "on": {
+            "SCROLL_DELTA": {
+              "actions": [
+                "updateTranslateX",
+                "clampToRailBounds"
+              ]
+            },
+            "SCROLL_STOP": "settling",
+            "CROSSFADE": "crossfading",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "crossfading": {
+          "entry": [
+            "killTweensOf",
+            "captureCurrentOffset"
+          ],
+          "on": {
+            "CROSSFADE_COMPLETE": "tracking",
+            "SCROLL_STOP": "settling",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "settling": {
+          "entry": [
+            "snapToNearestCard"
+          ],
+          "on": {
+            "SCROLL_DELTA": "tracking",
+            "SNAP_COMPLETE": "idle",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        }
+      },
+      "invariants": {
+        "preemptible": true,
+        "escapeReset": true,
+        "windowBlurReset": true,
+        "fluidMathPeg": "calc(-1 * var(--scale))"
+      }
+    },
+    "layer1_physicalTruth": {
+      "curveType": "cubic-bezier",
+      "cssCubicBezier": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "controlPoints": [
+        [
+          0,
+          0
+        ],
+        [
+          0.215,
+          0.61
+        ],
+        [
+          0.355,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "beziers": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0.215,
+            0.61
+          ],
+          [
+            0.355,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      ],
+      "durationMs": 15000,
+      "delayMs": 0,
+      "harmonicSpring": {
+        "zeta": 0.85,
+        "omegaN": 12
+      }
+    },
+    "layer2_adaptiveSkill": {
+      "scaleVarName": "--scale",
+      "fluidMathExpression": "calc(-1 * var(--scale))",
+      "relativeTransforms": {
+        "arrow": {
+          "resting": "translate(calc(-1 * var(--scale)), calc(1 * var(--scale))) scale(0.6)",
+          "active": "translate(0) scale(1)",
+          "origin": "left bottom"
+        }
+      },
+      "interruptionFsm": {
+        "initial": "idle",
+        "states": {
+          "idle": {
+            "on": {
+              "HOVER_ENTER": "crossfading"
+            }
+          },
+          "crossfading": {
+            "action": "killTweensOf(previousTarget)",
+            "on": {
+              "EXPAND_READY": "active",
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "active": {
+            "on": {
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "resetting": {
+            "on": {
+              "RESET_DONE": "idle",
+              "HOVER_ENTER": "crossfading",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          }
+        },
+        "resilienceHandlers": {
+          "escapeKey": "window.addEventListener('keydown', e => { if (e.key === 'Escape') send('ESCAPE'); })",
+          "windowBlur": "window.addEventListener('blur', () => send('BLUR'))"
+        }
+      },
+      "reducedMotionRule": "@media (prefers-reduced-motion: reduce) {\n  [data-capsule-id=\"khanhnguyen-design--work-horizontal-rail\"] * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n    transform: none !important;\n    scroll-behavior: auto !important;\n  }\n}"
+    }
+  },
+  "validation": {
+    "valid": true,
+    "compliant": true,
+    "violations": []
+  }
+}

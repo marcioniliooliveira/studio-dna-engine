@@ -18,6 +18,42 @@ const DocumentStore = require('./document-store');
 
 const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
+/**
+ * Synchronously and atomically writes JSON data to filePath via a temporary file and atomic rename.
+ * Creates intermediate directories if needed and retries on transient file locks (Windows EPERM/EBUSY).
+ * @param {string} filePath - Target file path
+ * @param {Object|string} data - JSON serializable object or string
+ */
+function writeJsonAtomicSync(filePath, data) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  const serialized = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+  const tempPath = `${filePath}.${crypto.randomBytes(6).toString('hex')}.tmp`;
+  fs.writeFileSync(tempPath, serialized, 'utf8');
+
+  const maxRetries = 5;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      fs.renameSync(tempPath, filePath);
+      return;
+    } catch (err) {
+      if ((err.code === 'EPERM' || err.code === 'EBUSY') && attempt < maxRetries) {
+        const start = Date.now();
+        while (Date.now() - start < attempt * 10) {}
+        continue;
+      }
+      try {
+        if (fs.existsSync(tempPath)) {
+          fs.unlinkSync(tempPath);
+        }
+      } catch (_) {}
+      throw err;
+    }
+  }
+}
+
 class HybridRepository {
   /**
    * @param {Object} [options]
@@ -310,6 +346,32 @@ class HybridRepository {
   }
 
   /**
+   * Caches active element live selection for a client in memory.
+   * @param {string} slug
+   * @param {Object} data
+   */
+  setLiveSelection(slug, data) {
+    if (!slug) return;
+    if (!this._liveSelections) {
+      this._liveSelections = new Map();
+    }
+    this._liveSelections.set(slug, data);
+  }
+
+  /**
+   * Retrieves active element live selection for a client from memory.
+   * @param {string} slug
+   * @returns {Object|null}
+   */
+  getLiveSelection(slug) {
+    if (!slug) return null;
+    if (this._liveSelections && this._liveSelections.has(slug)) {
+      return this._liveSelections.get(slug);
+    }
+    return null;
+  }
+
+  /**
    * Closes database handles and cleans up ephemeral storage if applicable.
    */
   close() {
@@ -325,3 +387,4 @@ class HybridRepository {
 
 module.exports = HybridRepository;
 module.exports.HybridRepository = HybridRepository;
+module.exports.writeJsonAtomicSync = writeJsonAtomicSync;

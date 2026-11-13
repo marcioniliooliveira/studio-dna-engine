@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const cheerio = require('cheerio');
 const { createClientProject } = require('../../generators/client-factory');
 const { transmuteClient } = require('../../pipeline/transmuter');
 const { injectContentSlots } = require('../../generators/slot-injector');
@@ -11,11 +13,49 @@ const {
   CompileDualstackSchema,
   InjectSlotsSchema,
   PatchBrandSpecSchema,
+  UpdateSelectedElementSchema,
   getSafeClientDir,
   getSafeRefDir,
   validateSlugSecurity,
   ROOT_DIR
 } = require('../schemas');
+const { validateStrictDonutScope } = require('../../css/css-selector-ast');
+const { calcAPCA } = require('../../constraints/contrast');
+const { writeJsonAtomicSync } = require('../../persistence/hybrid-repository');
+
+function extractColorFromText(text) {
+  if (!text || typeof text !== 'string') return null;
+  const colorMatch = text.match(/(?:^|[;{\s])color\s*:\s*([^;!}]+)/i);
+  if (colorMatch) {
+    return colorMatch[1].trim();
+  }
+  return null;
+}
+
+function extractBgColorFromText(text) {
+  if (!text || typeof text !== 'string') return null;
+  const bgMatch = text.match(/background(?:-color)?\s*:\s*([^;!}]+)/i);
+  if (bgMatch) {
+    return bgMatch[1].trim();
+  }
+  return null;
+}
+
+function parseCssColorToRgbOrHex(val) {
+  if (!val || typeof val !== 'string') return null;
+  const s = val.trim();
+  const hexMatch = s.match(/#([0-9a-fA-F]{3,8})\b/);
+  if (hexMatch) return hexMatch[0];
+  const rgbMatch = s.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (rgbMatch) {
+    return {
+      r: parseInt(rgbMatch[1], 10),
+      g: parseInt(rgbMatch[2], 10),
+      b: parseInt(rgbMatch[3], 10)
+    };
+  }
+  return null;
+}
 
 function registerClientTools(server) {
   // Tool 1: Criar Projeto de Cliente One-Shot (Fábrica ICM)
@@ -270,6 +310,214 @@ function registerClientTools(server) {
         return {
           isError: true,
           content: [{ type: 'text', text: `❌ Falha ao atualizar brand-spec: ${err.message}` }]
+        };
+      }
+    }
+  );
+
+  // Tool 6: Atualizar Elemento Selecionado Cirurgicamente (Click-to-MCP)
+  server.tool(
+    'update_selected_element',
+    'Aplica atualização cirúrgica em site/index.html no elemento [data-ds] validando blindagem de escopo (@scope strict donut) e contraste perceptual APCA.',
+    UpdateSelectedElementSchema,
+    async ({ slug, dsId, updatedHtml, updatedScopedCss }) => {
+      try {
+        // Gate 1: Security & Traversal Validation
+        validateSlugSecurity(slug);
+        const clientDir = getSafeClientDir(slug);
+        if (!fs.existsSync(clientDir)) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: `Cliente não encontrado em clientes/${slug}` }]
+          };
+        }
+
+        if (!updatedHtml && !updatedScopedCss) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: 'At least one of updatedHtml or updatedScopedCss must be provided' }]
+          };
+        }
+
+        // Gate 2: Strict Donut Scope Validation
+        if (updatedScopedCss && typeof updatedScopedCss === 'string' && updatedScopedCss.trim()) {
+          const scopeResult = validateStrictDonutScope(updatedScopedCss, 'data-capsule-slot');
+          if (!scopeResult.valid) {
+            const reasons = (scopeResult.violations || []).map(v => `${v.selector}: ${v.reason}`).join('; ');
+            return {
+              isError: true,
+              content: [{ type: 'text', text: `❌ Strict Donut Scope Violation: ${reasons}` }]
+            };
+          }
+        }
+
+        // Gate 3: APCA Perceptual Contrast Evaluation
+        let textColorStr = extractColorFromText(updatedScopedCss) || extractColorFromText(updatedHtml);
+        let bgColorStr = extractBgColorFromText(updatedScopedCss) || extractBgColorFromText(updatedHtml);
+
+        if (!textColorStr || !bgColorStr) {
+          // Check live selection context for fallback colors
+          let liveData = null;
+          const primaryDnaPath = path.join(clientDir, '.dna', 'live-selection.json');
+          if (fs.existsSync(primaryDnaPath)) {
+            try { liveData = JSON.parse(fs.readFileSync(primaryDnaPath, 'utf8')); } catch (_) {}
+          }
+          if (!liveData) {
+            try {
+              const { getLiveSelection } = require('../../server/preview-server');
+              liveData = getLiveSelection(slug);
+            } catch (_) {}
+          }
+          if (liveData && liveData.computedStyles) {
+            if (!textColorStr && liveData.computedStyles.color) {
+              textColorStr = liveData.computedStyles.color;
+            }
+            if (!bgColorStr && liveData.computedStyles.backgroundColor) {
+              bgColorStr = liveData.computedStyles.backgroundColor;
+            }
+          }
+        }
+
+        if (textColorStr && bgColorStr) {
+          const parsedText = parseCssColorToRgbOrHex(textColorStr);
+          const parsedBg = parseCssColorToRgbOrHex(bgColorStr);
+          if (parsedText && parsedBg) {
+            const lc = calcAPCA(parsedText, parsedBg);
+            if (Math.abs(lc) < 15) {
+              return {
+                isError: true,
+                content: [{
+                  type: 'text',
+                  text: `❌ APCA Contrast Violation: Perceptual contrast Lc ${lc.toFixed(1)} is below minimum threshold (< 15: inadmissible text)`
+                }]
+              };
+            }
+          }
+        }
+
+        // Gate 4: Cheerio Surgical DOM Update on site/index.html
+        const siteHtmlPath = path.join(clientDir, 'site', 'index.html');
+        const fallbackHtmlPath = path.join(clientDir, 'index.html');
+        const htmlPath = fs.existsSync(siteHtmlPath) ? siteHtmlPath : (fs.existsSync(fallbackHtmlPath) ? fallbackHtmlPath : null);
+
+        if (!htmlPath) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: `❌ HTML entry file not found for client in ${clientDir}` }]
+          };
+        }
+
+        const rawHtml = fs.readFileSync(htmlPath, 'utf8');
+        const $ = cheerio.load(rawHtml, { decodeEntities: false });
+        const target = $(`[data-ds="${dsId}"]`);
+
+        if (target.length === 0) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: `Element with data-ds="${dsId}" not found in ${path.relative(ROOT_DIR, htmlPath).replace(/\\/g, '/')}` }]
+          };
+        }
+
+        if (updatedHtml && typeof updatedHtml === 'string' && updatedHtml.trim()) {
+          const frag = cheerio.load(updatedHtml, { decodeEntities: false });
+          const children = frag('body').children();
+          if (children.length === 1) {
+            const el = children.first();
+            if (!el.attr('data-ds')) {
+              el.attr('data-ds', dsId);
+            }
+            target.replaceWith(el);
+          } else if (children.length > 1) {
+            children.first().attr('data-ds', dsId);
+            target.replaceWith(children);
+          } else {
+            target.html(updatedHtml);
+          }
+        }
+
+        if (updatedScopedCss && typeof updatedScopedCss === 'string' && updatedScopedCss.trim()) {
+          let styleTag = $('style#dna-live-scoped-css');
+          if (styleTag.length > 0) {
+            styleTag.text(updatedScopedCss);
+          } else if ($('head').length > 0) {
+            $('head').append(`\n  <style id="dna-live-scoped-css">\n${updatedScopedCss}\n  </style>`);
+          } else {
+            $.root().prepend(`<style id="dna-live-scoped-css">\n${updatedScopedCss}\n</style>\n`);
+          }
+        }
+
+        // Write mutated HTML atomically
+        const tempHtmlPath = `${htmlPath}.${crypto.randomBytes(4).toString('hex')}.tmp`;
+        fs.writeFileSync(tempHtmlPath, $.html(), 'utf8');
+        fs.renameSync(tempHtmlPath, htmlPath);
+
+        // Gate 5: Atomic Persistence of Live Selection & Server Memory Sync
+        const clientDnaDir = path.join(clientDir, '.dna');
+        const primaryDnaPath = path.join(clientDnaDir, 'live-selection.json');
+        let selectionObj = null;
+
+        if (fs.existsSync(primaryDnaPath)) {
+          try { selectionObj = JSON.parse(fs.readFileSync(primaryDnaPath, 'utf8')); } catch (_) {}
+        }
+
+        if (!selectionObj) {
+          selectionObj = {
+            clientSlug: slug,
+            dsId,
+            dataDs: dsId,
+            tagName: target[0] ? target[0].tagName.toLowerCase() : 'div'
+          };
+        }
+
+        if (updatedHtml) {
+          selectionObj.outerHTML = updatedHtml;
+        }
+        selectionObj.timestamp = Date.now();
+
+        writeJsonAtomicSync(primaryDnaPath, selectionObj);
+
+        // Also mirror to legacy fallbacks if their directories exist
+        const clientDomscribePath = path.join(clientDir, '.domscribe', 'live-selection.json');
+        if (fs.existsSync(path.dirname(clientDomscribePath))) {
+          try { writeJsonAtomicSync(clientDomscribePath, selectionObj); } catch (_) {}
+        }
+        const rootDomscribePath = path.join(ROOT_DIR, '.domscribe', `live-selection-${slug}.json`);
+        if (fs.existsSync(path.dirname(rootDomscribePath))) {
+          try { writeJsonAtomicSync(rootDomscribePath, selectionObj); } catch (_) {}
+        }
+
+        // Sync in-memory preview-server & notify SSE
+        try {
+          const { setLiveSelection, notifyHotSwap } = require('../../server/preview-server');
+          setLiveSelection(slug, selectionObj);
+          notifyHotSwap(slug, {
+            type: 'element_updated',
+            clientSlug: slug,
+            dsId,
+            updatedHtml: updatedHtml || null,
+            updatedScopedCss: updatedScopedCss || null,
+            timestamp: selectionObj.timestamp
+          });
+        } catch (_) {}
+
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({
+              status: 'success',
+              clientSlug: slug,
+              dsId,
+              mutatedHtml: Boolean(updatedHtml),
+              mutatedCss: Boolean(updatedScopedCss),
+              htmlPath: path.relative(ROOT_DIR, htmlPath).replace(/\\/g, '/'),
+              message: `✅ Elemento [data-ds="${dsId}"] atualizado cirurgicamente com sucesso para o cliente "${slug}".`
+            }, null, 2)
+          }]
+        };
+      } catch (err) {
+        return {
+          isError: true,
+          content: [{ type: 'text', text: `❌ Falha ao atualizar elemento: ${err.message}` }]
         };
       }
     }

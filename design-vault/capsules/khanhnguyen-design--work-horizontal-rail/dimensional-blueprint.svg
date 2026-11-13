@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2040 1125" width="100%" height="100%" style="background:#0A192F; font-family:'JetBrains Mono', 'Fira Code', 'Courier New', monospace;">
+  <defs>
+    <!-- Architectural Grid Pattern -->
+    <pattern id="cad-grid-minor" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#172A45" stroke-width="0.5" opacity="0.6"/>
+    </pattern>
+    <pattern id="cad-grid-major" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="url(#cad-grid-minor)" />
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#1E3A5F" stroke-width="1" opacity="0.9"/>
+    </pattern>
+
+    <!-- Dimension Tick Marker -->
+    <marker id="tick-amber" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <line x1="0" y1="6" x2="6" y2="0" stroke="#F59E0B" stroke-width="1.5" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="2040" height="1125" fill="#0A192F" />
+
+  <!-- Drawing Frame -->
+  <g transform="translate(60, 60)">
+    <!-- CAD Grid Sheet -->
+    <rect width="1920" height="900" fill="url(#cad-grid-major)" stroke="#233554" stroke-width="1.5" />
+
+    <!-- Container Origin (0,0) Marker -->
+    <circle cx="0" cy="0" r="4" fill="#64FFDA" />
+    <text x="8" y="14" fill="#64FFDA" font-size="10" opacity="0.85">(0,0) RELATIVE ORIGIN</text>
+
+    <!-- Outer Dimension Markers -->
+    <text x="960" y="-16" fill="#F59E0B" font-size="12" text-anchor="middle" letter-spacing="1">CONTAINER WIDTH: 1920px</text>
+    <text x="-16" y="450" fill="#F59E0B" font-size="12" text-anchor="middle" transform="rotate(-90, -16, 450)" letter-spacing="1">CONTAINER HEIGHT: 900px</text>
+
+    <!-- Alignment Guideline Overlays -->
+    
+      <line x1="128" y1="0" x2="128" y2="900" stroke="#64FFDA" stroke-width="0.75" stroke-dasharray="4 4" opacity="0.3"/>
+      <text x="131" y="892" fill="#64FFDA" font-size="9" opacity="0.55">x=128</text>
+    
+      <line x1="1244" y1="0" x2="1244" y2="900" stroke="#64FFDA" stroke-width="0.75" stroke-dasharray="4 4" opacity="0.3"/>
+      <text x="1247" y="892" fill="#64FFDA" font-size="9" opacity="0.55">x=1244</text>
+    
+      <line x1="1550" y1="0" x2="1550" y2="900" stroke="#64FFDA" stroke-width="0.75" stroke-dasharray="4 4" opacity="0.3"/>
+      <text x="1553" y="892" fill="#64FFDA" font-size="9" opacity="0.55">x=1550</text>
+    
+      <line x1="1856" y1="0" x2="1856" y2="900" stroke="#64FFDA" stroke-width="0.75" stroke-dasharray="4 4" opacity="0.3"/>
+      <text x="1859" y="892" fill="#64FFDA" font-size="9" opacity="0.55">x=1856</text>
+    
+
+    <!-- Wireframe BBoxes -->
+    
+      <g id="box-p-heading">
+        <rect x="128" y="48" width="125.28" height="24"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="134" y="62" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">p-heading &lt;p&gt;</text>
+        <text x="134" y="74" fill="#8892B0" font-size="8.5">125.28 × 24 px</text>
+      </g>
+    
+      <g id="box-work-label">
+        <rect x="1244" y="48" width="612" height="15.39"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1250" y="62" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-label &lt;p&gt;</text>
+        <text x="1250" y="74" fill="#8892B0" font-size="8.5">612 × 15.39 px</text>
+      </g>
+    
+      <g id="box-work-item-0">
+        <rect x="1244" y="73.3906" width="612" height="96.8"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1250" y="87.3906" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-item-0 &lt;li&gt;</text>
+        <text x="1250" y="99.3906" fill="#8892B0" font-size="8.5">612 × 96.8 px</text>
+      </g>
+    
+      <g id="box-work-item-1">
+        <rect x="1244" y="170.1875" width="612" height="96.8"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1250" y="184.1875" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-item-1 &lt;li&gt;</text>
+        <text x="1250" y="196.1875" fill="#8892B0" font-size="8.5">612 × 96.8 px</text>
+      </g>
+    
+      <g id="box-work-item-2">
+        <rect x="1244" y="266.9844" width="612" height="96.8"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1250" y="280.9844" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-item-2 &lt;li&gt;</text>
+        <text x="1250" y="292.9844" fill="#8892B0" font-size="8.5">612 × 96.8 px</text>
+      </g>
+    
+      <g id="box-work-item-3">
+        <rect x="1244" y="363.7813" width="612" height="96.8"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1250" y="377.7813" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-item-3 &lt;li&gt;</text>
+        <text x="1250" y="389.7813" fill="#8892B0" font-size="8.5">612 × 96.8 px</text>
+      </g>
+    
+      <g id="box-cta-view-all">
+        <rect x="1689.4688" y="824.4063" width="166.53" height="27.59"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="1695.4688" y="838.4063" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">cta-view-all &lt;a&gt;</text>
+        <text x="1695.4688" y="850.4063" fill="#8892B0" font-size="8.5">166.53 × 27.59 px</text>
+      </g>
+    
+      <g id="box-work-preview">
+        <rect x="128" y="627" width="401" height="225"
+              fill="rgba(100, 255, 218, 0.05)" stroke="#64FFDA" stroke-width="1.2" rx="2" />
+        <text x="134" y="641" fill="#64FFDA" font-size="10" font-weight="bold" opacity="0.95">work-preview &lt;div&gt;</text>
+        <text x="134" y="653" fill="#8892B0" font-size="8.5">401 × 225 px</text>
+      </g>
+    
+
+    <!-- Dimension Lines (Sn Spacing) -->
+    
+          <g id="dim-S1">
+            <line x1="253.2813" y1="53.3906" x2="1244" y2="53.3906"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="748.64065" y="49.3906"
+                  fill="#F59E0B" font-size="9" text-anchor="middle" font-weight="bold">S1: calc(99.07 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S2">
+            <line x1="529" y1="830" x2="1689.4688" y2="830"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1109.2344" y="826"
+                  fill="#F59E0B" font-size="9" text-anchor="middle" font-weight="bold">S2: calc(116.05 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S3">
+            <line x1="268.2813" y1="72" x2="268.2813" y2="627"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="273.2813" y="349.5"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S3: calc(55.5 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S4">
+            <line x1="1886" y1="63.3906" x2="1886" y2="73.3906"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1891" y="68.3906"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S4: calc(1 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S5">
+            <line x1="1871" y1="170.1875" x2="1871" y2="170.1875"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1876" y="170.1875"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S5: calc(0 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S6">
+            <line x1="1886" y1="266.9844" x2="1886" y2="266.9844"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1891" y="266.9844"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S6: calc(0 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S7">
+            <line x1="1871" y1="363.7813" x2="1871" y2="363.7813"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1876" y="363.7813"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S7: calc(0 * var(--scale))</text>
+          </g>
+        
+          <g id="dim-S8">
+            <line x1="1886" y1="460.5781" x2="1886" y2="824.4063"
+                  stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2"
+                  marker-start="url(#tick-amber)" marker-end="url(#tick-amber)" />
+            <text x="1891" y="642.4922"
+                  fill="#F59E0B" font-size="9" font-weight="bold">S8: calc(36.38 * var(--scale))</text>
+          </g>
+        
+
+    <!-- Title Block Cartouche (Architectural CAD Standard) -->
+    <g transform="translate(1460, 915)">
+      <rect width="460" height="85" fill="#0D203D" stroke="#64FFDA" stroke-width="1" rx="1"/>
+      <line x1="0" y1="28" x2="460" y2="28" stroke="#1E3A5F" stroke-width="1"/>
+      <line x1="0" y1="56" x2="460" y2="56" stroke="#1E3A5F" stroke-width="1"/>
+      <line x1="300" y1="0" x2="300" y2="85" stroke="#1E3A5F" stroke-width="1"/>
+
+      <!-- Cartouche Header -->
+      <text x="12" y="19" fill="#64FFDA" font-size="11" font-weight="bold" letter-spacing="1">STUDIO DNA // DIMENSIONAL BLUEPRINT</text>
+      <text x="312" y="19" fill="#F59E0B" font-size="10" font-weight="bold">SCALE: DESKTOP [1920×900]</text>
+      
+      <!-- Cartouche Middle Row -->
+      <text x="12" y="46" fill="#CCD6F6" font-size="9.5">CAPSULE: khanhnguyen-design--work-horizontal-rail</text>
+      <text x="312" y="46" fill="#64FFDA" font-size="9">IOU: 0.0000 (COLLISION FREE)</text>
+
+      <!-- Cartouche Footer -->
+      <text x="12" y="73" fill="#8892B0" font-size="8.5">WHITESPACE: 80.1% | GAPS: 8 RELATIONAL INVARIANTS</text>
+      <text x="312" y="73" fill="#8892B0" font-size="8.5">ENGINE: v3.0 // ARCHITECTURAL</text>
+    </g>
+  </g>
+</svg>

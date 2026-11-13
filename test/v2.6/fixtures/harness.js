@@ -16,22 +16,21 @@ const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 
 const CANDIDATE_PATHS = {
   'spatial-rtree': [
-    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/spatial-rtree.js'),
-    path.join(PROJECT_ROOT, 'src/compiler/spatial-rtree.js')
+    path.join(PROJECT_ROOT, 'src/spatial/spatial-rtree.js'),
+    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/spatial-rtree.js')
   ],
   'css-selector-ast': [
-    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/css-selector-ast.js'),
-    path.join(PROJECT_ROOT, 'src/compiler/css-selector-ast.js')
+    path.join(PROJECT_ROOT, 'src/css/css-selector-ast.js'),
+    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/css-selector-ast.js')
   ],
   'png-codec': [
-    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/png-codec.js'),
-    path.join(PROJECT_ROOT, 'src/qa/png-codec.js')
+    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/png-codec.js')
   ],
   'slug-font-compiler': [
-    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/slug-font-compiler.js'),
-    path.join(PROJECT_ROOT, 'src/assets3d/slug-font-compiler.js')
+    path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/slug-font-compiler.js')
   ],
   'apca-contrast': [
+    path.join(PROJECT_ROOT, 'src/constraints/contrast.js'),
     path.join(PROJECT_ROOT, 'docs/research/v2.6/reference/apca-contrast.js')
   ]
 };

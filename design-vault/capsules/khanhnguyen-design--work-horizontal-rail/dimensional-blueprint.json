@@ -1,0 +1,668 @@
+{
+  "schemaVersion": "3.0.0",
+  "capsuleId": "khanhnguyen-design--work-horizontal-rail",
+  "title": "Selected work",
+  "generatedAt": "2026-11-13T06:23:34.252Z",
+  "viewports": {
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "containerBounds": {
+        "width": 1920,
+        "height": 900
+      },
+      "scaleBase": 10,
+      "elementsCount": 8,
+      "zeroCollisions": true,
+      "collisions": [],
+      "whitespaceRatio": 0.8008,
+      "spacing": [
+        {
+          "id": "S1",
+          "axis": "x",
+          "from": "p-heading",
+          "to": "work-label",
+          "distancePx": 990.72,
+          "ratioToContainer": 0.5733,
+          "formula": "calc(99.07 * var(--scale))",
+          "scaleMultiplier": 99.07
+        },
+        {
+          "id": "S2",
+          "axis": "x",
+          "from": "work-preview",
+          "to": "cta-view-all",
+          "distancePx": 1160.47,
+          "ratioToContainer": 0.6716,
+          "formula": "calc(116.05 * var(--scale))",
+          "scaleMultiplier": 116.05
+        },
+        {
+          "id": "S3",
+          "axis": "y",
+          "from": "p-heading",
+          "to": "work-preview",
+          "distancePx": 555,
+          "ratioToContainer": 0.6903,
+          "formula": "calc(55.5 * var(--scale))",
+          "scaleMultiplier": 55.5
+        },
+        {
+          "id": "S4",
+          "axis": "y",
+          "from": "work-label",
+          "to": "work-item-0",
+          "distancePx": 10,
+          "ratioToContainer": 0.0124,
+          "formula": "calc(1 * var(--scale))",
+          "scaleMultiplier": 1
+        },
+        {
+          "id": "S5",
+          "axis": "y",
+          "from": "work-item-0",
+          "to": "work-item-1",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S6",
+          "axis": "y",
+          "from": "work-item-1",
+          "to": "work-item-2",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S7",
+          "axis": "y",
+          "from": "work-item-2",
+          "to": "work-item-3",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S8",
+          "axis": "y",
+          "from": "work-item-3",
+          "to": "cta-view-all",
+          "distancePx": 363.83,
+          "ratioToContainer": 0.4525,
+          "formula": "calc(36.38 * var(--scale))",
+          "scaleMultiplier": 36.38
+        }
+      ],
+      "hierarchy": [
+        {
+          "id": "H1",
+          "name": "primary-to-secondary-font-ratio",
+          "primaryElement": "work-item-0",
+          "primaryFontSize": 64,
+          "secondaryElement": "p-heading",
+          "secondaryFontSize": 24,
+          "ratio": 2.67
+        }
+      ],
+      "alignmentAxes": {
+        "vertical": [
+          {
+            "coordPx": 128,
+            "normalized": 0.0667,
+            "types": [
+              "left"
+            ],
+            "elements": [
+              "p-heading",
+              "work-preview"
+            ]
+          },
+          {
+            "coordPx": 1244,
+            "normalized": 0.6479,
+            "types": [
+              "left"
+            ],
+            "elements": [
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3"
+            ]
+          },
+          {
+            "coordPx": 1550,
+            "normalized": 0.8073,
+            "types": [
+              "center"
+            ],
+            "elements": [
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3"
+            ]
+          },
+          {
+            "coordPx": 1856,
+            "normalized": 0.9667,
+            "types": [
+              "right"
+            ],
+            "elements": [
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3",
+              "cta-view-all"
+            ]
+          }
+        ],
+        "horizontal": [
+          {
+            "coordPx": 48,
+            "normalized": 0.0533,
+            "types": [
+              "top"
+            ],
+            "elements": [
+              "p-heading",
+              "work-label"
+            ]
+          },
+          {
+            "coordPx": 72.7,
+            "normalized": 0.0808,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "p-heading",
+              "work-item-0"
+            ]
+          },
+          {
+            "coordPx": 170.19,
+            "normalized": 0.1891,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-0",
+              "work-item-1"
+            ]
+          },
+          {
+            "coordPx": 266.98,
+            "normalized": 0.2966,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-1",
+              "work-item-2"
+            ]
+          },
+          {
+            "coordPx": 363.78,
+            "normalized": 0.4042,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-2",
+              "work-item-3"
+            ]
+          },
+          {
+            "coordPx": 852,
+            "normalized": 0.9467,
+            "types": [
+              "bottom"
+            ],
+            "elements": [
+              "cta-view-all",
+              "work-preview"
+            ]
+          }
+        ]
+      },
+      "elements": [
+        {
+          "id": "p-heading",
+          "tag": "p",
+          "minX": 128,
+          "minY": 48,
+          "maxX": 253.2813,
+          "maxY": 72,
+          "width": 125.28,
+          "height": 24,
+          "fontSize": 24,
+          "fontWeight": 400
+        },
+        {
+          "id": "work-label",
+          "tag": "p",
+          "minX": 1244,
+          "minY": 48,
+          "maxX": 1856,
+          "maxY": 63.3906,
+          "width": 612,
+          "height": 15.39,
+          "fontSize": 11,
+          "fontWeight": 400
+        },
+        {
+          "id": "work-item-0",
+          "tag": "li",
+          "minX": 1244,
+          "minY": 73.3906,
+          "maxX": 1856,
+          "maxY": 170.1875,
+          "width": 612,
+          "height": 96.8,
+          "fontSize": 64,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-1",
+          "tag": "li",
+          "minX": 1244,
+          "minY": 170.1875,
+          "maxX": 1856,
+          "maxY": 266.9844,
+          "width": 612,
+          "height": 96.8,
+          "fontSize": 64,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-2",
+          "tag": "li",
+          "minX": 1244,
+          "minY": 266.9844,
+          "maxX": 1856,
+          "maxY": 363.7813,
+          "width": 612,
+          "height": 96.8,
+          "fontSize": 64,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-3",
+          "tag": "li",
+          "minX": 1244,
+          "minY": 363.7813,
+          "maxX": 1856,
+          "maxY": 460.5781,
+          "width": 612,
+          "height": 96.8,
+          "fontSize": 64,
+          "fontWeight": 500
+        },
+        {
+          "id": "cta-view-all",
+          "tag": "a",
+          "minX": 1689.4688,
+          "minY": 824.4063,
+          "maxX": 1856,
+          "maxY": 852,
+          "width": 166.53,
+          "height": 27.59,
+          "fontSize": 23,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-preview",
+          "tag": "div",
+          "minX": 128,
+          "minY": 627,
+          "maxX": 529,
+          "maxY": 852,
+          "width": 401,
+          "height": 225,
+          "fontSize": 16,
+          "fontWeight": 400
+        }
+      ]
+    },
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "containerBounds": {
+        "width": 1920,
+        "height": 612.03125
+      },
+      "scaleBase": 10,
+      "elementsCount": 7,
+      "zeroCollisions": true,
+      "collisions": [],
+      "whitespaceRatio": 0.4693,
+      "spacing": [
+        {
+          "id": "S1",
+          "axis": "x",
+          "from": "p-heading",
+          "to": "work-label",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S2",
+          "axis": "x",
+          "from": "work-label",
+          "to": "work-item-0",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S3",
+          "axis": "x",
+          "from": "work-item-0",
+          "to": "work-item-1",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S4",
+          "axis": "x",
+          "from": "work-item-1",
+          "to": "work-item-2",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S5",
+          "axis": "x",
+          "from": "work-item-2",
+          "to": "work-item-3",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S6",
+          "axis": "x",
+          "from": "work-item-3",
+          "to": "cta-view-all",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S7",
+          "axis": "y",
+          "from": "p-heading",
+          "to": "work-label",
+          "distancePx": 48,
+          "ratioToContainer": 0.1097,
+          "formula": "calc(4.8 * var(--scale))",
+          "scaleMultiplier": 4.8
+        },
+        {
+          "id": "S8",
+          "axis": "y",
+          "from": "work-label",
+          "to": "work-item-0",
+          "distancePx": 10,
+          "ratioToContainer": 0.0228,
+          "formula": "calc(1 * var(--scale))",
+          "scaleMultiplier": 1
+        },
+        {
+          "id": "S9",
+          "axis": "y",
+          "from": "work-item-0",
+          "to": "work-item-1",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S10",
+          "axis": "y",
+          "from": "work-item-1",
+          "to": "work-item-2",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S11",
+          "axis": "y",
+          "from": "work-item-2",
+          "to": "work-item-3",
+          "distancePx": 0,
+          "ratioToContainer": 0,
+          "formula": "calc(0 * var(--scale))",
+          "scaleMultiplier": 0
+        },
+        {
+          "id": "S12",
+          "axis": "y",
+          "from": "work-item-3",
+          "to": "cta-view-all",
+          "distancePx": 48,
+          "ratioToContainer": 0.1097,
+          "formula": "calc(4.8 * var(--scale))",
+          "scaleMultiplier": 4.8
+        }
+      ],
+      "hierarchy": [
+        {
+          "id": "H1",
+          "name": "primary-to-secondary-font-ratio",
+          "primaryElement": "work-item-0",
+          "primaryFontSize": 41,
+          "secondaryElement": "p-heading",
+          "secondaryFontSize": 18,
+          "ratio": 2.28
+        }
+      ],
+      "alignmentAxes": {
+        "vertical": [
+          {
+            "coordPx": 20,
+            "normalized": 0.0104,
+            "types": [
+              "left"
+            ],
+            "elements": [
+              "p-heading",
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3",
+              "cta-view-all"
+            ]
+          },
+          {
+            "coordPx": 960,
+            "normalized": 0.5,
+            "types": [
+              "center"
+            ],
+            "elements": [
+              "p-heading",
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3",
+              "cta-view-all"
+            ]
+          },
+          {
+            "coordPx": 1900,
+            "normalized": 0.9896,
+            "types": [
+              "right"
+            ],
+            "elements": [
+              "p-heading",
+              "work-label",
+              "work-item-0",
+              "work-item-1",
+              "work-item-2",
+              "work-item-3",
+              "cta-view-all"
+            ]
+          }
+        ],
+        "horizontal": [
+          {
+            "coordPx": 216.58,
+            "normalized": 0.3539,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-0",
+              "work-item-1"
+            ]
+          },
+          {
+            "coordPx": 285.77,
+            "normalized": 0.4669,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-1",
+              "work-item-2"
+            ]
+          },
+          {
+            "coordPx": 354.95,
+            "normalized": 0.58,
+            "types": [
+              "bottom",
+              "top"
+            ],
+            "elements": [
+              "work-item-2",
+              "work-item-3"
+            ]
+          }
+        ]
+      },
+      "elements": [
+        {
+          "id": "p-heading",
+          "tag": "p",
+          "minX": 20,
+          "minY": 56,
+          "maxX": 1900,
+          "maxY": 74,
+          "width": 1880,
+          "height": 18,
+          "fontSize": 18,
+          "fontWeight": 400
+        },
+        {
+          "id": "work-label",
+          "tag": "p",
+          "minX": 20,
+          "minY": 122,
+          "maxX": 1900,
+          "maxY": 137.3906,
+          "width": 1880,
+          "height": 15.39,
+          "fontSize": 11,
+          "fontWeight": 400
+        },
+        {
+          "id": "work-item-0",
+          "tag": "li",
+          "minX": 20,
+          "minY": 147.3906,
+          "maxX": 1900,
+          "maxY": 216.5781,
+          "width": 1880,
+          "height": 69.19,
+          "fontSize": 41,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-1",
+          "tag": "li",
+          "minX": 20,
+          "minY": 216.5781,
+          "maxX": 1900,
+          "maxY": 285.7656,
+          "width": 1880,
+          "height": 69.19,
+          "fontSize": 41,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-2",
+          "tag": "li",
+          "minX": 20,
+          "minY": 285.7656,
+          "maxX": 1900,
+          "maxY": 354.9531,
+          "width": 1880,
+          "height": 69.19,
+          "fontSize": 41,
+          "fontWeight": 500
+        },
+        {
+          "id": "work-item-3",
+          "tag": "li",
+          "minX": 20,
+          "minY": 354.9531,
+          "maxX": 1900,
+          "maxY": 424.1406,
+          "width": 1880,
+          "height": 69.19,
+          "fontSize": 41,
+          "fontWeight": 500
+        },
+        {
+          "id": "cta-view-all",
+          "tag": "a",
+          "minX": 20,
+          "minY": 472.1406,
+          "maxX": 1900,
+          "maxY": 493.7344,
+          "width": 1880,
+          "height": 21.59,
+          "fontSize": 18,
+          "fontWeight": 500
+        }
+      ]
+    }
+  }
+}
