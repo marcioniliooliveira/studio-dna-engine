@@ -123,7 +123,8 @@ test('ImpeccableGate: passes clean artisanal fixture without false positives', a
 // ─── SUITE 2: CLI Runner Verification (scripts/detect-antipatterns.mjs) ─────────
 
 test('CLI: scripts/detect-antipatterns.mjs fails on deliberate adversarial input', async () => {
-  const tempFixturePath = path.resolve(__dirname, '../.agents/teamwork/worker_m1_2/adversarial-fixture.html');
+  const os = require('os');
+  const tempFixturePath = path.join(os.tmpdir(), `adversarial-fixture-${process.pid}.html`);
   fs.writeFileSync(tempFixturePath, `<!DOCTYPE html>
 <html>
 <head>

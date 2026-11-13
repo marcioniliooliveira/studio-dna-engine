@@ -775,6 +775,59 @@ async function withEphemeralServer(routes, callback) {
   }
 }
 
+/**
+ * Provision an isolated temporary Git repository with canonical branch topology
+ * so R1 topology, divergence, 3-way merge, and harvester tests stay independent of local repo cleanup.
+ */
+function withEphemeralGitRepo(callback) {
+  const tmpBase = fs.mkdtempSync(path.join(os.tmpdir(), 'sdna-git-fixture-'));
+  const remoteDir = path.join(tmpBase, 'origin.git');
+  const repoDir = path.join(tmpBase, 'repo');
+
+  try {
+    execSync('git init --bare -b main origin.git', { cwd: tmpBase, stdio: 'pipe' });
+
+    fs.mkdirSync(repoDir, { recursive: true });
+    const run = (cmd) => execSync(cmd, { cwd: repoDir, encoding: 'utf-8', stdio: 'pipe' });
+    run('git init -b main');
+    run('git config user.email "test@studio-dna.local"');
+    run('git config user.name "Studio DNA Test"');
+
+    fs.writeFileSync(path.join(repoDir, 'README.md'), '# Fixture Repo\n', 'utf-8');
+    run('git add README.md');
+    run('git commit -m "chore: initial main commit"');
+    run(`git remote add origin "${remoteDir.replace(/\\/g, '/')}"`);
+    run('git push -u origin main');
+
+    run('git checkout -b feat/pareto-v3-engine');
+    fs.mkdirSync(path.join(repoDir, 'src/hub'), { recursive: true });
+    fs.writeFileSync(path.join(repoDir, 'src/hub/index.js'), 'module.exports = {};\n', 'utf-8');
+    run('git add src/hub/index.js');
+    run('git commit -m "feat: pareto v3 hub stub"');
+
+    run('git checkout main');
+    run('git checkout -b feat/merge-orchestration-into-main');
+    fs.mkdirSync(path.join(repoDir, 'src'), { recursive: true });
+    fs.writeFileSync(path.join(repoDir, 'src/orchestrator.js'), 'module.exports = {};\n', 'utf-8');
+    run('git add src/orchestrator.js');
+    run('git commit -m "feat: orchestration stub"');
+
+    run('git checkout main');
+    run('git checkout -b client/silvio-iwata');
+    fs.mkdirSync(path.join(repoDir, 'clientes'), { recursive: true });
+    fs.writeFileSync(path.join(repoDir, 'clientes/README.md'), '# Client\n', 'utf-8');
+    run('git add clientes/README.md');
+    run('git commit -m "chore: client branch stub"');
+
+    run('git checkout main');
+    run('git checkout -b integration/staging-consolidated-v3');
+
+    return callback(repoDir);
+  } finally {
+    fs.rmSync(tmpBase, { recursive: true, force: true });
+  }
+}
+
 module.exports = {
   PROJECT_ROOT,
   ReferenceCollection,
@@ -788,6 +841,7 @@ module.exports = {
   computeCommitDivergence,
   simulate3WayMerge,
   harvestReusableServiceScripts,
+  withEphemeralGitRepo,
   validate21stDevTokens,
   clampViewportDimensions,
   parseAndValidateDockerfile,

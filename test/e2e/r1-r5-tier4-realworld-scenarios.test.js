@@ -32,6 +32,7 @@ const {
   scanGitBranchTopology,
   computeCommitDivergence,
   simulate3WayMerge,
+  withEphemeralGitRepo,
   validate21stDevTokens,
   clampViewportDimensions,
   parseAndValidateDockerfile,
@@ -44,37 +45,39 @@ const {
 
 describe('Scenario 1: DevOps Lead — Full Branch Consolidation & Promotion (R1)', () => {
   test('TC-R1-T4-01: End-to-end branch discovery, conflict matrix generation, and integration promotion gate', () => {
-    // 1. Scan full git topology
-    const topology = scanGitBranchTopology(PROJECT_ROOT);
-    assert.ok(topology.local.length >= 2, 'Must have at least 2 branches in local topology');
+    withEphemeralGitRepo((repoRoot) => {
+      // 1. Scan full git topology
+      const topology = scanGitBranchTopology(repoRoot);
+      assert.ok(topology.local.length >= 2, 'Must have at least 2 branches in local topology');
 
-    // 2. Select branches for consolidation analysis
-    const candidateBranches = [
-      'feat/pareto-v3-engine',
-      'feat/merge-orchestration-into-main',
-      'client/silvio-iwata'
-    ].filter(b => topology.local.includes(b));
+      // 2. Select branches for consolidation analysis
+      const candidateBranches = [
+        'feat/pareto-v3-engine',
+        'feat/merge-orchestration-into-main',
+        'client/silvio-iwata'
+      ].filter(b => topology.local.includes(b));
 
-    // 3. Compute conflict matrix relative to main
-    const conflictMatrix = [];
-    for (const branch of candidateBranches) {
-      const divergence = computeCommitDivergence('main', branch, PROJECT_ROOT);
-      const simulation = simulate3WayMerge('main', branch, PROJECT_ROOT);
-      conflictMatrix.push({
-        branch,
-        ahead: divergence.ahead,
-        behind: divergence.behind,
-        mergeBase: divergence.mergeBase,
-        clean: simulation.clean,
-        conflictsCount: simulation.conflictFiles.length
-      });
-    }
+      // 3. Compute conflict matrix relative to main
+      const conflictMatrix = [];
+      for (const branch of candidateBranches) {
+        const divergence = computeCommitDivergence('main', branch, repoRoot);
+        const simulation = simulate3WayMerge('main', branch, repoRoot);
+        conflictMatrix.push({
+          branch,
+          ahead: divergence.ahead,
+          behind: divergence.behind,
+          mergeBase: divergence.mergeBase,
+          clean: simulation.clean,
+          conflictsCount: simulation.conflictFiles.length
+        });
+      }
 
-    assert.ok(conflictMatrix.length > 0, 'Must generate conflict analysis for candidate branches');
+      assert.ok(conflictMatrix.length > 0, 'Must generate conflict analysis for candidate branches');
 
-    // 4. Verify promotion gate: staging trunk exists and has zero blocker conflicts
-    const stagingBranch = topology.local.find(b => b.includes('staging') || b.includes('consolidated') || b.includes('integration'));
-    assert.ok(stagingBranch, 'A consolidated staging branch must be present in the repository');
+      // 4. Verify promotion gate: staging trunk exists and has zero blocker conflicts
+      const stagingBranch = topology.local.find(b => b.includes('staging') || b.includes('consolidated') || b.includes('integration'));
+      assert.ok(stagingBranch, 'A consolidated staging branch must be present in the repository');
+    });
   });
 });
 

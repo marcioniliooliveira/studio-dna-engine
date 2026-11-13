@@ -32,6 +32,7 @@ const {
   computeCommitDivergence,
   simulate3WayMerge,
   harvestReusableServiceScripts,
+  withEphemeralGitRepo,
   validate21stDevTokens,
   clampViewportDimensions,
   parseAndValidateDockerfile,
@@ -47,49 +48,62 @@ const {
 
 describe('R1: Git Audit, Conflict Resolution & Branch Integration', () => {
   test('TC-R1-T1-01: Discovers all local and remote branches and verifies topology', () => {
-    const topology = scanGitBranchTopology(PROJECT_ROOT);
-    assert.ok(Array.isArray(topology.local), 'Local branches must be an array');
-    assert.ok(topology.local.length >= 3, `Expected at least 3 local branches, got ${topology.local.length}`);
-    assert.ok(topology.local.includes('main'), 'Topology must contain main branch');
-    assert.ok(
-      topology.local.includes('integration/staging-consolidated-v3') ||
-      topology.local.includes('integration/v2-dna-orchestrator') ||
-      topology.local.includes('feat/pareto-v3-engine'),
-      'Must contain consolidated or feature branch'
-    );
-    assert.ok(Array.isArray(topology.remote), 'Remote branches must be an array');
+    withEphemeralGitRepo((repoRoot) => {
+      const topology = scanGitBranchTopology(repoRoot);
+      assert.ok(Array.isArray(topology.local), 'Local branches must be an array');
+      assert.ok(topology.local.length >= 3, `Expected at least 3 local branches, got ${topology.local.length}`);
+      assert.ok(topology.local.includes('main'), 'Topology must contain main branch');
+      assert.ok(
+        topology.local.includes('integration/staging-consolidated-v3') ||
+        topology.local.includes('integration/v2-dna-orchestrator') ||
+        topology.local.includes('feat/pareto-v3-engine'),
+        'Must contain consolidated or feature branch'
+      );
+      assert.ok(Array.isArray(topology.remote), 'Remote branches must be an array');
+      assert.ok(topology.remote.length >= 1, 'Remote branches must include tracked origin branch');
+    });
   });
 
   test('TC-R1-T1-02: Computes commit divergence and merge-base relative to main', () => {
-    const divergence = computeCommitDivergence('main', 'HEAD', PROJECT_ROOT);
-    assert.equal(typeof divergence.ahead, 'number', 'Ahead count must be a number');
-    assert.equal(typeof divergence.behind, 'number', 'Behind count must be a number');
-    assert.ok(divergence.ahead >= 0, 'Ahead count must be non-negative');
-    assert.ok(divergence.mergeBase, 'Merge-base SHA must be resolved between main and HEAD');
-    assert.match(divergence.mergeBase, /^[0-9a-f]{40}$/, 'Merge base must be a 40-char git SHA');
+    withEphemeralGitRepo((repoRoot) => {
+      const divergence = computeCommitDivergence('main', 'feat/pareto-v3-engine', repoRoot);
+      assert.equal(typeof divergence.ahead, 'number', 'Ahead count must be a number');
+      assert.equal(typeof divergence.behind, 'number', 'Behind count must be a number');
+      assert.ok(divergence.ahead >= 1, 'Ahead count must reflect feature commit');
+      assert.ok(divergence.mergeBase, 'Merge-base SHA must be resolved between main and HEAD');
+      assert.match(divergence.mergeBase, /^[0-9a-f]{40}$/, 'Merge base must be a 40-char git SHA');
+    });
   });
 
   test('TC-R1-T1-03: Performs virtual 3-way merge simulation without modifying tree', () => {
-    const simulation = simulate3WayMerge('main', 'feat/pareto-v3-engine', PROJECT_ROOT);
-    assert.ok(typeof simulation.clean === 'boolean', 'Simulation must return boolean clean status');
-    assert.ok(Array.isArray(simulation.conflictFiles), 'Conflict files list must be array');
-    if (simulation.clean) {
-      assert.equal(simulation.conflictFiles.length, 0, 'Clean merge should have zero conflict files');
-    }
+    withEphemeralGitRepo((repoRoot) => {
+      const simulation = simulate3WayMerge('main', 'feat/pareto-v3-engine', repoRoot);
+      assert.ok(typeof simulation.clean === 'boolean', 'Simulation must return boolean clean status');
+      assert.ok(Array.isArray(simulation.conflictFiles), 'Conflict files list must be array');
+      if (simulation.clean) {
+        assert.equal(simulation.conflictFiles.length, 0, 'Clean merge should have zero conflict files');
+      }
+    });
   });
 
   test('TC-R1-T1-04: Harvester identifies reusable service scripts from feature branches', () => {
-    const harvest = harvestReusableServiceScripts('feat/pareto-v3-engine', PROJECT_ROOT);
-    assert.equal(typeof harvest.totalDiffFiles, 'number', 'Diff count must be numeric');
-    assert.ok(Array.isArray(harvest.harvestedCandidates), 'Harvested candidates must be array');
+    withEphemeralGitRepo((repoRoot) => {
+      const harvest = harvestReusableServiceScripts('feat/pareto-v3-engine', repoRoot);
+      assert.equal(typeof harvest.totalDiffFiles, 'number', 'Diff count must be numeric');
+      assert.ok(harvest.totalDiffFiles >= 1, 'Diff count must include feature commit');
+      assert.ok(Array.isArray(harvest.harvestedCandidates), 'Harvested candidates must be array');
+      assert.ok(harvest.harvestedCandidates.includes('src/hub/index.js'), 'Must harvest src/hub candidate');
+    });
   });
 
   test('TC-R1-T1-05: Verifies integration branch gate criteria before release', () => {
-    const topology = scanGitBranchTopology(PROJECT_ROOT);
-    const isIntegrationCandidate =
-      topology.current === 'integration/staging-consolidated-v3' ||
-      topology.local.includes('integration/staging-consolidated-v3');
-    assert.ok(isIntegrationCandidate, 'Staging integration branch must exist or be active');
+    withEphemeralGitRepo((repoRoot) => {
+      const topology = scanGitBranchTopology(repoRoot);
+      const isIntegrationCandidate =
+        topology.current === 'integration/staging-consolidated-v3' ||
+        topology.local.includes('integration/staging-consolidated-v3');
+      assert.ok(isIntegrationCandidate, 'Staging integration branch must exist or be active');
+    });
   });
 });
 
