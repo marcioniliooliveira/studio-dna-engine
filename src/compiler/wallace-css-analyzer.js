@@ -14,7 +14,7 @@
 'use strict';
 
 const postcss = require('postcss');
-const { validateDonutScopeInvariants } = require('./kinetic-grammar-schema');
+const { validateDonutScopeInvariants } = require('../css/css-selector-ast');
 
 // Regex for CSS colors
 const HEX_COLOR_REGEX = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;

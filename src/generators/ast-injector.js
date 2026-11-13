@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const cheerio = require('cheerio');
 const { computeStableDataDs } = require('../dev/domscribe-manifest');
+const { findBannedSlopMatch } = require('../shared/anti-slop-patterns');
 
 // Banned AI slop / meta-language keywords in final client UI
 const BANNED_AI_SLOP_KEYWORDS = [
@@ -41,6 +42,10 @@ function validateAntiSlop(text, selector = '') {
     if (lower.includes(keyword)) {
       throw new Error(`[Anti-Slop Guard] Detected banned meta-language "${keyword}" in selector "${selector}": "${text}"`);
     }
+  }
+  const slopMatch = findBannedSlopMatch(text);
+  if (slopMatch) {
+    throw new Error(`[Anti-Slop Guard] Detected banned pattern "${slopMatch.matched}" in selector "${selector}": "${text}"`);
   }
 }
 

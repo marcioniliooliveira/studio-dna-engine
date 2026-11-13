@@ -3,6 +3,8 @@
  * Executa os gates multidimensionais para certificação de fidelidade e pureza clean-room.
  */
 
+const { BANNED_SLOP_PATTERNS } = require('../shared/anti-slop-patterns');
+
 class UnifiedCRPQualityGates {
   /**
    * Gate 1: Box-Diff Linter (Tolerância Dimensional <= 2px)
@@ -47,18 +49,18 @@ class UnifiedCRPQualityGates {
    * @param {string} generatedSource
    */
   evaluateAntiSlop(generatedSource = '') {
-    const forbiddenPatterns = [
+    const cleanRoomPatterns = [
       /useplanes/gi,
       /beautiful-?ui/gi,
-      /lorem ipsum/gi,
       /TODO: implement/gi,
       /mockData/gi,
       /style=\{\{/g // Proibição de inline styles soltos
     ];
 
     const violations = [];
-    for (const pat of forbiddenPatterns) {
-      if (pat.test(generatedSource)) {
+    for (const pat of [...cleanRoomPatterns, ...BANNED_SLOP_PATTERNS]) {
+      const flags = pat.flags.replace('g', '');
+      if (new RegExp(pat.source, flags).test(generatedSource)) {
         violations.push(`Padrão proibido detectado: ${pat}`);
       }
     }

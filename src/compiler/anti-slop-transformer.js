@@ -13,33 +13,11 @@
 
 const cheerio = require('cheerio');
 const crypto = require('node:crypto');
-
-// ============================================================================
-// 1. Slop & Brand Leak Banned Patterns
-// ============================================================================
-
-const BANNED_SLOP_PATTERNS = [
-  /\blorem\s+ipsum\b/i,
-  /\bsample\s+text\b/i,
-  /\bsua\s+empresa\s+aqui\b/i,
-  /\bchunk\s+cognitivo\b/i,
-  /\bmetalinguagem\b/i,
-  /\bprompt\s+engineering\b/i,
-  /\braio-x\b/i,
-  /\bmodo\s+auditoria\b/i,
-  /\binsert\s+text\b/i,
-  /\bplaceholder\s+text\b/i,
-  /\bas\s+an\s+ai\b/i,
-  /\bchatgpt\b/i,
-  /\bseja\s+bem-vindo\s+ao\s+nosso\s+site\b/i,
-  /\b(?:não\s+é\s+(?:apenas|só)|não\s+se\s+trata\s+de)\s+[^.,;!?]+,\s*(?:mas\s+sim|é)\b/i,
-  /\b(?:it'?s\s+not\s+(?:just|only)|not\s+just)\s+[^.,;!?]+,\s*it'?s\b/i
-];
-
-const UNFILLED_SLOT_REGEX = /\{SLOT_[A-Z0-9_\-]+\}/g;
-
-// Attributes that must never be stripped during AST transformation
-const KINETIC_ATTR_REGEX = /^data-(kinetic|scroll|speed|lag|anchor|deep-scrutiny|stage|scope|slot)/i;
+const {
+  BANNED_SLOP_PATTERNS,
+  UNFILLED_SLOT_REGEX,
+  KINETIC_ATTR_REGEX
+} = require('../shared/anti-slop-patterns');
 
 // ============================================================================
 // 2. AntiSlopTransformer Class

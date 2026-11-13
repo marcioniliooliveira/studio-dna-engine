@@ -12,18 +12,10 @@
 const fs = require('fs');
 const path = require('path');
 const cheerio = require('cheerio');
-
-const BANNED_SLOP_PATTERNS = [
-  /\blorem\s+ipsum\b/i,
-  /\bsample\s+text\b/i,
-  /\bsua\s+empresa\s+aqui\b/i,
-  /\bchunk\s+cognitivo\b/i,
-  /\bmetalinguagem\b/i,
-  /\bprompt\s+engineering\b/i,
-  /\braio-x\b/i,
-  /\bmodo\s+auditoria\b/i,
-  /\binsert\s+text\b/i
-];
+const {
+  BANNED_SLOP_PATTERNS,
+  findUnfilledSlots
+} = require('../shared/anti-slop-patterns');
 
 class AntiSlopGate {
   /**
@@ -97,13 +89,10 @@ class AntiSlopGate {
     }
 
     // 3. Validar Slots Não Preenchidos ({SLOT_...}) em todo o documento
-    const unfilledMatches = htmlContent.match(/\{SLOT_[A-Z0-9_]+\}/g);
-    if (unfilledMatches) {
-      const uniqueUnfilled = Array.from(new Set(unfilledMatches));
-      for (const slotName of uniqueUnfilled) {
-        violations.push(`[Unfilled Slot] Variável de slot não preenchida no build final: "${slotName}"`);
-        stats.unfilledSlots++;
-      }
+    const uniqueUnfilled = findUnfilledSlots(htmlContent);
+    for (const slotName of uniqueUnfilled) {
+      violations.push(`[Unfilled Slot] Variável de slot não preenchida no build final: "${slotName}"`);
+      stats.unfilledSlots++;
     }
 
     // 4. Validar Orçamento de Comprimento (Character Budget +/- 15%)

@@ -1,5 +1,5 @@
 /**
- * src/pipeline/scalex-ast-transformer.js
+ * scripts/scalex-ast-transformer.js
  * 
  * Compilador Semântico Canônico AST DOM (Cheerio) para SCALEX Growth & SEO (Caso 04)
  * 
@@ -17,7 +17,7 @@ const path = require('path');
 const cheerio = require('cheerio');
 
 function transformScalexSite() {
-  const root = path.resolve(__dirname, '../../');
+  const root = path.resolve(__dirname, '..');
   const clientDir = path.join(root, 'clientes', 'flashtech-caso-04-growth');
   const htmlPath = path.join(clientDir, 'site', 'index.html');
   const slotsPath = path.join(clientDir, 'content-slots.json');

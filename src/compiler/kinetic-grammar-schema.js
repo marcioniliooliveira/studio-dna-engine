@@ -11,6 +11,9 @@
 'use strict';
 
 const { z } = require('zod');
+const {
+  validateDonutScopeInvariants: validateAstDonutScopeInvariants
+} = require('../css/css-selector-ast');
 
 // ============================================================================
 // 1. Primitive & Slot Type Enumerations
@@ -343,28 +346,20 @@ function validateStrictDonutScope(cssContent, boundaryAttr = 'data-kinetic-slot'
 }
 
 /**
- * Validates that CSS rules comply with donut scoping invariants:
- * styles inside @scope block must not pierce through [data-kinetic-slot] children.
+ * Validates that CSS rules comply with donut scoping invariants using the canonical CSS AST parser:
+ * styles inside @scope block must not pierce through boundary slot children, while permitting
+ * self-styling and sibling combinators (+, ~).
  */
 function validateDonutScopeInvariants(cssContent, boundaryAttr = 'data-kinetic-slot') {
-  const violations = [];
-  const cleanCss = (cssContent || '').replace(/\/\*[\s\S]*?\*\//g, '');
-
-  // Check for piercing selectors: e.g. [data-kinetic-slot] .child or [data-kinetic-slot] > * or [data-kinetic-slot="val"] h1
-  const piercingPattern = /(\[data-kinetic-slot(?:[~|^$*]?=(?:"[^"]*"|'[^']*'|[^\]\s]+))?\](?:\[[^\]\r\n]+\]|\.[a-zA-Z0-9_\-]+|::?[a-zA-Z0-9_\-]+(?:\([^)]*\))?)*)(?:\s*([>+~]|\s)\s*)([a-zA-Z0-9_.*#\-[\]"':=]+)/g;
-  let match;
-  while ((match = piercingPattern.exec(cleanCss)) !== null) {
-    violations.push(`Donut piercing violation: selector '${match[0]}' penetrates slot boundary`);
-  }
-
-  // Check for global selector leakages attempting to style slots without scope
-  const slotChildOverride = /(\.kinetic-stage\s+\[data-kinetic-slot(?:[~|^$*]?=(?:"[^"]*"|'[^']*'|[^\]\s]+))?\](?:\[[^\]\r\n]+\]|\.[a-zA-Z0-9_\-]+|::?[a-zA-Z0-9_\-]+(?:\([^)]*\))?)*)(?:\s*([>+~]|\s)\s*)([a-zA-Z0-9_.*#\-[\]"':=]+)/g;
-  while ((match = slotChildOverride.exec(cleanCss)) !== null) {
-    violations.push(`Donut boundary override violation: '${match[0]}' breaches slot isolation`);
-  }
+  const result = validateAstDonutScopeInvariants(cssContent, boundaryAttr);
+  const violations = result.violations.map((v) =>
+    v.startsWith('Donut boundary violation:')
+      ? v.replace('Donut boundary violation:', 'Donut piercing violation (boundary):')
+      : v
+  );
 
   return {
-    compliant: violations.length === 0,
+    compliant: result.compliant,
     violations
   };
 }
