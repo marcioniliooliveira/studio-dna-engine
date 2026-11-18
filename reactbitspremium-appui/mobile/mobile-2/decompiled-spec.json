@@ -1,0 +1,1834 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "mobile-2",
+  "category": "mobile",
+  "categoryTitle": "Mobile",
+  "domain": "App Chrome & Navigation",
+  "description": "Action button that fans out actions",
+  "sourceUrl": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-2",
+  "nativeDimensions": {
+    "width": "1280px",
+    "height": "680px"
+  },
+  "usedClassCount": 129,
+  "decompiledClassCount": 127,
+  "anatomy": {
+    "nodeCount": 87,
+    "maxDepth": 9,
+    "interactive": {
+      "buttons": 9,
+      "inputs": 0,
+      "textareas": 0,
+      "selects": 0,
+      "checkboxesOrRadios": 0,
+      "dialogs": 0,
+      "tables": 0,
+      "svgs": 9,
+      "canvases": 0,
+      "links": 0,
+      "roles": [],
+      "ariaLabels": [
+        "Search",
+        "Open quick actions"
+      ],
+      "dataAttributes": [
+        "data-description"
+      ],
+      "inputTypes": [],
+      "placeholders": []
+    },
+    "headingsAndLabels": [
+      "Send the Northwind renewal quote Due today",
+      "Review Cedar Labs onboarding notes Due today",
+      "Approve the refund for order 4192 Tomorrow",
+      "Draft the Q3 pipeline summary Thursday",
+      "Call Harbor Coffee about seat count Friday",
+      "Close out the Meridian pilot checklist Friday",
+      "Update the Q3 forecast assumptions Next week"
+    ],
+    "computedSample": {
+      "backgroundColor": "oklch(0.145 0 0)",
+      "color": "oklch(0.97 0 0)",
+      "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "fontSize": "16px",
+      "borderRadius": "0px",
+      "display": "flex",
+      "gridTemplateColumns": "none",
+      "flexDirection": "row",
+      "gap": "normal",
+      "padding": "20px"
+    }
+  },
+  "tokensUsed": {
+    "rbVars": [
+      "--rb-accent",
+      "--rb-accent-fg",
+      "--rb-font-sans",
+      "--rb-n-100",
+      "--rb-n-200",
+      "--rb-n-300",
+      "--rb-n-400",
+      "--rb-n-50",
+      "--rb-n-500",
+      "--rb-n-600",
+      "--rb-n-700",
+      "--rb-n-800",
+      "--rb-n-900",
+      "--rb-n-950",
+      "--rb-r-sm",
+      "--rb-section-min-h"
+    ],
+    "scVars": [],
+    "colorVars": [
+      "--color-neutral-100",
+      "--color-neutral-200",
+      "--color-neutral-300",
+      "--color-neutral-400",
+      "--color-neutral-50",
+      "--color-neutral-500",
+      "--color-neutral-600",
+      "--color-neutral-700",
+      "--color-neutral-800",
+      "--color-neutral-900",
+      "--color-neutral-950",
+      "--color-white"
+    ],
+    "twVars": [
+      "--tw-blur",
+      "--tw-border-style",
+      "--tw-brightness",
+      "--tw-contrast",
+      "--tw-drop-shadow",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-font-weight",
+      "--tw-grayscale",
+      "--tw-hue-rotate",
+      "--tw-inset-ring-shadow",
+      "--tw-inset-shadow",
+      "--tw-invert",
+      "--tw-numeric-figure",
+      "--tw-numeric-fraction",
+      "--tw-numeric-spacing",
+      "--tw-ordinal",
+      "--tw-outline-style",
+      "--tw-ring-offset-shadow",
+      "--tw-ring-shadow",
+      "--tw-saturate",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--tw-scale-z",
+      "--tw-sepia",
+      "--tw-shadow",
+      "--tw-shadow-color",
+      "--tw-slashed-zero",
+      "--tw-tracking"
+    ],
+    "otherVars": [
+      "---",
+      "--default-transition-duration",
+      "--default-transition-timing-function",
+      "--font-weight-normal",
+      "--spacing"
+    ],
+    "oklchColors": [
+      "oklch(0.6 0.236 26)",
+      "oklch(0.652 0.219 26)",
+      "oklch(100% 0 0)",
+      "oklch(14.5% 0 0)",
+      "oklch(20.5% 0 0)",
+      "oklch(26.9% 0 0)",
+      "oklch(37.1% 0 0)",
+      "oklch(43.9% 0 0)",
+      "oklch(55.6% 0 0)",
+      "oklch(70.8% 0 0)",
+      "oklch(87% 0 0)",
+      "oklch(92.2% 0 0)",
+      "oklch(97% 0 0)",
+      "oklch(98.5% 0 0)"
+    ],
+    "cubicBeziers": [
+      "cubic-bezier(.2,0,0,1)",
+      "cubic-bezier(0.2, 0, 0, 1)"
+    ],
+    "durations": [
+      "0.12s",
+      "12s",
+      "60ms"
+    ]
+  },
+  "keyframes": [
+    "gradient"
+  ],
+  "decompiledClasses": {
+    "block-scale-preview": [
+      {
+        "context": [],
+        "declarations": "--rb-section-min-h: 100%;",
+        "cssText": ".block-scale-preview { --rb-section-min-h: 100%; }"
+      },
+      {
+        "context": [],
+        "declarations": "min-height: 100% !important;",
+        "cssText": ".block-scale-preview .min-h-screen { min-height: 100% !important; }"
+      },
+      {
+        "context": [],
+        "declarations": "height: 100% !important;",
+        "cssText": ".block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }"
+      }
+    ],
+    "rb-theme-scope": [
+      {
+        "context": [],
+        "declarations": "--color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\");",
+        "cssText": ".rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"); }"
+      }
+    ],
+    "rb100uwkn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: color, background-color, border-color, box-shadow, outline-color, opacity, scale; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rb100uwkn { transition-property: color, background-color, border-color, box-shadow, outline-color, opacity, scale; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rb1012wcf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "opacity: 0.4;",
+        "cssText": ".rb1012wcf:disabled { opacity: 0.4; }"
+      }
+    ],
+    "rb101iuv0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "max-width: 390px;",
+        "cssText": ".rb101iuv0 { max-width: 390px; }"
+      }
+    ],
+    "rb10tld6l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: center;",
+        "cssText": ".rb10tld6l { align-items: center; }"
+      }
+    ],
+    "rb11sl374": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-900);",
+        "cssText": ".rb11sl374:is(.dark *) { background-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb12oer3j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.5);",
+        "cssText": ".rb12oer3j { border-color: rgba(23, 23, 23, 0.5); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)50%,transparent);",
+        "cssText": ".rb12oer3j { border-color: color-mix(in oklab,var(--color-neutral-900)50%,transparent); }"
+      }
+    ],
+    "rb12oowm2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: 56px;",
+        "cssText": ".rb12oowm2 { min-height: 56px; }"
+      }
+    ],
+    "rb12t2yrt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "scale: 0.98;",
+        "cssText": ".rb12t2yrt:active { scale: 0.98; }"
+      }
+    ],
+    "rb137jr96": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex: 1 1 0%;",
+        "cssText": ".rb137jr96 { flex: 1 1 0%; }"
+      }
+    ],
+    "rb13qhkn4": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb13qhkn4:hover { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb13qhkn4:hover { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb143y97l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rb143y97l:disabled { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rb143y97l:disabled { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rb14d2hq1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-sm,6px);",
+        "cssText": ".rb14d2hq1 { border-radius: var(--rb-r-sm,6px); }"
+      }
+    ],
+    "rb14vwr1n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.1);",
+        "cssText": ".rb14vwr1n { border-color: rgba(23, 23, 23, 0.1); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent);",
+        "cssText": ".rb14vwr1n { border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent); }"
+      }
+    ],
+    "rb15cxqy1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: flex-end;",
+        "cssText": ".rb15cxqy1 { align-items: flex-end; }"
+      }
+    ],
+    "rb15jfjww": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rb15jfjww { transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rb15ldcx9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-offset: 2px;",
+        "cssText": ".rb15ldcx9:focus-visible { outline-offset: 2px; }"
+      }
+    ],
+    "rb15r1e1o": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb15r1e1o:is(.dark *):disabled { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb177b27l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rb177b27l:is(.dark *):disabled { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rb177b27l:is(.dark *):disabled { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rb17b5cp1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.66);",
+        "cssText": ".rb17b5cp1:is(.dark *) { color: rgba(245, 245, 245, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)66%,transparent);",
+        "cssText": ".rb17b5cp1:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }"
+      }
+    ],
+    "rb17e80ww": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rb17e80ww:is(.dark *) { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rb17f2llp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rb17f2llp:disabled:checked { border-color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rb17f2llp:disabled:checked { border-color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rb1a25m5f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(0, 0, 0, 0);",
+        "cssText": ".rb1a25m5f { background-color: rgba(0, 0, 0, 0); }"
+      }
+    ],
+    "rb1alwkuq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1);",
+        "cssText": ".rb1alwkuq { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }"
+      }
+    ],
+    "rb1as2shi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-align: left;",
+        "cssText": ".rb1as2shi { text-align: left; }"
+      }
+    ],
+    "rb1azdcgt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: 28px;",
+        "cssText": ".rb1azdcgt { border-radius: 28px; }"
+      }
+    ],
+    "rb1buec4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb1buec4:is(.dark *):active:not(:checked) { background-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb1buec4:is(.dark *):active:not(:checked) { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb1cf7it1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: oklch(0.6 0.236 26);",
+        "cssText": ".rb1cf7it1[aria-invalid=\"true\"] { border-color: oklch(0.6 0.236 26); }"
+      }
+    ],
+    "rb1d1op06": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: 3.40282e+38px;",
+        "cssText": ".rb1d1op06 { border-radius: 3.40282e+38px; }"
+      }
+    ],
+    "rb1db3d7t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(100% 0 0))),0 1px 1px var(--tw-shadow-color,#000000a8),0 2px 5px -2px var(--tw-shadow-color,#000000e6);",
+        "cssText": ".rb1db3d7t:is(.dark *) { --tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(100% 0 0))),0 1px 1px var(--tw-shadow-color,#000000a8),0 2px 5px -2px var(--tw-shadow-color,#000000e6); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))88%,black)),0 1px 1px var(--tw-shadow-color,#000000a8),0 2px 5px -2px var(--tw-shadow-color,#000000e6);",
+        "cssText": ".rb1db3d7t:is(.dark *) { --tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))88%,black)),0 1px 1px var(--tw-shadow-color,#000000a8),0 2px 5px -2px var(--tw-shadow-color,#000000e6); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb1db3d7t:is(.dark *) { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb1dknmq5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb1dknmq5:is(.dark *):active { background-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb1dknmq5:is(.dark *):active { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb1fjxrkw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(20.5% 0 0));",
+        "cssText": ".rb1fjxrkw:focus-visible { outline-color: var(--rb-accent,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb1fuu45t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: pointer;",
+        "cssText": ".rb1fuu45t { cursor: pointer; }"
+      }
+    ],
+    "rb1gn9r4m": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-style: var(--tw-border-style); border-width: 5px;",
+        "cssText": ".rb1gn9r4m:checked { border-style: var(--tw-border-style); border-width: 5px; }"
+      }
+    ],
+    "rb1i7hd50": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(180deg,var(--rb-accent,oklch(20.5% 0 0)),var(--rb-accent,oklch(20.5% 0 0)));",
+        "cssText": ".rb1i7hd50 { background-image: linear-gradient(180deg,var(--rb-accent,oklch(20.5% 0 0)),var(--rb-accent,oklch(20.5% 0 0))); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-image: linear-gradient(180deg,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))84%,white),color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))94%,black));",
+        "cssText": ".rb1i7hd50 { background-image: linear-gradient(180deg,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))84%,white),color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))94%,black)); }"
+      }
+    ],
+    "rb1iribep": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 16px; line-height: 20px;",
+        "cssText": ".rb1iribep { font-size: 16px; line-height: 20px; }"
+      }
+    ],
+    "rb1j3i474": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb1j3i474:is(.dark *):hover { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb1j3i474:is(.dark *):hover { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb1jksbjr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: .12s; transition-duration: 0.12s;",
+        "cssText": ".rb1jksbjr { --tw-duration: .12s; transition-duration: 0.12s; }"
+      }
+    ],
+    "rb1jr2gaj": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "max-width: 100%;",
+        "cssText": ".rb1jr2gaj { max-width: 100%; }"
+      }
+    ],
+    "rb1lbh8il": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--rb-accent-fg,oklch(20.5% 0 0));",
+        "cssText": ".rb1lbh8il:is(.dark *):checked { background-color: var(--rb-accent-fg,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb1lbl0vw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 14px; line-height: 16px;",
+        "cssText": ".rb1lbl0vw { font-size: 14px; line-height: 16px; }"
+      }
+    ],
+    "rb1ljp486": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "bottom: calc(var(--spacing)*5);",
+        "cssText": ".rb1ljp486 { bottom: calc(var(--spacing)*5); }"
+      }
+    ],
+    "rb1lz44a2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-bottom: calc(var(--spacing)*28);",
+        "cssText": ".rb1lz44a2 { padding-bottom: calc(var(--spacing)*28); }"
+      }
+    ],
+    "rb1m3y863": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: baseline;",
+        "cssText": ".rb1m3y863 { align-items: baseline; }"
+      }
+    ],
+    "rb1nyxy2t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow-y: auto;",
+        "cssText": ".rb1nyxy2t { overflow-y: auto; }"
+      }
+    ],
+    "rb1o2srse": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: var(--color-neutral-100);",
+        "cssText": ".rb1o2srse:is(.dark *):hover:not(:checked):not(:disabled) { border-color: var(--color-neutral-100); }"
+      }
+    ],
+    "rb1pz109a": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(100% 0 0));",
+        "cssText": ".rb1pz109a:is(.dark *):focus-visible { outline-color: var(--rb-accent,oklch(100% 0 0)); }"
+      }
+    ],
+    "rb1pzlrvw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: calc(var(--spacing)*0);",
+        "cssText": ".rb1pzlrvw { min-width: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1qud80c": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-tracking: -.015em; letter-spacing: -0.015em;",
+        "cssText": ".rb1qud80c { --tw-tracking: -.015em; letter-spacing: -0.015em; }"
+      }
+    ],
+    "rb1raapv8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--rb-accent-fg,oklch(100% 0 0));",
+        "cssText": ".rb1raapv8 { color: var(--rb-accent-fg,oklch(100% 0 0)); }"
+      }
+    ],
+    "rb1rd6r0l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "right: calc(var(--spacing)*5);",
+        "cssText": ".rb1rd6r0l { right: calc(var(--spacing)*5); }"
+      }
+    ],
+    "rb1rj3jg5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-overflow: ellipsis; white-space: nowrap; overflow: hidden;",
+        "cssText": ".rb1rj3jg5 { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }"
+      }
+    ],
+    "rb1sakxt6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,);",
+        "cssText": ".oldstyle-nums, .rb1sakxt6 { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-numeric-spacing: tabular-nums;",
+        "cssText": ".rb1sakxt6 { --tw-numeric-spacing: tabular-nums; }"
+      }
+    ],
+    "rb1se422i": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.09);",
+        "cssText": ".rb1se422i[aria-pressed=\"true\"] { background-color: rgba(23, 23, 23, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent);",
+        "cssText": ".rb1se422i[aria-pressed=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }"
+      }
+    ],
+    "rb1t2clkp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*.5);",
+        "cssText": ".rb1t2clkp { gap: calc(var(--spacing)*.5); }"
+      }
+    ],
+    "rb1thgshu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "z-index: 40;",
+        "cssText": ".rb1thgshu { z-index: 40; }"
+      }
+    ],
+    "rb1ubwnek": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: not-allowed;",
+        "cssText": ".rb1ubwnek:disabled { cursor: not-allowed; }"
+      }
+    ],
+    "rb1v9uc5r": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.5);",
+        "cssText": ".rb1v9uc5r:is(.dark *) { border-color: rgba(245, 245, 245, 0.5); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)50%,transparent);",
+        "cssText": ".rb1v9uc5r:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)50%,transparent); }"
+      }
+    ],
+    "rb1vup772": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: var(--color-neutral-900);",
+        "cssText": ".rb1vup772:hover:not(:checked):not(:disabled) { border-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1w5v0a0": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (prefers-reduced-motion: reduce)"
+        ],
+        "declarations": "--tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y);",
+        "cssText": ".rb1w5v0a0:active { --tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y); }"
+      }
+    ],
+    "rb1wqixo0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb1wqixo0 { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1wwqlr8": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "opacity: 1;",
+        "cssText": ".rb1wwqlr8:is(:where(.rb10gnz0m):hover *) { opacity: 1; }"
+      }
+    ],
+    "rb1y4rxv3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: relative;",
+        "cssText": ".rb1y4rxv3 { position: relative; }"
+      }
+    ],
+    "rb1yc2knk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-white);",
+        "cssText": ".rb1yc2knk { background-color: var(--color-white); }"
+      }
+    ],
+    "rb1ygexe": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--rb-accent-fg,oklch(20.5% 0 0));",
+        "cssText": ".rb1ygexe:is(.dark *) { color: var(--rb-accent-fg,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb1yqpsqc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(180deg,var(--rb-accent,oklch(100% 0 0)),var(--rb-accent,oklch(100% 0 0)));",
+        "cssText": ".rb1yqpsqc:is(.dark *) { background-image: linear-gradient(180deg,var(--rb-accent,oklch(100% 0 0)),var(--rb-accent,oklch(100% 0 0))); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-image: linear-gradient(180deg,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))84%,white),color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))94%,black));",
+        "cssText": ".rb1yqpsqc:is(.dark *) { background-image: linear-gradient(180deg,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))84%,white),color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))94%,black)); }"
+      }
+    ],
+    "rb1z00wls": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: progress;",
+        "cssText": ".rb1z00wls[aria-busy=\"true\"] { cursor: progress; }"
+      }
+    ],
+    "rb2a6stx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.66);",
+        "cssText": ".rb2a6stx { color: rgba(23, 23, 23, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)66%,transparent);",
+        "cssText": ".rb2a6stx { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }"
+      }
+    ],
+    "rb2q6bi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal);",
+        "cssText": ".rb2q6bi { --tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal); }"
+      }
+    ],
+    "rb5lx0ql": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rb5lx0ql:active { background-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb5lx0ql:active { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb5rj8tm": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "white-space: nowrap;",
+        "cssText": ".rb5rj8tm { white-space: nowrap; }"
+      }
+    ],
+    "rb602nv2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: var(--rb-accent,oklch(20.5% 0 0));",
+        "cssText": ".rb602nv2:checked { border-color: var(--rb-accent,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb6f1sc8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: var(--rb-accent,oklch(100% 0 0));",
+        "cssText": ".rb6f1sc8:is(.dark *):checked { border-color: var(--rb-accent,oklch(100% 0 0)); }"
+      }
+    ],
+    "rb6g7yqh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-top: calc(var(--spacing)*2);",
+        "cssText": ".rb6g7yqh { margin-top: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb6pcc2l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-style: var(--tw-outline-style); outline-width: 2px;",
+        "cssText": ".rb6pcc2l:focus-visible { outline-style: var(--tw-outline-style); outline-width: 2px; }"
+      }
+    ],
+    "rb6s6l0k": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb6s6l0k:disabled { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb6tumjx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 100%;",
+        "cssText": ".rb6tumjx { height: 100%; }"
+      }
+    ],
+    "rb6wkv4r": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transform-origin: 0px 0px;",
+        "cssText": ".rb6wkv4r { transform-origin: 0px 0px; }"
+      }
+    ],
+    "rb6x9xh9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*14);",
+        "cssText": ".rb6x9xh9 { height: calc(var(--spacing)*14); }"
+      }
+    ],
+    "rb7ks1db": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*4); height: calc(var(--spacing)*4);",
+        "cssText": ".rb7ks1db { width: calc(var(--spacing)*4); height: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb8oqg57": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*8); height: calc(var(--spacing)*8);",
+        "cssText": ".rb8oqg57 { width: calc(var(--spacing)*8); height: calc(var(--spacing)*8); }"
+      }
+    ],
+    "rb8uwkn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rb8uwkn { flex-shrink: 0; }"
+      }
+    ],
+    "rba01wt7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 20px; height: 20px;",
+        "cssText": ".rba01wt7 { width: 20px; height: 20px; }"
+      }
+    ],
+    "rbam60bh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-950);",
+        "cssText": ".rbam60bh:is(.dark *) { background-color: var(--color-neutral-950); }"
+      }
+    ],
+    "rbb8vv1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rbb8vv1:is(.dark *):disabled:checked { border-color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rbb8vv1:is(.dark *):disabled:checked { border-color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rbbow4u0": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rbbow4u0:hover:not(:disabled) { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rbbow4u0:hover:not(:disabled) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rbcewfue": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: inline-flex;",
+        "cssText": ".rbcewfue { display: inline-flex; }"
+      }
+    ],
+    "rbcnhw0o": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rbcnhw0o:is(.dark *):hover:not(:disabled) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rbcnhw0o:is(.dark *):hover:not(:disabled) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rbdrlr62": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "appearance: none;",
+        "cssText": ".rbdrlr62 { appearance: none; }"
+      }
+    ],
+    "rbduq3u1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: calc(var(--spacing)*0);",
+        "cssText": ".rbduq3u1 { min-height: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbdzizmw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(100% 0 0))),inset 0 1px 2px var(--tw-shadow-color,#0000006b);",
+        "cssText": ".rbdzizmw:is(.dark *):active { --tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(100% 0 0))),inset 0 1px 2px var(--tw-shadow-color,#0000006b); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))88%,black)),inset 0 1px 2px var(--tw-shadow-color,#0000006b);",
+        "cssText": ".rbdzizmw:is(.dark *):active { --tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(100% 0 0))88%,black)),inset 0 1px 2px var(--tw-shadow-color,#0000006b); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbdzizmw:is(.dark *):active { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbf1mw7z": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-brightness: brightness(110%);",
+        "cssText": ".rbf1mw7z:hover:not(:disabled) { --tw-brightness: brightness(110%); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "filter: var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,);",
+        "cssText": ".rbf1mw7z:hover:not(:disabled), .hover\\:not-disabled\\:brightness-\\[1\\.04\\]:hover:not(:disabled) { filter: var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,); }"
+      }
+    ],
+    "rbfhtima": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: 60ms; transition-duration: 60ms;",
+        "cssText": ".rbfhtima:active { --tw-duration: 60ms; transition-duration: 60ms; }"
+      }
+    ],
+    "rbfmmwt5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-style: var(--tw-border-style); border-width: 1px;",
+        "cssText": ".rbfmmwt5 { border-style: var(--tw-border-style); border-width: 1px; }"
+      }
+    ],
+    "rbgvovti": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rbgvovti:disabled { border-color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rbgvovti:disabled { border-color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rbhkswz7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*11); height: calc(var(--spacing)*11);",
+        "cssText": ".rbhkswz7 { width: calc(var(--spacing)*11); height: calc(var(--spacing)*11); }"
+      }
+    ],
+    "rbhrbm6t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: 680px;",
+        "cssText": ".rbhrbm6t { min-height: 680px; }"
+      }
+    ],
+    "rbhsvtug": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: flex;",
+        "cssText": ".rbhsvtug { display: flex; }"
+      }
+    ],
+    "rbi6qxys": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rbi6qxys:active:not(:checked) { background-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rbi6qxys:active:not(:checked) { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rbjhe6au": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*4);",
+        "cssText": ".rbjhe6au { padding-inline: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rbk0yn3j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(20.5% 0 0))),0 1px 1px var(--tw-shadow-color,#00000038),0 2px 5px -2px var(--tw-shadow-color,#0000004d);",
+        "cssText": ".rbk0yn3j { --tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(20.5% 0 0))),0 1px 1px var(--tw-shadow-color,#00000038),0 2px 5px -2px var(--tw-shadow-color,#0000004d); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))88%,black)),0 1px 1px var(--tw-shadow-color,#00000038),0 2px 5px -2px var(--tw-shadow-color,#0000004d);",
+        "cssText": ".rbk0yn3j { --tw-shadow: inset 0 2px 0 -1px var(--tw-shadow-color,#fff3),inset 0 -2px 0 -1px var(--tw-shadow-color,#0000004d),inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))88%,black)),0 1px 1px var(--tw-shadow-color,#00000038),0 2px 5px -2px var(--tw-shadow-color,#0000004d); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbk0yn3j { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbkbczdr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*3);",
+        "cssText": ".rbkbczdr { padding-inline: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbli0kqz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".shadow-\\[0_1px_1px_rgb\\(0_0_0\\/0\\.2\\)\\], .rbli0kqz { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f);",
+        "cssText": ".rbli0kqz { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f); }"
+      }
+    ],
+    "rblyzkyh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "opacity: 0;",
+        "cssText": ".rblyzkyh { opacity: 0; }"
+      }
+    ],
+    "rbm88qpu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*2);",
+        "cssText": ".rbm88qpu { gap: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rbmi8cet": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*3);",
+        "cssText": ".rbmi8cet { gap: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbmnuw4f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*5);",
+        "cssText": ".rbmnuw4f { padding: calc(var(--spacing)*5); }"
+      }
+    ],
+    "rbmxmiks": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "user-select: none;",
+        "cssText": ".rbmxmiks { user-select: none; }"
+      }
+    ],
+    "rbnckopm": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.09);",
+        "cssText": ".rbnckopm:is(.dark *)[aria-pressed=\"true\"] { background-color: rgba(245, 245, 245, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent);",
+        "cssText": ".rbnckopm:is(.dark *)[aria-pressed=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }"
+      }
+    ],
+    "rbnfepc7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-direction: column;",
+        "cssText": ".rbnfepc7 { flex-direction: column; }"
+      }
+    ],
+    "rbns43sa": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 100%;",
+        "cssText": ".rbns43sa { width: 100%; }"
+      }
+    ],
+    "rbocw8ne": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: 450; font-weight: 450;",
+        "cssText": ".rbocw8ne { --tw-font-weight: 450; font-weight: 450; }"
+      }
+    ],
+    "rbozq35o": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow: hidden;",
+        "cssText": ".rbozq35o { overflow: hidden; }"
+      }
+    ],
+    "rbpdpfg6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rbpdpfg6:is(.dark *):disabled { border-color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rbpdpfg6:is(.dark *):disabled { border-color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rbpg4hcf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: oklch(0.652 0.219 26);",
+        "cssText": ".rbpg4hcf:is(.dark *)[aria-invalid=\"true\"] { border-color: oklch(0.652 0.219 26); }"
+      }
+    ],
+    "rbqfb6cp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: background-color, border-color, box-shadow, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbqfb6cp { transition-property: background-color, border-color, box-shadow, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbshg8cd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: center;",
+        "cssText": ".rbshg8cd { justify-content: center; }"
+      }
+    ],
+    "rbsr1y6q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-offset: calc(-2px);",
+        "cssText": ".rbsr1y6q:focus-visible { outline-offset: calc(-2px); }"
+      }
+    ],
+    "rbtr56za": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 12px; line-height: 16px;",
+        "cssText": ".rbtr56za { font-size: 12px; line-height: 16px; }"
+      }
+    ],
+    "rbu4w2nw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: space-between;",
+        "cssText": ".rbu4w2nw { justify-content: space-between; }"
+      }
+    ],
+    "rbuyzv6f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "pointer-events: none;",
+        "cssText": ".rbuyzv6f { pointer-events: none; }"
+      }
+    ],
+    "rbv2nr8y": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rbv2nr8y, .sr-only { position: absolute; }"
+      }
+    ],
+    "rbwr80y8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(20.5% 0 0))),inset 0 1px 2px var(--tw-shadow-color,#0000006b);",
+        "cssText": ".rbwr80y8:active { --tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,var(--rb-accent,oklch(20.5% 0 0))),inset 0 1px 2px var(--tw-shadow-color,#0000006b); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))88%,black)),inset 0 1px 2px var(--tw-shadow-color,#0000006b);",
+        "cssText": ".rbwr80y8:active { --tw-shadow: inset 0 0 0 1px var(--tw-shadow-color,color-mix(in oklab,var(--rb-accent,oklch(20.5% 0 0))88%,black)),inset 0 1px 2px var(--tw-shadow-color,#0000006b); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbwr80y8:active, .active\\:shadow-\\[inset_0_1px_2px_rgb\\(0_0_0\\/0\\.12\\)\\]:active { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbwx8tdt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--rb-accent-fg,oklch(100% 0 0));",
+        "cssText": ".rbwx8tdt:checked { background-color: var(--rb-accent-fg,oklch(100% 0 0)); }"
+      }
+    ],
+    "rbz2rtp3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.14);",
+        "cssText": ".rbz2rtp3:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent);",
+        "cssText": ".rbz2rtp3:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }"
+      }
+    ],
+    "rbzyxybt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbzyxybt:is(.dark *) { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ]
+  },
+  "motionContract": {
+    "schemaVersion": "3.0.0",
+    "capsuleSlug": "mobile-2",
+    "generatedAt": "2026-11-18T06:38:27.573Z",
+    "taxonomy": {
+      "archetype": "tactile-trigger",
+      "trigger": "pointer-proximity",
+      "criticality": "secondary",
+      "physicalRegime": "underdamped-spring",
+      "confidence": 0.53,
+      "indicators": [
+        ":active(?=[\\s\\S]*?(?:scale|transform))",
+        "btn|button|cta-link|magnetic-button|ripple"
+      ]
+    },
+    "fsmContract": {
+      "id": "mobile-2-tactile-trigger-fsm",
+      "initial": "idle",
+      "context": {
+        "scale": 1,
+        "activeTween": null
+      },
+      "states": {
+        "idle": {
+          "on": {
+            "POINTER_ENTER": "hovered",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "hovered": {
+          "entry": [
+            "applyHoverScale"
+          ],
+          "on": {
+            "POINTER_LEAVE": "idle",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "pressed": {
+          "entry": [
+            "applyActiveCompression"
+          ],
+          "on": {
+            "POINTER_UP": "hovered",
+            "POINTER_LEAVE": "idle",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        }
+      },
+      "invariants": {
+        "preemptible": true,
+        "escapeReset": true,
+        "windowBlurReset": true,
+        "fluidMathPeg": "scale(calc(1 - 0.05 * var(--scale, 1)))"
+      }
+    },
+    "layer1_physicalTruth": {
+      "curveType": "cubic-bezier",
+      "cssCubicBezier": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "controlPoints": [
+        [
+          0,
+          0
+        ],
+        [
+          0.215,
+          0.61
+        ],
+        [
+          0.355,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "beziers": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0.215,
+            0.61
+          ],
+          [
+            0.355,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      ],
+      "durationMs": 12000,
+      "delayMs": 0,
+      "harmonicSpring": {
+        "zeta": 0.85,
+        "omegaN": 12
+      }
+    },
+    "layer2_adaptiveSkill": {
+      "scaleVarName": "--scale",
+      "fluidMathExpression": "calc(-1 * var(--scale))",
+      "relativeTransforms": {
+        "arrow": {
+          "resting": "translate(calc(-1 * var(--scale)), calc(1 * var(--scale))) scale(0.6)",
+          "active": "translate(0) scale(1)",
+          "origin": "left bottom"
+        }
+      },
+      "interruptionFsm": {
+        "initial": "idle",
+        "states": {
+          "idle": {
+            "on": {
+              "HOVER_ENTER": "crossfading"
+            }
+          },
+          "crossfading": {
+            "action": "killTweensOf(previousTarget)",
+            "on": {
+              "EXPAND_READY": "active",
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "active": {
+            "on": {
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "resetting": {
+            "on": {
+              "RESET_DONE": "idle",
+              "HOVER_ENTER": "crossfading",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          }
+        },
+        "resilienceHandlers": {
+          "escapeKey": "window.addEventListener('keydown', e => { if (e.key === 'Escape') send('ESCAPE'); })",
+          "windowBlur": "window.addEventListener('blur', () => send('BLUR'))"
+        }
+      },
+      "reducedMotionRule": "@media (prefers-reduced-motion: reduce) {\n  [data-capsule-id=\"mobile-2\"] * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n    transform: none !important;\n    scroll-behavior: auto !important;\n  }\n}"
+    }
+  },
+  "interactiveRuntime": {
+    "webpackModuleId": "95379",
+    "sorbetModuleId": "27698",
+    "defaultMinHeight": 680,
+    "sorbetMinHeight": 680,
+    "hooksUsed": [
+      "useEffect",
+      "useRef",
+      "useState"
+    ],
+    "usesMotion": true,
+    "usesD3Shape": false,
+    "iconCount": 7,
+    "files": {
+      "defaultJsx": "mobile-2.jsx",
+      "sorbetJsx": "mobile-2.sorbet.jsx",
+      "capsuleHtml": "capsule.html"
+    }
+  }
+}

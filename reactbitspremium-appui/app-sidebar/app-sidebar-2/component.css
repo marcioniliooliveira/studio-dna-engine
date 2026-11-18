@@ -1,0 +1,101 @@
+.block-scale-preview { --rb-section-min-h: 100%; }
+.block-scale-preview .min-h-screen { min-height: 100% !important; }
+.block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }
+.rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"); }
+@layer utilities {
+  .rb10hrkh5 { flex: 1 1 0%; }
+  .rb10kmm8m { height: 100%; }
+  .rb10w47ys { color: rgba(23, 23, 23, 0.8); }
+  .rb136yleg:focus-visible { outline-style: var(--tw-outline-style); outline-width: 2px; }
+  .rb13db9r1 { min-width: calc(var(--spacing)*0); }
+  .rb16f7zkc:is(.dark *)[aria-current="page"] { color: var(--color-neutral-100); }
+  .rb16j8mxa { cursor: pointer; }
+  .rb176tbgt { border-color: rgba(23, 23, 23, 0.08); }
+  .rb179rgsl { background-color: var(--rb-accent,oklch(20.5% 0 0)); }
+  .rb187eqpt, .sr-only { position: absolute; }
+  .rb196li0y { align-items: center; }
+  .rb19fcwup:is(.dark *) { color: var(--rb-accent-fg,oklch(20.5% 0 0)); }
+  .rb19yt3op { height: calc(var(--spacing)*8); }
+  .rb1ajw9tx { transition-property: background-color, color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }
+  .rb1bhty9k { width: calc(var(--spacing)*8); height: calc(var(--spacing)*8); }
+  .rb1dniks5 { border-right-style: var(--tw-border-style); border-right-width: 1px; }
+  .rb1ex4oq8 { flex-shrink: 0; }
+  .rb1g8cnr1 { border-radius: 3.40282e+38px; }
+  .rb1gj9h4x { overflow: hidden; }
+  .rb1h3rtkl:is(.dark *) { color: var(--color-neutral-100); }
+  .rb1hlpd3r { text-align: left; }
+  .rb1k35163 { display: inline-flex; }
+  .rb1ky1jlh { width: 100%; height: 100%; }
+  .rb1l7isom { pointer-events: none; }
+  .rb1m6737l:is(.dark *) { background-color: var(--color-neutral-900); }
+  .rb1mnx029 { width: 100%; }
+  .rb1n61i57 { color: var(--color-neutral-900); }
+  .rb1nia9oq { border-style: var(--tw-border-style); border-width: 1px; }
+  .rb1p7ea14 { flex-direction: column; }
+  .rb1pu260b:is(.dark *):focus-visible { outline-color: var(--rb-accent,oklch(100% 0 0)); }
+  .oldstyle-nums, .rb1q1nvcd { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }
+  .rb1q1nvcd { --tw-numeric-spacing: tabular-nums; }
+  .rb1qa3s6s { position: relative; }
+  .rb1r0nchd:focus-visible { outline-color: var(--rb-accent,oklch(20.5% 0 0)); }
+  .rb1u85gds { border-color: rgba(23, 23, 23, 0.12); }
+  .rb1vgrah9 { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+  .rb1whtv3f:is(.dark *) { background-color: var(--rb-accent,oklch(100% 0 0)); }
+  .rb1wqyxeq[aria-current="page"] { color: var(--color-neutral-900); }
+  .rb1wyo81t { font-size: 12px; line-height: 16px; }
+  .rb1xv794p { --tw-font-weight: 450; font-weight: 450; }
+  .rb3r6u9g:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }
+  .rb4o0f0c { margin-top: calc(var(--spacing)*4); }
+  .rbbrjuvm[aria-current="page"] { background-color: rgba(23, 23, 23, 0.09); }
+  .rbbrpe4z:focus-visible { outline-offset: calc(-2px); }
+  .rbcesity:is(.dark *) { color: rgba(245, 245, 245, 0.8); }
+  .rbgxg3wj:is(.dark *) { border-color: rgba(245, 245, 245, 0.08); }
+  .rbhuh5cv { padding-block: calc(var(--spacing)*3); }
+  .rbin854h { gap: calc(var(--spacing)*4); }
+  .rbis36t8:is(.dark *) { background-color: var(--color-neutral-950); }
+  .rbj77cif { gap: calc(var(--spacing)*2); }
+  .rbjekx2e { justify-content: center; }
+  .rbjh6y7e { gap: calc(var(--spacing)*1); }
+  .rbl7irmb { padding-inline: calc(var(--spacing)*2); }
+  .rbn82nag { --tw-duration: .12s; transition-duration: 0.12s; }
+  .rbnsp9xr svg { flex-shrink: 0; }
+  .rbnyp0iv { font-size: 14px; line-height: 16px; }
+  .rbqgfm3u { border-radius: var(--rb-r-sm,6px); }
+  .rbsgn2t2 { transform-origin: 0px 0px; }
+  .rbv84uc5 { user-select: none; }
+  .rbvfltmj { display: flex; }
+  .rbvzw0d3 { color: var(--rb-accent-fg,oklch(100% 0 0)); }
+  .rbw3r1hw { min-height: 640px; }
+  .rbw6jvd5 { width: calc(var(--spacing)*14); }
+  .rbwnh06:focus-visible { outline-offset: 2px; }
+  .rbx8gue0:is(.dark *)[aria-current="page"] { background-color: rgba(245, 245, 245, 0.09); }
+  .rbxueymz { border-radius: inherit; }
+  .rbzbgjmr { background-color: var(--color-white); }
+}
+@layer utilities {
+  @supports (color:color-mix(in lab,red,red)) {
+    .rb10w47ys { color: color-mix(in oklab,var(--color-neutral-900)80%,transparent); }
+    .rb176tbgt { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }
+    .rb1u85gds { border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent); }
+    .rb3r6u9g:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }
+    .rbbrjuvm[aria-current="page"] { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }
+    .rbcesity:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)80%,transparent); }
+    .rbgxg3wj:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }
+    .rbx8gue0:is(.dark *)[aria-current="page"] { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }
+  }
+}
+@layer utilities {
+  @media (hover: hover) {
+    .rb115nxwl:is(.dark *):hover { color: var(--color-neutral-100); }
+    .rb19cb1ln:hover { color: var(--color-neutral-900); }
+    .rbkp3b2n:hover { background-color: rgba(23, 23, 23, 0.05); }
+    .rbxkgwpx:is(.dark *):hover { background-color: rgba(245, 245, 245, 0.05); }
+  }
+}
+@layer utilities {
+  @media (hover: hover) {
+    @supports (color:color-mix(in lab,red,red)) {
+      .rbkp3b2n:hover { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }
+      .rbxkgwpx:is(.dark *):hover { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }
+    }
+  }
+}

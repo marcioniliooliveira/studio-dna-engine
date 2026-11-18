@@ -1,0 +1,1994 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "app-dialog-7",
+  "category": "app-dialog",
+  "categoryTitle": "App Dialog",
+  "domain": "Forms, Modals, Auth & Workflows",
+  "description": "Menus, submenus and shortcuts",
+  "sourceUrl": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-7",
+  "nativeDimensions": {
+    "width": "1280px",
+    "height": "560px"
+  },
+  "usedClassCount": 134,
+  "decompiledClassCount": 134,
+  "anatomy": {
+    "nodeCount": 58,
+    "maxDepth": 7,
+    "interactive": {
+      "buttons": 7,
+      "inputs": 0,
+      "textareas": 0,
+      "selects": 0,
+      "checkboxesOrRadios": 0,
+      "dialogs": 1,
+      "tables": 0,
+      "svgs": 8,
+      "canvases": 0,
+      "links": 0,
+      "roles": [
+        "dialog",
+        "menu",
+        "menuitem",
+        "separator"
+      ],
+      "ariaLabels": [
+        "Report actions"
+      ],
+      "dataAttributes": [
+        "data-highlighted"
+      ],
+      "inputTypes": [],
+      "placeholders": []
+    },
+    "headingsAndLabels": [
+      "Report actions",
+      "Rename report ⌘R",
+      "Duplicate ⌘D",
+      "Export as",
+      "Copy link ⌘⇧C",
+      "Move to archive",
+      "Delete report"
+    ],
+    "computedSample": {
+      "backgroundColor": "oklch(0.145 0 0)",
+      "color": "oklch(0.97 0 0)",
+      "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "fontSize": "16px",
+      "borderRadius": "0px",
+      "display": "flex",
+      "gridTemplateColumns": "none",
+      "flexDirection": "row",
+      "gap": "normal",
+      "padding": "24px"
+    }
+  },
+  "tokensUsed": {
+    "rbVars": [
+      "--rb-accent",
+      "--rb-font-sans",
+      "--rb-n-100",
+      "--rb-n-200",
+      "--rb-n-300",
+      "--rb-n-400",
+      "--rb-n-50",
+      "--rb-n-500",
+      "--rb-n-600",
+      "--rb-n-700",
+      "--rb-n-800",
+      "--rb-n-900",
+      "--rb-n-950",
+      "--rb-r-lg",
+      "--rb-r-sm",
+      "--rb-section-min-h"
+    ],
+    "scVars": [],
+    "colorVars": [
+      "--color-neutral-100",
+      "--color-neutral-200",
+      "--color-neutral-300",
+      "--color-neutral-400",
+      "--color-neutral-50",
+      "--color-neutral-500",
+      "--color-neutral-600",
+      "--color-neutral-700",
+      "--color-neutral-800",
+      "--color-neutral-900",
+      "--color-neutral-950",
+      "--color-white"
+    ],
+    "twVars": [
+      "--tw-border-style",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-font-weight",
+      "--tw-gradient-from",
+      "--tw-gradient-from-position",
+      "--tw-gradient-position",
+      "--tw-gradient-stops",
+      "--tw-gradient-to",
+      "--tw-gradient-to-position",
+      "--tw-gradient-via-stops",
+      "--tw-inset-ring-shadow",
+      "--tw-inset-shadow",
+      "--tw-numeric-figure",
+      "--tw-numeric-fraction",
+      "--tw-numeric-spacing",
+      "--tw-ordinal",
+      "--tw-outline-style",
+      "--tw-ring-offset-shadow",
+      "--tw-ring-shadow",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--tw-scale-z",
+      "--tw-shadow",
+      "--tw-shadow-color",
+      "--tw-slashed-zero",
+      "--tw-translate-x",
+      "--tw-translate-y"
+    ],
+    "otherVars": [
+      "---",
+      "--container-sm",
+      "--default-transition-duration",
+      "--default-transition-timing-function",
+      "--font-weight-normal",
+      "--spacing"
+    ],
+    "oklchColors": [
+      "oklch(0.29 0.06 26)",
+      "oklch(0.51 0.18 26)",
+      "oklch(0.76 0.14 26)",
+      "oklch(0.945 0.027 26)",
+      "oklch(100% 0 0)",
+      "oklch(14.5% 0 0)",
+      "oklch(20.5% 0 0)",
+      "oklch(26.9% 0 0)",
+      "oklch(37.1% 0 0)",
+      "oklch(43.9% 0 0)",
+      "oklch(55.6% 0 0)",
+      "oklch(70.8% 0 0)",
+      "oklch(87% 0 0)",
+      "oklch(92.2% 0 0)",
+      "oklch(97% 0 0)",
+      "oklch(98.5% 0 0)"
+    ],
+    "cubicBeziers": [
+      "cubic-bezier(.2,0,0,1)",
+      "cubic-bezier(0.2, 0, 0, 1)"
+    ],
+    "durations": [
+      "0.12s",
+      "12s",
+      "60ms"
+    ]
+  },
+  "keyframes": [
+    "gradient"
+  ],
+  "decompiledClasses": {
+    "block-scale-preview": [
+      {
+        "context": [],
+        "declarations": "--rb-section-min-h: 100%;",
+        "cssText": ".block-scale-preview { --rb-section-min-h: 100%; }"
+      },
+      {
+        "context": [],
+        "declarations": "min-height: 100% !important;",
+        "cssText": ".block-scale-preview .min-h-screen { min-height: 100% !important; }"
+      },
+      {
+        "context": [],
+        "declarations": "height: 100% !important;",
+        "cssText": ".block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }"
+      }
+    ],
+    "rb-theme-scope": [
+      {
+        "context": [],
+        "declarations": "--color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\");",
+        "cssText": ".rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"); }"
+      }
+    ],
+    "rb10vwoj8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(20.5% 0 0));",
+        "cssText": ".rb10vwoj8:focus-visible { outline-color: var(--rb-accent,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb13p17yo": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*2);",
+        "cssText": ".rb13p17yo { padding-inline: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb13reitd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.66);",
+        "cssText": ".rb13reitd:is(.dark *) { color: rgba(245, 245, 245, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)66%,transparent);",
+        "cssText": ".rb13reitd:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }"
+      }
+    ],
+    "rb15ci1q9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 100%;",
+        "cssText": ".rb15ci1q9 { height: 100%; }"
+      }
+    ],
+    "rb15cyu4i": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*4);",
+        "cssText": ".rb15cyu4i { padding-inline: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb178tctp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rb178tctp:is(.dark *):disabled { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rb178tctp:is(.dark *):disabled { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rb17y396j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb17y396j:is(.dark *) { background-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb17y396j:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb18sud1u": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".active\\:shadow-\\[inset_0_0_0_1px_color-mix\\(in_oklab\\,var\\(--rb-accent\\,oklch\\(20\\.5\\%_0_0\\)\\)_88\\%\\,black\\)\\,inset_0_1px_2px_rgb\\(0_0_0\\/0\\.42\\)\\]:active, .rb18sud1u:active { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb3g089o:active, .rb18sud1u:active { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0000001f);",
+        "cssText": ".rb18sud1u:active { --tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0000001f); }"
+      }
+    ],
+    "rb19hjnfu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 12px 24px -12px var(--tw-shadow-color,#0009); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb19hjnfu:is(.dark *) { --tw-shadow: 0 12px 24px -12px var(--tw-shadow-color,#0009); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb19pinl5": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-from: #f5f5f508;",
+        "cssText": ".rb19pinl5:is(.dark *):hover:not(:disabled) { --tw-gradient-from: #f5f5f508; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-from: color-mix(in oklab,var(--color-neutral-100)3%,transparent);",
+        "cssText": ".rb19pinl5:is(.dark *):hover:not(:disabled) { --tw-gradient-from: color-mix(in oklab,var(--color-neutral-100)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb19pinl5:is(.dark *):hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1a07lb0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "max-width: min(480px, -2rem + 100vw);",
+        "cssText": ".rb1a07lb0 { max-width: min(480px, -2rem + 100vw); }"
+      }
+    ],
+    "rb1axvfwx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.66);",
+        "cssText": ".rb1axvfwx { color: rgba(23, 23, 23, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)66%,transparent);",
+        "cssText": ".rb1axvfwx { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }"
+      }
+    ],
+    "rb1bdyjyq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 12px; line-height: 16px;",
+        "cssText": ".rb1bdyjyq { font-size: 12px; line-height: 16px; }"
+      }
+    ],
+    "rb1bpmd5p": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "scale: 0.98;",
+        "cssText": ".rb1bpmd5p:active { scale: 0.98; }"
+      }
+    ],
+    "rb1c0veup": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overscroll-behavior: contain;",
+        "cssText": ".rb1c0veup { overscroll-behavior: contain; }"
+      }
+    ],
+    "rb1cqgmcl": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: calc(var(--spacing)*8);",
+        "cssText": ".rb1cqgmcl { min-height: calc(var(--spacing)*8); }"
+      }
+    ],
+    "rb1crotrp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-sm,6px);",
+        "cssText": ".rb1crotrp { border-radius: var(--rb-r-sm,6px); }"
+      }
+    ],
+    "rb1cystd6": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "max-width: var(--container-sm);",
+        "cssText": ".rb1cystd6 { max-width: var(--container-sm); }"
+      }
+    ],
+    "rb1dr84yw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.945 0.027 26);",
+        "cssText": ".rb1dr84yw:focus-visible { background-color: oklch(0.945 0.027 26); }"
+      }
+    ],
+    "rb1e2l8j5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-style: var(--tw-outline-style); outline-width: 2px;",
+        "cssText": ".rb1e2l8j5:focus-visible { outline-style: var(--tw-outline-style); outline-width: 2px; }"
+      }
+    ],
+    "rb1ebpjza": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 12px 24px -12px var(--tw-shadow-color,#0003);",
+        "cssText": ".rb1ebpjza { --tw-shadow: 0 12px 24px -12px var(--tw-shadow-color,#0003); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb1ebpjza, .shadow-\\[0_12px_24px_-12px_rgb\\(27_26_23\\/0\\.35\\)\\] { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb1enh133": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rb1enh133[aria-disabled=\"true\"] { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rb1enh133[aria-disabled=\"true\"] { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rb1f2ki1l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: center;",
+        "cssText": ".rb1f2ki1l { align-items: center; }"
+      }
+    ],
+    "rb1f4wj3p": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline-start: auto;",
+        "cssText": ".rb1f4wj3p { margin-inline-start: auto; }"
+      }
+    ],
+    "rb1f9kvjr": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-position: to bottom;",
+        "cssText": ".rb1f9kvjr:hover:not(:disabled) { --tw-gradient-position: to bottom; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to bottom in oklab;",
+        "cssText": ".rb1f9kvjr:hover:not(:disabled) { --tw-gradient-position: to bottom in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".rb1f9kvjr:hover:not(:disabled) { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rb1gq4l7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.14);",
+        "cssText": ".rb1gq4l7:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent);",
+        "cssText": ".rb1gq4l7:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }"
+      }
+    ],
+    "rb1gusqpz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.1);",
+        "cssText": ".rb1gusqpz { border-color: rgba(23, 23, 23, 0.1); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent);",
+        "cssText": ".rb1gusqpz { border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent); }"
+      }
+    ],
+    "rb1hery3x": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.12);",
+        "cssText": ".rb1hery3x { border-color: rgba(23, 23, 23, 0.12); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent);",
+        "cssText": ".rb1hery3x { border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent); }"
+      }
+    ],
+    "rb1huw61k": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.8);",
+        "cssText": ".rb1huw61k:is(.dark *) svg { color: rgba(245, 245, 245, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)80%,transparent);",
+        "cssText": ".rb1huw61k:is(.dark *) svg { color: color-mix(in oklab,var(--color-neutral-100)80%,transparent); }"
+      }
+    ],
+    "rb1io1cuc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-white);",
+        "cssText": ".rb1io1cuc { background-color: var(--color-white); }"
+      }
+    ],
+    "rb1jkedf1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "bottom: calc(var(--spacing)*4);",
+        "cssText": ".rb1jkedf1 { bottom: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb1kkniou": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1);",
+        "cssText": ".rb1kkniou { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }"
+      }
+    ],
+    "rb1knzfg4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: calc(var(--spacing)*48);",
+        "cssText": ".rb1knzfg4 { min-width: calc(var(--spacing)*48); }"
+      }
+    ],
+    "rb1komgn4": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-to: #17171708;",
+        "cssText": ".rb1komgn4:hover:not(:disabled) { --tw-gradient-to: #17171708; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-to: color-mix(in oklab,var(--color-neutral-900)3%,transparent);",
+        "cssText": ".rb1komgn4:hover:not(:disabled) { --tw-gradient-to: color-mix(in oklab,var(--color-neutral-900)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb1komgn4:hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1lgdwjd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-offset: 2px;",
+        "cssText": ".rb1lgdwjd:focus-visible { outline-offset: 2px; }"
+      }
+    ],
+    "rb1ljit1z": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.32);",
+        "cssText": ".rb1ljit1z:is(.dark *):hover:not(:disabled) { border-color: rgba(245, 245, 245, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent);",
+        "cssText": ".rb1ljit1z:is(.dark *):hover:not(:disabled) { border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent); }"
+      }
+    ],
+    "rb1m3huko": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: not-allowed;",
+        "cssText": ".rb1m3huko:disabled { cursor: not-allowed; }"
+      }
+    ],
+    "rb1n1dckq": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "left: auto;",
+        "cssText": ".rb1n1dckq { left: auto; }"
+      }
+    ],
+    "rb1nn63f1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.09);",
+        "cssText": ".rb1nn63f1:is(.dark *)[aria-selected=\"true\"] { background-color: rgba(245, 245, 245, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent);",
+        "cssText": ".rb1nn63f1:is(.dark *)[aria-selected=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }"
+      }
+    ],
+    "rb1oemoan": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-block: calc(var(--spacing)*1);",
+        "cssText": ".rb1oemoan { margin-block: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1p03tmw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "user-select: none;",
+        "cssText": ".rb1p03tmw { user-select: none; }"
+      }
+    ],
+    "rb1qgpuj6": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "padding: calc(var(--spacing)*6);",
+        "cssText": ".rb1qgpuj6 { padding: calc(var(--spacing)*6); }"
+      }
+    ],
+    "rb1r22hii": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rb1r22hii:disabled { border-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb1r22hii:disabled { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb1rg9r9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*60);",
+        "cssText": ".rb1rg9r9 { width: calc(var(--spacing)*60); }"
+      }
+    ],
+    "rb1rz6p97": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: calc(var(--spacing)*1.5);",
+        "cssText": ".rb1rz6p97 { padding-block: calc(var(--spacing)*1.5); }"
+      }
+    ],
+    "rb1s6bt8r": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rb1s6bt8r { background-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb1s6bt8r { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb1sf1g19": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.09);",
+        "cssText": ".rb1sf1g19[aria-selected=\"true\"] { background-color: rgba(23, 23, 23, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent);",
+        "cssText": ".rb1sf1g19[aria-selected=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }"
+      }
+    ],
+    "rb1snepbo": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb1snepbo:is(.dark *):hover { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb1snepbo:is(.dark *):hover { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb1suxsng": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(10, 10, 10, 0.6);",
+        "cssText": ".rb1suxsng:is(.dark *) { background-color: rgba(10, 10, 10, 0.6); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-950)60%,transparent);",
+        "cssText": ".rb1suxsng:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-950)60%,transparent); }"
+      }
+    ],
+    "rb1td3jvu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: inline-flex;",
+        "cssText": ".rb1td3jvu { display: inline-flex; }"
+      }
+    ],
+    "rb1uiiua5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin: 1px;",
+        "cssText": ".rb1uiiua5 { margin: 1px; }"
+      }
+    ],
+    "rb1vjth1v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: relative;",
+        "cssText": ".rb1vjth1v { position: relative; }"
+      }
+    ],
+    "rb1vo0bmv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transform-origin: 0px 0px;",
+        "cssText": ".rb1vo0bmv { transform-origin: 0px 0px; }"
+      }
+    ],
+    "rb1vzjfse": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: 60ms; transition-duration: 60ms;",
+        "cssText": ".rb1vzjfse:active { --tw-duration: 60ms; transition-duration: 60ms; }"
+      }
+    ],
+    "rb1xaooea": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "translate: var(--tw-translate-x)var(--tw-translate-y);",
+        "cssText": ".-translate-x-1\\.5, .rb1xaooea { translate: var(--tw-translate-x)var(--tw-translate-y); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-translate-x: calc(calc(1/2*100%)*-1);",
+        "cssText": ".rb1xaooea { --tw-translate-x: calc(calc(1/2*100%)*-1); }"
+      }
+    ],
+    "rb1xauoy8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow: hidden;",
+        "cssText": ".rb1xauoy8 { overflow: hidden; }"
+      }
+    ],
+    "rb1xl7tkj": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden;",
+        "cssText": ".rb1xl7tkj { clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rbw6vsye, .rb1xl7tkj { position: absolute; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: auto;",
+        "cssText": ".\\[\\&\\>\\.sr-only\\]\\:w-auto > .rb1xl7tkj { width: auto; }"
+      }
+    ],
+    "rb3hs50j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb3hs50j:is(.dark *):focus-visible { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb3hs50j:is(.dark *):focus-visible { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb4av1yo": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "z-index: 60;",
+        "cssText": ".rb4av1yo { z-index: 60; }"
+      }
+    ],
+    "rb4y7bk4": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb4y7bk4:hover { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb4y7bk4:hover { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb5779x": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.29 0.06 26);",
+        "cssText": ".rb5779x:is(.dark *)[data-highlighted] { background-color: oklch(0.29 0.06 26); }"
+      }
+    ],
+    "rb5cr92s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 1px;",
+        "cssText": ".rb5cr92s { height: 1px; }"
+      }
+    ],
+    "rb5ngtbn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb5ngtbn:focus-visible { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb5ngtbn:focus-visible { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb5ppa4g": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-to: #f5f5f508;",
+        "cssText": ".rb5ppa4g:is(.dark *):hover:not(:disabled) { --tw-gradient-to: #f5f5f508; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-to: color-mix(in oklab,var(--color-neutral-100)3%,transparent);",
+        "cssText": ".rb5ppa4g:is(.dark *):hover:not(:disabled) { --tw-gradient-to: color-mix(in oklab,var(--color-neutral-100)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb5ppa4g:is(.dark *):hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb5qf6ub": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rb5qf6ub { flex-shrink: 0; }"
+      }
+    ],
+    "rb5wq3no": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.25);",
+        "cssText": ".rb5wq3no { background-color: rgba(23, 23, 23, 0.25); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)25%,transparent);",
+        "cssText": ".rb5wq3no { background-color: color-mix(in oklab,var(--color-neutral-900)25%,transparent); }"
+      }
+    ],
+    "rb63ljxq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,);",
+        "cssText": ".oldstyle-nums, .rb63ljxq { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-numeric-spacing: tabular-nums;",
+        "cssText": ".rb63ljxq { --tw-numeric-spacing: tabular-nums; }"
+      }
+    ],
+    "rb6fc443": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow-x: hidden;",
+        "cssText": ".rb6fc443 { overflow-x: hidden; }"
+      }
+    ],
+    "rb6m25vy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "white-space: nowrap;",
+        "cssText": ".rb6m25vy { white-space: nowrap; }"
+      }
+    ],
+    "rb6rislb": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0006); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb6rislb:is(.dark *):active { --tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0006); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb6w8lzj": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-start: calc(var(--spacing)*4);",
+        "cssText": ".rb6w8lzj { padding-inline-start: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb79kswu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "z-index: 40;",
+        "cssText": ".rb79kswu { z-index: 40; }"
+      }
+    ],
+    "rb7mpz96": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb7mpz96:is(.dark *):disabled { border-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb7mpz96:is(.dark *):disabled { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb8xlkkn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "z-index: 50;",
+        "cssText": ".rb8xlkkn { z-index: 50; }"
+      }
+    ],
+    "rba1ycfk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*4);",
+        "cssText": ".rba1ycfk { padding: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rba51pay": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal);",
+        "cssText": ".rba51pay { --tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal); }"
+      }
+    ],
+    "rbanrw00": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "top: calc(50% + 28px);",
+        "cssText": ".rbanrw00 { top: calc(50% + 28px); }"
+      }
+    ],
+    "rbaubc1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-950);",
+        "cssText": ".rbaubc1:is(.dark *) { background-color: var(--color-neutral-950); }"
+      }
+    ],
+    "rbb8s5px": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.51 0.18 26);",
+        "cssText": ".rbb8s5px { color: oklch(0.51 0.18 26); }"
+      }
+    ],
+    "rbbfwcwf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*1);",
+        "cssText": ".rbbfwcwf { padding: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rbbnemhm": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(100% 0 0));",
+        "cssText": ".rbbnemhm:is(.dark *):focus-visible { outline-color: var(--rb-accent,oklch(100% 0 0)); }"
+      }
+    ],
+    "rbbrmd0j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "pointer-events: none;",
+        "cssText": ".rbbrmd0j { pointer-events: none; }"
+      }
+    ],
+    "rbcxg9o9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: center;",
+        "cssText": ".rbcxg9o9 { justify-content: center; }"
+      }
+    ],
+    "rbdpkh0c": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rbdpkh0c:is(.dark *) { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rbdxk9o4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: progress;",
+        "cssText": ".rbdxk9o4[aria-busy=\"true\"] { cursor: progress; }"
+      }
+    ],
+    "rbe27f5v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: .12s; transition-duration: 0.12s;",
+        "cssText": ".rbe27f5v { --tw-duration: .12s; transition-duration: 0.12s; }"
+      }
+    ],
+    "rbe4kcdi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: not-allowed;",
+        "cssText": ".rbe4kcdi[aria-disabled=\"true\"] { cursor: not-allowed; }"
+      }
+    ],
+    "rbepum6t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline: calc(var(--spacing)*-1);",
+        "cssText": ".rbepum6t { margin-inline: calc(var(--spacing)*-1); }"
+      }
+    ],
+    "rbh31jja": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 100%;",
+        "cssText": ".rbh31jja { width: 100%; }"
+      }
+    ],
+    "rbh8aieg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rbh8aieg:is(.dark *)[data-highlighted] { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rbh8aieg:is(.dark *)[data-highlighted] { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rbht58no": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (prefers-reduced-motion: reduce)"
+        ],
+        "declarations": "--tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y);",
+        "cssText": ".rbht58no:active { --tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y); }"
+      }
+    ],
+    "rbicr7me": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex: 1 1 0%;",
+        "cssText": ".rbicr7me { flex: 1 1 0%; }"
+      }
+    ],
+    "rbir2de2": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "width: 100%;",
+        "cssText": ".rbir2de2 { width: 100%; }"
+      }
+    ],
+    "rbiwvhpp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "inset: calc(var(--spacing)*0);",
+        "cssText": ".rbiwvhpp { inset: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbj3h9ak": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-outline-style: none; outline-style: none;",
+        "cssText": ".rbj3h9ak { --tw-outline-style: none; outline-style: none; }"
+      }
+    ],
+    "rbjacb8m": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: 450; font-weight: 450;",
+        "cssText": ".rbjacb8m { --tw-font-weight: 450; font-weight: 450; }"
+      }
+    ],
+    "rbjrnfzb": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-lg,10px);",
+        "cssText": ".rbjrnfzb { border-radius: var(--rb-r-lg,10px); }"
+      }
+    ],
+    "rbjwosrf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "left: calc(var(--spacing)*4);",
+        "cssText": ".rbjwosrf { left: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rbkbvfk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 14px; line-height: 16px;",
+        "cssText": ".rbkbvfk { font-size: 14px; line-height: 16px; }"
+      }
+    ],
+    "rbkcje2x": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow-y: auto;",
+        "cssText": ".rbkcje2x { overflow-y: auto; }"
+      }
+    ],
+    "rbkd85zg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rbkd85zg { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rbkkbbe1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "left: 50%;",
+        "cssText": ".rbkkbbe1 { left: 50%; }"
+      }
+    ],
+    "rbkqz8rc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.8);",
+        "cssText": ".rbkqz8rc svg { color: rgba(23, 23, 23, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)80%,transparent);",
+        "cssText": ".rbkqz8rc svg { color: color-mix(in oklab,var(--color-neutral-900)80%,transparent); }"
+      }
+    ],
+    "rbktsfql": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rbktsfql:disabled { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rbktsfql:disabled { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rbl4aynf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.945 0.027 26);",
+        "cssText": ".rbl4aynf[data-highlighted] { background-color: oklch(0.945 0.027 26); }"
+      }
+    ],
+    "rblfdfa9": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: oklch(0.29 0.06 26);",
+        "cssText": ".rblfdfa9:is(.dark *):hover { background-color: oklch(0.29 0.06 26); }"
+      }
+    ],
+    "rblqmc13": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".shadow-\\[0_1px_1px_rgb\\(0_0_0\\/0\\.2\\)\\], .rblqmc13 { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f);",
+        "cssText": ".rblqmc13 { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f); }"
+      }
+    ],
+    "rbm7xb46": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "right: calc(var(--spacing)*4);",
+        "cssText": ".rbm7xb46 { right: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rbm87wx3": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.32);",
+        "cssText": ".rbm87wx3:hover:not(:disabled) { border-color: rgba(23, 23, 23, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent);",
+        "cssText": ".rbm87wx3:hover:not(:disabled) { border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent); }"
+      }
+    ],
+    "rbmpsmcx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: default;",
+        "cssText": ".rbmpsmcx { cursor: default; }"
+      }
+    ],
+    "rbmvln4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbmvln4:disabled { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbou2wl4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: 560px;",
+        "cssText": ".rbou2wl4 { min-height: 560px; }"
+      }
+    ],
+    "rbqacuav": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: oklch(0.945 0.027 26);",
+        "cssText": ".rbqacuav:hover { background-color: oklch(0.945 0.027 26); }"
+      }
+    ],
+    "rbqs9kt0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbqs9kt0 { transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbqxwf71": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-style: var(--tw-border-style); border-width: 1px;",
+        "cssText": ".rbqxwf71 { border-style: var(--tw-border-style); border-width: 1px; }"
+      }
+    ],
+    "rbrffvye": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*2);",
+        "cssText": ".rbrffvye { gap: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rbrge5h4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.29 0.06 26);",
+        "cssText": ".rbrge5h4:is(.dark *):focus-visible { background-color: oklch(0.29 0.06 26); }"
+      }
+    ],
+    "rbs8a674": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.76 0.14 26);",
+        "cssText": ".rbs8a674:is(.dark *) { color: oklch(0.76 0.14 26); }"
+      }
+    ],
+    "rbsdrzu7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rbsdrzu7:is(.dark *)[aria-disabled=\"true\"] { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rbsdrzu7:is(.dark *)[aria-disabled=\"true\"] { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rbsellwc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: flex;",
+        "cssText": ".rbsellwc { display: flex; }"
+      }
+    ],
+    "rbufsdas": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rbufsdas svg { flex-shrink: 0; }"
+      }
+    ],
+    "rbumkx14": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: calc(var(--spacing)*0);",
+        "cssText": ".rbumkx14 { min-width: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbvxugws": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-900);",
+        "cssText": ".rbvxugws:is(.dark *) { background-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rbvz4unt": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-from: #17171708;",
+        "cssText": ".rbvz4unt:hover:not(:disabled) { --tw-gradient-from: #17171708; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-from: color-mix(in oklab,var(--color-neutral-900)3%,transparent);",
+        "cssText": ".rbvz4unt:hover:not(:disabled) { --tw-gradient-from: color-mix(in oklab,var(--color-neutral-900)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbvz4unt:hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbw1vdhh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: pointer;",
+        "cssText": ".rbw1vdhh { cursor: pointer; }"
+      }
+    ],
+    "rbw6vsye": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rbw6vsye, .rb1xl7tkj { position: absolute; }"
+      }
+    ],
+    "rbxbokl6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-align: left;",
+        "cssText": ".rbxbokl6 { text-align: left; }"
+      }
+    ],
+    "rbxgjn3s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rbxgjn3s[data-highlighted] { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rbxgjn3s[data-highlighted] { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rbxmp4bt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-overflow: ellipsis; white-space: nowrap; overflow: hidden;",
+        "cssText": ".rbxmp4bt { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }"
+      }
+    ],
+    "rby1k3b7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-direction: column;",
+        "cssText": ".rby1k3b7 { flex-direction: column; }"
+      }
+    ],
+    "rby5cgto": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*8);",
+        "cssText": ".rby5cgto { height: calc(var(--spacing)*8); }"
+      }
+    ],
+    "rby88dcd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rby88dcd:is(.dark *) { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ]
+  },
+  "motionContract": {
+    "schemaVersion": "3.0.0",
+    "capsuleSlug": "app-dialog-7",
+    "generatedAt": "2026-11-18T06:38:43.417Z",
+    "taxonomy": {
+      "archetype": "tactile-trigger",
+      "trigger": "state-discrete",
+      "criticality": "secondary",
+      "physicalRegime": "underdamped-spring",
+      "confidence": 0.53,
+      "indicators": [
+        ":active(?=[\\s\\S]*?(?:scale|transform))",
+        "btn|button|cta-link|magnetic-button|ripple"
+      ]
+    },
+    "fsmContract": {
+      "id": "app-dialog-7-tactile-trigger-fsm",
+      "initial": "idle",
+      "context": {
+        "scale": 1,
+        "activeTween": null
+      },
+      "states": {
+        "idle": {
+          "on": {
+            "POINTER_ENTER": "hovered",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "hovered": {
+          "entry": [
+            "applyHoverScale"
+          ],
+          "on": {
+            "POINTER_LEAVE": "idle",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "pressed": {
+          "entry": [
+            "applyActiveCompression"
+          ],
+          "on": {
+            "POINTER_UP": "hovered",
+            "POINTER_LEAVE": "idle",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        }
+      },
+      "invariants": {
+        "preemptible": true,
+        "escapeReset": true,
+        "windowBlurReset": true,
+        "fluidMathPeg": "scale(calc(1 - 0.05 * var(--scale, 1)))"
+      }
+    },
+    "layer1_physicalTruth": {
+      "curveType": "cubic-bezier",
+      "cssCubicBezier": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "controlPoints": [
+        [
+          0,
+          0
+        ],
+        [
+          0.215,
+          0.61
+        ],
+        [
+          0.355,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "beziers": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0.215,
+            0.61
+          ],
+          [
+            0.355,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      ],
+      "durationMs": 12000,
+      "delayMs": 0,
+      "harmonicSpring": {
+        "zeta": 0.85,
+        "omegaN": 12
+      }
+    },
+    "layer2_adaptiveSkill": {
+      "scaleVarName": "--scale",
+      "fluidMathExpression": "calc(-1 * var(--scale))",
+      "relativeTransforms": {
+        "arrow": {
+          "resting": "translate(calc(-1 * var(--scale)), calc(1 * var(--scale))) scale(0.6)",
+          "active": "translate(0) scale(1)",
+          "origin": "left bottom"
+        }
+      },
+      "interruptionFsm": {
+        "initial": "idle",
+        "states": {
+          "idle": {
+            "on": {
+              "HOVER_ENTER": "crossfading"
+            }
+          },
+          "crossfading": {
+            "action": "killTweensOf(previousTarget)",
+            "on": {
+              "EXPAND_READY": "active",
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "active": {
+            "on": {
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "resetting": {
+            "on": {
+              "RESET_DONE": "idle",
+              "HOVER_ENTER": "crossfading",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          }
+        },
+        "resilienceHandlers": {
+          "escapeKey": "window.addEventListener('keydown', e => { if (e.key === 'Escape') send('ESCAPE'); })",
+          "windowBlur": "window.addEventListener('blur', () => send('BLUR'))"
+        }
+      },
+      "reducedMotionRule": "@media (prefers-reduced-motion: reduce) {\n  [data-capsule-id=\"app-dialog-7\"] * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n    transform: none !important;\n    scroll-behavior: auto !important;\n  }\n}"
+    }
+  },
+  "interactiveRuntime": {
+    "webpackModuleId": "54242",
+    "sorbetModuleId": "32987",
+    "defaultMinHeight": 560,
+    "sorbetMinHeight": 640,
+    "hooksUsed": [
+      "activeElement",
+      "useEffect",
+      "useRef",
+      "useState"
+    ],
+    "usesMotion": true,
+    "usesD3Shape": false,
+    "iconCount": 8,
+    "files": {
+      "defaultJsx": "app-dialog-7.jsx",
+      "sorbetJsx": "app-dialog-7.sorbet.jsx",
+      "capsuleHtml": "capsule.html"
+    }
+  }
+}

@@ -1,0 +1,3006 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "monitoring-5",
+  "category": "monitoring",
+  "categoryTitle": "Monitoring",
+  "domain": "Data, Dashboards & Monitoring",
+  "description": "Live log tail with level filters",
+  "sourceUrl": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-5",
+  "nativeDimensions": {
+    "width": "1280px",
+    "height": "680px"
+  },
+  "usedClassCount": 219,
+  "decompiledClassCount": 219,
+  "anatomy": {
+    "nodeCount": 203,
+    "maxDepth": 9,
+    "interactive": {
+      "buttons": 33,
+      "inputs": 1,
+      "textareas": 0,
+      "selects": 0,
+      "checkboxesOrRadios": 5,
+      "dialogs": 0,
+      "tables": 0,
+      "svgs": 4,
+      "canvases": 0,
+      "links": 0,
+      "roles": [
+        "radiogroup",
+        "radio"
+      ],
+      "ariaLabels": [
+        "Clear the buffer",
+        "Log level"
+      ],
+      "dataAttributes": [
+        "data-affix"
+      ],
+      "inputTypes": [
+        "text"
+      ],
+      "placeholders": [
+        "Filter by message or service"
+      ]
+    },
+    "headingsAndLabels": [
+      "Live tail",
+      "Follow",
+      "Pause",
+      "All",
+      "Error",
+      "Warn",
+      "Info",
+      "Debug",
+      "Filter log lines",
+      "09:04:00 info api-gateway GET /v2/orders 200 in 42ms",
+      "09:04:07 debug catalog-api cache warm complete for tenant 4821",
+      "09:04:14 warn invoice-worker vendor responded 503, scheduling retry 2 of 5",
+      "09:04:21 info payments-edge charge authorised for ORD-99214",
+      "09:04:28 error payments-edge charge timed out after 8s, releasing the hold",
+      "09:04:35 info search-api reindex batch 18/64 committed",
+      "09:04:42 debug edge-proxy upstream health probe ok",
+      "09:04:49 warn search-api embeddings index read latency 1.9s",
+      "09:04:56 info api-gateway GET /v2/orders 200 in 42ms",
+      "09:05:03 debug catalog-api cache warm complete for tenant 4821",
+      "09:05:10 warn invoice-worker vendor responded 503, scheduling retry 2 of 5",
+      "09:05:17 info payments-edge charge authorised for ORD-99214",
+      "09:05:24 error payments-edge charge timed out after 8s, releasing the hold",
+      "09:05:31 info search-api reindex batch 18/64 committed",
+      "09:05:38 debug edge-proxy upstream health probe ok",
+      "09:05:45 warn search-api embeddings index read latency 1.9s",
+      "09:05:52 info api-gateway GET /v2/orders 200 in 42ms",
+      "09:05:59 debug catalog-api cache warm complete for tenant 4821",
+      "09:06:06 warn invoice-worker vendor responded 503, scheduling retry 2 of 5",
+      "09:06:13 info payments-edge charge authorised for ORD-99214",
+      "09:06:20 error payments-edge charge timed out after 8s, releasing the hold",
+      "09:06:27 info search-api reindex batch 18/64 committed",
+      "09:06:34 debug edge-proxy upstream health probe ok",
+      "09:06:41 warn search-api embeddings index read latency 1.9s",
+      "09:06:48 info api-gateway GET /v2/orders 200 in 42ms"
+    ],
+    "computedSample": {
+      "backgroundColor": "oklch(0.145 0 0)",
+      "color": "oklch(0.97 0 0)",
+      "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "fontSize": "16px",
+      "borderRadius": "0px",
+      "display": "flex",
+      "gridTemplateColumns": "none",
+      "flexDirection": "column",
+      "gap": "normal",
+      "padding": "24px"
+    }
+  },
+  "tokensUsed": {
+    "rbVars": [
+      "--rb-accent",
+      "--rb-font-sans",
+      "--rb-n-100",
+      "--rb-n-200",
+      "--rb-n-300",
+      "--rb-n-400",
+      "--rb-n-50",
+      "--rb-n-500",
+      "--rb-n-600",
+      "--rb-n-700",
+      "--rb-n-800",
+      "--rb-n-900",
+      "--rb-n-950",
+      "--rb-r-lg",
+      "--rb-r-sm",
+      "--rb-r-xs",
+      "--rb-section-min-h"
+    ],
+    "scVars": [],
+    "colorVars": [
+      "--color-neutral-100",
+      "--color-neutral-200",
+      "--color-neutral-300",
+      "--color-neutral-400",
+      "--color-neutral-50",
+      "--color-neutral-500",
+      "--color-neutral-600",
+      "--color-neutral-700",
+      "--color-neutral-800",
+      "--color-neutral-900",
+      "--color-neutral-950",
+      "--color-white"
+    ],
+    "twVars": [
+      "--tw-border-style",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-font-weight",
+      "--tw-gradient-from",
+      "--tw-gradient-from-position",
+      "--tw-gradient-position",
+      "--tw-gradient-stops",
+      "--tw-gradient-to",
+      "--tw-gradient-to-position",
+      "--tw-gradient-via-stops",
+      "--tw-inset-ring-shadow",
+      "--tw-inset-shadow",
+      "--tw-numeric-figure",
+      "--tw-numeric-fraction",
+      "--tw-numeric-spacing",
+      "--tw-ordinal",
+      "--tw-outline-style",
+      "--tw-ring-color",
+      "--tw-ring-inset",
+      "--tw-ring-offset-shadow",
+      "--tw-ring-offset-width",
+      "--tw-ring-shadow",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--tw-scale-z",
+      "--tw-shadow",
+      "--tw-shadow-color",
+      "--tw-slashed-zero",
+      "--tw-tracking"
+    ],
+    "otherVars": [
+      "---",
+      "--animate-spin",
+      "--default-transition-duration",
+      "--default-transition-timing-function",
+      "--font-jetbrains-mono",
+      "--font-weight-normal",
+      "--spacing"
+    ],
+    "oklchColors": [
+      "oklch(0.29 0.06 26 / 0.4)",
+      "oklch(0.29 0.06 26 / 0.6)",
+      "oklch(0.49 0.1 68)",
+      "oklch(0.51 0.18 26)",
+      "oklch(0.6 0.236 26)",
+      "oklch(0.652 0.219 26)",
+      "oklch(0.76 0.14 26)",
+      "oklch(0.8 0.13 68)",
+      "oklch(0.945 0.027 26 / 0.4)",
+      "oklch(0.945 0.027 26 / 0.6)",
+      "oklch(100% 0 0)",
+      "oklch(14.5% 0 0)",
+      "oklch(20.5% 0 0)",
+      "oklch(26.9% 0 0)",
+      "oklch(37.1% 0 0)",
+      "oklch(43.9% 0 0)",
+      "oklch(55.6% 0 0)",
+      "oklch(70.8% 0 0)",
+      "oklch(87% 0 0)",
+      "oklch(92.2% 0 0)",
+      "oklch(97% 0 0)",
+      "oklch(98.5% 0 0)"
+    ],
+    "cubicBeziers": [
+      "cubic-bezier(.2,0,0,1)",
+      "cubic-bezier(0.2, 0, 0, 1)"
+    ],
+    "durations": [
+      "0.12s",
+      "0s",
+      "1.9s",
+      "12s",
+      "42ms",
+      "60ms",
+      "8s"
+    ]
+  },
+  "keyframes": [
+    "gradient",
+    "spin"
+  ],
+  "decompiledClasses": {
+    "block-scale-preview": [
+      {
+        "context": [],
+        "declarations": "--rb-section-min-h: 100%;",
+        "cssText": ".block-scale-preview { --rb-section-min-h: 100%; }"
+      },
+      {
+        "context": [],
+        "declarations": "min-height: 100% !important;",
+        "cssText": ".block-scale-preview .min-h-screen { min-height: 100% !important; }"
+      },
+      {
+        "context": [],
+        "declarations": "height: 100% !important;",
+        "cssText": ".block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }"
+      }
+    ],
+    "rb-theme-scope": [
+      {
+        "context": [],
+        "declarations": "--color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\");",
+        "cssText": ".rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"); }"
+      }
+    ],
+    "rb104zntu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: opacity; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rb104zntu { transition-property: opacity; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rb10e4yaq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rb10e4yaq { transition-property: color, background-color, border-color, box-shadow, outline-color, scale, filter; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rb10gpql2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "column-gap: calc(var(--spacing)*3);",
+        "cssText": ".rb10gpql2 { column-gap: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb10ntzeq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb10ntzeq { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb10vl4ak": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ring-color: #17171714;",
+        "cssText": ".rb10vl4ak:focus-within { --tw-ring-color: #17171714; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-ring-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb10vl4ak:focus-within { --tw-ring-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb110jdld": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-top-color: rgba(0, 0, 0, 0);",
+        "cssText": ".rb110jdld { border-top-color: rgba(0, 0, 0, 0); }"
+      }
+    ],
+    "rb113qazb": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.8);",
+        "cssText": ".rb113qazb:is(.dark *) { color: rgba(245, 245, 245, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)80%,transparent);",
+        "cssText": ".rb113qazb:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)80%,transparent); }"
+      }
+    ],
+    "rb11tdqur": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-style: var(--tw-border-style); border-width: 1px;",
+        "cssText": ".rb11tdqur { border-style: var(--tw-border-style); border-width: 1px; }"
+      }
+    ],
+    "rb128m1jd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(0, 0, 0, 0);",
+        "cssText": ".rb128m1jd { background-color: rgba(0, 0, 0, 0); }"
+      }
+    ],
+    "rb13mv59b": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.66);",
+        "cssText": ".rb13mv59b { color: rgba(23, 23, 23, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)66%,transparent);",
+        "cssText": ".rb13mv59b { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }"
+      }
+    ],
+    "rb13t4qo3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb13t4qo3:has(:is(input[readonly])) { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb13t4qo3:has(:is(input[readonly])) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb13xff4c": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb13xff4c:is(.dark *):disabled { border-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb13xff4c:is(.dark *):disabled { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb1460m8m": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "user-select: none;",
+        "cssText": ".rb1460m8m { user-select: none; }"
+      }
+    ],
+    "rb14n1ph2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow: hidden;",
+        "cssText": ".rb14n1ph2 { overflow: hidden; }"
+      }
+    ],
+    "rb15u7vra": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-end: calc(var(--spacing)*2);",
+        "cssText": ".rb15u7vra:has(+ [data-affix]) { padding-inline-end: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb15ummu0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.66);",
+        "cssText": ".rb15ummu0::placeholder { color: rgba(23, 23, 23, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)66%,transparent);",
+        "cssText": ".rb15ummu0::placeholder { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }"
+      }
+    ],
+    "rb15wj6ah": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: oklch(0.6 0.236 26);",
+        "cssText": ".rb15wj6ah:has([aria-invalid=\"true\"]) { border-color: oklch(0.6 0.236 26); }"
+      }
+    ],
+    "rb17gdgg2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(20.5% 0 0));",
+        "cssText": ".rb17gdgg2:focus-visible { outline-color: var(--rb-accent,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb17mynn8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "opacity: 1;",
+        "cssText": ".rb17mynn8 { opacity: 1; }"
+      }
+    ],
+    "rb1886wz7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-start: calc(var(--spacing)*2);",
+        "cssText": "[data-affix] + .rb1886wz7 { padding-inline-start: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb18fx1vr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 16px; line-height: 20px;",
+        "cssText": ".rb18fx1vr { font-size: 16px; line-height: 20px; }"
+      }
+    ],
+    "rb18o0jxz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.8);",
+        "cssText": ".rb18o0jxz { color: rgba(23, 23, 23, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)80%,transparent);",
+        "cssText": ".rb18o0jxz { color: color-mix(in oklab,var(--color-neutral-900)80%,transparent); }"
+      }
+    ],
+    "rb18r3wr2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: flex;",
+        "cssText": ".rb18r3wr2 { display: flex; }"
+      }
+    ],
+    "rb18rvux1": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.32);",
+        "cssText": ".rb18rvux1:is(.dark *):hover:not(:disabled) { border-color: rgba(245, 245, 245, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent);",
+        "cssText": ".rb18rvux1:is(.dark *):hover:not(:disabled) { border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent); }"
+      }
+    ],
+    "rb196wv46": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-tracking: -.015em; letter-spacing: -0.015em;",
+        "cssText": ".rb196wv46 { --tw-tracking: -.015em; letter-spacing: -0.015em; }"
+      }
+    ],
+    "rb197t972": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-end: calc(var(--spacing)*3);",
+        "cssText": ".rb197t972:last-child { padding-inline-end: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb19b2o0o": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*1.5);",
+        "cssText": ".rb19b2o0o { gap: calc(var(--spacing)*1.5); }"
+      }
+    ],
+    "rb19qrhtt": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rb19qrhtt:is(.dark *):hover:not([aria-checked=\"true\"]) { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rb19sro2n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-bottom: calc(var(--spacing)*0);",
+        "cssText": ".rb19sro2n:has(+ *) { margin-bottom: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1afbc8c": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rb1afbc8c { border-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb1afbc8c { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb1amm3n1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: not-allowed;",
+        "cssText": ".rb1amm3n1:has(:is(input:disabled)) { cursor: not-allowed; }"
+      }
+    ],
+    "rb1bcm6hv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 100%;",
+        "cssText": ".rb1bcm6hv { height: 100%; }"
+      }
+    ],
+    "rb1bqm5pf": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-from: #17171708;",
+        "cssText": ".rb1bqm5pf:hover:not(:disabled) { --tw-gradient-from: #17171708; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-from: color-mix(in oklab,var(--color-neutral-900)3%,transparent);",
+        "cssText": ".rb1bqm5pf:hover:not(:disabled) { --tw-gradient-from: color-mix(in oklab,var(--color-neutral-900)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb1bqm5pf:hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1brkbg2": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-to: #f5f5f508;",
+        "cssText": ".rb1brkbg2:is(.dark *):hover:not(:disabled) { --tw-gradient-to: #f5f5f508; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-to: color-mix(in oklab,var(--color-neutral-100)3%,transparent);",
+        "cssText": ".rb1brkbg2:is(.dark *):hover:not(:disabled) { --tw-gradient-to: color-mix(in oklab,var(--color-neutral-100)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb1brkbg2:is(.dark *):hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1c4vf9o": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1);",
+        "cssText": ".rb1c4vf9o { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }"
+      }
+    ],
+    "rb1c7rwe5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: calc(var(--spacing)*1.5);",
+        "cssText": ".rb1c7rwe5 { padding-block: calc(var(--spacing)*1.5); }"
+      }
+    ],
+    "rb1ccchv1": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-position: to bottom;",
+        "cssText": ".rb1ccchv1:hover:not(:disabled) { --tw-gradient-position: to bottom; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to bottom in oklab;",
+        "cssText": ".rb1ccchv1:hover:not(:disabled) { --tw-gradient-position: to bottom in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".rb1ccchv1:hover:not(:disabled) { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rb1colow3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rb1colow3:active { background-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rb1colow3:active { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rb1ctweqq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb1ctweqq:disabled { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb1d9ao0e": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rb1d9ao0e svg { flex-shrink: 0; }"
+      }
+    ],
+    "rb1dsaw1n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-to: transparent; --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb1dsaw1n { --tw-gradient-to: transparent; --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1e3eanr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*.5);",
+        "cssText": ".rb1e3eanr { padding: calc(var(--spacing)*.5); }"
+      }
+    ],
+    "rb1e4bo8h": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-lg,10px);",
+        "cssText": ".rb1e4bo8h { border-radius: var(--rb-r-lg,10px); }"
+      }
+    ],
+    "rb1e7mfwh": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb1e7mfwh:hover:not([aria-checked=\"true\"]) { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1efe1sq": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media not all and (min-width: 40rem)"
+        ],
+        "declarations": "flex-basis: 100%;",
+        "cssText": ".rb1efe1sq { flex-basis: 100%; }"
+      }
+    ],
+    "rb1ekdcwk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: 5px;",
+        "cssText": ".rb1ekdcwk { padding-block: 5px; }"
+      }
+    ],
+    "rb1f4tdag": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*2);",
+        "cssText": ".rb1f4tdag { gap: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb1f9wio8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: 3.40282e+38px;",
+        "cssText": ".rb1f9wio8 { border-radius: 3.40282e+38px; }"
+      }
+    ],
+    "rb1fesyzf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*3);",
+        "cssText": ".rb1fesyzf { gap: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb1feucr4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.49 0.1 68);",
+        "cssText": ".rb1feucr4 { color: oklch(0.49 0.1 68); }"
+      }
+    ],
+    "rb1fiz18p": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb1fiz18p[aria-checked=\"true\"] { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1fr5afl": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0006); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb1fr5afl:is(.dark *):active { --tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0006); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb1fys6dd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*1);",
+        "cssText": ".rb1fys6dd { gap: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1gfmcx6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rb1gfmcx6:is(.dark *):has(:is(input:disabled)) { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rb1gfmcx6:is(.dark *):has(:is(input:disabled)) { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rb1gyzmdx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb1gyzmdx:has(:is(input[readonly])) { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rb1gz28m5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "top: calc(var(--spacing)*0);",
+        "cssText": ".rb1gz28m5 { top: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1hnkim": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: default;",
+        "cssText": ".rb1hnkim:has(:is(input[readonly])) { cursor: default; }"
+      }
+    ],
+    "rb1j0avve": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: calc(var(--spacing)*0);",
+        "cssText": ".rb1j0avve { min-width: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1j1bps1": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb1j1bps1:is(.dark *):hover:not([aria-checked=\"true\"]) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb1j1bps1:is(.dark *):hover:not([aria-checked=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb1jt2mmw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: flex-end;",
+        "cssText": ".rb1jt2mmw:has(:is(button)) { justify-content: flex-end; }"
+      }
+    ],
+    "rb1jwob9k": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rb1jwob9k:is(.dark *):disabled::placeholder { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rb1jwob9k:is(.dark *):disabled::placeholder { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rb1jyqtvo": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.945 0.027 26 / 0.4);",
+        "cssText": ".rb1jyqtvo { background-color: oklch(0.945 0.027 26 / 0.4); }"
+      }
+    ],
+    "rb1k70ap2": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb1k70ap2:is(.dark *):hover { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb1k70ap2:is(.dark *):hover { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb1kcib6w": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-end: calc(var(--spacing)*2);",
+        "cssText": ".rb1kcib6w:has(:is(button)) { padding-inline-end: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb1kd9osn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "opacity: 0;",
+        "cssText": ".rb1kd9osn { opacity: 0; }"
+      }
+    ],
+    "rb1knaj8j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: calc(var(--spacing)*0);",
+        "cssText": ".rb1knaj8j { min-height: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1l3jiy0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: inline-flex;",
+        "cssText": ".rb1l3jiy0 { display: inline-flex; }"
+      }
+    ],
+    "rb1lb6ur7": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.32);",
+        "cssText": ".rb1lb6ur7:is(.dark *):hover:not(:focus-within):not(:has([aria-invalid=\"true\"])):not(:has(:is(input:disabled))) { border-color: rgba(245, 245, 245, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent);",
+        "cssText": ".rb1lb6ur7:is(.dark *):hover:not(:focus-within):not(:has([aria-invalid=\"true\"])):not(:has(:is(input:disabled))) { border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent); }"
+      }
+    ],
+    "rb1lflv78": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "max-width: 280px;",
+        "cssText": ".rb1lflv78 { max-width: 280px; }"
+      }
+    ],
+    "rb1lktqe": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline: calc(var(--spacing)*1);",
+        "cssText": ".rb1lktqe { margin-inline: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1lobhee": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb1lobhee:hover:not(:disabled) { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb1lobhee:hover:not(:disabled) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb1lvgxvn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb1lvgxvn:is(.dark *):active { background-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb1lvgxvn:is(.dark *):active { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb1mg5g3y": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: oklch(0.29 0.06 26 / 0.4);",
+        "cssText": ".rb1mg5g3y:is(.dark *) { background-color: oklch(0.29 0.06 26 / 0.4); }"
+      }
+    ],
+    "rb1mnug5m": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rb1mnug5m:has(:is(input:disabled)) { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rb1mnug5m:has(:is(input:disabled)) { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rb1n6xfa": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.76 0.14 26);",
+        "cssText": ".rb1n6xfa:is(.dark *) { color: oklch(0.76 0.14 26); }"
+      }
+    ],
+    "rb1nb0hq8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.09);",
+        "cssText": ".rb1nb0hq8:is(.dark *)[aria-pressed=\"true\"] { background-color: rgba(245, 245, 245, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent);",
+        "cssText": ".rb1nb0hq8:is(.dark *)[aria-pressed=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }"
+      }
+    ],
+    "rb1nuvmh9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(0, 0, 0, 0);",
+        "cssText": ".rb1nuvmh9:has(:is(input[readonly])) { border-color: rgba(0, 0, 0, 0); }"
+      }
+    ],
+    "rb1nvgqif": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.32);",
+        "cssText": ".rb1nvgqif:is(.dark *)[aria-pressed=\"true\"] { border-color: rgba(245, 245, 245, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent);",
+        "cssText": ".rb1nvgqif:is(.dark *)[aria-pressed=\"true\"] { border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent); }"
+      }
+    ],
+    "rb1nww164": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-family: var(--font-jetbrains-mono);",
+        "cssText": ".rb1nww164 { font-family: var(--font-jetbrains-mono); }"
+      }
+    ],
+    "rb1omafwf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-style: var(--tw-outline-style); outline-width: 2px;",
+        "cssText": ".rb1omafwf:focus-visible { outline-style: var(--tw-outline-style); outline-width: 2px; }"
+      }
+    ],
+    "rb1oyvea0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline: auto;",
+        "cssText": ".rb1oyvea0 { margin-inline: auto; }"
+      }
+    ],
+    "rb1pc1bcr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: currentcolor;",
+        "cssText": ".rb1pc1bcr { border-color: currentcolor; }"
+      }
+    ],
+    "rb1pqbtlu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: space-between;",
+        "cssText": ".rb1pqbtlu { justify-content: space-between; }"
+      }
+    ],
+    "rb1qxrj6u": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.32);",
+        "cssText": ".rb1qxrj6u:is(.dark *)[aria-expanded=\"true\"] { border-color: rgba(245, 245, 245, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent);",
+        "cssText": ".rb1qxrj6u:is(.dark *)[aria-expanded=\"true\"] { border-color: color-mix(in oklab,var(--color-neutral-100)32%,transparent); }"
+      }
+    ],
+    "rb1rjyc7o": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 13px; line-height: 20px;",
+        "cssText": ".rb1rjyc7o { font-size: 13px; line-height: 20px; }"
+      }
+    ],
+    "rb1rxb23b": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.32);",
+        "cssText": ".rb1rxb23b[aria-pressed=\"true\"] { border-color: rgba(23, 23, 23, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent);",
+        "cssText": ".rb1rxb23b[aria-pressed=\"true\"] { border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent); }"
+      }
+    ],
+    "rb1s19pq6": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "display: block;",
+        "cssText": ".rb1s19pq6 { display: block; }"
+      }
+    ],
+    "rb1so154d": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "max-width: 100%;",
+        "cssText": ".rb1so154d { max-width: 100%; }"
+      }
+    ],
+    "rb1ss5b1e": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-to: #17171708;",
+        "cssText": ".rb1ss5b1e:hover:not(:disabled) { --tw-gradient-to: #17171708; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-to: color-mix(in oklab,var(--color-neutral-900)3%,transparent);",
+        "cssText": ".rb1ss5b1e:hover:not(:disabled) { --tw-gradient-to: color-mix(in oklab,var(--color-neutral-900)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rb1ss5b1e:hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rb1t1txyy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "inset-inline: calc(var(--spacing)*0);",
+        "cssText": ".rb1t1txyy { inset-inline: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1t7dkr7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb1t7dkr7:is(.dark *):has(:is(input[readonly])) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb1t7dkr7:is(.dark *):has(:is(input[readonly])) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb1t7ql03": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "scale: 0.98;",
+        "cssText": ".rb1t7ql03:active { scale: 0.98; }"
+      }
+    ],
+    "rb1t8njiv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-sm,6px);",
+        "cssText": ".rb1t8njiv { border-radius: var(--rb-r-sm,6px); }"
+      }
+    ],
+    "rb1tp283s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1tp283s, .sr-only { position: absolute; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1tp283s, .rb6cqkg5 { position: absolute; }"
+      }
+    ],
+    "rb1u2yyxx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 13px; line-height: 18px;",
+        "cssText": ".rb1u2yyxx { font-size: 13px; line-height: 18px; }"
+      }
+    ],
+    "rb1v5xx0f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: 680px;",
+        "cssText": ".rb1v5xx0f { min-height: 680px; }"
+      }
+    ],
+    "rb1vtsfo9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rb1vtsfo9 { flex-shrink: 0; }"
+      }
+    ],
+    "rb1vv3jxn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: border-color, box-shadow, background-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rb1vv3jxn { transition-property: border-color, box-shadow, background-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rb1vwjsw2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: not-allowed;",
+        "cssText": ".rb1vwjsw2:disabled { cursor: not-allowed; }"
+      }
+    ],
+    "rb1wu0p48": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.66);",
+        "cssText": ".rb1wu0p48:is(.dark *)::placeholder { color: rgba(245, 245, 245, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)66%,transparent);",
+        "cssText": ".rb1wu0p48:is(.dark *)::placeholder { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }"
+      }
+    ],
+    "rb1wzjdi4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rb19xqcem:active, .rb1wzjdi4:active { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0000001f);",
+        "cssText": ".rb1wzjdi4:active { --tw-shadow: inset 0 1px 2px var(--tw-shadow-color,#0000001f); }"
+      }
+    ],
+    "rb1xgt1lf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb1xgt1lf:is(.dark *):has(:is(input:disabled)) { border-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb1xgt1lf:is(.dark *):has(:is(input:disabled)) { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb1xp7u8n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-end: calc(var(--spacing)*1);",
+        "cssText": ".rb1xp7u8n:has(:is(button)):last-child { padding-inline-end: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1ykkvxw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal);",
+        "cssText": ".rb1ykkvxw { --tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal); }"
+      }
+    ],
+    "rb1yu1hr2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-white);",
+        "cssText": ".rb1yu1hr2 { background-color: var(--color-white); }"
+      }
+    ],
+    "rb20mtwh": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb20mtwh:hover:not([aria-checked=\"true\"]) { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb20mtwh:hover:not([aria-checked=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb251rxf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "bottom: calc(var(--spacing)*0);",
+        "cssText": ".rb251rxf { bottom: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb295a48": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex: 1 1 0%;",
+        "cssText": ".rb295a48 { flex: 1 1 0%; }"
+      }
+    ],
+    "rb3f7mof": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-start: calc(var(--spacing)*1);",
+        "cssText": ".rb3f7mof:has(:is(button)):first-child { padding-inline-start: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb55fhqw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: 60ms; transition-duration: 60ms;",
+        "cssText": ".rb55fhqw:active { --tw-duration: 60ms; transition-duration: 60ms; }"
+      }
+    ],
+    "rb5aqrke": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 1lh;",
+        "cssText": ".rb5aqrke { height: 1lh; }"
+      }
+    ],
+    "rb5pe1ut": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-white);",
+        "cssText": ".rb5pe1ut[aria-checked=\"true\"] { background-color: var(--color-white); }"
+      }
+    ],
+    "rb5xcbhg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "white-space: nowrap;",
+        "cssText": ".rb5xcbhg { white-space: nowrap; }"
+      }
+    ],
+    "rb67e7vw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ring-color: #f5f5f514;",
+        "cssText": ".rb67e7vw:is(.dark *):focus-within { --tw-ring-color: #f5f5f514; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-ring-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb67e7vw:is(.dark *):focus-within { --tw-ring-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb6ady2u": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb6ady2u:hover { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb6ady2u:hover { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb6cqkg5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden;",
+        "cssText": ".rb6cqkg5 { clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1tp283s, .rb6cqkg5 { position: absolute; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: auto;",
+        "cssText": ".\\[\\&\\>\\.sr-only\\]\\:w-auto > .rb6cqkg5 { width: auto; }"
+      }
+    ],
+    "rb6fzm7x": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".shadow-\\[0_1px_1px_rgb\\(0_0_0\\/0\\.2\\)\\], .rb6fzm7x { box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f);",
+        "cssText": ".rb6fzm7x { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000001f); }"
+      }
+    ],
+    "rb76mjsc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-bottom: calc(var(--spacing)*1);",
+        "cssText": ".rb76mjsc { margin-bottom: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb76q1w4": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: oklch(0.29 0.06 26 / 0.6);",
+        "cssText": ".rb76q1w4:is(.dark *):hover { background-color: oklch(0.29 0.06 26 / 0.6); }"
+      }
+    ],
+    "rb7dk651": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: var(--rb-accent,oklch(20.5% 0 0));",
+        "cssText": ".rb7dk651:focus-within { border-color: var(--rb-accent,oklch(20.5% 0 0)); }"
+      }
+    ],
+    "rb7ncffv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: oklch(0.652 0.219 26);",
+        "cssText": ".rb7ncffv:is(.dark *):has([aria-invalid=\"true\"]) { border-color: oklch(0.652 0.219 26); }"
+      }
+    ],
+    "rb7vshvq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.32);",
+        "cssText": ".rb7vshvq[aria-expanded=\"true\"] { border-color: rgba(23, 23, 23, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent);",
+        "cssText": ".rb7vshvq[aria-expanded=\"true\"] { border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent); }"
+      }
+    ],
+    "rb80nuvy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-outline-style: none; outline-style: none;",
+        "cssText": ".rb80nuvy { --tw-outline-style: none; outline-style: none; }"
+      }
+    ],
+    "rb850c9q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rb850c9q:is(.dark *) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rb850c9q:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rb8bpyv3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "animation: var(--animate-spin);",
+        "cssText": ".rb8bpyv3 { animation: var(--animate-spin); }"
+      }
+    ],
+    "rb8rl73q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*8);",
+        "cssText": ".rb8rl73q { height: calc(var(--spacing)*8); }"
+      }
+    ],
+    "rb8vdjsb": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*2.5);",
+        "cssText": ".rb8vdjsb { padding-inline: calc(var(--spacing)*2.5); }"
+      }
+    ],
+    "rb93tnh3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: 100%;",
+        "cssText": ".rb93tnh3 { min-width: 100%; }"
+      }
+    ],
+    "rb999fpc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb999fpc:is(.dark *):active:not([aria-checked=\"true\"]) { background-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb999fpc:is(.dark *):active:not([aria-checked=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rbaelmgf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*.5);",
+        "cssText": ".rbaelmgf { gap: calc(var(--spacing)*.5); }"
+      }
+    ],
+    "rbagumvc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*4);",
+        "cssText": ".rbagumvc { padding-inline: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rbapjxty": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rbapjxty:is(.dark *):hover:not(:disabled) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rbapjxty:is(.dark *):hover:not(:disabled) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rbavfn4v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "justify-content: center;",
+        "cssText": ".rbavfn4v { justify-content: center; }"
+      }
+    ],
+    "rbawlzee": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: calc(var(--spacing)*3);",
+        "cssText": ".rbawlzee { padding-block: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbb6ll3d": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: calc(var(--spacing)*2);",
+        "cssText": ".rbb6ll3d { padding-block: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rbbc182s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-top: calc(var(--spacing)*.5);",
+        "cssText": ".rbbc182s { margin-top: calc(var(--spacing)*.5); }"
+      }
+    ],
+    "rbbs0mez": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-700);",
+        "cssText": ".rbbs0mez:is(.dark *)[aria-checked=\"true\"] { background-color: var(--color-neutral-700); }"
+      }
+    ],
+    "rbbtgtqf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*7);",
+        "cssText": ".rbbtgtqf { height: calc(var(--spacing)*7); }"
+      }
+    ],
+    "rbc2phzs": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*7); height: calc(var(--spacing)*7);",
+        "cssText": ".rbc2phzs { width: calc(var(--spacing)*7); height: calc(var(--spacing)*7); }"
+      }
+    ],
+    "rbceruq5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*3);",
+        "cssText": ".rbceruq5 { padding-inline: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbcwh2cr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rbcwh2cr:disabled { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rbcwh2cr:disabled { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rbcx0gvc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-start: calc(var(--spacing)*3);",
+        "cssText": ".rbcx0gvc:first-child { padding-inline-start: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbdy8p83": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: calc(var(--spacing)*11);",
+        "cssText": ".rbdy8p83 { min-height: calc(var(--spacing)*11); }"
+      }
+    ],
+    "rbe17ngz": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.32);",
+        "cssText": ".rbe17ngz:hover:not(:focus-within):not(:has([aria-invalid=\"true\"])):not(:has(:is(input:disabled))) { border-color: rgba(23, 23, 23, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent);",
+        "cssText": ".rbe17ngz:hover:not(:focus-within):not(:has([aria-invalid=\"true\"])):not(:has(:is(input:disabled))) { border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent); }"
+      }
+    ],
+    "rbehg5h7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ring-shadow: var(--tw-ring-inset,)0 0 0 calc(3px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbehg5h7:focus-within { --tw-ring-shadow: var(--tw-ring-inset,)0 0 0 calc(3px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbenduqy": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (prefers-reduced-motion: reduce)"
+        ],
+        "declarations": "animation: auto ease 0s 1 normal none running none;",
+        "cssText": ".rbenduqy { animation: auto ease 0s 1 normal none running none; }"
+      }
+    ],
+    "rbenwahe": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*4);",
+        "cssText": ".rbenwahe { padding: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rbenzy1e": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-50);",
+        "cssText": ".rbenzy1e { background-color: var(--color-neutral-50); }"
+      }
+    ],
+    "rbes9zlf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.51 0.18 26);",
+        "cssText": ".rbes9zlf { color: oklch(0.51 0.18 26); }"
+      }
+    ],
+    "rbfjp8l8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 100%;",
+        "cssText": ".rbfjp8l8 { width: 100%; }"
+      }
+    ],
+    "rbfxiia8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.09);",
+        "cssText": ".rbfxiia8[aria-pressed=\"true\"] { background-color: rgba(23, 23, 23, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent);",
+        "cssText": ".rbfxiia8[aria-pressed=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }"
+      }
+    ],
+    "rbg6awf6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rbg6awf6:is(.dark *) { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rbg9p2ao": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: inline-block;",
+        "cssText": ".rbg9p2ao { display: inline-block; }"
+      }
+    ],
+    "rbgp0qyh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rbgp0qyh:is(.dark *)[aria-checked=\"true\"] { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rbh6i937": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rbh6i937:has(:is(input:disabled)) { border-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rbh6i937:has(:is(input:disabled)) { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rbhb57jx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: none;",
+        "cssText": ".rbhb57jx { display: none; }"
+      }
+    ],
+    "rbhcbi7q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 0 1px var(--tw-shadow-color,#ffffff29),0 1px 2px var(--tw-shadow-color,#0000004d); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbhcbi7q:is(.dark *)[aria-checked=\"true\"] { --tw-shadow: 0 0 0 1px var(--tw-shadow-color,#ffffff29),0 1px 2px var(--tw-shadow-color,#0000004d); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbhmru0c": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: fit-content;",
+        "cssText": ".rbhmru0c { width: fit-content; }"
+      }
+    ],
+    "rbhuq7i1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.14);",
+        "cssText": ".rbhuq7i1:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent);",
+        "cssText": ".rbhuq7i1:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }"
+      }
+    ],
+    "rbhw98vl": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: text;",
+        "cssText": ".rbhw98vl { cursor: text; }"
+      }
+    ],
+    "rbi0hsny": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (prefers-reduced-motion: reduce)"
+        ],
+        "declarations": "--tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y);",
+        "cssText": ".rbi0hsny:active { --tw-scale-x: 100%; --tw-scale-y: 100%; --tw-scale-z: 100%; scale: var(--tw-scale-x)var(--tw-scale-y); }"
+      }
+    ],
+    "rbioyscy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color-scheme: dark;",
+        "cssText": ".rbioyscy:is(.dark *) { color-scheme: dark; }"
+      }
+    ],
+    "rbiqzfts": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-align: left;",
+        "cssText": ".rbiqzfts { text-align: left; }"
+      }
+    ],
+    "rbjh3i9e": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: background-color, color, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbjh3i9e { transition-property: background-color, color, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbjjrn6d": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.32);",
+        "cssText": ".rbjjrn6d:hover:not(:disabled) { border-color: rgba(23, 23, 23, 0.32); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent);",
+        "cssText": ".rbjjrn6d:hover:not(:disabled) { border-color: color-mix(in oklab,var(--color-neutral-900)32%,transparent); }"
+      }
+    ],
+    "rbjot0rw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,);",
+        "cssText": ".oldstyle-nums, .rbjot0rw { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-numeric-spacing: tabular-nums;",
+        "cssText": ".rbjot0rw { --tw-numeric-spacing: tabular-nums; }"
+      }
+    ],
+    "rbkjdhh0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-from: var(--color-neutral-950); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbkjdhh0:is(.dark *) { --tw-gradient-from: var(--color-neutral-950); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbl4tswd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-direction: column;",
+        "cssText": ".rbl4tswd { flex-direction: column; }"
+      }
+    ],
+    "rblj2484": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: 450; font-weight: 450;",
+        "cssText": ".rblj2484 { --tw-font-weight: 450; font-weight: 450; }"
+      }
+    ],
+    "rblpcvx9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: color, background-color, border-color, box-shadow, outline-color, opacity, scale; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rblpcvx9 { transition-property: color, background-color, border-color, box-shadow, outline-color, opacity, scale; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rblq4jvo": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-color: var(--rb-accent,oklch(100% 0 0));",
+        "cssText": ".rblq4jvo:is(.dark *):focus-visible { outline-color: var(--rb-accent,oklch(100% 0 0)); }"
+      }
+    ],
+    "rblwzxuh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transform-origin: 0px 0px;",
+        "cssText": ".rblwzxuh { transform-origin: 0px 0px; }"
+      }
+    ],
+    "rbm1kqic": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-top: calc(var(--spacing)*3);",
+        "cssText": ".rbm1kqic { margin-top: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbm83zh3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbm83zh3:is(.dark *) { --tw-shadow: 0 1px 2px -1px var(--tw-shadow-color,#0000005c); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbmuzxcf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow-y: auto;",
+        "cssText": ".rbmuzxcf { overflow-y: auto; }"
+      }
+    ],
+    "rbnakgof": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: center;",
+        "cssText": ".rbnakgof { align-items: center; }"
+      }
+    ],
+    "rbng6j8b": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: pointer;",
+        "cssText": ".rbng6j8b { cursor: pointer; }"
+      }
+    ],
+    "rbngyn5t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-from: var(--color-white); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbngyn5t { --tw-gradient-from: var(--color-white); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbnv50ft": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: var(--rb-accent,oklch(100% 0 0));",
+        "cssText": ".rbnv50ft:is(.dark *):focus-within { border-color: var(--rb-accent,oklch(100% 0 0)); }"
+      }
+    ],
+    "rbo64z88": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.4);",
+        "cssText": ".rbo64z88:disabled::placeholder { color: rgba(23, 23, 23, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)40%,transparent);",
+        "cssText": ".rbo64z88:disabled::placeholder { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }"
+      }
+    ],
+    "rbo81ens": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-lg,10px);",
+        "cssText": ".rbo81ens[data-concentric] { border-radius: var(--rb-r-lg,10px); }"
+      }
+    ],
+    "rboai3po": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rboai3po:is(.dark *) { border-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rboai3po:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rbodhndw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-offset: calc(-2px);",
+        "cssText": ".rbodhndw:focus-visible { outline-offset: calc(-2px); }"
+      }
+    ],
+    "rborxwov": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-950);",
+        "cssText": ".rborxwov:is(.dark *) { background-color: var(--color-neutral-950); }"
+      }
+    ],
+    "rbovrksi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "cursor: progress;",
+        "cssText": ".rbovrksi[aria-busy=\"true\"] { cursor: progress; }"
+      }
+    ],
+    "rbpbf4z6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-900);",
+        "cssText": ".rbpbf4z6:is(.dark *) { background-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rbps2bjw": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: oklch(0.8 0.13 68);",
+        "cssText": ".rbps2bjw:is(.dark *) { color: oklch(0.8 0.13 68); }"
+      }
+    ],
+    "rbpy5uhx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-position: to bottom;",
+        "cssText": ".rbpy5uhx { --tw-gradient-position: to bottom; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to bottom in oklab;",
+        "cssText": ".rbpy5uhx { --tw-gradient-position: to bottom in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".rbpy5uhx { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rbpyjxyx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: relative;",
+        "cssText": ".rbpyjxyx { position: relative; }"
+      }
+    ],
+    "rbpzuofk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rbpzuofk:active:not([aria-checked=\"true\"]) { background-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rbpzuofk:active:not([aria-checked=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rbpzw54s": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "padding: calc(var(--spacing)*6);",
+        "cssText": ".rbpzw54s { padding: calc(var(--spacing)*6); }"
+      }
+    ],
+    "rbqhw1bz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 1px 2px var(--tw-shadow-color,#0000001a); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbqhw1bz[aria-checked=\"true\"] { --tw-shadow: 0 1px 2px var(--tw-shadow-color,#0000001a); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbql94dv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-overflow: ellipsis; white-space: nowrap; overflow: hidden;",
+        "cssText": ".rbql94dv { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }"
+      }
+    ],
+    "rbrj4hm4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: background-color, border-color, color, scale, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbrj4hm4 { transition-property: background-color, border-color, color, scale, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbrmlqga": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*2.5); height: calc(var(--spacing)*2.5);",
+        "cssText": ".rbrmlqga { width: calc(var(--spacing)*2.5); height: calc(var(--spacing)*2.5); }"
+      }
+    ],
+    "rbrol1ov": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);",
+        "cssText": ".rbrol1ov:has(:is(input:disabled)) { --tw-shadow: 0 0 #0000; box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }"
+      }
+    ],
+    "rbrxrgtv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "outline-offset: 2px;",
+        "cssText": ".rbrxrgtv:focus-visible { outline-offset: 2px; }"
+      }
+    ],
+    "rbsggvp5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: .12s; transition-duration: 0.12s;",
+        "cssText": ".rbsggvp5 { --tw-duration: .12s; transition-duration: 0.12s; }"
+      }
+    ],
+    "rbshhmfo": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-xs,4px);",
+        "cssText": ".rbshhmfo { border-radius: var(--rb-r-xs,4px); }"
+      }
+    ],
+    "rbsq1vfn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-position: to top;",
+        "cssText": ".rbsq1vfn { --tw-gradient-position: to top; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to top in oklab;",
+        "cssText": ".rbsq1vfn { --tw-gradient-position: to top in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".bg-gradient-to-b, .rbsq1vfn { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rbtfldk1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-wrap: wrap;",
+        "cssText": ".rbtfldk1 { flex-wrap: wrap; }"
+      }
+    ],
+    "rbtvdubi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rbtvdubi { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rbtvdubi { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rbtydk6j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.4);",
+        "cssText": ".rbtydk6j:is(.dark *):disabled { color: rgba(245, 245, 245, 0.4); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)40%,transparent);",
+        "cssText": ".rbtydk6j:is(.dark *):disabled { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }"
+      }
+    ],
+    "rbu6gvvm": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: flex-start;",
+        "cssText": ".rbu6gvvm { align-items: flex-start; }"
+      }
+    ],
+    "rbueb669": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "pointer-events: none;",
+        "cssText": ".rbueb669 { pointer-events: none; }"
+      }
+    ],
+    "rbvipwyf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: stretch;",
+        "cssText": ".rbvipwyf { align-items: stretch; }"
+      }
+    ],
+    "rbw2kwan": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.66);",
+        "cssText": ".rbw2kwan:is(.dark *) { color: rgba(245, 245, 245, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)66%,transparent);",
+        "cssText": ".rbw2kwan:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }"
+      }
+    ],
+    "rbwbufsi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 120px;",
+        "cssText": ".rbwbufsi { width: 120px; }"
+      }
+    ],
+    "rbws0g3j": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.12);",
+        "cssText": ".rbws0g3j { border-color: rgba(23, 23, 23, 0.12); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent);",
+        "cssText": ".rbws0g3j { border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent); }"
+      }
+    ],
+    "rbx5lq4s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rbx5lq4s:disabled { border-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rbx5lq4s:disabled { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rbx6fed2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 14px; line-height: 16px;",
+        "cssText": ".rbx6fed2 { font-size: 14px; line-height: 16px; }"
+      }
+    ],
+    "rbxbznhh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.1);",
+        "cssText": ".rbxbznhh { border-color: rgba(23, 23, 23, 0.1); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent);",
+        "cssText": ".rbxbznhh { border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent); }"
+      }
+    ],
+    "rbxuslm9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 5ch;",
+        "cssText": ".rbxuslm9 { width: 5ch; }"
+      }
+    ],
+    "rbxylna6": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: oklch(0.945 0.027 26 / 0.6);",
+        "cssText": ".rbxylna6:hover { background-color: oklch(0.945 0.027 26 / 0.6); }"
+      }
+    ],
+    "rbyrtm3u": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "max-width: 1100px;",
+        "cssText": ".rbyrtm3u { max-width: 1100px; }"
+      }
+    ],
+    "rbyu4foj": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-from: #f5f5f508;",
+        "cssText": ".rbyu4foj:is(.dark *):hover:not(:disabled) { --tw-gradient-from: #f5f5f508; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-from: color-mix(in oklab,var(--color-neutral-100)3%,transparent);",
+        "cssText": ".rbyu4foj:is(.dark *):hover:not(:disabled) { --tw-gradient-from: color-mix(in oklab,var(--color-neutral-100)3%,transparent); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "--tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbyu4foj:is(.dark *):hover:not(:disabled) { --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbzldmi2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.16);",
+        "cssText": ".rbzldmi2:is(.dark *)[aria-pressed=\"true\"] { background-color: rgba(245, 245, 245, 0.16); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)16%,transparent);",
+        "cssText": ".rbzldmi2:is(.dark *)[aria-pressed=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-100)16%,transparent); }"
+      }
+    ]
+  },
+  "motionContract": {
+    "schemaVersion": "3.0.0",
+    "capsuleSlug": "monitoring-5",
+    "generatedAt": "2026-11-18T06:38:39.798Z",
+    "taxonomy": {
+      "archetype": "tactile-trigger",
+      "trigger": "state-discrete",
+      "criticality": "secondary",
+      "physicalRegime": "underdamped-spring",
+      "confidence": 0.53,
+      "indicators": [
+        ":active(?=[\\s\\S]*?(?:scale|transform))",
+        "btn|button|cta-link|magnetic-button|ripple"
+      ]
+    },
+    "fsmContract": {
+      "id": "monitoring-5-tactile-trigger-fsm",
+      "initial": "idle",
+      "context": {
+        "scale": 1,
+        "activeTween": null
+      },
+      "states": {
+        "idle": {
+          "on": {
+            "POINTER_ENTER": "hovered",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "hovered": {
+          "entry": [
+            "applyHoverScale"
+          ],
+          "on": {
+            "POINTER_LEAVE": "idle",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "pressed": {
+          "entry": [
+            "applyActiveCompression"
+          ],
+          "on": {
+            "POINTER_UP": "hovered",
+            "POINTER_LEAVE": "idle",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        }
+      },
+      "invariants": {
+        "preemptible": true,
+        "escapeReset": true,
+        "windowBlurReset": true,
+        "fluidMathPeg": "scale(calc(1 - 0.05 * var(--scale, 1)))"
+      }
+    },
+    "layer1_physicalTruth": {
+      "curveType": "cubic-bezier",
+      "cssCubicBezier": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "controlPoints": [
+        [
+          0,
+          0
+        ],
+        [
+          0.215,
+          0.61
+        ],
+        [
+          0.355,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "beziers": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0.215,
+            0.61
+          ],
+          [
+            0.355,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      ],
+      "durationMs": 12000,
+      "delayMs": 0,
+      "harmonicSpring": {
+        "zeta": 0.85,
+        "omegaN": 12
+      }
+    },
+    "layer2_adaptiveSkill": {
+      "scaleVarName": "--scale",
+      "fluidMathExpression": "calc(-1 * var(--scale))",
+      "relativeTransforms": {
+        "arrow": {
+          "resting": "translate(calc(-1 * var(--scale)), calc(1 * var(--scale))) scale(0.6)",
+          "active": "translate(0) scale(1)",
+          "origin": "left bottom"
+        }
+      },
+      "interruptionFsm": {
+        "initial": "idle",
+        "states": {
+          "idle": {
+            "on": {
+              "HOVER_ENTER": "crossfading"
+            }
+          },
+          "crossfading": {
+            "action": "killTweensOf(previousTarget)",
+            "on": {
+              "EXPAND_READY": "active",
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "active": {
+            "on": {
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "resetting": {
+            "on": {
+              "RESET_DONE": "idle",
+              "HOVER_ENTER": "crossfading",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          }
+        },
+        "resilienceHandlers": {
+          "escapeKey": "window.addEventListener('keydown', e => { if (e.key === 'Escape') send('ESCAPE'); })",
+          "windowBlur": "window.addEventListener('blur', () => send('BLUR'))"
+        }
+      },
+      "reducedMotionRule": "@media (prefers-reduced-motion: reduce) {\n  [data-capsule-id=\"monitoring-5\"] * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n    transform: none !important;\n    scroll-behavior: auto !important;\n  }\n}"
+    }
+  },
+  "interactiveRuntime": {
+    "webpackModuleId": "94140",
+    "sorbetModuleId": "13137",
+    "defaultMinHeight": 680,
+    "sorbetMinHeight": 700,
+    "hooksUsed": [
+      "disconnect",
+      "observe",
+      "useCallback",
+      "useEffect",
+      "useMemo",
+      "useRef",
+      "useState"
+    ],
+    "usesMotion": false,
+    "usesD3Shape": false,
+    "iconCount": 5,
+    "files": {
+      "defaultJsx": "monitoring-5.jsx",
+      "sorbetJsx": "monitoring-5.sorbet.jsx",
+      "capsuleHtml": "capsule.html"
+    }
+  }
+}

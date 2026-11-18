@@ -1,0 +1,1668 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "agent-plan-4",
+  "category": "agent-plan",
+  "categoryTitle": "Agent Plan",
+  "domain": "AI & Agent Surfaces",
+  "description": "Plan versus actual comparison",
+  "sourceUrl": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-4",
+  "nativeDimensions": {
+    "width": "1280px",
+    "height": "480px"
+  },
+  "usedClassCount": 129,
+  "decompiledClassCount": 122,
+  "anatomy": {
+    "nodeCount": 88,
+    "maxDepth": 10,
+    "interactive": {
+      "buttons": 0,
+      "inputs": 0,
+      "textareas": 0,
+      "selects": 0,
+      "checkboxesOrRadios": 0,
+      "dialogs": 0,
+      "tables": 1,
+      "svgs": 0,
+      "canvases": 0,
+      "links": 0,
+      "roles": [],
+      "ariaLabels": [],
+      "dataAttributes": [],
+      "inputTypes": [],
+      "placeholders": []
+    },
+    "headingsAndLabels": [
+      "Plan vs actual",
+      "Step",
+      "Duration",
+      "Planned",
+      "Actual",
+      "Drift",
+      "Read the billing contract notes",
+      "Map the entitlement resolver",
+      "Patch the tier lookup fallback",
+      "Add a renewal-grace test",
+      "Summarize the handoff"
+    ],
+    "computedSample": {
+      "backgroundColor": "oklch(0.145 0 0)",
+      "color": "oklch(0.97 0 0)",
+      "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "fontSize": "16px",
+      "borderRadius": "0px",
+      "display": "flex",
+      "gridTemplateColumns": "none",
+      "flexDirection": "column",
+      "gap": "normal",
+      "padding": "24px"
+    }
+  },
+  "tokensUsed": {
+    "rbVars": [
+      "--rb-font-sans",
+      "--rb-n-100",
+      "--rb-n-200",
+      "--rb-n-300",
+      "--rb-n-400",
+      "--rb-n-50",
+      "--rb-n-500",
+      "--rb-n-600",
+      "--rb-n-700",
+      "--rb-n-800",
+      "--rb-n-900",
+      "--rb-n-950",
+      "--rb-r-lg",
+      "--rb-r-sm",
+      "--rb-section-min-h"
+    ],
+    "scVars": [],
+    "colorVars": [
+      "--color-neutral-100",
+      "--color-neutral-200",
+      "--color-neutral-300",
+      "--color-neutral-400",
+      "--color-neutral-50",
+      "--color-neutral-500",
+      "--color-neutral-600",
+      "--color-neutral-700",
+      "--color-neutral-800",
+      "--color-neutral-900",
+      "--color-neutral-950",
+      "--color-white"
+    ],
+    "twVars": [
+      "--tw-border-spacing-x",
+      "--tw-border-spacing-y",
+      "--tw-border-style",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-font-weight",
+      "--tw-gradient-from",
+      "--tw-gradient-from-position",
+      "--tw-gradient-position",
+      "--tw-gradient-stops",
+      "--tw-gradient-to",
+      "--tw-gradient-to-position",
+      "--tw-gradient-via-stops",
+      "--tw-numeric-figure",
+      "--tw-numeric-fraction",
+      "--tw-numeric-spacing",
+      "--tw-ordinal",
+      "--tw-slashed-zero",
+      "--tw-tracking"
+    ],
+    "otherVars": [
+      "---",
+      "--default-transition-duration",
+      "--default-transition-timing-function",
+      "--font-weight-normal",
+      "--spacing"
+    ],
+    "oklchColors": [
+      "oklch(14.5% 0 0)",
+      "oklch(20.5% 0 0)",
+      "oklch(26.9% 0 0)",
+      "oklch(37.1% 0 0)",
+      "oklch(43.9% 0 0)",
+      "oklch(55.6% 0 0)",
+      "oklch(70.8% 0 0)",
+      "oklch(87% 0 0)",
+      "oklch(92.2% 0 0)",
+      "oklch(97% 0 0)",
+      "oklch(98.5% 0 0)"
+    ],
+    "cubicBeziers": [
+      "cubic-bezier(.2,0,0,1)",
+      "cubic-bezier(0.2, 0, 0, 1)"
+    ],
+    "durations": [
+      "0.12s",
+      "12s"
+    ]
+  },
+  "keyframes": [
+    "gradient"
+  ],
+  "decompiledClasses": {
+    "block-scale-preview": [
+      {
+        "context": [],
+        "declarations": "--rb-section-min-h: 100%;",
+        "cssText": ".block-scale-preview { --rb-section-min-h: 100%; }"
+      },
+      {
+        "context": [],
+        "declarations": "min-height: 100% !important;",
+        "cssText": ".block-scale-preview .min-h-screen { min-height: 100% !important; }"
+      },
+      {
+        "context": [],
+        "declarations": "height: 100% !important;",
+        "cssText": ".block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }"
+      }
+    ],
+    "rb-theme-scope": [
+      {
+        "context": [],
+        "declarations": "--color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\");",
+        "cssText": ".rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"); }"
+      }
+    ],
+    "rb10dn7j6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "opacity: 0;",
+        "cssText": ".rb10dn7j6 { opacity: 0; }"
+      }
+    ],
+    "rb10ruajt": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "table-layout: fixed;",
+        "cssText": ".rb10ruajt { table-layout: fixed; }"
+      }
+    ],
+    "rb116cihz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-50);",
+        "cssText": ".rb116cihz { background-color: var(--color-neutral-50); }"
+      }
+    ],
+    "rb119gnm4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.66);",
+        "cssText": ".rb119gnm4:is(.dark *) { color: rgba(245, 245, 245, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)66%,transparent);",
+        "cssText": ".rb119gnm4:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }"
+      }
+    ],
+    "rb11ul8xz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb11ul8xz:is(.dark *) { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb12z85n9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-border-spacing-x: calc(var(--spacing)*0); --tw-border-spacing-y: calc(var(--spacing)*0); border-spacing: var(--tw-border-spacing-x)var(--tw-border-spacing-y);",
+        "cssText": ".rb12z85n9 { --tw-border-spacing-x: calc(var(--spacing)*0); --tw-border-spacing-y: calc(var(--spacing)*0); border-spacing: var(--tw-border-spacing-x)var(--tw-border-spacing-y); }"
+      }
+    ],
+    "rb1408996": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-align: right;",
+        "cssText": ".rb1408996 { text-align: right; }"
+      }
+    ],
+    "rb14ac1ou": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 14px; line-height: 20px;",
+        "cssText": ".rb14ac1ou { font-size: 14px; line-height: 20px; }"
+      }
+    ],
+    "rb17br9rp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "column-gap: calc(var(--spacing)*1);",
+        "cssText": ".rb17br9rp { column-gap: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb17jy6ll": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.08);",
+        "cssText": ".rb17jy6ll:is(.dark *) { border-color: rgba(245, 245, 245, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent);",
+        "cssText": ".rb17jy6ll:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }"
+      }
+    ],
+    "rb17wrneh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 14px; line-height: 16px;",
+        "cssText": ".rb17wrneh { font-size: 14px; line-height: 16px; }"
+      }
+    ],
+    "rb180t08p": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-align: left;",
+        "cssText": ".rb180t08p { text-align: left; }"
+      }
+    ],
+    "rb18kbftc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-sm,6px);",
+        "cssText": ".rb18kbftc { border-radius: var(--rb-r-sm,6px); }"
+      }
+    ],
+    "rb18us3a2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*3);",
+        "cssText": ".rb18us3a2 { gap: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb194roz1": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "gap: calc(var(--spacing)*2);",
+        "cssText": ".rb194roz1 { gap: calc(var(--spacing)*2); }"
+      }
+    ],
+    "rb1adyx5f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-100);",
+        "cssText": ".rb1adyx5f:is(.dark *) { background-color: var(--color-neutral-100); }"
+      }
+    ],
+    "rb1am944v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,);",
+        "cssText": ".oldstyle-nums, .rb1am944v { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-numeric-spacing: tabular-nums;",
+        "cssText": ".rb1am944v { --tw-numeric-spacing: tabular-nums; }"
+      }
+    ],
+    "rb1ayb5wv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "user-select: none;",
+        "cssText": ".rb1ayb5wv { user-select: none; }"
+      }
+    ],
+    "rb1banwsy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-shrink: 0;",
+        "cssText": ".rb1banwsy { flex-shrink: 0; }"
+      }
+    ],
+    "rb1cbz37v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-bottom-style: var(--tw-border-style); border-bottom-width: 1px;",
+        "cssText": ".rb1cbz37v { border-bottom-style: var(--tw-border-style); border-bottom-width: 1px; }"
+      }
+    ],
+    "rb1dga8k9": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline: calc(var(--spacing)*1);",
+        "cssText": ".rb1dga8k9 { margin-inline: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1ecb6yd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "grid-template-columns: repeat(2, minmax(0px, 1fr));",
+        "cssText": ".rb1ecb6yd { grid-template-columns: repeat(2, minmax(0px, 1fr)); }"
+      }
+    ],
+    "rb1fp7meg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden;",
+        "cssText": ".rb1fp7meg { clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1rfmhuv, .rb1fp7meg { position: absolute; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: auto;",
+        "cssText": ".\\[\\&\\>\\.sr-only\\]\\:w-auto > .rb1fp7meg { width: auto; }"
+      }
+    ],
+    "rb1gph0yn": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "padding: calc(var(--spacing)*6);",
+        "cssText": ".rb1gph0yn { padding: calc(var(--spacing)*6); }"
+      }
+    ],
+    "rb1hmbzla": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "left: calc(var(--spacing)*0);",
+        "cssText": ".rb1hmbzla { left: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1hylpc0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "pointer-events: none;",
+        "cssText": ".rb1hylpc0 { pointer-events: none; }"
+      }
+    ],
+    "rb1igmwss": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "top: calc(var(--spacing)*0);",
+        "cssText": ".rb1igmwss { top: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1isde41": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: currentcolor;",
+        "cssText": ".rb1isde41, .bg-current\\/10 { background-color: currentcolor; }"
+      }
+    ],
+    "rb1iw0to7": [
+      {
+        "context": [
+          "@layer utilities",
+          "@container (min-width: 28rem)"
+        ],
+        "declarations": "grid-auto-columns: minmax(0px, 1fr);",
+        "cssText": ".rb1iw0to7 { grid-auto-columns: minmax(0px, 1fr); }"
+      }
+    ],
+    "rb1jsdopa": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "width: calc(var(--spacing)*20);",
+        "cssText": ".rb1jsdopa { width: calc(var(--spacing)*20); }"
+      }
+    ],
+    "rb1klptab": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 100%;",
+        "cssText": ".rb1klptab { width: 100%; }"
+      }
+    ],
+    "rb1l0p2p0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*10);",
+        "cssText": ".rb1l0p2p0 { height: calc(var(--spacing)*10); }"
+      }
+    ],
+    "rb1lby7se": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 38%;",
+        "cssText": ".rb1lby7se { width: 38%; }"
+      }
+    ],
+    "rb1lsj77f": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-900);",
+        "cssText": ".rb1lsj77f:is(.dark *) { background-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1mawd4s": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-radius: var(--rb-r-lg,10px);",
+        "cssText": ".rb1mawd4s { border-radius: var(--rb-r-lg,10px); }"
+      }
+    ],
+    "rb1n7let": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-top: calc(var(--spacing)*1);",
+        "cssText": ".rb1n7let { margin-top: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1ov2lzz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "grid-column: 1 / -1;",
+        "cssText": ".rb1ov2lzz > :last-child:nth-child(2n+1) { grid-column: 1 / -1; }"
+      }
+    ],
+    "rb1ow1ouq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-position: to bottom;",
+        "cssText": ".rb1ow1ouq { --tw-gradient-position: to bottom; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to bottom in oklab;",
+        "cssText": ".rb1ow1ouq { --tw-gradient-position: to bottom in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".rb1ow1ouq { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rb1ps2ir3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: calc(var(--spacing)*14);",
+        "cssText": ".rb1ps2ir3 { width: calc(var(--spacing)*14); }"
+      }
+    ],
+    "rb1q7vq2n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-100);",
+        "cssText": ".rb1q7vq2n:is(.dark *) { color: var(--color-neutral-100); }"
+      }
+    ],
+    "rb1qbwyku": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-start: calc(var(--spacing)*4);",
+        "cssText": ".rb1qbwyku:first-child { padding-inline-start: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb1qiae4c": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.05);",
+        "cssText": ".rb1qiae4c:hover:not([aria-selected=\"true\"]) { background-color: rgba(23, 23, 23, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent);",
+        "cssText": ".rb1qiae4c:hover:not([aria-selected=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }"
+      }
+    ],
+    "rb1qtxti9": [
+      {
+        "context": [
+          "@layer utilities",
+          "@container (min-width: 28rem)"
+        ],
+        "declarations": "grid-auto-flow: column;",
+        "cssText": ".rb1qtxti9 { grid-auto-flow: column; }"
+      }
+    ],
+    "rb1rcvde3": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding: calc(var(--spacing)*4);",
+        "cssText": ".rb1rcvde3 { padding: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb1rfmhuv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1rfmhuv, .sr-only { position: absolute; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: absolute;",
+        "cssText": ".rb1rfmhuv, .rb1fp7meg { position: absolute; }"
+      }
+    ],
+    "rb1rn1ipa": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: none;",
+        "cssText": ".rb1rn1ipa { display: none; }"
+      }
+    ],
+    "rb1rnxpsg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-position: to top;",
+        "cssText": ".rb1rnxpsg { --tw-gradient-position: to top; }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (background-image:linear-gradient(in lab,red,red))"
+        ],
+        "declarations": "--tw-gradient-position: to top in oklab;",
+        "cssText": ".rb1rnxpsg { --tw-gradient-position: to top in oklab; }"
+      },
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-image: linear-gradient(var(--tw-gradient-stops));",
+        "cssText": ".bg-gradient-to-b, .rb1rnxpsg { background-image: linear-gradient(var(--tw-gradient-stops)); }"
+      }
+    ],
+    "rb1s0ntjz": [
+      {
+        "context": [
+          "@layer utilities",
+          "@container (min-width: 28rem)"
+        ],
+        "declarations": "grid-column: auto;",
+        "cssText": ".rb1s0ntjz > :last-child:nth-child(2n+1) { grid-column: auto; }"
+      }
+    ],
+    "rb1tu910g": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "inset-block: calc(var(--spacing)*0);",
+        "cssText": ".rb1tu910g { inset-block: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb1ura1j0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*1);",
+        "cssText": ".rb1ura1j0 { height: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb1uwf5zl": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-900);",
+        "cssText": ".rb1uwf5zl { background-color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb1ve14uq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.66);",
+        "cssText": ".rb1ve14uq { color: rgba(23, 23, 23, 0.66); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)66%,transparent);",
+        "cssText": ".rb1ve14uq { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }"
+      }
+    ],
+    "rb1vpi8qk": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: 480px;",
+        "cssText": ".rb1vpi8qk { min-height: 480px; }"
+      }
+    ],
+    "rb1vpls": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-wrap: wrap;",
+        "cssText": ".rb1vpls { flex-wrap: wrap; }"
+      }
+    ],
+    "rb1x96grr": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: calc(var(--spacing)*8);",
+        "cssText": ".rb1x96grr { height: calc(var(--spacing)*8); }"
+      }
+    ],
+    "rb1xkzz1q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(245, 245, 245, 0.14);",
+        "cssText": ".rb1xkzz1q:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent);",
+        "cssText": ".rb1xkzz1q:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }"
+      }
+    ],
+    "rb1ygcm4t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-neutral-900);",
+        "cssText": ".rb1ygcm4t { color: var(--color-neutral-900); }"
+      }
+    ],
+    "rb20bm1z": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-bottom: calc(var(--spacing)*1);",
+        "cssText": ".rb20bm1z { margin-bottom: calc(var(--spacing)*1); }"
+      }
+    ],
+    "rb27r4rp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: var(--color-white);",
+        "cssText": ".rb27r4rp { color: var(--color-white); }"
+      }
+    ],
+    "rb2katfx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-bottom: calc(var(--spacing)*3);",
+        "cssText": ".rb2katfx { margin-bottom: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb2wr9ov": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "inset-inline: calc(var(--spacing)*0);",
+        "cssText": ".rb2wr9ov { inset-inline: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb4j02d4": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(245, 245, 245, 0.8);",
+        "cssText": ".rb4j02d4:is(.dark *) { color: rgba(245, 245, 245, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-100)80%,transparent);",
+        "cssText": ".rb4j02d4:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)80%,transparent); }"
+      }
+    ],
+    "rb60acl0": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-bottom: calc(var(--spacing)*0);",
+        "cssText": ".rb60acl0:has(+ *) { margin-bottom: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rb63e69q": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*3);",
+        "cssText": ".rb63e69q { padding-inline: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rb6xczcn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline: calc(var(--spacing)*4);",
+        "cssText": ".rb6xczcn { padding-inline: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb7ng0p7": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow: hidden;",
+        "cssText": ".rb7ng0p7 { overflow: hidden; }"
+      }
+    ],
+    "rb8abog6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-inline-end: calc(var(--spacing)*4);",
+        "cssText": ".rb8abog6:last-child { padding-inline-end: calc(var(--spacing)*4); }"
+      }
+    ],
+    "rb92ybhs": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.1);",
+        "cssText": ".rb92ybhs { border-color: rgba(23, 23, 23, 0.1); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent);",
+        "cssText": ".rb92ybhs { border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent); }"
+      }
+    ],
+    "rba42se": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "color: rgba(23, 23, 23, 0.8);",
+        "cssText": ".rba42se { color: rgba(23, 23, 23, 0.8); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "color: color-mix(in oklab,var(--color-neutral-900)80%,transparent);",
+        "cssText": ".rba42se { color: color-mix(in oklab,var(--color-neutral-900)80%,transparent); }"
+      }
+    ],
+    "rbaizjbp": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "white-space: nowrap;",
+        "cssText": ".rbaizjbp { white-space: nowrap; }"
+      }
+    ],
+    "rbarlply": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex-direction: column;",
+        "cssText": ".rbarlply { flex-direction: column; }"
+      }
+    ],
+    "rbc1fpld": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "container-type: inline-size;",
+        "cssText": ".rbc1fpld { container-type: inline-size; }"
+      }
+    ],
+    "rbcbbxss": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transform-origin: 0px 0px;",
+        "cssText": ".rbcbbxss { transform-origin: 0px 0px; }"
+      }
+    ],
+    "rbck5zs2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "width: 1px;",
+        "cssText": ".rbck5zs2 { width: 1px; }"
+      }
+    ],
+    "rbck94nj": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1);",
+        "cssText": ".rbck94nj { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }"
+      }
+    ],
+    "rbd05uqn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 12px; line-height: 16px;",
+        "cssText": ".rbd05uqn { font-size: 12px; line-height: 16px; }"
+      }
+    ],
+    "rbdg9cne": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: baseline;",
+        "cssText": ".rbdg9cne { align-items: baseline; }"
+      }
+    ],
+    "rbdiw1cb": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-color: rgba(23, 23, 23, 0.08);",
+        "cssText": ".rbdiw1cb { border-color: rgba(23, 23, 23, 0.08); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent);",
+        "cssText": ".rbdiw1cb { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }"
+      }
+    ],
+    "rbdz7fq5": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 20px; line-height: 24px;",
+        "cssText": ".rbdz7fq5 { font-size: 20px; line-height: 24px; }"
+      }
+    ],
+    "rbednadh": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: opacity; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbednadh { transition-property: opacity; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbf0pecg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 16px; line-height: 20px;",
+        "cssText": ".rbf0pecg { font-size: 16px; line-height: 20px; }"
+      }
+    ],
+    "rbf5i86z": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "vertical-align: middle;",
+        "cssText": ".rbf5i86z { vertical-align: middle; }"
+      }
+    ],
+    "rbfhkskz": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (prefers-reduced-motion: reduce)"
+        ],
+        "declarations": "transition-property: none;",
+        "cssText": ".rbfhkskz { transition-property: none; }"
+      }
+    ],
+    "rbhc222k": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "text-overflow: ellipsis; white-space: nowrap; overflow: hidden;",
+        "cssText": ".rbhc222k { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }"
+      }
+    ],
+    "rbhj7k42": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: width; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbhj7k42 { transition-property: width; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbiefat2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-neutral-950);",
+        "cssText": ".rbiefat2:is(.dark *) { background-color: var(--color-neutral-950); }"
+      }
+    ],
+    "rbiiyvrf": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-width: calc(var(--spacing)*0);",
+        "cssText": ".rbiiyvrf { min-width: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbk5ih9f": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (min-width: 40rem)"
+        ],
+        "declarations": "display: table-cell;",
+        "cssText": ".rbk5ih9f { display: table-cell; }"
+      }
+    ],
+    "rbklu5m": [
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.05);",
+        "cssText": ".rbklu5m:is(.dark *):hover:not([aria-selected=\"true\"]) { background-color: rgba(245, 245, 245, 0.05); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@media (hover: hover)",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent);",
+        "cssText": ".rbklu5m:is(.dark *):hover:not([aria-selected=\"true\"]) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }"
+      }
+    ],
+    "rblf7rpu": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "min-height: calc(var(--spacing)*0);",
+        "cssText": ".rblf7rpu { min-height: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbm5wax8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "align-items: center;",
+        "cssText": ".rbm5wax8 { align-items: center; }"
+      }
+    ],
+    "rbmjk9o6": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "font-size: 13px; line-height: 18px;",
+        "cssText": ".rbmjk9o6 { font-size: 13px; line-height: 18px; }"
+      }
+    ],
+    "rbo41ql8": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "height: 100%;",
+        "cssText": ".rbo41ql8 { height: 100%; }"
+      }
+    ],
+    "rbof3oji": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-collapse: separate;",
+        "cssText": ".rbof3oji { border-collapse: separate; }"
+      }
+    ],
+    "rbokn684": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-to: transparent; --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbokn684 { --tw-gradient-to: transparent; --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbp9wrsx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: var(--color-white);",
+        "cssText": ".rbp9wrsx { background-color: var(--color-white); }"
+      }
+    ],
+    "rbplg326": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "position: relative;",
+        "cssText": ".rbplg326 { position: relative; }"
+      }
+    ],
+    "rbq2e3qq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "transition-property: background-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration));",
+        "cssText": ".rbq2e3qq { transition-property: background-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }"
+      }
+    ],
+    "rbqh37pg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-style: var(--tw-border-style); border-width: 1px;",
+        "cssText": ".rbqh37pg { border-style: var(--tw-border-style); border-width: 1px; }"
+      }
+    ],
+    "rbqs0u4n": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-tracking: -.015em; letter-spacing: -0.015em;",
+        "cssText": ".rbqs0u4n { --tw-tracking: -.015em; letter-spacing: -0.015em; }"
+      }
+    ],
+    "rbr6gdfi": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: grid;",
+        "cssText": ".rbr6gdfi { display: grid; }"
+      }
+    ],
+    "rbraz28v": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "flex: 1 1 0%;",
+        "cssText": ".rbraz28v { flex: 1 1 0%; }"
+      }
+    ],
+    "rbruw7gy": [
+      {
+        "context": [
+          "@layer utilities",
+          "@container (min-width: 28rem)"
+        ],
+        "declarations": "grid-template-columns: none;",
+        "cssText": ".rbruw7gy { grid-template-columns: none; }"
+      }
+    ],
+    "rbs4fssg": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "bottom: calc(var(--spacing)*0);",
+        "cssText": ".rbs4fssg { bottom: calc(var(--spacing)*0); }"
+      }
+    ],
+    "rbsic0tx": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-from: var(--color-neutral-950); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbsic0tx:is(.dark *) { --tw-gradient-from: var(--color-neutral-950); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbsnrbfv": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: 450; font-weight: 450;",
+        "cssText": ".rbsnrbfv { --tw-font-weight: 450; font-weight: 450; }"
+      }
+    ],
+    "rbsrxz48": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overscroll-behavior: contain;",
+        "cssText": ".rbsrxz48 { overscroll-behavior: contain; }"
+      }
+    ],
+    "rbsye5e2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-duration: .12s; transition-duration: 0.12s;",
+        "cssText": ".rbsye5e2 { --tw-duration: .12s; transition-duration: 0.12s; }"
+      }
+    ],
+    "rbte3wry": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-gradient-from: var(--color-white); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position));",
+        "cssText": ".rbte3wry { --tw-gradient-from: var(--color-white); --tw-gradient-stops: var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position)); }"
+      }
+    ],
+    "rbtlbxcz": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: block;",
+        "cssText": ".rbtlbxcz { display: block; }"
+      }
+    ],
+    "rbu19hrq": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "margin-inline-start: calc(var(--spacing)*.5);",
+        "cssText": ".rbu19hrq { margin-inline-start: calc(var(--spacing)*.5); }"
+      }
+    ],
+    "rbu5o3y2": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "border-bottom-style: var(--tw-border-style); border-bottom-width: 0px;",
+        "cssText": ".rbu5o3y2:is(:where(.rb10zdk8p):last-child *) { border-bottom-style: var(--tw-border-style); border-bottom-width: 0px; }"
+      }
+    ],
+    "rbv4bz5l": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.07);",
+        "cssText": ".rbv4bz5l:is(.dark *) { background-color: rgba(245, 245, 245, 0.07); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)7%,transparent);",
+        "cssText": ".rbv4bz5l:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-100)7%,transparent); }"
+      }
+    ],
+    "rbvg4q6p": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "display: flex;",
+        "cssText": ".rbvg4q6p { display: flex; }"
+      }
+    ],
+    "rbvsds56": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(245, 245, 245, 0.09);",
+        "cssText": ".rbvsds56:is(.dark *)[aria-selected=\"true\"] { background-color: rgba(245, 245, 245, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent);",
+        "cssText": ".rbvsds56:is(.dark *)[aria-selected=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }"
+      }
+    ],
+    "rbwnu5yc": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.09);",
+        "cssText": ".rbwnu5yc[aria-selected=\"true\"] { background-color: rgba(23, 23, 23, 0.09); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent);",
+        "cssText": ".rbwnu5yc[aria-selected=\"true\"] { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }"
+      }
+    ],
+    "rbyblu6t": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "padding-block: calc(var(--spacing)*3);",
+        "cssText": ".rbyblu6t { padding-block: calc(var(--spacing)*3); }"
+      }
+    ],
+    "rbzc5sgn": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "background-color: rgba(23, 23, 23, 0.07);",
+        "cssText": ".rbzc5sgn { background-color: rgba(23, 23, 23, 0.07); }"
+      },
+      {
+        "context": [
+          "@layer utilities",
+          "@supports (color:color-mix(in lab,red,red))"
+        ],
+        "declarations": "background-color: color-mix(in oklab,var(--color-neutral-900)7%,transparent);",
+        "cssText": ".rbzc5sgn { background-color: color-mix(in oklab,var(--color-neutral-900)7%,transparent); }"
+      }
+    ],
+    "rbzx6kuy": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "overflow-y: auto;",
+        "cssText": ".rbzx6kuy { overflow-y: auto; }"
+      }
+    ],
+    "rbzzzpcd": [
+      {
+        "context": [
+          "@layer utilities"
+        ],
+        "declarations": "--tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal);",
+        "cssText": ".rbzzzpcd { --tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal); }"
+      }
+    ]
+  },
+  "motionContract": {
+    "schemaVersion": "3.0.0",
+    "capsuleSlug": "agent-plan-4",
+    "generatedAt": "2026-11-18T06:38:19.203Z",
+    "taxonomy": {
+      "archetype": "tactile-trigger",
+      "trigger": "state-discrete",
+      "criticality": "secondary",
+      "physicalRegime": "underdamped-spring",
+      "confidence": 0.25,
+      "indicators": []
+    },
+    "fsmContract": {
+      "id": "agent-plan-4-tactile-trigger-fsm",
+      "initial": "idle",
+      "context": {
+        "scale": 1,
+        "activeTween": null
+      },
+      "states": {
+        "idle": {
+          "on": {
+            "POINTER_ENTER": "hovered",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "hovered": {
+          "entry": [
+            "applyHoverScale"
+          ],
+          "on": {
+            "POINTER_LEAVE": "idle",
+            "POINTER_DOWN": "pressed",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        },
+        "pressed": {
+          "entry": [
+            "applyActiveCompression"
+          ],
+          "on": {
+            "POINTER_UP": "hovered",
+            "POINTER_LEAVE": "idle",
+            "ESCAPE": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "WINDOW_BLUR": {
+              "target": "idle",
+              "actions": [
+                "killActiveTweens",
+                "resetToRestingState"
+              ]
+            },
+            "PREFERS_REDUCED_MOTION": {
+              "target": "idle",
+              "actions": [
+                "disableMotionTransitions"
+              ]
+            }
+          }
+        }
+      },
+      "invariants": {
+        "preemptible": true,
+        "escapeReset": true,
+        "windowBlurReset": true,
+        "fluidMathPeg": "scale(calc(1 - 0.05 * var(--scale, 1)))"
+      }
+    },
+    "layer1_physicalTruth": {
+      "curveType": "cubic-bezier",
+      "cssCubicBezier": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "controlPoints": [
+        [
+          0,
+          0
+        ],
+        [
+          0.215,
+          0.61
+        ],
+        [
+          0.355,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "beziers": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0.215,
+            0.61
+          ],
+          [
+            0.355,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      ],
+      "durationMs": 12000,
+      "delayMs": 0,
+      "harmonicSpring": {
+        "zeta": 0.85,
+        "omegaN": 12
+      }
+    },
+    "layer2_adaptiveSkill": {
+      "scaleVarName": "--scale",
+      "fluidMathExpression": "calc(-1 * var(--scale))",
+      "relativeTransforms": {
+        "arrow": {
+          "resting": "translate(calc(-1 * var(--scale)), calc(1 * var(--scale))) scale(0.6)",
+          "active": "translate(0) scale(1)",
+          "origin": "left bottom"
+        }
+      },
+      "interruptionFsm": {
+        "initial": "idle",
+        "states": {
+          "idle": {
+            "on": {
+              "HOVER_ENTER": "crossfading"
+            }
+          },
+          "crossfading": {
+            "action": "killTweensOf(previousTarget)",
+            "on": {
+              "EXPAND_READY": "active",
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "active": {
+            "on": {
+              "HOVER_LEAVE": "resetting",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          },
+          "resetting": {
+            "on": {
+              "RESET_DONE": "idle",
+              "HOVER_ENTER": "crossfading",
+              "ESCAPE": "idle",
+              "BLUR": "idle"
+            }
+          }
+        },
+        "resilienceHandlers": {
+          "escapeKey": "window.addEventListener('keydown', e => { if (e.key === 'Escape') send('ESCAPE'); })",
+          "windowBlur": "window.addEventListener('blur', () => send('BLUR'))"
+        }
+      },
+      "reducedMotionRule": "@media (prefers-reduced-motion: reduce) {\n  [data-capsule-id=\"agent-plan-4\"] * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n    transform: none !important;\n    scroll-behavior: auto !important;\n  }\n}"
+    }
+  },
+  "interactiveRuntime": {
+    "webpackModuleId": "31211",
+    "sorbetModuleId": "25032",
+    "defaultMinHeight": 480,
+    "sorbetMinHeight": 480,
+    "hooksUsed": [
+      "disconnect",
+      "observe",
+      "useCallback",
+      "useEffect",
+      "useRef",
+      "useState"
+    ],
+    "usesMotion": false,
+    "usesD3Shape": false,
+    "iconCount": 0,
+    "files": {
+      "defaultJsx": "agent-plan-4.jsx",
+      "sorbetJsx": "agent-plan-4.sorbet.jsx",
+      "capsuleHtml": "capsule.html"
+    }
+  }
+}

@@ -1,0 +1,182 @@
+.block-scale-preview { --rb-section-min-h: 100%; }
+.block-scale-preview .min-h-screen { min-height: 100% !important; }
+.block-scale-preview .h-dvh, .block-scale-preview .h-screen { height: 100% !important; }
+.rb-theme-scope { --color-neutral-50: var(--rb-n-50,oklch(98.5% 0 0)); --color-neutral-100: var(--rb-n-100,oklch(97% 0 0)); --color-neutral-200: var(--rb-n-200,oklch(92.2% 0 0)); --color-neutral-300: var(--rb-n-300,oklch(87% 0 0)); --color-neutral-400: var(--rb-n-400,oklch(70.8% 0 0)); --color-neutral-500: var(--rb-n-500,oklch(55.6% 0 0)); --color-neutral-600: var(--rb-n-600,oklch(43.9% 0 0)); --color-neutral-700: var(--rb-n-700,oklch(37.1% 0 0)); --color-neutral-800: var(--rb-n-800,oklch(26.9% 0 0)); --color-neutral-900: var(--rb-n-900,oklch(20.5% 0 0)); --color-neutral-950: var(--rb-n-950,oklch(14.5% 0 0)); font-family: var(--rb-font-sans,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"); }
+@layer utilities {
+  .rb10ow25s { min-width: calc(var(--spacing)*5); }
+  .rb11syhj7:disabled { cursor: not-allowed; }
+  .rb11u6ugb { background-color: var(--color-neutral-50); }
+  .rb122u2mn { min-width: calc(var(--spacing)*0); }
+  .rb12imw8w { transform-origin: 0px 0px; }
+  .rb12kq8wj { flex: 1 1 0%; }
+  .rb12rya2c { border-color: rgba(23, 23, 23, 0.1); }
+  .rb12tzafq { width: calc(var(--spacing)*8); height: calc(var(--spacing)*8); }
+  .rb13bxhga { border-color: rgba(23, 23, 23, 0.12); }
+  .rb13cgftt { --tw-font-weight: var(--font-weight-normal); font-weight: var(--font-weight-normal); }
+  .rb13oiv93 { overflow: hidden; }
+  .rb141sohe { font-size: 13px; line-height: 18px; }
+  .rb14a9l43 { min-height: calc(var(--spacing)*10); }
+  .rb14ka0tb { margin-top: calc(var(--spacing)*.5); }
+  .rb14q78ss:is(.dark *) { color: rgba(245, 245, 245, 0.8); }
+  .rb15fry94 { padding: calc(var(--spacing)*1); }
+  .rb15vwcu9:focus-visible { outline-offset: calc(-2px); }
+  .rb15y6n9z { overflow-x: auto; }
+  .rb16ki0t1 { width: fit-content; }
+  .rb17iqhue:is(.dark *)[aria-checked="true"] { color: var(--color-neutral-100); }
+  .rb17ksj40 { border-style: var(--tw-border-style); border-width: 1px; }
+  .rb191tvic { pointer-events: none; }
+  .rb193xqoj:is(.dark *) { background-color: rgba(245, 245, 245, 0.09); }
+  .rb19r5gda { margin-right: calc(var(--spacing)*-.5); }
+  .rb1asf85t { white-space: nowrap; }
+  .rb1awuhhq { transition-property: background-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }
+  .rb1b7fdsn { width: 100%; }
+  .rb1bufb3h { padding-top: calc(var(--spacing)*6); }
+  .rb1cboxml { background-color: var(--color-white); }
+  .rb1cfsz07:is(.dark *) { background-color: rgba(245, 245, 245, 0.05); }
+  .rb1dccrpq:is(.dark *):disabled { color: rgba(245, 245, 245, 0.4); }
+  .rb1dli1x1:is(.dark *) { border-color: rgba(245, 245, 245, 0.08); }
+  .rb1gntm80 { align-items: center; }
+  .rb1hdjx3a { align-items: stretch; }
+  .rb1hg5stp { margin-inline: calc(var(--spacing)*1); }
+  .rb1hnji3l { padding-inline: calc(var(--spacing)*1.5); }
+  .rb1jgerj3:active:not([aria-checked="true"]) { background-color: rgba(23, 23, 23, 0.08); }
+  .rb1jk4ck3 { column-gap: calc(var(--spacing)*3); }
+  .rb1k0rhbn { --tw-tracking: -.015em; letter-spacing: -0.015em; }
+  .rb1k7eqqq { color: rgba(23, 23, 23, 0.8); }
+  .rb1mi327j { --tw-font-weight: 450; font-weight: 450; }
+  .rb1mi5rla:focus-visible { outline-style: var(--tw-outline-style); outline-width: 2px; }
+  .rb1mvj6jb { padding-bottom: calc(var(--spacing)*6); }
+  .rb1nehe3a { align-items: flex-end; }
+  .rb1nfidx9 { padding-bottom: calc(var(--spacing)*4); }
+  .rb1oh5s7n { transition-property: background-color, color, outline-color; transition-timing-function: var(--tw-ease,var(--default-transition-timing-function)); transition-duration: var(--tw-duration,var(--default-transition-duration)); }
+  .rb1oye479 { font-size: 14px; line-height: 16px; }
+  .rb1ratwp svg { flex-shrink: 0; }
+  .rb1s82feo { gap: calc(var(--spacing)*1); }
+  .rb1ss1msm { gap: calc(var(--spacing)*3); }
+  .rb1t218hl { gap: calc(var(--spacing)*2); }
+  .rb1tgp4ek { cursor: pointer; }
+  .rb1ud02ja { flex-shrink: 0; }
+  .rb1v1jghp { display: flex; }
+  .rb1v2ynqx { overflow-y: hidden; }
+  .rb1w5ny3f { margin-bottom: calc(var(--spacing)*1); }
+  .rb1wjubdn { padding-inline: calc(var(--spacing)*4); }
+  .rb1wyvd7u { position: relative; }
+  .rb1wzj4cj { width: 100%; height: 100%; }
+  .rb1x3tirl { padding-inline: calc(var(--spacing)*6); }
+  .rb1xxsbui { padding-inline: calc(var(--spacing)*3); }
+  .rb1xy73il { margin-left: auto; }
+  .rb1y4t8t0 { font-size: 16px; line-height: 20px; }
+  .rb1y7rxjh { padding-inline: calc(var(--spacing)*2); }
+  .rb2itbd0 { clip-path: inset(50%); white-space: nowrap; border-width: 0px; width: 1px; height: 1px; margin: -1px; padding: 0px; overflow: hidden; }
+  .rbseit0z, .rb2itbd0 { position: absolute; }
+  .\[\&\>\.sr-only\]\:w-auto > .rb2itbd0 { width: auto; }
+  .rb4mp60w:is(.dark *) { color: rgba(245, 245, 245, 0.66); }
+  .rb603jhx { text-align: left; }
+  .rb6r4h17 { border-radius: 3.40282e+38px; }
+  .rb7of4es:is(.dark *)[aria-checked="true"] { background-color: var(--color-neutral-700); }
+  .rb7phbpg { border-radius: var(--rb-r-sm,6px); }
+  .rb87iwk8 { border-radius: var(--rb-r-lg,10px); }
+  .rb90vygp { min-width: max-content; }
+  .rb9ustmx { display: inline-flex; }
+  .rbacsz9w { justify-content: center; }
+  .rbavxsol { font-family: var(--font-jetbrains-mono); }
+  .rbb5oadx { border-radius: inherit; }
+  .rbb8hpmm { max-width: 100%; }
+  .rbbghgpz:focus-visible { outline-color: var(--rb-accent,oklch(20.5% 0 0)); }
+  .rbbztlph:is(.dark *):focus-visible { outline-color: var(--rb-accent,oklch(100% 0 0)); }
+  .rbc7ewn3:is(.dark *)[aria-checked="true"] { --tw-shadow: 0 0 0 1px var(--tw-shadow-color,#ffffff29),0 1px 2px var(--tw-shadow-color,#0000004d); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }
+  .rbcsom9i { gap: calc(var(--spacing)*.5); }
+  .rbdbm3c9:has(:is(button)) { padding-inline-end: calc(var(--spacing)*2); }
+  .rbe37xw:disabled { color: rgba(23, 23, 23, 0.4); }
+  .rbf74af3:is(.dark *) { background-color: var(--color-neutral-900); }
+  .rbfqlipe:is(.dark *) { background-color: var(--color-neutral-950); }
+  .rbgmxh7j { justify-content: space-between; }
+  .rbgono64[aria-checked="true"] { background-color: var(--color-white); }
+  .rbhmqqdf:is(.dark *) { color: var(--color-neutral-100); }
+  .rbhplbdq { align-items: baseline; }
+  .rbj1vxzq { color: rgba(23, 23, 23, 0.66); }
+  .rbjtcm32 { --tw-duration: .12s; transition-duration: 0.12s; }
+  .rbjtneko { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+  .rbkkhnd1 { background-color: rgba(23, 23, 23, 0.09); }
+  .rbl1cyyw:has(+ *) { margin-bottom: calc(var(--spacing)*0); }
+  .rblg3byg { width: 24px; height: 24px; }
+  .rblog24x { background-color: rgba(23, 23, 23, 0.05); }
+  .rbls90rs { height: 100%; }
+  .rbm2z88q { flex-direction: column; }
+  .rbmjneh9 { gap: calc(var(--spacing)*1.5); }
+  .rbmmeho1:has([data-description]) { min-height: calc(var(--spacing)*14); }
+  .rbn5w32c { flex-wrap: wrap; }
+  .rbnd8ozw { width: 260px; }
+  .rbovu2f9:is(.dark *):active:not([aria-checked="true"]) { background-color: rgba(245, 245, 245, 0.08); }
+  .rbozra0e { min-height: calc(var(--spacing)*0); }
+  .rbp1y1pf { font-size: 12px; line-height: 16px; }
+  .rbpkzb0t { cursor: grab; }
+  .rbqbvbn0[aria-checked="true"] { --tw-shadow: 0 1px 2px var(--tw-shadow-color,#0000001a); box-shadow: var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow); }
+  .rbqczpwx { color: var(--color-neutral-900); }
+  .rbqfetpa { padding-block: calc(var(--spacing)*2); }
+  .rbr8mymm { padding: calc(var(--spacing)*.5); }
+  .rbrq896u { min-height: 680px; }
+  .rbrruc5w[aria-checked="true"] { color: var(--color-neutral-900); }
+  .rbsqxokj { --tw-ease: cubic-bezier(.2,0,0,1); transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+  .rbsva5t6:active { background-color: rgba(23, 23, 23, 0.08); }
+  .rbtunber { user-select: none; }
+  .rbv3n7rw { height: calc(var(--spacing)*5); }
+  .oldstyle-nums, .rbv3oj6j { font-variant-numeric: var(--tw-ordinal,)var(--tw-slashed-zero,)var(--tw-numeric-figure,)var(--tw-numeric-spacing,)var(--tw-numeric-fraction,); }
+  .rbv3oj6j { --tw-numeric-spacing: tabular-nums; }
+  .rbvhbmov { border-radius: var(--rb-r-xs,4px); }
+  .rbvnca3a { overflow-y: auto; }
+  .rbvt7nk { gap: calc(var(--spacing)*2.5); }
+  .rbwhc2uo:is(.dark *):active { background-color: rgba(245, 245, 245, 0.08); }
+  .rbwhl88r { height: calc(var(--spacing)*8); }
+  .rbwqflx6 { row-gap: calc(var(--spacing)*1); }
+  .rbxawbgq:is(.dark *) { border-color: rgba(245, 245, 245, 0.14); }
+  .rby3o08n { border-color: rgba(23, 23, 23, 0.08); }
+}
+@layer utilities {
+  @media (hover: hover) {
+    .rb10x8aa:is(.dark *):hover:not([aria-checked="true"]) { color: var(--color-neutral-100); }
+    .rb1gguf09:hover { background-color: rgba(23, 23, 23, 0.05); }
+    .rb1v0vlf2:is(.dark *):hover:not([aria-checked="true"]) { background-color: rgba(245, 245, 245, 0.05); }
+    .rb1vys3js:hover:not([aria-checked="true"]) { background-color: rgba(23, 23, 23, 0.05); }
+    .rbfvdo4o:hover:not([aria-checked="true"]) { color: var(--color-neutral-900); }
+    .rbqc55sn:is(.dark *):hover { background-color: rgba(245, 245, 245, 0.05); }
+  }
+}
+@layer utilities {
+  @media (min-width: 40rem) {
+    .rb12olnh9 { padding-inline: calc(var(--spacing)*8); }
+  }
+}
+@layer utilities {
+  @supports (color:color-mix(in lab,red,red)) {
+    .rb12rya2c { border-color: color-mix(in oklab,var(--color-neutral-900)10%,transparent); }
+    .rb13bxhga { border-color: color-mix(in oklab,var(--color-neutral-900)12%,transparent); }
+    .rb14q78ss:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)80%,transparent); }
+    .rb193xqoj:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-100)9%,transparent); }
+    .rb1cfsz07:is(.dark *) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }
+    .rb1dccrpq:is(.dark *):disabled { color: color-mix(in oklab,var(--color-neutral-100)40%,transparent); }
+    .rb1dli1x1:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }
+    .rb1jgerj3:active:not([aria-checked="true"]) { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }
+    .rb1k7eqqq { color: color-mix(in oklab,var(--color-neutral-900)80%,transparent); }
+    .rb4mp60w:is(.dark *) { color: color-mix(in oklab,var(--color-neutral-100)66%,transparent); }
+    .rbe37xw:disabled { color: color-mix(in oklab,var(--color-neutral-900)40%,transparent); }
+    .rbj1vxzq { color: color-mix(in oklab,var(--color-neutral-900)66%,transparent); }
+    .rbkkhnd1 { background-color: color-mix(in oklab,var(--color-neutral-900)9%,transparent); }
+    .rblog24x { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }
+    .rbovu2f9:is(.dark *):active:not([aria-checked="true"]) { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }
+    .rbsva5t6:active { background-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }
+    .rbwhc2uo:is(.dark *):active { background-color: color-mix(in oklab,var(--color-neutral-100)8%,transparent); }
+    .rbxawbgq:is(.dark *) { border-color: color-mix(in oklab,var(--color-neutral-100)14%,transparent); }
+    .rby3o08n { border-color: color-mix(in oklab,var(--color-neutral-900)8%,transparent); }
+  }
+}
+@layer utilities {
+  @media (hover: hover) {
+    @supports (color:color-mix(in lab,red,red)) {
+      .rb1gguf09:hover { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }
+      .rb1v0vlf2:is(.dark *):hover:not([aria-checked="true"]) { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }
+      .rb1vys3js:hover:not([aria-checked="true"]) { background-color: color-mix(in oklab,var(--color-neutral-900)5%,transparent); }
+      .rbqc55sn:is(.dark *):hover { background-color: color-mix(in oklab,var(--color-neutral-100)5%,transparent); }
+    }
+  }
+}

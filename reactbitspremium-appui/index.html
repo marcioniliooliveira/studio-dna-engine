@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React Bits Pro — Application UI Interactive Playground (300 Blocks)</title>
+  <link rel="stylesheet" href="./theme/app-ui-full-tailwind.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+      background: #f5f5f5;
+      color: #171717;
+    }
+    html.dark, html.dark body { background: #0a0a0a; color: #f5f5f5; }
+    .pg-shell { display: flex; height: 100vh; width: 100vw; }
+    .pg-sidebar {
+      width: 290px;
+      flex: 0 0 290px;
+      border-right: 1px solid rgba(128,128,128,0.2);
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+    html.dark .pg-sidebar { background: #111111; }
+    .pg-side-head { padding: 12px; border-bottom: 1px solid rgba(128,128,128,0.18); }
+    .pg-side-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .pg-search {
+      width: 100%;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(128,128,128,0.28);
+      background: transparent;
+      color: inherit;
+      font-size: 12px;
+      outline: none;
+    }
+    .pg-list { flex: 1; overflow-y: auto; padding: 8px; }
+    .pg-cat-btn {
+      width: 100%;
+      text-align: left;
+      padding: 6px 8px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.72;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .pg-item-btn {
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .pg-item-btn:hover { background: rgba(128,128,128,0.1); }
+    .pg-item-btn.active { background: #171717; color: #ffffff; }
+    html.dark .pg-item-btn.active { background: #f5f5f5; color: #171717; }
+    .pg-item-desc { font-size: 11px; opacity: 0.68; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pg-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .pg-topbar {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(128,128,128,0.2);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      font-size: 12px;
+    }
+    html.dark .pg-topbar { background: #111111; }
+    .pg-seg {
+      display: inline-flex;
+      background: rgba(128,128,128,0.14);
+      padding: 2px;
+      border-radius: 7px;
+      gap: 2px;
+    }
+    .pg-seg button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .pg-seg button.active { background: #ffffff; color: #171717; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }
+    html.dark .pg-seg button.active { background: #2c2c2c; color: #ffffff; }
+    .pg-select {
+      border: 1px solid rgba(128,128,128,0.28);
+      border-radius: 6px;
+      background: transparent;
+      color: inherit;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    html.dark .pg-select option { background: #171717; color: #f5f5f5; }
+    .pg-stage {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .pg-card-frame {
+      width: 1280px;
+      background: var(--color-white, #ffffff);
+      border-radius: var(--rb-r-xl, 12px);
+      border: 1px solid rgba(128,128,128,0.2);
+      box-shadow: 0 12px 36px -14px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    html.dark .pg-card-frame { background: #0a0a0a; }
+    .pg-code-wrap {
+      width: 100%;
+      max-width: 1100px;
+      background: #141414;
+      color: #e5e5e5;
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-jetbrains-mono, monospace);
+      font-size: 12px;
+      line-height: 1.55;
+      overflow: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+  <div class="pg-shell">
+    <aside class="pg-sidebar">
+      <div class="pg-side-head">
+        <div class="pg-side-title"><span>React Bits App UI</span><span id="pg-count">300</span></div>
+        <input id="pg-search" class="pg-search" type="search" placeholder="Search 300 blocks..." />
+      </div>
+      <div id="pg-list" class="pg-list"></div>
+    </aside>
+    <main class="pg-main">
+      <header class="pg-topbar">
+        <strong id="pg-cur-title" style="margin-right:auto">ai-chat-9</strong>
+        <div class="pg-seg" id="seg-view">
+          <button type="button" data-view="preview" class="active">Live Interactive</button>
+          <button type="button" data-view="code">Decompiled .jsx</button>
+        </div>
+        <div class="pg-seg" id="seg-style">
+          <button type="button" data-style="default" class="active">Default</button>
+          <button type="button" data-style="sorbet">Sorbet</button>
+        </div>
+        <div class="pg-seg" id="seg-mode">
+          <button type="button" data-mode="light" class="active">Light</button>
+          <button type="button" data-mode="dark">Dark</button>
+        </div>
+        <select id="sel-preset" class="pg-select">
+          <option value="default">Preset: Default</option>
+          <option value="product">Preset: Product</option>
+          <option value="console">Preset: Console</option>
+          <option value="editorial">Preset: Editorial</option>
+          <option value="soft">Preset: Soft</option>
+          <option value="terminal">Preset: Terminal</option>
+        </select>
+        <a id="pg-open-capsule" href="./ai-chat/ai-chat-9/capsule.html" target="_blank" style="color:inherit;text-decoration:none;border:1px solid rgba(128,128,128,0.3);padding:4px 8px;border-radius:6px">Open Capsule ↗</a>
+      </header>
+      <div class="pg-stage">
+        <div id="pg-preview-box" class="pg-card-frame block-scale-preview rb-theme-scope">
+          <div id="pg-mount" style="width:1280px;min-height:720px;position:relative"></div>
+        </div>
+        <pre id="pg-code-box" class="pg-code-wrap" style="display:none"></pre>
+      </div>
+    </main>
+  </div>
+
+  <script src="./runtime/appui-interactive-runtime.js"></script>
+  <script>
+    (function () {
+      var CATALOG = [{"slug":"ai-chat-1","category":"ai-chat","categoryTitle":"AI Chat","description":"Full chat with tool calls and sources","minHeight":640},{"slug":"ai-chat-2","category":"ai-chat","categoryTitle":"AI Chat","description":"Chat with a code and document panel","minHeight":640},{"slug":"ai-chat-3","category":"ai-chat","categoryTitle":"AI Chat","description":"Compact assistant panel with prompts","minHeight":560},{"slug":"ai-chat-4","category":"ai-chat","categoryTitle":"AI Chat","description":"Chat with a model picker and token meter","minHeight":640},{"slug":"ai-chat-5","category":"ai-chat","categoryTitle":"AI Chat","description":"Chat that asks approval before actions","minHeight":640},{"slug":"ai-chat-6","category":"ai-chat","categoryTitle":"AI Chat","description":"Multi-agent chat with handoffs","minHeight":640},{"slug":"ai-chat-7","category":"ai-chat","categoryTitle":"AI Chat","description":"Chat with pinned sources and citations","minHeight":640},{"slug":"ai-chat-8","category":"ai-chat","categoryTitle":"AI Chat","description":"Voice composer with a live transcript","minHeight":480},{"slug":"ai-chat-9","category":"ai-chat","categoryTitle":"AI Chat","description":"Model picker with cost and effort control","minHeight":720},{"slug":"prompt-input-1","category":"prompt-input","categoryTitle":"Prompt Input","description":"Composer with slash commands and files","minHeight":560},{"slug":"prompt-input-2","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt box with model and tool toggles","minHeight":400},{"slug":"prompt-input-3","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt launcher with suggestion chips","minHeight":480},{"slug":"prompt-input-4","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt template editor with variables","minHeight":480},{"slug":"prompt-input-5","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt input with file uploads","minHeight":560},{"slug":"prompt-input-6","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt bar with @ mentions","minHeight":400},{"slug":"prompt-input-7","category":"prompt-input","categoryTitle":"Prompt Input","description":"Prompt with ask, agent and edit modes","minHeight":400},{"slug":"agent-activity-1","category":"agent-activity","categoryTitle":"Agent Activity","description":"Live activity stream with step status","minHeight":560},{"slug":"agent-activity-2","category":"agent-activity","categoryTitle":"Agent Activity","description":"Collapsible run timeline with sub-steps","minHeight":560},{"slug":"agent-activity-3","category":"agent-activity","categoryTitle":"Agent Activity","description":"Compact agent status rail","minHeight":480},{"slug":"agent-activity-4","category":"agent-activity","categoryTitle":"Agent Activity","description":"Run history table with re-run actions","minHeight":640},{"slug":"agent-activity-5","category":"agent-activity","categoryTitle":"Agent Activity","description":"Terminal-style log stream","minHeight":640},{"slug":"agent-activity-6","category":"agent-activity","categoryTitle":"Agent Activity","description":"Parallel agent lanes with throughput","minHeight":560},{"slug":"agent-activity-7","category":"agent-activity","categoryTitle":"Agent Activity","description":"Run detail with inputs and errors","minHeight":640},{"slug":"tool-calls-1","category":"tool-calls","categoryTitle":"Tool Calls","description":"Tool call card with arguments and result","minHeight":640},{"slug":"tool-calls-2","category":"tool-calls","categoryTitle":"Tool Calls","description":"Tool call list with retry states","minHeight":640},{"slug":"tool-calls-3","category":"tool-calls","categoryTitle":"Tool Calls","description":"File edit result as a diff","minHeight":560},{"slug":"tool-calls-4","category":"tool-calls","categoryTitle":"Tool Calls","description":"Web search result with source cards","minHeight":640},{"slug":"tool-calls-5","category":"tool-calls","categoryTitle":"Tool Calls","description":"Code run card with output tabs","minHeight":560},{"slug":"tool-calls-6","category":"tool-calls","categoryTitle":"Tool Calls","description":"Tool permission toggles","minHeight":800},{"slug":"agent-approval-1","category":"agent-approval","categoryTitle":"Agent Approval","description":"Inline approval for a destructive action","minHeight":480},{"slug":"agent-approval-2","category":"agent-approval","categoryTitle":"Agent Approval","description":"Approval dialog with a diff preview","minHeight":560},{"slug":"agent-approval-3","category":"agent-approval","categoryTitle":"Agent Approval","description":"Batch approval queue with risk badges","minHeight":640},{"slug":"agent-approval-4","category":"agent-approval","categoryTitle":"Agent Approval","description":"Permission request with itemized scopes","minHeight":560},{"slug":"agent-approval-5","category":"agent-approval","categoryTitle":"Agent Approval","description":"Approval banner with a cost estimate","minHeight":560},{"slug":"agent-approval-6","category":"agent-approval","categoryTitle":"Agent Approval","description":"Audit list of past approvals","minHeight":640},{"slug":"agent-plan-1","category":"agent-plan","categoryTitle":"Agent Plan","description":"Task plan checklist with live status","minHeight":560},{"slug":"agent-plan-2","category":"agent-plan","categoryTitle":"Agent Plan","description":"Editable plan before execution","minHeight":640},{"slug":"agent-plan-3","category":"agent-plan","categoryTitle":"Agent Plan","description":"Plan tree with nested subtasks","minHeight":640},{"slug":"agent-plan-4","category":"agent-plan","categoryTitle":"Agent Plan","description":"Plan versus actual comparison","minHeight":480},{"slug":"agent-plan-5","category":"agent-plan","categoryTitle":"Agent Plan","description":"Todo board for agent work","minHeight":560},{"slug":"agent-plan-6","category":"agent-plan","categoryTitle":"Agent Plan","description":"Plan summary with steps and cost","minHeight":640},{"slug":"ai-usage-1","category":"ai-usage","categoryTitle":"AI Usage","description":"Token usage chart with a range switch","minHeight":480},{"slug":"ai-usage-2","category":"ai-usage","categoryTitle":"AI Usage","description":"Spend by model table with share bars","minHeight":560},{"slug":"ai-usage-3","category":"ai-usage","categoryTitle":"AI Usage","description":"Rate limit meters per window","minHeight":560},{"slug":"ai-usage-4","category":"ai-usage","categoryTitle":"AI Usage","description":"Per-seat usage list with spend caps","minHeight":640},{"slug":"ai-usage-5","category":"ai-usage","categoryTitle":"AI Usage","description":"Budget settings with a monthly cap","minHeight":560},{"slug":"ai-usage-6","category":"ai-usage","categoryTitle":"AI Usage","description":"Overage notice with an upgrade picker","minHeight":560},{"slug":"ai-usage-7","category":"ai-usage","categoryTitle":"AI Usage","description":"Request log with tokens, latency and cost","minHeight":640},{"slug":"ai-usage-8","category":"ai-usage","categoryTitle":"AI Usage","description":"Compact plan usage widget","minHeight":480},{"slug":"app-shell-1","category":"app-shell","categoryTitle":"App Shell","description":"Sidebar app with an overview screen","minHeight":720},{"slug":"app-shell-2","category":"app-shell","categoryTitle":"App Shell","description":"Icon rail with a swapping nav pane","minHeight":720},{"slug":"app-shell-3","category":"app-shell","categoryTitle":"App Shell","description":"Top bar above a collapsible sidebar","minHeight":720},{"slug":"app-shell-4","category":"app-shell","categoryTitle":"App Shell","description":"Three columns with a context panel","minHeight":800},{"slug":"app-shell-5","category":"app-shell","categoryTitle":"App Shell","description":"Triage frame with list and reading panes","minHeight":720},{"slug":"app-shell-6","category":"app-shell","categoryTitle":"App Shell","description":"Document workspace with a file tree","minHeight":720},{"slug":"app-shell-7","category":"app-shell","categoryTitle":"App Shell","description":"Frame with org and project switchers","minHeight":720},{"slug":"app-shell-8","category":"app-shell","categoryTitle":"App Shell","description":"Frame that adapts from tab bar to sidebar","minHeight":640},{"slug":"app-shell-9","category":"app-shell","categoryTitle":"App Shell","description":"AI chat frame with thread history","minHeight":720},{"slug":"app-sidebar-1","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Collapsible sidebar with grouped sections","minHeight":640},{"slug":"app-sidebar-2","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Icon rail with hover flyouts","minHeight":640},{"slug":"app-sidebar-3","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Sidebar with a workspace switcher","minHeight":640},{"slug":"app-sidebar-4","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Icon rail with a secondary panel","minHeight":640},{"slug":"app-sidebar-5","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Sidebar with a nested tree","minHeight":640},{"slug":"app-sidebar-6","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Mobile navigation drawer","minHeight":640},{"slug":"app-sidebar-7","category":"app-sidebar","categoryTitle":"App Sidebar","description":"Full app shell with sidebar and header","minHeight":720},{"slug":"command-menu-1","category":"command-menu","categoryTitle":"Command Menu","description":"Command palette with grouped results","minHeight":560},{"slug":"command-menu-2","category":"command-menu","categoryTitle":"Command Menu","description":"Command menu with nested pages","minHeight":480},{"slug":"command-menu-3","category":"command-menu","categoryTitle":"Command Menu","description":"Search palette with inline previews","minHeight":640},{"slug":"command-menu-4","category":"command-menu","categoryTitle":"Command Menu","description":"Action menu that collects arguments","minHeight":400},{"slug":"command-menu-5","category":"command-menu","categoryTitle":"Command Menu","description":"Command palette with an AI fallback","minHeight":560},{"slug":"command-menu-6","category":"command-menu","categoryTitle":"Command Menu","description":"Compact command popover","minHeight":480},{"slug":"navbar-1","category":"navbar","categoryTitle":"Navbar","description":"Project header with sliding tab underline","minHeight":480},{"slug":"navbar-2","category":"navbar","categoryTitle":"Navbar","description":"Breadcrumb toolbar with filter chips","minHeight":400},{"slug":"navbar-3","category":"navbar","categoryTitle":"Navbar","description":"Workspace switcher bar","minHeight":480},{"slug":"navbar-4","category":"navbar","categoryTitle":"Navbar","description":"Marketing header with dropdown panels","minHeight":560},{"slug":"navbar-5","category":"navbar","categoryTitle":"Navbar","description":"Mega menu header with link columns","minHeight":640},{"slug":"navbar-6","category":"navbar","categoryTitle":"Navbar","description":"App bar with search and notifications","minHeight":480},{"slug":"navbar-7","category":"navbar","categoryTitle":"Navbar","description":"Two-tier dashboard header","minHeight":480},{"slug":"navbar-8","category":"navbar","categoryTitle":"Navbar","description":"Tab bar with an animated pill","minHeight":400},{"slug":"navbar-9","category":"navbar","categoryTitle":"Navbar","description":"Store navbar with a mini cart","minHeight":560},{"slug":"navbar-10","category":"navbar","categoryTitle":"Navbar","description":"Docs header with version and search","minHeight":480},{"slug":"navbar-11","category":"navbar","categoryTitle":"Navbar","description":"Editor toolbar with presence avatars","minHeight":480},{"slug":"navbar-12","category":"navbar","categoryTitle":"Navbar","description":"Floating navbar that lifts on scroll","minHeight":480},{"slug":"navbar-13","category":"navbar","categoryTitle":"Navbar","description":"Centered logo navbar with overlay menu","minHeight":560},{"slug":"navbar-14","category":"navbar","categoryTitle":"Navbar","description":"Article header with reading progress","minHeight":480},{"slug":"mobile-1","category":"mobile","categoryTitle":"Mobile","description":"Five-tab bottom bar with badges","minHeight":680},{"slug":"mobile-2","category":"mobile","categoryTitle":"Mobile","description":"Action button that fans out actions","minHeight":680},{"slug":"mobile-3","category":"mobile","categoryTitle":"Mobile","description":"Dock that morphs into a search field","minHeight":680},{"slug":"mobile-4","category":"mobile","categoryTitle":"Mobile","description":"Bottom bar with a navigation sheet","minHeight":680},{"slug":"mobile-5","category":"mobile","categoryTitle":"Mobile","description":"Top bar with a full-screen menu","minHeight":680},{"slug":"card-1","category":"card","categoryTitle":"Cards","description":"Member cards with stats and connect","minHeight":560},{"slug":"card-2","category":"card","categoryTitle":"Cards","description":"Integration rows with connect switches","minHeight":560},{"slug":"card-3","category":"card","categoryTitle":"Cards","description":"Onboarding columns you tick off","minHeight":480},{"slug":"card-4","category":"card","categoryTitle":"Cards","description":"Agenda cards with an RSVP row","minHeight":560},{"slug":"card-5","category":"card","categoryTitle":"Cards","description":"Plan cards with price and checklist","minHeight":560},{"slug":"card-6","category":"card","categoryTitle":"Cards","description":"Account metrics with a date range","minHeight":480},{"slug":"card-7","category":"card","categoryTitle":"Cards","description":"Changelog cards with bookmarks","minHeight":560},{"slug":"card-8","category":"card","categoryTitle":"Cards","description":"Selectable file tiles with a toolbar","minHeight":560},{"slug":"card-9","category":"card","categoryTitle":"Cards","description":"Profile card with stats and follow","minHeight":480},{"slug":"card-10","category":"card","categoryTitle":"Cards","description":"Balance card with recent activity","minHeight":560},{"slug":"card-11","category":"card","categoryTitle":"Cards","description":"Invoice card with a PDF download","minHeight":640},{"slug":"data-table-1","category":"data-table","categoryTitle":"Data Table","description":"Table with filters and column toggles","minHeight":640},{"slug":"data-table-2","category":"data-table","categoryTitle":"Data Table","description":"Table with bulk actions and pagination","minHeight":640},{"slug":"data-table-3","category":"data-table","categoryTitle":"Data Table","description":"Table with inline cell editing","minHeight":640},{"slug":"data-table-4","category":"data-table","categoryTitle":"Data Table","description":"Table with expandable rows","minHeight":640},{"slug":"data-table-5","category":"data-table","categoryTitle":"Data Table","description":"Table with grouped rows and density","minHeight":720},{"slug":"data-table-6","category":"data-table","categoryTitle":"Data Table","description":"Table with a synced detail panel","minHeight":720},{"slug":"data-table-7","category":"data-table","categoryTitle":"Data Table","description":"Table empty, loading and error states","minHeight":640},{"slug":"data-table-8","category":"data-table","categoryTitle":"Data Table","description":"Wide table with a sticky first column","minHeight":640},{"slug":"dashboard-1","category":"dashboard","categoryTitle":"Dashboard","description":"Metric cards with sparklines","minHeight":640},{"slug":"dashboard-2","category":"dashboard","categoryTitle":"Dashboard","description":"Chart panel with a breakdown table","minHeight":720},{"slug":"dashboard-3","category":"dashboard","categoryTitle":"Dashboard","description":"Widget grid with mixed card sizes","minHeight":720},{"slug":"dashboard-4","category":"dashboard","categoryTitle":"Dashboard","description":"Operations board with incidents","minHeight":720},{"slug":"dashboard-5","category":"dashboard","categoryTitle":"Dashboard","description":"Usage dashboard with quota meters","minHeight":720},{"slug":"dashboard-6","category":"dashboard","categoryTitle":"Dashboard","description":"Analytics overview with comparison mode","minHeight":800},{"slug":"dashboard-7","category":"dashboard","categoryTitle":"Dashboard","description":"Dashboard loading and empty states","minHeight":640},{"slug":"dashboard-8","category":"dashboard","categoryTitle":"Dashboard","description":"Module board with progress rings","minHeight":800},{"slug":"dashboard-9","category":"dashboard","categoryTitle":"Dashboard","description":"Weekly worklog grid by person","minHeight":800},{"slug":"dashboard-10","category":"dashboard","categoryTitle":"Dashboard","description":"Metric explorer with one large chart","minHeight":800},{"slug":"dashboard-11","category":"dashboard","categoryTitle":"Dashboard","description":"Staffing board with a demand chart","minHeight":800},{"slug":"dashboard-12","category":"dashboard","categoryTitle":"Dashboard","description":"Payout desk with a pace chart","minHeight":800},{"slug":"dashboard-13","category":"dashboard","categoryTitle":"Dashboard","description":"Quarterly scorecard of objectives","minHeight":800},{"slug":"dashboard-14","category":"dashboard","categoryTitle":"Dashboard","description":"Service board with a detail view","minHeight":720},{"slug":"analytics-1","category":"analytics","categoryTitle":"Analytics","description":"Metric strip with scrubbable sparklines","minHeight":480},{"slug":"analytics-2","category":"analytics","categoryTitle":"Analytics","description":"Area chart with a crosshair","minHeight":640},{"slug":"analytics-3","category":"analytics","categoryTitle":"Analytics","description":"Grouped bar chart with a tooltip","minHeight":640},{"slug":"analytics-4","category":"analytics","categoryTitle":"Analytics","description":"Stacked area chart with totals","minHeight":640},{"slug":"analytics-5","category":"analytics","categoryTitle":"Analytics","description":"Donut chart with a live center total","minHeight":560},{"slug":"analytics-6","category":"analytics","categoryTitle":"Analytics","description":"Ranked sources with sparklines","minHeight":640},{"slug":"analytics-7","category":"analytics","categoryTitle":"Analytics","description":"Sparkline cards with a detail panel","minHeight":640},{"slug":"analytics-8","category":"analytics","categoryTitle":"Analytics","description":"Conversion funnel with drop-off","minHeight":640},{"slug":"analytics-9","category":"analytics","categoryTitle":"Analytics","description":"Activity heatmap with tooltips","minHeight":560},{"slug":"analytics-10","category":"analytics","categoryTitle":"Analytics","description":"Radial goal gauges","minHeight":560},{"slug":"analytics-11","category":"analytics","categoryTitle":"Analytics","description":"Cohort retention matrix","minHeight":640},{"slug":"analytics-12","category":"analytics","categoryTitle":"Analytics","description":"Sortable horizontal bar ranking","minHeight":640},{"slug":"analytics-13","category":"analytics","categoryTitle":"Analytics","description":"Candlestick chart with volume","minHeight":640},{"slug":"analytics-14","category":"analytics","categoryTitle":"Analytics","description":"Scatter plot with quadrants","minHeight":640},{"slug":"analytics-15","category":"analytics","categoryTitle":"Analytics","description":"Bullet charts with targets","minHeight":640},{"slug":"analytics-16","category":"analytics","categoryTitle":"Analytics","description":"Bars with a trend line","minHeight":640},{"slug":"list-1","category":"list","categoryTitle":"List","description":"Metric rows that expand to explain","minHeight":560},{"slug":"list-2","category":"list","categoryTitle":"List","description":"Ranked spend list with a period switch","minHeight":640},{"slug":"list-3","category":"list","categoryTitle":"List","description":"Security event feed with filters","minHeight":640},{"slug":"list-4","category":"list","categoryTitle":"List","description":"Reorderable publishing queue","minHeight":640},{"slug":"list-5","category":"list","categoryTitle":"List","description":"Asset library with bulk actions","minHeight":640},{"slug":"list-6","category":"list","categoryTitle":"List","description":"Webhook delivery log with payloads","minHeight":640},{"slug":"list-7","category":"list","categoryTitle":"List","description":"Supplier directory with search","minHeight":640},{"slug":"list-8","category":"list","categoryTitle":"List","description":"Inbox with archive, snooze and undo","minHeight":560},{"slug":"list-9","category":"list","categoryTitle":"List","description":"Contact list with an alphabet rail","minHeight":640},{"slug":"list-10","category":"list","categoryTitle":"List","description":"Runbook checklist with progress","minHeight":560},{"slug":"list-11","category":"list","categoryTitle":"List","description":"Support leaderboard with rank changes","minHeight":640},{"slug":"list-12","category":"list","categoryTitle":"List","description":"File tree with keyboard navigation","minHeight":640},{"slug":"filtering-1","category":"filtering","categoryTitle":"Filtering","description":"Faceted product filters with swatches","minHeight":940},{"slug":"filtering-2","category":"filtering","categoryTitle":"Filtering","description":"Filter drawer with a live count","minHeight":760},{"slug":"filtering-3","category":"filtering","categoryTitle":"Filtering","description":"Query builder driving a live table","minHeight":900},{"slug":"filtering-4","category":"filtering","categoryTitle":"Filtering","description":"Log explorer with a volume chart","minHeight":920},{"slug":"filtering-5","category":"filtering","categoryTitle":"Filtering","description":"Property search filters","minHeight":920},{"slug":"filtering-6","category":"filtering","categoryTitle":"Filtering","description":"Candidate search by skills and pay","minHeight":920},{"slug":"filtering-7","category":"filtering","categoryTitle":"Filtering","description":"Facet bar over an asset grid","minHeight":840},{"slug":"filtering-8","category":"filtering","categoryTitle":"Filtering","description":"Flight filters with time ranges","minHeight":960},{"slug":"filtering-9","category":"filtering","categoryTitle":"Filtering","description":"Cuisine pills with rating filters","minHeight":880},{"slug":"file-manager-1","category":"file-manager","categoryTitle":"File Manager","description":"Drive explorer with a folder tree","minHeight":800},{"slug":"file-manager-2","category":"file-manager","categoryTitle":"File Manager","description":"Asset grid with type filters","minHeight":720},{"slug":"file-manager-3","category":"file-manager","categoryTitle":"File Manager","description":"File browser with a detail panel","minHeight":720},{"slug":"file-manager-4","category":"file-manager","categoryTitle":"File Manager","description":"Upload manager with per-file progress","minHeight":640},{"slug":"monitoring-1","category":"monitoring","categoryTitle":"Monitoring","description":"Platform health with an incident feed","minHeight":760},{"slug":"monitoring-2","category":"monitoring","categoryTitle":"Monitoring","description":"Live metric stream with a threshold","minHeight":640},{"slug":"monitoring-3","category":"monitoring","categoryTitle":"Monitoring","description":"Incident detail with a response timeline","minHeight":680},{"slug":"monitoring-4","category":"monitoring","categoryTitle":"Monitoring","description":"Alert inbox with silencing","minHeight":720},{"slug":"monitoring-5","category":"monitoring","categoryTitle":"Monitoring","description":"Live log tail with level filters","minHeight":680},{"slug":"monitoring-6","category":"monitoring","categoryTitle":"Monitoring","description":"Uptime grid with daily status bars","minHeight":600},{"slug":"monitoring-7","category":"monitoring","categoryTitle":"Monitoring","description":"Fleet table with utilization meters","minHeight":720},{"slug":"monitoring-8","category":"monitoring","categoryTitle":"Monitoring","description":"Response times with a latency histogram","minHeight":720},{"slug":"monitoring-9","category":"monitoring","categoryTitle":"Monitoring","description":"Live run queue grouped by state","minHeight":800},{"slug":"monitoring-10","category":"monitoring","categoryTitle":"Monitoring","description":"Error budgets with a burn-down chart","minHeight":640},{"slug":"empty-state-1","category":"empty-state","categoryTitle":"Empty State","description":"First-run workspace with starting paths","minHeight":640},{"slug":"empty-state-2","category":"empty-state","categoryTitle":"Empty State","description":"No results with suggested searches","minHeight":560},{"slug":"empty-state-3","category":"empty-state","categoryTitle":"Empty State","description":"All caught up summary","minHeight":560},{"slug":"empty-state-4","category":"empty-state","categoryTitle":"Empty State","description":"Load failure with a retry","minHeight":480},{"slug":"empty-state-5","category":"empty-state","categoryTitle":"Empty State","description":"Empty folder dropzone","minHeight":560},{"slug":"settings-form-1","category":"settings-form","categoryTitle":"Settings Form","description":"Settings page with a sticky save bar","minHeight":800},{"slug":"settings-form-2","category":"settings-form","categoryTitle":"Settings Form","description":"Profile form with avatar upload","minHeight":800},{"slug":"settings-form-3","category":"settings-form","categoryTitle":"Settings Form","description":"Preferences with switches and radios","minHeight":800},{"slug":"settings-form-4","category":"settings-form","categoryTitle":"Settings Form","description":"Team members with role selects","minHeight":720},{"slug":"settings-form-5","category":"settings-form","categoryTitle":"Settings Form","description":"API keys with reveal and rotate","minHeight":800},{"slug":"settings-form-6","category":"settings-form","categoryTitle":"Settings Form","description":"Danger zone with confirmations","minHeight":640},{"slug":"forms-1","category":"forms","categoryTitle":"Forms","description":"Record form with a completion meter","minHeight":840},{"slug":"forms-2","category":"forms","categoryTitle":"Forms","description":"Two-column form with radio cards","minHeight":1280},{"slug":"forms-3","category":"forms","categoryTitle":"Forms","description":"Booking form with a line items table","minHeight":1120},{"slug":"forms-4","category":"forms","categoryTitle":"Forms","description":"Inline edit property panel","minHeight":720},{"slug":"forms-5","category":"forms","categoryTitle":"Forms","description":"Provisioning form with live checks","minHeight":720},{"slug":"forms-6","category":"forms","categoryTitle":"Forms","description":"Checkout form with an order summary","minHeight":1040},{"slug":"forms-7","category":"forms","categoryTitle":"Forms","description":"Application form with a dropzone","minHeight":800},{"slug":"forms-8","category":"forms","categoryTitle":"Forms","description":"Rule builder with a live test","minHeight":800},{"slug":"forms-9","category":"forms","categoryTitle":"Forms","description":"Opening hours with per-day intervals","minHeight":800},{"slug":"forms-10","category":"forms","categoryTitle":"Forms","description":"Guest survey with a 0 to 10 scale","minHeight":1080},{"slug":"forms-11","category":"forms","categoryTitle":"Forms","description":"Create environment dialog","minHeight":680},{"slug":"forms-12","category":"forms","categoryTitle":"Forms","description":"Quote review with a premium summary","minHeight":880},{"slug":"app-dialog-1","category":"app-dialog","categoryTitle":"App Dialog","description":"Standard dialog with a footer","minHeight":560},{"slug":"app-dialog-2","category":"app-dialog","categoryTitle":"App Dialog","description":"Delete confirmation by typing the name","minHeight":480},{"slug":"app-dialog-3","category":"app-dialog","categoryTitle":"App Dialog","description":"Form dialog with validation","minHeight":640},{"slug":"app-dialog-4","category":"app-dialog","categoryTitle":"App Dialog","description":"Multi-step dialog with progress","minHeight":560},{"slug":"app-dialog-5","category":"app-dialog","categoryTitle":"App Dialog","description":"Side drawer with an unsaved guard","minHeight":640},{"slug":"app-dialog-6","category":"app-dialog","categoryTitle":"App Dialog","description":"Detail sheet with metadata","minHeight":640},{"slug":"app-dialog-7","category":"app-dialog","categoryTitle":"App Dialog","description":"Menus, submenus and shortcuts","minHeight":560},{"slug":"notifications-1","category":"notifications","categoryTitle":"Notifications","description":"Notification center grouped by day","minHeight":680},{"slug":"notifications-2","category":"notifications","categoryTitle":"Notifications","description":"Toast stack that expands on hover","minHeight":620},{"slug":"notifications-3","category":"notifications","categoryTitle":"Notifications","description":"Delivery preferences with quiet hours","minHeight":680},{"slug":"notifications-4","category":"notifications","categoryTitle":"Notifications","description":"Activity inbox with a detail pane","minHeight":680},{"slug":"notifications-5","category":"notifications","categoryTitle":"Notifications","description":"Inline banners for every status","minHeight":620},{"slug":"notifications-6","category":"notifications","categoryTitle":"Notifications","description":"Bell with a notifications popover","minHeight":560},{"slug":"onboarding-1","category":"onboarding","categoryTitle":"Onboarding","description":"Profile setup with a live preview","minHeight":640},{"slug":"onboarding-2","category":"onboarding","categoryTitle":"Onboarding","description":"Six-step vertical stepper","minHeight":720},{"slug":"onboarding-3","category":"onboarding","categoryTitle":"Onboarding","description":"Getting started checklist with progress","minHeight":640},{"slug":"onboarding-4","category":"onboarding","categoryTitle":"Onboarding","description":"Use case picker with option tiles","minHeight":640},{"slug":"onboarding-5","category":"onboarding","categoryTitle":"Onboarding","description":"Invite teammates with role selects","minHeight":640},{"slug":"onboarding-6","category":"onboarding","categoryTitle":"Onboarding","description":"Setup complete summary with next steps","minHeight":560},{"slug":"onboarding-7","category":"onboarding","categoryTitle":"Onboarding","description":"Top stepper with a workspace form","minHeight":640},{"slug":"paywall-1","category":"paywall","categoryTitle":"Paywall","description":"Article lock with a membership card","minHeight":640},{"slug":"paywall-2","category":"paywall","categoryTitle":"Paywall","description":"Feature gate dialog","minHeight":560},{"slug":"paywall-3","category":"paywall","categoryTitle":"Paywall","description":"Three-plan comparison with a toggle","minHeight":560},{"slug":"paywall-4","category":"paywall","categoryTitle":"Paywall","description":"Usage cap notice with meters","minHeight":560},{"slug":"paywall-5","category":"paywall","categoryTitle":"Paywall","description":"Trial expired reactivation card","minHeight":560},{"slug":"paywall-6","category":"paywall","categoryTitle":"Paywall","description":"Metered reads counter","minHeight":400},{"slug":"paywall-7","category":"paywall","categoryTitle":"Paywall","description":"Seat gate that asks the admins","minHeight":560},{"slug":"authentication-1","category":"authentication","categoryTitle":"Authentication","description":"Sign-in card with provider buttons","minHeight":640},{"slug":"authentication-2","category":"authentication","categoryTitle":"Authentication","description":"Provider-first sign-in with SSO","minHeight":640},{"slug":"authentication-3","category":"authentication","categoryTitle":"Authentication","description":"Split sign-in with a customer quote","minHeight":640},{"slug":"authentication-4","category":"authentication","categoryTitle":"Authentication","description":"Two-step email then password","minHeight":560},{"slug":"authentication-5","category":"authentication","categoryTitle":"Authentication","description":"Magic link sent confirmation","minHeight":640},{"slug":"authentication-6","category":"authentication","categoryTitle":"Authentication","description":"Six-digit code entry","minHeight":560},{"slug":"authentication-7","category":"authentication","categoryTitle":"Authentication","description":"Sign-up with a password strength meter","minHeight":720},{"slug":"authentication-8","category":"authentication","categoryTitle":"Authentication","description":"Enterprise SSO by email domain","minHeight":640},{"slug":"authentication-9","category":"authentication","categoryTitle":"Authentication","description":"Passkey sign-in with fallbacks","minHeight":640},{"slug":"authentication-10","category":"authentication","categoryTitle":"Authentication","description":"Account chooser","minHeight":720},{"slug":"authentication-11","category":"authentication","categoryTitle":"Authentication","description":"Workspace picker with invitations","minHeight":640},{"slug":"authentication-12","category":"authentication","categoryTitle":"Authentication","description":"Invitation acceptance screen","minHeight":640},{"slug":"authentication-13","category":"authentication","categoryTitle":"Authentication","description":"Password reset with session list","minHeight":800},{"slug":"authentication-14","category":"authentication","categoryTitle":"Authentication","description":"Sign-in approval challenge","minHeight":720},{"slug":"kanban-1","category":"kanban","categoryTitle":"Kanban","description":"Drag and drop board with WIP limits","minHeight":680},{"slug":"kanban-2","category":"kanban","categoryTitle":"Kanban","description":"Swimlane board with collapsible lanes","minHeight":680},{"slug":"kanban-3","category":"kanban","categoryTitle":"Kanban","description":"Regroupable board by status or owner","minHeight":680},{"slug":"kanban-4","category":"kanban","categoryTitle":"Kanban","description":"Board with a card detail side panel","minHeight":680},{"slug":"kanban-5","category":"kanban","categoryTitle":"Kanban","description":"Sprint board with capacity meters","minHeight":680},{"slug":"kanban-6","category":"kanban","categoryTitle":"Kanban","description":"Compact task board for small screens","minHeight":680},{"slug":"wizard-1","category":"wizard","categoryTitle":"Wizard","description":"Card wizard with a two-column form","minHeight":640},{"slug":"wizard-2","category":"wizard","categoryTitle":"Wizard","description":"Full-screen wizard with a progress bar","minHeight":720},{"slug":"wizard-3","category":"wizard","categoryTitle":"Wizard","description":"Plan step with an invoice preview","minHeight":720},{"slug":"wizard-4","category":"wizard","categoryTitle":"Wizard","description":"Service picker with a live summary","minHeight":640},{"slug":"wizard-5","category":"wizard","categoryTitle":"Wizard","description":"Review and confirm step","minHeight":720},{"slug":"wizard-6","category":"wizard","categoryTitle":"Wizard","description":"Running step with per-task states","minHeight":640},{"slug":"wizard-7","category":"wizard","categoryTitle":"Wizard","description":"Modal wizard with one question per step","minHeight":480},{"slug":"billing-1","category":"billing","categoryTitle":"Billing","description":"Billing overview with an invoice ledger","minHeight":800},{"slug":"billing-2","category":"billing","categoryTitle":"Billing","description":"Plan manager with entitlement cards","minHeight":680},{"slug":"billing-3","category":"billing","categoryTitle":"Billing","description":"New invoice wizard","minHeight":800},{"slug":"billing-4","category":"billing","categoryTitle":"Billing","description":"Failed payment recovery queue","minHeight":800},{"slug":"billing-5","category":"billing","categoryTitle":"Billing","description":"Change plan with a proration preview","minHeight":680},{"slug":"billing-6","category":"billing","categoryTitle":"Billing","description":"Payment methods and billing contacts","minHeight":800},{"slug":"billing-7","category":"billing","categoryTitle":"Billing","description":"Usage and overage with allowances","minHeight":800},{"slug":"billing-8","category":"billing","categoryTitle":"Billing","description":"Invoice detail with a timeline","minHeight":800},{"slug":"comments-1","category":"comments","categoryTitle":"Comments","description":"Threaded comments with reactions","minHeight":640},{"slug":"comments-2","category":"comments","categoryTitle":"Comments","description":"Inline annotations with a comments rail","minHeight":640},{"slug":"comments-3","category":"comments","categoryTitle":"Comments","description":"Code review thread with a diff","minHeight":640},{"slug":"comments-4","category":"comments","categoryTitle":"Comments","description":"Comment composer with @ mentions","minHeight":640},{"slug":"comments-5","category":"comments","categoryTitle":"Comments","description":"Comment inbox with resolve actions","minHeight":640},{"slug":"comments-6","category":"comments","categoryTitle":"Comments","description":"Canvas pins linked to a notes rail","minHeight":640},{"slug":"scheduling-1","category":"scheduling","categoryTitle":"Scheduling","description":"Month calendar beside a day agenda","minHeight":720},{"slug":"scheduling-2","category":"scheduling","categoryTitle":"Scheduling","description":"Compact time range picker","minHeight":480},{"slug":"scheduling-3","category":"scheduling","categoryTitle":"Scheduling","description":"New schedule form with attendees","minHeight":720},{"slug":"scheduling-4","category":"scheduling","categoryTitle":"Scheduling","description":"Deadline picker with quick presets","minHeight":640},{"slug":"scheduling-5","category":"scheduling","categoryTitle":"Scheduling","description":"Weekly availability editor","minHeight":640},{"slug":"scheduling-6","category":"scheduling","categoryTitle":"Scheduling","description":"Week timeline with an hour rail","minHeight":720},{"slug":"scheduling-7","category":"scheduling","categoryTitle":"Scheduling","description":"Booking page with a time slot grid","minHeight":640},{"slug":"integrations-1","category":"integrations","categoryTitle":"Integrations","description":"Integration marketplace grid","minHeight":680},{"slug":"integrations-2","category":"integrations","categoryTitle":"Integrations","description":"Connection detail with scopes","minHeight":680},{"slug":"integrations-3","category":"integrations","categoryTitle":"Integrations","description":"API key table with row actions","minHeight":680},{"slug":"integrations-4","category":"integrations","categoryTitle":"Integrations","description":"Webhooks with a delivery log","minHeight":680},{"slug":"integrations-5","category":"integrations","categoryTitle":"Integrations","description":"OAuth consent screen","minHeight":680},{"slug":"integrations-6","category":"integrations","categoryTitle":"Integrations","description":"Sync status with per-source progress","minHeight":680},{"slug":"editor-1","category":"editor","categoryTitle":"Editor","description":"Rich text editor with a toolbar","minHeight":680},{"slug":"editor-2","category":"editor","categoryTitle":"Editor","description":"Markdown with write and preview modes","minHeight":680},{"slug":"editor-3","category":"editor","categoryTitle":"Editor","description":"Code editor with tabs and a minimap","minHeight":680},{"slug":"editor-4","category":"editor","categoryTitle":"Editor","description":"Suggestion review side panel","minHeight":680},{"slug":"editor-5","category":"editor","categoryTitle":"Editor","description":"Long document reader with an outline","minHeight":680},{"slug":"feedback-1","category":"feedback","categoryTitle":"Feedback","description":"In-app feedback widget with screenshots","minHeight":560},{"slug":"feedback-2","category":"feedback","categoryTitle":"Feedback","description":"Eleven-point recommendation survey","minHeight":560},{"slug":"feedback-3","category":"feedback","categoryTitle":"Feedback","description":"Star rating with reason chips","minHeight":560},{"slug":"feedback-4","category":"feedback","categoryTitle":"Feedback","description":"Feature request board with votes","minHeight":640},{"slug":"feedback-5","category":"feedback","categoryTitle":"Feedback","description":"Feedback triage inbox","minHeight":640},{"slug":"feedback-6","category":"feedback","categoryTitle":"Feedback","description":"Insights with sentiment and themes","minHeight":640},{"slug":"support-1","category":"support","categoryTitle":"Support","description":"Help center home with search","minHeight":720},{"slug":"support-2","category":"support","categoryTitle":"Support","description":"Ticket form with article suggestions","minHeight":800},{"slug":"support-3","category":"support","categoryTitle":"Support","description":"Ticket thread with a timeline","minHeight":640},{"slug":"support-4","category":"support","categoryTitle":"Support","description":"Support chat with a human handoff","minHeight":640},{"slug":"support-5","category":"support","categoryTitle":"Support","description":"Request list with status pills","minHeight":640},{"slug":"chat-1","category":"chat","categoryTitle":"Chat","description":"Team channels with threads","minHeight":720},{"slug":"chat-2","category":"chat","categoryTitle":"Chat","description":"Direct messages with read receipts","minHeight":680},{"slug":"chat-3","category":"chat","categoryTitle":"Chat","description":"Social thread with nested replies","minHeight":800},{"slug":"chat-4","category":"chat","categoryTitle":"Chat","description":"Support chat widget with a rating","minHeight":640},{"slug":"chat-5","category":"chat","categoryTitle":"Chat","description":"Group chat with attachments","minHeight":680},{"slug":"chat-6","category":"chat","categoryTitle":"Chat","description":"Live stream chat with badges","minHeight":680}];
+      var state = {
+        slug: new URLSearchParams(location.search).get('slug') || 'ai-chat-9',
+        view: 'preview',
+        style: 'default',
+        mode: 'light',
+        preset: 'default',
+        query: ''
+      };
+
+      var listEl = document.getElementById('pg-list');
+      var mountEl = document.getElementById('pg-mount');
+      var previewBox = document.getElementById('pg-preview-box');
+      var codeBox = document.getElementById('pg-code-box');
+      var titleEl = document.getElementById('pg-cur-title');
+      var openCapEl = document.getElementById('pg-open-capsule');
+      var countEl = document.getElementById('pg-count');
+
+      function findBlock(slug) {
+        return CATALOG.find(function (b) { return b.slug === slug; }) || CATALOG[0];
+      }
+
+      function renderSidebar() {
+        var q = state.query.trim().toLowerCase();
+        var filtered = q
+          ? CATALOG.filter(function (b) {
+              return b.slug.includes(q) || b.category.includes(q) || (b.description || '').toLowerCase().includes(q);
+            })
+          : CATALOG;
+        countEl.textContent = filtered.length + '/' + CATALOG.length;
+        var grouped = {};
+        filtered.forEach(function (b) {
+          if (!grouped[b.category]) grouped[b.category] = [];
+          grouped[b.category].push(b);
+        });
+        var html = '';
+        Object.keys(grouped).forEach(function (cat) {
+          html += '<div class="pg-cat-btn"><span>' + cat + '</span><span>' + grouped[cat].length + '</span></div>';
+          grouped[cat].forEach(function (b) {
+            html += '<button type="button" class="pg-item-btn ' + (b.slug === state.slug ? 'active' : '') + '" data-slug="' + b.slug + '">' +
+              '<span>' + b.slug + '</span><span class="pg-item-desc">' + (b.description || '') + '</span></button>';
+          });
+        });
+        listEl.innerHTML = html;
+        listEl.querySelectorAll('[data-slug]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.slug = btn.getAttribute('data-slug');
+            renderActive();
+            renderSidebar();
+          });
+        });
+      }
+
+      function renderActive() {
+        var b = findBlock(state.slug);
+        state.slug = b.slug;
+        titleEl.textContent = b.slug + ' — ' + b.description;
+        openCapEl.href = './' + b.category + '/' + b.slug + '/capsule.html?style=' + state.style + '&mode=' + state.mode + '&preset=' + state.preset;
+        window.ReactBitsAppUI.applyTheme({ style: state.style, mode: state.mode, preset: state.preset });
+
+        if (state.view === 'preview') {
+          previewBox.style.display = '';
+          codeBox.style.display = 'none';
+          window.ReactBitsAppUI.mount(b.slug, mountEl, { style: state.style });
+        } else {
+          previewBox.style.display = 'none';
+          codeBox.style.display = '';
+          var file = state.style === 'sorbet' ? b.slug + '.sorbet.jsx' : b.slug + '.jsx';
+          codeBox.textContent = 'Loading ' + file + '...';
+          fetch('./' + b.category + '/' + b.slug + '/' + file)
+            .then(function (r) { return r.text(); })
+            .then(function (t) { codeBox.textContent = t; })
+            .catch(function (err) { codeBox.textContent = 'Failed to load: ' + err.message; });
+        }
+      }
+
+      document.getElementById('pg-search').addEventListener('input', function (e) {
+        state.query = e.target.value;
+        renderSidebar();
+      });
+
+      document.getElementById('seg-view').addEventListener('click', function (e) {
+        var v = e.target.getAttribute('data-view');
+        if (!v) return;
+        state.view = v;
+        this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-view') === v); });
+        renderActive();
+      });
+
+      document.getElementById('seg-style').addEventListener('click', function (e) {
+        var v = e.target.getAttribute('data-style');
+        if (!v) return;
+        state.style = v;
+        this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-style') === v); });
+        renderActive();
+      });
+
+      document.getElementById('seg-mode').addEventListener('click', function (e) {
+        var v = e.target.getAttribute('data-mode');
+        if (!v) return;
+        state.mode = v;
+        this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-mode') === v); });
+        renderActive();
+      });
+
+      document.getElementById('sel-preset').addEventListener('change', function (e) {
+        state.preset = e.target.value;
+        renderActive();
+      });
+
+      renderSidebar();
+      renderActive();
+    })();
+  </script>
+</body>
+</html>
